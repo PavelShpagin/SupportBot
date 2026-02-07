@@ -1,0 +1,13 @@
+#cloud-config
+package_update: true
+package_upgrade: true
+
+packages:
+  - docker.io
+  - docker-compose-plugin
+
+runcmd:
+  - [ bash, -lc, "systemctl enable --now docker" ]
+  - [ bash, -lc, "mkdir -p /var/lib/signal/bot /var/lib/signal/ingest /var/lib/chroma /var/lib/history /var/lib/adb_wallet" ]
+  - [ bash, -lc, "chmod 0755 /var/lib/signal /var/lib/chroma /var/lib/history /var/lib/adb_wallet || true" ]
+

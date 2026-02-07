@@ -1,0 +1,456 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage[hidelinks]{hyperref}
+\usepackage{amsmath,amssymb}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{microtype}
+
+% Algorithms with line numbers
+\usepackage[ruled,vlined]{algorithm2e}
+\LinesNumbered
+\DontPrintSemicolon
+\SetKwComment{Comment}{$\triangleright$ }{}
+
+% Make overflow less painful
+\sloppy
+\emergencystretch=3em
+
+% Code listing style
+\lstdefinestyle{code}{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  columns=fullflexible,
+  keywordstyle=\color{blue},
+  commentstyle=\color{gray}
+}
+
+\title{Signal SupportBot on Oracle Cloud: Streaming Case Mining + RAG with Two-Stage Reply Gating}
+\author{(Your Name)}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Scope (What We Build, Exactly)}
+We build a Signal group bot that:
+\begin{enumerate}[label=(\arabic*)]
+  \item Uses a dedicated Signal number (bot identity) and can be added to any group.
+  \item Ingests every new message (text + images) and turns it into \emph{cases}:
+  a case is a problem + solution block mined from chat.
+  \item Uses RAG over cases (not raw chat) to answer repetitive questions.
+  \item Replies only when:
+    \begin{itemize}
+      \item someone mentions the bot, or
+      \item two-stage LLM gating decides (i) this is a help request worth considering and
+      (ii) the bot has enough evidence to answer.
+    \end{itemize}
+  \item Optionally bootstraps recent history via a temporary linked-device ingest flow.
+\end{enumerate}
+
+\noindent We support \textbf{text + images only}. Images are converted to a lightweight JSON containing only:
+\texttt{observations[]} and \texttt{extracted\_text}. We do \textbf{not} store image bytes.
+Image extraction is \textbf{context-aware}: we pass the user message text that the image was attached to
+(possibly empty) to focus on relevant details (e.g., error codes, UI labels) without inventing facts.
+
+\section{Infrastructure (Oracle Cloud Only)}
+Everything runs on Oracle Cloud Infrastructure (OCI):
+\begin{itemize}
+  \item \textbf{OCI Compute VM}: Ubuntu, Docker, Docker Compose.
+  \item \textbf{Oracle Database}: stores ledger, cases, and app metadata (Autonomous DB or DB System).
+  \item \textbf{No object storage required} for the MVP (we store image-derived text only).
+\end{itemize}
+
+\section{Containers (Only 3, as requested)}
+We run exactly three containers on one VM:
+\begin{enumerate}[label=(\arabic*)]
+  \item \textbf{signal-bot}: bot number runtime + HTTP API + background worker in the same container.
+  \item \textbf{signal-ingest}: history bootstrap runtime (separate Signal profile; started when needed).
+  \item \textbf{rag}: Chroma vector database server (HTTP).
+\end{enumerate}
+
+\noindent Chroma deployment via Docker is standard and simple. \cite{chroma-docker}
+(We cite it as a known deployment method; the doc link is in Appendix references.)
+
+\section{Data Stores and What Goes Where}
+\subsection{Oracle DB (Relational Truth)}
+We store:
+\begin{itemize}
+  \item \textbf{Raw ledger}: every message as normalized text (including image-to-text JSON).
+  \item \textbf{Per-group buffer}: rolling text used by the case-miner.
+  \item \textbf{Cases}: structured problem/solution units + evidence pointers.
+  \item \textbf{Admin-group mapping}: who added the bot, used for the optional history flow.
+\end{itemize}
+
+\subsection{Chroma (Vector Search for RAG)}
+We store one document per case:
+\begin{itemize}
+  \item ID: \texttt{case\_id}
+  \item Text: concatenation of \texttt{problem\_title + problem\_summary + solution\_summary + tags}
+  \item Metadata: \texttt{group\_id}, \texttt{status}, evidence message IDs, timestamps
+  \item Embedding: computed by \texttt{EMBEDDING_MODEL}
+\end{itemize}
+
+\section{Models (Explicit)}
+We use Google Gemini models as follows (names align with Google AI docs):
+\begin{itemize}
+  \item \textbf{Gemini 3 Pro Preview} (\texttt{MODEL\_IMG}, \texttt{MODEL\_RESPOND}, \texttt{MODEL\_BLOCKS}): vision-capable model for image extraction, response synthesis, and history chunk mining (higher quality, multimodal).
+  \item \textbf{Gemini 2.5 Flash-Lite} (\texttt{MODEL\_DECISION}, \texttt{MODEL\_EXTRACT}, \texttt{MODEL\_CASE}): cheap gating + buffer extraction (fast, many calls, cost-efficient).
+\end{itemize}
+Gemini models are accessed via Google's OpenAI-compatible API endpoint. \cite{gemini-models,gemini-api}
+
+\section{DB Schema (Minimal, Practical)}
+\subsection{Tables}
+\begin{itemize}
+  \item \texttt{raw\_messages}(\underline{message\_id}, group\_id, ts, sender\_hash, content\_text, reply\_to\_id, created\_at)
+  \item \texttt{buffers}(\underline{group\_id}, buffer\_text, updated\_at)
+  \item \texttt{cases}(\underline{case\_id}, group\_id, status, problem\_title, problem\_summary, solution\_summary, tags\_json, created\_at, updated\_at)
+  \item \texttt{case\_evidence}(\underline{case\_id}, \underline{message\_id})
+  \item \texttt{admins\_groups}(\underline{admin\_id}, \underline{group\_id}, created\_at)
+  \item \texttt{history\_tokens}(\underline{token}, admin\_id, group\_id, expires\_at, used\_at)
+  \item \texttt{jobs}(\underline{job\_id}, type, payload\_json, status, attempts, updated\_at)
+\end{itemize}
+
+\section{API (Small and Enough)}
+All endpoints live in the \texttt{signal-bot} container (FastAPI).
+
+\begin{itemize}
+  \item \texttt{GET /healthz}
+  \item \texttt{POST /history/token} \Comment{admin requests optional history bootstrap}
+  \item \texttt{GET /history/qr/\string\{token\string\}} \Comment{return PNG QR}
+  \item \texttt{POST /history/cases} \Comment{signal-ingest posts mined cases here}
+  \item \texttt{POST /retrieve} \Comment{(group\_id, query, k) $\rightarrow$ top-K cases from Chroma}
+\end{itemize}
+
+\section{Core Algorithms (Numbered, In Execution Order)}
+
+\subsection{Notation (Prompts, JSON Contracts, LLM Calls)}
+Each prompt identifier \texttt{P\_*} denotes a template string listed in the Appendix.
+We write a JSON-only LLM call as:
+\[
+  J \leftarrow \textsc{LLM}_{\mathrm{json}}(m, P, \mathcal{V}),
+\]
+meaning: render prompt template $P$ with variable map $\mathcal{V}$, call model $m$, and obtain a JSON-only string $J$ that parses to the required JSON object.
+All calls validate that $J$ contains \emph{exactly} the required keys and types; otherwise the call is retried once and then treated as an error.
+
+\subsection{Algorithm 1: Normalize Image to Lightweight JSON}
+We do not keep the image. We only keep a small JSON payload.
+
+\begin{algorithm}[H]
+\caption{ImageToTextJSON(image\_bytes, context\_text) \label{alg:img}}
+\KwIn{Image bytes; \texttt{context\_text} (the user message the image was attached to; may be empty)}
+\KwOut{JSON string \texttt{J} with fields \texttt{observations[]} and \texttt{extracted\_text}}
+\tcp{Vision-capable call. Prompt template is \texttt{P\_img} (Appendix).}
+\texttt{J} $\leftarrow$ \textsc{LLM}$_{\mathrm{json}}$(\texttt{MODEL\_IMG}, \texttt{P\_img}, \{\texttt{IMAGE=image\_bytes, CONTEXT=context\_text}\})\;
+Validate JSON schema: keys are exactly \texttt{observations[]} and \texttt{extracted\_text}\;
+\Return \texttt{J}\;
+\end{algorithm}
+
+\subsection{Algorithm 2: Ingest Live Signal Message (Ledger + Jobs)}
+Runs in \texttt{signal-bot} container while listening to Signal events.
+
+\begin{algorithm}[H]
+\caption{IngestMessage(event) \label{alg:ingest}}
+\KwIn{Signal event with \texttt{group\_id, sender, ts, text, images[], reply\_to}}
+\KwOut{None (side effects)}
+Compute \texttt{message\_id} (stable identifier from Signal)\;
+Compute \texttt{sender\_hash}\;
+Set \texttt{content\_text} $\leftarrow$ \texttt{text} (or empty)\;
+\ForEach{image in \texttt{images[]}}{
+  \texttt{J} $\leftarrow$ \texttt{ImageToTextJSON(image, context\_text=text)}\;
+  Append \texttt{"[image]\\n"} + \texttt{J} to \texttt{content\_text}\;
+}
+Insert row into \texttt{raw\_messages}\;
+Enqueue job \texttt{BUFFER\_UPDATE} with payload \{\texttt{group\_id, message\_id}\}\;
+Enqueue job \texttt{MAYBE\_RESPOND} with payload \{\texttt{group\_id, message\_id}\}\;
+\end{algorithm}
+
+\subsection{Algorithm 3: Update Buffer and Mine One Solved Case}
+Runs in the background worker loop (inside \texttt{signal-bot} container).
+
+\begin{algorithm}[H]
+\caption{BufferUpdate(group\_id, message\_id) \label{alg:buffer}}
+\KwIn{\texttt{group\_id}, \texttt{message\_id}}
+\KwOut{Updated buffer; optionally a new case}
+Load message \texttt{m} from \texttt{raw\_messages}\;
+Render \texttt{line} $\leftarrow$ \texttt{Format(sender\_hash, ts, content\_text, reply\_to)}\;
+Load \texttt{B} $\leftarrow$ \texttt{buffers[group\_id]} (or empty)\;
+Append \texttt{line} to \texttt{B}\;
+\texttt{R} $\leftarrow$ \textsc{LLM}$_{\mathrm{json}}$(\texttt{MODEL\_EXTRACT}, \texttt{P\_extract}, \{\texttt{BUFFER\_TEXT=B}\})\;
+Parse \texttt{R}: \{\texttt{found, case\_block, buffer\_new}\}\;
+\If{\texttt{found = true}}{
+  \texttt{case\_id} $\leftarrow$ \texttt{MakeCase(group\_id, case\_block)}\;
+  Set \texttt{B} $\leftarrow$ \texttt{buffer\_new}\;
+}
+Store updated \texttt{B} back into \texttt{buffers}\;
+\end{algorithm}
+
+\subsection{Algorithm 4: Turn a Case Block into a RAG Case (DB + Chroma)}
+No junk score. A lightweight LLM decides whether it is real and solved enough.
+
+\begin{algorithm}[H]
+\caption{MakeCase(group\_id, case\_block) \label{alg:case}}
+\KwIn{\texttt{group\_id}, \texttt{case\_block} (raw extracted messages)}
+\KwOut{\texttt{case\_id} or None}
+\texttt{R} $\leftarrow$ \textsc{LLM}$_{\mathrm{json}}$(\texttt{MODEL\_CASE}, \texttt{P\_case}, \{\texttt{CASE\_BLOCK\_TEXT=case\_block}\})\;
+Parse \texttt{R}: \{\texttt{keep, status, problem\_title, problem\_summary, solution\_summary, tags[], evidence\_ids[]}\}\;
+\If{\texttt{keep = false}}{
+  \Return None\;
+}
+Insert into \texttt{cases} and \texttt{case\_evidence}\;
+Create \texttt{doc\_text} := \texttt{problem\_title + problem\_summary + solution\_summary + tags}\;
+Compute embedding (\texttt{EMBEDDING_MODEL})\;
+Upsert into Chroma collection with:
+ID=\texttt{case\_id}, text=\texttt{doc\_text}, metadata=\{\texttt{group\_id,status,evidence\_ids}\}\;
+\Return \texttt{case\_id}\;
+\end{algorithm}
+
+\subsection{Algorithm 5: Decide Whether to Respond (Two-Stage Gate + Context)}
+This implements your ``no threshold'' approach using explicit LLM decisions.
+
+\begin{algorithm}[H]
+\caption{MaybeRespond(group\_id, message\_id) \label{alg:respond}}
+\KwIn{\texttt{group\_id}, \texttt{message\_id}}
+\KwOut{Either send a message or do nothing}
+Load message \texttt{m} from \texttt{raw\_messages}\;
+Load last $N$ messages from the same group as plain context \texttt{C} (e.g., $N=40$)\;
+\texttt{force} $\leftarrow$ (\texttt{m} mentions the bot)\;
+\If{\texttt{force = false}}{
+  \texttt{D} $\leftarrow$ \textsc{LLM}$_{\mathrm{json}}$(\texttt{MODEL\_DECISION}, \texttt{P\_decision}, \{\texttt{MESSAGE=m, CONTEXT=C}\})\;
+  Parse \texttt{D}: \{\texttt{consider}\}\;
+  \If{\texttt{consider = false}}{
+    \Return do nothing\;
+  }
+}
+\texttt{CK} $\leftarrow$ \texttt{RetrieveCases(group\_id, query=m, k=K)} \Comment{Chroma search filtered by \texttt{group\_id}}\;
+\texttt{R} $\leftarrow$ \textsc{LLM}$_{\mathrm{json}}$(\texttt{MODEL\_RESPOND}, \texttt{P\_respond}, \{\texttt{MESSAGE=m, CONTEXT=C, CASES=CK}\})\;
+Parse \texttt{R}: \{\texttt{respond, text, citations[]}\}\;
+\If{\texttt{respond = false}}{
+  \Return do nothing\;
+}
+Send \texttt{text} to Signal group; append compact \texttt{citations} line if present\;
+\end{algorithm}
+
+\subsection{Algorithm 6: Optional History Bootstrap (Linked Device)}
+Important: Signal history sync works for the \emph{admin account} when linking a new device, not for the bot's separate number. So we use a temporary ingest profile that an admin links and later unlinks.
+
+\begin{algorithm}[H]
+\caption{BootstrapHistory(admin\_id, group\_id) \label{alg:history}}
+\KwIn{\texttt{admin\_id}, \texttt{group\_id}}
+\KwOut{Cases inserted into DB + Chroma}
+API creates short-lived \texttt{token} in \texttt{history\_tokens}\;
+Admin scans QR and links \texttt{signal-ingest} profile as a device to their account\;
+\texttt{signal-ingest} syncs recent chats; it filters messages by \texttt{group\_id}\;
+Render filtered history into chunks $C_1..C_n$ with small overlap\;
+\ForEach{chunk $C_i$}{
+  \texttt{R} $\leftarrow$ \textsc{LLM}$_{\mathrm{json}}$(\texttt{MODEL\_BLOCKS}, \texttt{P\_blocks}, \{\texttt{CHUNK\_TEXT=C\_i}\})\;
+  Parse \texttt{R}: \{\texttt{cases[]}\} where each element has \{\texttt{case\_block}\}\;
+  For each returned \texttt{case\_block}: call \texttt{MakeCase(group\_id, case\_block)}\;
+}
+Mark token used; tell admin to unlink the ingest device\;
+\end{algorithm}
+
+\section{Deployment (OCI VM + Docker Compose)}
+\subsection{Compose File (3 Containers)}
+\begin{lstlisting}[style=code]
+services:
+  signal-bot:
+    build: ./signal-bot
+    env_file: .env
+    ports: ["8000:8000"]
+    volumes:
+      - /var/lib/signal/bot:/var/lib/signal/bot
+
+  signal-ingest:
+    build: ./signal-ingest
+    env_file: .env
+    volumes:
+      - /var/lib/signal/ingest:/var/lib/signal/ingest
+
+  rag:
+    image: chromadb/chroma:latest
+    environment:
+      - IS_PERSISTENT=TRUE
+    volumes:
+      - /var/lib/chroma:/chroma/chroma
+    ports: ["8001:8000"]
+\end{lstlisting}
+
+\subsection{Environment Variables (Short List)}
+\begin{lstlisting}[style=code]
+# Oracle DB
+ORACLE_DSN=...
+ORACLE_USER=...
+ORACLE_PASSWORD=...
+
+# Google AI (Gemini)
+GOOGLE_API_KEY=...
+MODEL_IMG=gemini-3-pro-preview
+MODEL_DECISION=gemini-2.5-flash-lite
+MODEL_EXTRACT=gemini-2.5-flash-lite
+MODEL_CASE=gemini-2.5-flash-lite
+MODEL_RESPOND=gemini-3-pro-preview
+MODEL_BLOCKS=gemini-3-pro-preview
+EMBEDDING_MODEL=text-embedding-004
+
+# Signal
+SIGNAL_BOT_E164=+...
+SIGNAL_BOT_STORAGE=/var/lib/signal/bot
+SIGNAL_INGEST_BASE=/var/lib/signal/ingest
+
+# Chroma
+CHROMA_URL=http://rag:8000
+\end{lstlisting}
+
+\section{Consistency Check (Is This Deployable and Does It Make Sense?)}
+\begin{itemize}
+  \item \textbf{Bot without history:} Works immediately by ingesting new messages and mining cases.
+  \item \textbf{History:} A dedicated-number bot cannot obtain old group history from other users automatically.
+  The linked-device bootstrap is the correct way to get recent history securely: it syncs to a linked device of the same admin account, then we mine cases and discard the device. This is feasible and avoids insecure DB exports.
+  \item \textbf{RAG store:} Chroma is a straightforward container. Retrieval is constrained by \texttt{group\_id} in metadata.
+  \item \textbf{Keys-only RAG:} Using only the problem (key) without storing solution text makes answers worse.
+  The system needs the solution summary (and evidence IDs) to produce a useful reply. We keep minimal value text: problem+solution summaries + tags.
+  \item \textbf{Images:} Not storing images is fine because we rely on extracted text/observations for RAG and citations.
+  \item \textbf{Compute:} All heavy work is LLM calls; VM CPU is enough for glue code and Signal I/O.
+\end{itemize}
+
+\appendix
+
+\section{Prompts (Explicit, JSON-Only Contracts)}
+All prompts enforce:
+\begin{itemize}
+  \item output is valid JSON
+  \item no extra keys
+  \item no markdown
+  \item do not hallucinate facts not present in inputs
+\end{itemize}
+
+\subsection{P\_img (used by Algorithm 1; vision model)}
+\begin{lstlisting}[style=code]
+SYSTEM: You extract only factual text and observations from an image.
+You may use the provided CONTEXT (a user message) to focus on details that matter.
+Do not invent facts that are not visible in the image.
+Return ONLY valid JSON with exactly these keys:
+- observations: array of short strings (facts visible in the image)
+- extracted_text: string (best-effort text found in the image)
+
+USER:
+CONTEXT (may be empty):
+{CONTEXT}
+
+TASK: Extract observations and text from the attached image. If unreadable, keep extracted_text empty but still return JSON.
+\end{lstlisting}
+
+\subsection{P\_extract (used by Algorithm 3; Gemini 2.5 Flash-Lite)}
+Goal: detect and remove exactly one solved case from buffer.
+\begin{lstlisting}[style=code]
+SYSTEM: You analyze chat buffer text and detect if a solved support case is present.
+Return ONLY JSON with keys:
+- found: boolean
+- case_block: string (exact subset of messages from the buffer forming ONE solved case; empty if found=false)
+- buffer_new: string (original buffer with case_block removed; if found=false, return original buffer)
+
+Rules:
+- A "solved case" must include a clear problem and a clear resolution/answer.
+- Ignore greetings and pure acknowledgements.
+- If multiple cases exist, extract only the earliest complete solved case.
+
+USER: BUFFER:
+{BUFFER_TEXT}
+\end{lstlisting}
+
+\subsection{P\_case (used by Algorithm 4; Gemini 2.5 Flash-Lite)}
+\begin{lstlisting}[style=code]
+SYSTEM: Turn a case block into a structured support case.
+Return ONLY JSON with keys:
+- keep: boolean (true only if this is a real support case)
+- status: string ("solved" or "open")
+- problem_title: string (4-10 words)
+- problem_summary: string (2-5 lines, concrete)
+- solution_summary: string (0-10 lines; required if solved)
+- tags: array of 3-8 short strings
+- evidence_ids: array of message IDs if present in the block, else empty
+
+Rules:
+- If solved is not clear, set keep=false.
+- Do not invent steps; only summarize what is present.
+
+USER: CASE_BLOCK:
+{CASE_BLOCK_TEXT}
+\end{lstlisting}
+
+\subsection{P\_decision (used by Algorithm 5; Gemini 2.5 Flash-Lite)}
+\begin{lstlisting}[style=code]
+SYSTEM: Decide whether a new message is worth considering for a bot response.
+Return ONLY JSON with keys:
+- consider: boolean
+
+consider=true only if:
+- the message is asking for help or clarification, AND
+- it is not trivial junk (greetings, "ok", emoji-only), AND
+- it is relevant to group support context.
+
+USER:
+MESSAGE:
+{MESSAGE}
+
+CONTEXT (last messages):
+{CONTEXT}
+\end{lstlisting}
+
+\subsection{P\_respond (used by Algorithm 5; Gemini 3 Pro Preview)}
+\begin{lstlisting}[style=code]
+SYSTEM: You decide whether to respond in the group, and draft the response if yes.
+Return ONLY JSON with keys:
+- respond: boolean
+- text: string (empty if respond=false)
+- citations: array of short strings (e.g., ["case:123", "msg:1700000123"])
+
+Rules:
+- respond=true only if you can answer using the retrieved cases and context.
+- If unsure, set respond=false (do not guess).
+- Keep the response short, actionable, and specific.
+- If you respond, include 1-3 citations referencing relevant cases.
+
+USER:
+MESSAGE:
+{MESSAGE}
+
+CONTEXT (last messages):
+{CONTEXT}
+
+RETRIEVED CASES (top-K):
+{CASES}
+\end{lstlisting}
+
+\subsection{P\_blocks (used by Algorithm 6; Gemini 3 Pro Preview)}
+\begin{lstlisting}[style=code]
+SYSTEM: From a long history chunk, extract solved support cases.
+Return ONLY JSON with key:
+- cases: array of objects, each with:
+  - case_block: string (raw messages subset)
+Do NOT return open/unresolved cases.
+
+Rules:
+- Each case_block must contain both problem and solution.
+- Ignore greetings and unrelated chatter.
+- Keep case_block as exact excerpts from the chunk.
+
+USER: HISTORY_CHUNK:
+{CHUNK_TEXT}
+\end{lstlisting}
+
+\section{References}
+\begin{thebibliography}{9}
+\bibitem{gemini-models}
+Google AI: Gemini Models. \emph{ai.google.dev/gemini-api/docs/models}. (Accessed Feb 2026).
+\bibitem{gemini-api}
+Google AI: Gemini API Pricing. \emph{ai.google.dev/gemini-api/docs/pricing}. (Accessed Feb 2026).
+\bibitem{chroma-docker}
+Chroma Docs: Deploy with Docker. \emph{docs.trychroma.com/guides/deploy/docker}. (Accessed Dec 2025).
+\end{thebibliography}
+
+\end{document}

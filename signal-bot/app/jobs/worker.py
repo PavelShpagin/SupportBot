@@ -1,0 +1,175 @@
+from __future__ import annotations
+
+import json
+import logging
+import time
+from dataclasses import dataclass
+from typing import Any, Dict, List, TYPE_CHECKING
+
+from app.config import Settings
+from app.db import (
+    RawMessage,
+    claim_next_job,
+    complete_job,
+    fail_job,
+    get_raw_message,
+    get_buffer,
+    set_buffer,
+    new_case_id,
+    insert_case,
+    get_last_messages_text,
+)
+from app.jobs import types as job_types
+from app.llm.client import LLMClient
+from app.rag.chroma import ChromaRag
+from app.signal.adapter import SignalAdapter
+
+log = logging.getLogger(__name__)
+
+
+@dataclass(frozen=True)
+class WorkerDeps:
+    settings: Settings
+    db: Any  # Database (MySQL or Oracle)
+    llm: LLMClient
+    rag: ChromaRag
+    signal: SignalAdapter
+
+
+def _format_buffer_line(msg: RawMessage) -> str:
+    reply = f" reply_to={msg.reply_to_id}" if msg.reply_to_id else ""
+    return f"{msg.sender_hash} ts={msg.ts}{reply}\n{msg.content_text}\n\n"
+
+
+def _mentions_bot(settings: Settings, text: str) -> bool:
+    low = text.lower()
+    return any(m.lower() in low for m in settings.bot_mention_strings)
+
+
+def worker_loop_forever(deps: WorkerDeps) -> None:
+    log.info("Worker loop started")
+    while True:
+        job = claim_next_job(
+            deps.db,
+            allowed_types=[job_types.BUFFER_UPDATE, job_types.MAYBE_RESPOND],
+        )
+        if job is None:
+            time.sleep(deps.settings.worker_poll_seconds)
+            continue
+
+        try:
+            if job.type == job_types.BUFFER_UPDATE:
+                _handle_buffer_update(deps, job.payload)
+            elif job.type == job_types.MAYBE_RESPOND:
+                _handle_maybe_respond(deps, job.payload)
+            else:
+                log.warning("Unknown job type=%s job_id=%s (marking done)", job.type, job.job_id)
+
+            complete_job(deps.db, job_id=job.job_id)
+        except Exception:
+            log.exception("Job failed: id=%s type=%s", job.job_id, job.type)
+            fail_job(deps.db, job_id=job.job_id, attempts=job.attempts)
+
+
+def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
+    group_id = str(payload["group_id"])
+    message_id = str(payload["message_id"])
+
+    msg = get_raw_message(deps.db, message_id=message_id)
+    if msg is None:
+        log.warning("BUFFER_UPDATE: message not found: %s", message_id)
+        return
+
+    line = _format_buffer_line(msg)
+    buf = get_buffer(deps.db, group_id=group_id)
+    buf2 = (buf or "") + line
+
+    extract = deps.llm.extract_case_from_buffer(buffer_text=buf2)
+    if not extract.found:
+        set_buffer(deps.db, group_id=group_id, buffer_text=buf2)
+        return
+
+    # We extracted exactly one solved case; normalize it into a structured case.
+    case = deps.llm.make_case(case_block_text=extract.case_block)
+    if not case.keep:
+        set_buffer(deps.db, group_id=group_id, buffer_text=extract.buffer_new)
+        return
+
+    case_id = new_case_id(deps.db)
+    insert_case(
+        deps.db,
+        case_id=case_id,
+        group_id=group_id,
+        status=case.status,
+        problem_title=case.problem_title,
+        problem_summary=case.problem_summary,
+        solution_summary=case.solution_summary,
+        tags=case.tags,
+        evidence_ids=case.evidence_ids,
+    )
+
+    doc_text = "\n".join(
+        [
+            case.problem_title.strip(),
+            case.problem_summary.strip(),
+            case.solution_summary.strip(),
+            "tags: " + ", ".join(case.tags),
+        ]
+    ).strip()
+    embedding = deps.llm.embed(text=doc_text)
+
+    deps.rag.upsert_case(
+        case_id=case_id,
+        document=doc_text,
+        embedding=embedding,
+        metadata={
+            "group_id": group_id,
+            "status": case.status,
+            "evidence_ids": case.evidence_ids,
+        },
+    )
+
+    set_buffer(deps.db, group_id=group_id, buffer_text=extract.buffer_new)
+    log.info("New case created: case_id=%s group_id=%s", case_id, group_id)
+
+
+def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
+    group_id = str(payload["group_id"])
+    message_id = str(payload["message_id"])
+
+    msg = get_raw_message(deps.db, message_id=message_id)
+    if msg is None:
+        log.warning("MAYBE_RESPOND: message not found: %s", message_id)
+        return
+
+    context_lines = get_last_messages_text(deps.db, group_id=group_id, n=deps.settings.context_last_n)
+    context = "\n".join(context_lines)
+
+    force = _mentions_bot(deps.settings, msg.content_text)
+    if not force:
+        decision = deps.llm.decide_consider(message=msg.content_text, context=context)
+        if not decision.consider:
+            return
+
+    query_text = msg.content_text.strip()
+    if not query_text:
+        return
+
+    query_embedding = deps.llm.embed(text=query_text)
+    retrieved = deps.rag.retrieve_cases(
+        group_id=group_id,
+        embedding=query_embedding,
+        k=deps.settings.retrieve_top_k,
+    )
+
+    cases_json = json.dumps(retrieved, ensure_ascii=False, indent=2)
+    resp = deps.llm.decide_and_respond(message=msg.content_text, context=context, cases=cases_json)
+    if not resp.respond:
+        return
+
+    out = resp.text.strip()
+    if resp.citations:
+        out = out + "\n\nRefs: " + ", ".join(resp.citations[:3])
+
+    deps.signal.send_group_text(group_id=group_id, text=out)
+

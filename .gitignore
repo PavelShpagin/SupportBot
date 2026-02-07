@@ -1,0 +1,56 @@
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local env/secrets
+.env
+.env.*
+!.envrc
+.secrets/
+adb_wallet/
+wallet*.zip
+*.pem
+
+# OCI config
+.oci/
+
+# Data dirs
+.data/
+
+# Keep committed example config
+!env.example
+
+# Backup files
+*.bak
+*.bak.*
+*.bakfix*
+
+# Terraform
+.terraform/
+terraform.tfstate
+terraform.tfstate.*
+*.tfvars
+crash.log
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# LaTeX build artifacts (keep source)
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+
+# Assets with screenshots (may contain sensitive info)
+assets/
+
