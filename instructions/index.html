@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SupportBot — Instructions</title>
+  <link rel="icon" type="image/png" href="/public/supportbot-logo.png">
+  <style>
+    @import url('https://rsms.me/inter/inter.css');
+
+    :root {
+      --blue: #3A76F0;
+      --blue-hover: #2E62CC;
+      --bg: #FFFFFF;
+      --bg-alt: #F8F9FA;
+      --text: #121212;
+      --text-sec: #6E6E6E;
+      --border: #E9E9E9;
+      --radius: 10px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1A1A1A;
+        --bg-alt: #242424;
+        --text: #E8E8E8;
+        --text-sec: #999999;
+        --border: #333333;
+      }
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { font-feature-settings: 'liga' 1, 'calt' 1; }
+    @supports (font-variation-settings: normal) {
+      html { font-family: 'Inter var', system-ui, sans-serif; }
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ── header ── */
+    header {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo { width: 32px; height: 32px; }
+
+    .brand {
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .lang-switch {
+      display: flex;
+      background: var(--bg-alt);
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .lang-btn {
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: inherit;
+      border: none;
+      cursor: pointer;
+      background: transparent;
+      color: var(--text-sec);
+      transition: all 0.15s;
+    }
+
+    .lang-btn.active {
+      background: var(--blue);
+      color: #fff;
+    }
+
+    /* ── main ── */
+    main {
+      flex: 1;
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 48px 24px 64px;
+      width: 100%;
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      color: var(--text-sec);
+      font-size: 15px;
+      margin-bottom: 36px;
+    }
+
+    h2 {
+      font-size: 15px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-sec);
+      margin-bottom: 14px;
+      margin-top: 36px;
+    }
+
+    h2:first-of-type { margin-top: 0; }
+
+    ol {
+      padding-left: 0;
+      counter-reset: steps;
+      list-style: none;
+    }
+
+    ol li {
+      counter-increment: steps;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 15px;
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+
+    ol li:last-child { border-bottom: none; }
+
+    ol li::before {
+      content: counter(steps);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 22px;
+      height: 22px;
+      background: var(--blue);
+      color: #fff;
+      border-radius: 50%;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    ul {
+      padding-left: 20px;
+      list-style: disc;
+    }
+
+    ul li {
+      padding: 4px 0;
+      font-size: 15px;
+      color: var(--text);
+    }
+
+    ul li::marker {
+      color: var(--blue);
+    }
+
+    p {
+      font-size: 15px;
+      color: var(--text-sec);
+      margin-bottom: 8px;
+    }
+
+    .note {
+      background: var(--bg-alt);
+      border-left: 3px solid var(--blue);
+      padding: 12px 16px;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      font-size: 14px;
+      color: var(--text-sec);
+      margin-top: 12px;
+    }
+
+    .note strong { color: var(--text); }
+
+    a {
+      color: var(--blue);
+      text-decoration: none;
+    }
+
+    a:hover { text-decoration: underline; }
+
+    code {
+      font-family: 'SF Mono', Menlo, Consolas, monospace;
+      font-size: 13px;
+      background: var(--bg-alt);
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+
+    /* ── footer ── */
+    footer {
+      padding: 20px 24px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-sec);
+    }
+
+    @media (max-width: 480px) {
+      main { padding: 32px 16px 48px; }
+      h1 { font-size: 22px; }
+    }
+
+    /* ── transitions for lang ── */
+    [data-lang] { display: none; }
+    [data-lang].visible { display: block; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <img src="/public/supportbot-logo.png" alt="SupportBot" class="logo">
+    <span class="brand">SupportBot</span>
+  </div>
+  <div class="lang-switch">
+    <button class="lang-btn active" onclick="setLang('uk')">UA</button>
+    <button class="lang-btn" onclick="setLang('en')">EN</button>
+  </div>
+</header>
+
+<!-- ═══════ UKRAINIAN ═══════ -->
+<main data-lang="uk" class="visible">
+  <h1>Як працює SupportBot</h1>
+  <p class="subtitle">AI-бот для Signal-груп технічної підтримки</p>
+
+  <h2>Що це</h2>
+  <p>SupportBot моніторить вашу Signal-групу, автоматично знаходить вирішені проблеми, зберігає їх у базу знань та відповідає на нові запитання, використовуючи попередній досвід.</p>
+
+  <h2>Як додати до групи</h2>
+  <ol>
+    <li>Зверніться до адміністратора за номером бота</li>
+    <li>В Signal: налаштування групи → <strong>Додати учасників</strong> → номер бота</li>
+    <li>Адмін групи підтверджує реєстрацію</li>
+    <li>Бот починає працювати автоматично</li>
+  </ol>
+
+  <h2>Як користуватися</h2>
+  <ul>
+    <li>Бот <strong>сам вирішує</strong>, коли відповідати — якщо знає відповідь</li>
+    <li>Згадайте бота напряму для <strong>примусового виклику</strong></li>
+    <li>Бот розуміє текст, зображення та скріншоти</li>
+    <li>Не відповідає на привітання, «ок», емодзі</li>
+  </ul>
+
+  <div class="note">
+    <strong>Конфіденційність:</strong> бот обробляє повідомлення для створення бази знань. Використовуйте лише зі згоди учасників групи.
+  </div>
+
+  <h2>Імпорт історії</h2>
+  <p>Якщо в групі вже є вирішені проблеми:</p>
+  <ol>
+    <li>Адмін запитує токен через <code>POST /history/token</code></li>
+    <li>Сканує QR-код через <code>GET /history/qr/{token}</code> у Signal</li>
+    <li>Бот автоматично витягне кейси з історії</li>
+  </ol>
+
+  <h2>Технічні деталі</h2>
+  <ul>
+    <li>LLM: Google Gemini</li>
+    <li>Embeddings: text-embedding-004</li>
+    <li>Vector DB: Chroma</li>
+    <li>Database: MySQL 8.0</li>
+    <li>Signal: signal-cli (неофіційний)</li>
+  </ul>
+</main>
+
+<!-- ═══════ ENGLISH ═══════ -->
+<main data-lang="en">
+  <h1>How SupportBot Works</h1>
+  <p class="subtitle">AI bot for Signal technical support groups</p>
+
+  <h2>What it is</h2>
+  <p>SupportBot monitors your Signal group, automatically extracts solved issues into a knowledge base, and answers new questions using past experience.</p>
+
+  <h2>Adding to a group</h2>
+  <ol>
+    <li>Contact your admin for the bot's phone number</li>
+    <li>In Signal: group settings → <strong>Add members</strong> → bot number</li>
+    <li>Group admin confirms registration</li>
+    <li>Bot starts working automatically</li>
+  </ol>
+
+  <h2>How to use</h2>
+  <ul>
+    <li>Bot <strong>decides on its own</strong> when to reply — only if it has an answer</li>
+    <li>Mention the bot directly for a <strong>forced response</strong></li>
+    <li>Understands text, images, and screenshots</li>
+    <li>Ignores greetings, "ok", emoji-only messages</li>
+  </ul>
+
+  <div class="note">
+    <strong>Privacy:</strong> the bot processes messages to build a knowledge base. Only use with the consent of group members.
+  </div>
+
+  <h2>History import</h2>
+  <p>If the group already has solved issues:</p>
+  <ol>
+    <li>Admin requests a token via <code>POST /history/token</code></li>
+    <li>Scans QR code from <code>GET /history/qr/{token}</code> in Signal</li>
+    <li>Bot automatically extracts cases from history</li>
+  </ol>
+
+  <h2>Technical details</h2>
+  <ul>
+    <li>LLM: Google Gemini</li>
+    <li>Embeddings: text-embedding-004</li>
+    <li>Vector DB: Chroma</li>
+    <li>Database: MySQL 8.0</li>
+    <li>Signal: signal-cli (unofficial)</li>
+  </ul>
+</main>
+
+<footer>SupportBot &copy; 2026</footer>
+
+<script>
+function setLang(lang) {
+  document.querySelectorAll('[data-lang]').forEach(el => {
+    el.classList.toggle('visible', el.dataset.lang === lang);
+  });
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', 
+      (lang === 'uk' && btn.textContent === 'UA') ||
+      (lang === 'en' && btn.textContent === 'EN')
+    );
+  });
+  document.documentElement.lang = lang;
+  history.replaceState(null, '', '?lang=' + lang);
+}
+
+// Init from URL
+const params = new URLSearchParams(location.search);
+if (params.get('lang') === 'en') setLang('en');
+</script>
+
+</body>
+</html>

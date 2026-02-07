@@ -1,13 +1,14 @@
 FROM python:3.11-slim
 
-ARG SIGNAL_CLI_VERSION=0.13.11
+ARG SIGNAL_CLI_VERSION=0.13.24
 
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends ca-certificates curl openjdk-17-jre-headless \
+  && apt-get install -y --no-install-recommends ca-certificates curl openjdk-21-jre-headless \
   && rm -rf /var/lib/apt/lists/*
 
+# Download signal-cli (note: release asset naming changed from -Linux.tar.gz to just .tar.gz)
 RUN mkdir -p /opt/signal-cli \
-  && curl -fsSL "https://github.com/AsamK/signal-cli/releases/download/v${SIGNAL_CLI_VERSION}/signal-cli-${SIGNAL_CLI_VERSION}-Linux.tar.gz" \
+  && curl -fsSL "https://github.com/AsamK/signal-cli/releases/download/v${SIGNAL_CLI_VERSION}/signal-cli-${SIGNAL_CLI_VERSION}.tar.gz" \
     | tar -xz -C /opt \
   && ln -s "/opt/signal-cli-${SIGNAL_CLI_VERSION}/bin/signal-cli" /usr/local/bin/signal-cli
 

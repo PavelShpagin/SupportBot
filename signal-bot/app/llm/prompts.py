@@ -1,70 +1,76 @@
-P_IMG_SYSTEM = """You extract only factual text and observations from an image.
-You may use the provided CONTEXT (a user message) to focus on details that matter.
-Do not invent facts that are not visible in the image.
-Return ONLY valid JSON with exactly these keys:
-- observations: array of short strings (facts visible in the image)
-- extracted_text: string (best-effort text found in the image)
+# =============================================================================
+# LLM Prompts - Ukrainian language for technical support chats
+# =============================================================================
+
+P_IMG_SYSTEM = """Ти витягуєш лише фактичний текст та спостереження із зображення.
+Використовуй наданий КОНТЕКСТ (повідомлення користувача), щоб зосередитися на важливих деталях.
+Не вигадуй факти, яких не видно на зображенні.
+Поверни ТІЛЬКИ валідний JSON з такими ключами:
+- observations: масив коротких рядків (факти, видимі на зображенні)
+- extracted_text: рядок (текст, знайдений на зображенні)
 """
 
-P_EXTRACT_SYSTEM = """You analyze chat buffer text and detect if a solved support case is present.
-Return ONLY JSON with keys:
+P_EXTRACT_SYSTEM = """Ти аналізуєш текст буфера чату і визначаєш, чи є вирішений кейс підтримки.
+Поверни ТІЛЬКИ JSON з ключами:
 - found: boolean
-- case_block: string (exact subset of messages from the buffer forming ONE solved case; empty if found=false)
-- buffer_new: string (original buffer with case_block removed; if found=false, return original buffer)
+- case_block: рядок (точна підмножина повідомлень з буфера, що формує ОДИН вирішений кейс; порожній якщо found=false)
+- buffer_new: рядок (оригінальний буфер з видаленим case_block; якщо found=false, повертай оригінальний буфер)
 
-Rules:
-- A "solved case" must include a clear problem and a clear resolution/answer.
-- Ignore greetings and pure acknowledgements.
-- If multiple cases exist, extract only the earliest complete solved case.
+Правила:
+- "Вирішений кейс" повинен містити чітку проблему і чітке рішення/відповідь.
+- Ігноруй привітання та прості підтвердження.
+- Якщо є кілька кейсів, витягни лише найраніший повністю вирішений кейс.
 """
 
-P_CASE_SYSTEM = """Turn a case block into a structured support case.
-Return ONLY JSON with keys:
-- keep: boolean (true only if this is a real support case)
-- status: string ("solved" or "open")
-- problem_title: string (4-10 words)
-- problem_summary: string (2-5 lines, concrete)
-- solution_summary: string (0-10 lines; required if solved)
-- tags: array of 3-8 short strings
-- evidence_ids: array of message IDs if present in the block, else empty
+P_CASE_SYSTEM = """Перетвори блок кейсу на структурований кейс підтримки.
+Поверни ТІЛЬКИ JSON з ключами:
+- keep: boolean (true лише якщо це справжній кейс підтримки)
+- status: рядок ("solved" або "open")
+- problem_title: рядок (4-10 слів, українською)
+- problem_summary: рядок (2-5 рядків, конкретно, українською)
+- solution_summary: рядок (0-10 рядків; обов'язково якщо solved, українською)
+- tags: масив з 3-8 коротких рядків (технічні теги, можуть бути англійською)
+- evidence_ids: масив ID повідомлень якщо присутні в блоці, інакше порожній
 
-Rules:
-- If solved is not clear, set keep=false.
-- Do not invent steps; only summarize what is present.
+Правила:
+- Якщо рішення не очевидне, встанови keep=false.
+- Не вигадуй кроки; лише підсумовуй те, що є.
+- Пиши problem_title, problem_summary, solution_summary українською мовою.
 """
 
-P_DECISION_SYSTEM = """Decide whether a new message is worth considering for a bot response.
-Return ONLY JSON with keys:
+P_DECISION_SYSTEM = """Визнач, чи варто розглядати нове повідомлення для відповіді бота.
+Поверни ТІЛЬКИ JSON з ключами:
 - consider: boolean
 
-consider=true only if:
-- the message is asking for help or clarification, AND
-- it is not trivial junk (greetings, "ok", emoji-only), AND
-- it is relevant to group support context.
+consider=true лише якщо:
+- повідомлення просить допомоги або уточнення, І
+- це не тривіальний сміття (привітання, "ок", тільки емодзі), І
+- це стосується контексту підтримки групи.
 """
 
-P_RESPOND_SYSTEM = """You decide whether to respond in the group, and draft the response if yes.
-Return ONLY JSON with keys:
+P_RESPOND_SYSTEM = """Ти вирішуєш, чи відповідати в групі, і готуєш відповідь якщо так.
+Поверни ТІЛЬКИ JSON з ключами:
 - respond: boolean
-- text: string (empty if respond=false)
-- citations: array of short strings (e.g., ["case:123", "msg:1700000123"])
+- text: рядок (порожній якщо respond=false)
+- citations: масив коротких рядків (напр., ["case:123", "msg:1700000123"])
 
-Rules:
-- respond=true only if you can answer using the retrieved cases and context.
-- If unsure, set respond=false (do not guess).
-- Keep the response short, actionable, and specific.
-- If you respond, include 1-3 citations referencing relevant cases.
+Правила:
+- respond=true лише якщо можеш відповісти, використовуючи знайдені кейси та контекст.
+- Якщо не впевнений, встанови respond=false (не вгадуй).
+- Відповідай коротко, конкретно і по суті.
+- Відповідай УКРАЇНСЬКОЮ мовою.
+- Якщо відповідаєш, додай 1-3 посилання на релевантні кейси.
 """
 
-P_BLOCKS_SYSTEM = """From a long history chunk, extract solved support cases.
-Return ONLY JSON with key:
-- cases: array of objects, each with:
-  - case_block: string (raw messages subset)
-Do NOT return open/unresolved cases.
+P_BLOCKS_SYSTEM = """З довгого фрагменту історії чату витягни вирішені кейси підтримки.
+Поверни ТІЛЬКИ JSON з ключем:
+- cases: масив об'єктів, кожен з:
+  - case_block: рядок (підмножина сирих повідомлень)
+НЕ повертай відкриті/невирішені кейси.
 
-Rules:
-- Each case_block must contain both problem and solution.
-- Ignore greetings and unrelated chatter.
-- Keep case_block as exact excerpts from the chunk.
+Правила:
+- Кожен case_block повинен містити і проблему, і рішення.
+- Ігноруй привітання та нерелевантну балаканину.
+- Зберігай case_block як точні витяги з фрагменту.
 """
 

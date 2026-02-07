@@ -47,7 +47,7 @@ fi
 
 VM_IP="$1"
 SSH_KEY="${2:-$HOME/.ssh/id_rsa}"
-SSH_USER="${SSH_USER:-ubuntu}"
+SSH_USER="${SSH_USER:-opc}"  # Oracle Linux default user
 REMOTE_DIR="/home/${SSH_USER}/SupportBot"
 
 # =============================================================================

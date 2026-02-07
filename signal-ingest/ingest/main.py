@@ -21,16 +21,16 @@ from ingest.db import claim_next_job, complete_job, create_db, fail_job
 HISTORY_LINK = "HISTORY_LINK"
 HISTORY_SYNC = "HISTORY_SYNC"
 
-P_BLOCKS_SYSTEM = """From a long history chunk, extract solved support cases.
-Return ONLY JSON with key:
-- cases: array of objects, each with:
-  - case_block: string (raw messages subset)
-Do NOT return open/unresolved cases.
+P_BLOCKS_SYSTEM = """З довгого фрагменту історії чату витягни вирішені кейси підтримки.
+Поверни ТІЛЬКИ JSON з ключем:
+- cases: масив об'єктів, кожен з:
+  - case_block: рядок (підмножина сирих повідомлень)
+НЕ повертай відкриті/невирішені кейси.
 
-Rules:
-- Each case_block must contain both problem and solution.
-- Ignore greetings and unrelated chatter.
-- Keep case_block as exact excerpts from the chunk.
+Правила:
+- Кожен case_block повинен містити і проблему, і рішення.
+- Ігноруй привітання та нерелевантну балаканину.
+- Зберігай case_block як точні витяги з фрагменту.
 """
 
 log = logging.getLogger(__name__)

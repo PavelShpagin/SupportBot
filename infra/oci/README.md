@@ -205,7 +205,9 @@ Click **Create instance** and fill:
   - **Availability domain**: any AD with capacity (if you hit capacity errors, retry in a different AD)
   - **Fault domain**: don’t pin this; leave as “Let Oracle choose” (pinning can reduce available capacity)
 - **Image and shape**:
-  - Click **Change image** → pick **Canonical Ubuntu** (latest LTS is fine)
+  - Click **Change image** → pick **Oracle Linux** (recommended) or **Canonical Ubuntu**
+    - Oracle Linux uses SSH user `opc`
+    - Ubuntu uses SSH user `ubuntu`
   - Click **Change shape** → select **VM.Standard.A1.Flex**
     - **OCPUs**: `1`
     - **Memory (GB)**: `6`
@@ -254,10 +256,11 @@ If you tried **AD-1, AD-2, AD-3** and they all fail:
 
 ### Step 3) Install Docker on the VM
 
-SSH in (Ubuntu user is commonly `ubuntu`):
+SSH in (Oracle Linux uses `opc`, Ubuntu uses `ubuntu`):
 
 ```bash
-ssh -i ~/.ssh/supportbot_ed25519 ubuntu@<VM_PUBLIC_IP>
+ssh -i ~/.ssh/supportbot_ed25519 opc@<VM_PUBLIC_IP>   # Oracle Linux
+# or: ssh -i ~/.ssh/supportbot_ed25519 ubuntu@<VM_PUBLIC_IP>  # Ubuntu
 ```
 
 Then:

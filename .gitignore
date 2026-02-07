@@ -54,3 +54,7 @@ Thumbs.db
 # Assets with screenshots (may contain sensitive info)
 assets/
 
+# Windows metadata
+*:Zone.Identifier
+*:mshield
+
