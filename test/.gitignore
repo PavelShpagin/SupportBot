@@ -1,0 +1,12 @@
+# Test data - contains encrypted Signal backup (sensitive)
+data/
+.venv/
+
+# Decrypted outputs
+signal_key.txt
+decrypted_*.json
+
+# Python cache
+__pycache__/
+*.pyc
+.pytest_cache/

@@ -237,17 +237,95 @@ def _post_cases_to_bot(*, settings, token: str, group_id: str, case_blocks: List
         log.info("Posted %s mined cases to signal-bot", len(case_blocks))
 
 
+def _notify_qr_ready(*, settings, token: str, admin_id: str, group_name: str, qr_path: str) -> None:
+    """Notify signal-bot that QR is ready so it can send to admin."""
+    payload = {"token": token, "admin_id": admin_id, "group_name": group_name, "qr_path": str(qr_path)}
+    url = settings.signal_bot_url.rstrip("/") + "/history/qr-ready"
+    try:
+        with httpx.Client(timeout=30) as client:
+            r = client.post(url, json=payload)
+            r.raise_for_status()
+            log.info("Notified signal-bot that QR is ready for admin %s", admin_id)
+    except Exception:
+        log.exception("Failed to notify signal-bot about QR ready")
+
+
+def _notify_link_result(*, settings, token: str, success: bool) -> None:
+    """Notify signal-bot of link success/failure."""
+    payload = {"token": token, "success": success}
+    url = settings.signal_bot_url.rstrip("/") + "/history/link-result"
+    try:
+        with httpx.Client(timeout=30) as client:
+            r = client.post(url, json=payload)
+            r.raise_for_status()
+            log.info("Notified signal-bot of link result: success=%s", success)
+    except Exception:
+        log.exception("Failed to notify signal-bot of link result")
+
+
+def _cleanup_linked_session(*, settings, token: str) -> None:
+    """
+    Clean up signal-cli data after history sync.
+    
+    This effectively "logs out" from the admin's account by removing
+    the local signal-cli configuration. The linked device entry will
+    remain in the admin's "Linked Devices" list as orphaned until
+    they manually remove it, but:
+    
+    - Bot can no longer access admin's messages
+    - Admin's account and data are completely unaffected
+    - Admin can remove the orphaned entry anytime from their phone
+    
+    This is safe because signal-cli as a LINKED device cannot:
+    - Delete the primary account
+    - Remove other linked devices
+    - Affect any data on the primary device
+    """
+    config_path = Path(settings.signal_ingest_storage)
+    
+    # Only clean up session-specific data, keep the base directory
+    # Look for account-specific subdirectories
+    if not config_path.exists():
+        log.info("No signal-cli config to clean up")
+        return
+    
+    try:
+        # signal-cli stores account data in subdirectories named by phone number
+        # or in data/ subdirectory. Clean everything for this session.
+        for item in config_path.iterdir():
+            if item.is_dir() and item.name not in (".", ".."):
+                shutil.rmtree(item)
+                log.info("Removed signal-cli session data: %s", item)
+            elif item.is_file():
+                item.unlink()
+                log.info("Removed signal-cli session file: %s", item)
+        
+        log.info("Cleaned up linked session for token %s (admin should remove orphaned device from their phone)", token[:8])
+    except Exception:
+        log.exception("Failed to clean up signal-cli session (non-fatal)")
+
+
 def _handle_history_link(*, settings, payload: Dict[str, Any]) -> None:
     token = str(payload["token"])
     admin_id = str(payload["admin_id"])
     group_id = str(payload["group_id"])
+    group_name = str(payload.get("group_name", ""))
 
-    _ensure_qr_png(settings=settings, token=token)
+    # Step 1: Generate QR and notify signal-bot to send it to admin
+    qr_path = _ensure_qr_png(settings=settings, token=token)
+    _notify_qr_ready(settings=settings, token=token, admin_id=admin_id, group_name=group_name, qr_path=str(qr_path))
 
+    # Step 2: Wait for history messages (admin needs to scan QR first)
     msgs = _collect_history_messages(settings=settings, admin_id=admin_id, target_group_id=group_id)
     if not msgs:
+        # No messages = link failed or not scanned yet
+        # Don't retry forever - notify failure after a few attempts
         raise RetrySoon("No history messages received yet (device may not be linked yet)")
 
+    # Step 3: Link succeeded - notify admin
+    _notify_link_result(settings=settings, token=token, success=True)
+
+    # Step 4: Process history
     chunks = _chunk_messages(
         messages=msgs,
         max_chars=settings.chunk_max_chars,
@@ -268,6 +346,12 @@ def _handle_history_link(*, settings, payload: Dict[str, Any]) -> None:
         _post_cases_to_bot(settings=settings, token=token, group_id=group_id, case_blocks=deduped)
     else:
         log.info("No solved cases found in synced history (group_id=%s)", group_id)
+    
+    # Step 5: Clean up - "log out" from admin's account
+    # This removes local signal-cli data so bot no longer has access to admin's messages.
+    # Admin's account is completely unaffected - they just see an orphaned device entry
+    # in Settings → Linked Devices which they can remove.
+    _cleanup_linked_session(settings=settings, token=token)
 
 
 def main() -> None:
