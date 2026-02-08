@@ -2,9 +2,10 @@
 data/
 .venv/
 
-# Decrypted outputs
+# Decrypted outputs (NEVER commit these!)
 signal_key.txt
 decrypted_*.json
+signal_messages.json
 
 # Python cache
 __pycache__/
