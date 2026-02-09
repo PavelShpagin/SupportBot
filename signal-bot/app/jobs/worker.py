@@ -101,6 +101,80 @@ def _collect_evidence_image_paths(deps: WorkerDeps, evidence_ids: List[str]) -> 
     return paths
 
 
+def _split_case_document(doc: str) -> tuple[str, str, str]:
+    """
+    Split the stored case document into (title, problem_summary, solution_summary).
+
+    Production doc_text format (see worker buffer handler) is:
+      title\nproblem_summary\nsolution_summary\n(tags: ...)
+
+    The solution summary may contain internal newlines; we join them into one line for quoting.
+    """
+    lines = [ln.strip() for ln in (doc or "").splitlines()]
+    lines = [ln for ln in lines if ln]
+    if not lines:
+        return "", "", ""
+
+    tags_idx = len(lines)
+    for i, ln in enumerate(lines):
+        if ln.lower().startswith("tags:"):
+            tags_idx = i
+            break
+
+    title = lines[0] if len(lines) >= 1 else ""
+    problem = lines[1] if len(lines) >= 2 else ""
+    solution_lines = lines[2:tags_idx] if len(lines) >= 3 else []
+    solution = " ".join(solution_lines).strip()
+    return title, problem, solution
+
+
+def _pick_history_solution_refs(retrieved: List[Dict[str, Any]], *, max_refs: int) -> List[Dict[str, str]]:
+    """
+    Pick 1..N solved cases that contain a non-empty solution summary.
+
+    Returns items like: {"case_id": "...", "title": "...", "solution": "..."}.
+    """
+    out: List[Dict[str, str]] = []
+    for item in retrieved:
+        meta = item.get("metadata") if isinstance(item, dict) else {}
+        status = (meta or {}).get("status")
+        if status != "solved":
+            continue
+        cid = str(item.get("case_id") or "").strip()
+        if not cid:
+            continue
+        title, _problem, solution = _split_case_document(str(item.get("document") or ""))
+        if not solution.strip():
+            continue
+        out.append(
+            {
+                "case_id": cid,
+                "title": title.strip(),
+                "solution": solution.strip(),
+            }
+        )
+        if len(out) >= max_refs:
+            break
+    return out
+
+
+def _append_history_block(text: str, refs: List[Dict[str, str]]) -> str:
+    if not refs:
+        return text
+    lines: List[str] = [text.rstrip(), "", "Історія (використано вирішені кейси):"]
+    for r in refs:
+        # Keep this user-facing: include the concrete solution summary text.
+        sol = r["solution"]
+        if len(sol) > 320:
+            sol = sol[:317].rstrip() + "..."
+        title = r.get("title") or ""
+        if title:
+            lines.append(f'- case:{r["case_id"]} — {title}: {sol}')
+        else:
+            lines.append(f'- case:{r["case_id"]}: {sol}')
+    return "\n".join(lines).strip() + "\n"
+
+
 def worker_loop_forever(deps: WorkerDeps) -> None:
     log.info("Worker loop started")
     while True:
@@ -231,6 +305,13 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         k=deps.settings.retrieve_top_k,
     )
 
+    # Trust requirement: if we respond, we must reference at least one concrete solution
+    # from a solved historical case.
+    history_refs = _pick_history_solution_refs(retrieved, max_refs=1)
+    if not history_refs:
+        log.info("No solved cases with solutions found in retrieval; staying silent")
+        return
+
     kb_paths: List[str] = []
     for item in retrieved:
         paths = item.get("metadata", {}).get("evidence_image_paths") or []
@@ -262,9 +343,29 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
     if not resp.respond:
         return
 
-    out = resp.text.strip()
-    if resp.citations:
-        out = out + "\n\nRefs: " + ", ".join(resp.citations[:3])
+    # Ensure at least one case citation is present (best-effort, even if model forgets).
+    required_case_cits = [f'case:{r["case_id"]}' for r in history_refs]
+    cits = list(dict.fromkeys((resp.citations or []) + required_case_cits))
 
-    deps.signal.send_group_text(group_id=group_id, text=out)
+    out = resp.text.strip()
+    out = _append_history_block(out, history_refs)
+    if cits:
+        out = out.rstrip() + "\n\nRefs: " + ", ".join(cits[:3]) + "\n"
+
+    # Reply directly to the asker by quoting their message (Signal "reply" UX).
+    quote_author = str(payload.get("sender") or "").strip()
+    quote_ts_raw = payload.get("ts")
+    quote_ts = int(quote_ts_raw) if quote_ts_raw is not None else int(msg.ts)
+    quote_msg = str(payload.get("text") or "").strip()
+
+    if quote_author:
+        deps.signal.send_group_text(
+            group_id=group_id,
+            text=out,
+            quote_timestamp=quote_ts,
+            quote_author=quote_author,
+            quote_message=quote_msg if quote_msg else None,
+        )
+    else:
+        deps.signal.send_group_text(group_id=group_id, text=out)
 

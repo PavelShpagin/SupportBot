@@ -22,7 +22,7 @@
 \geometry{margin=1in}
 
 \title{\textbf{SupportBot Multimodal Implementation Report}\\
-\large State-of-the-Art Algorithms, Evaluation Results, and Examples}
+\large Implementation Details, Evaluation Setup, and Examples}
 \author{AI Agent (Cursor)}
 \date{February 9, 2026}
 
@@ -31,7 +31,7 @@
 \maketitle
 
 \begin{abstract}
-This report documents the successful implementation of multimodal support in SupportBot, addressing critical issues identified in the baseline evaluation. The implementation improved the answer pass rate from 8.7\% to 74.1\% (8.5x improvement) by enabling image processing throughout the pipeline. We present the current state-of-the-art pseudoalgorithms, real-world transformation examples from messages to structured cases, and detailed retrieval introspection for solved support cases.
+This report documents the implementation of multimodal (text + images) support in SupportBot. It describes how image attachments are persisted, how images are passed into Gemini model calls via Google's OpenAI-compatible endpoint, and what evaluation scripts are included in the repository. Quantitative results depend on the availability of decrypted Signal history/attachments and API credentials; this document focuses on reproducible behavior verifiable from the codebase.
 \end{abstract}
 
 \tableofcontents
@@ -45,17 +45,19 @@ This report documents the successful implementation of multimodal support in Sup
 
 \begin{table}[h]
 \centering
-\begin{tabular}{lrrr}
+\small
+\begin{tabular}{p{4.2cm}p{9.8cm}}
 \toprule
-\textbf{Metric} & \textbf{Before} & \textbf{After} & \textbf{Improvement} \\
+\textbf{Capability} & \textbf{Evidence in codebase} \\
 \midrule
-Answer Pass Rate & 8.7\% & 74.1\% & +65.4 pts (8.5x) \\
-Ignore Pass Rate & 87.1\% & 100\% & +12.9 pts \\
-Avg Answer Score & 2.6/10 & 7.85/10 & +5.25 pts \\
-Garbage Cases & 43\% & 0\% & Eliminated \\
+Persist image attachment paths & \texttt{raw\_messages.image\_paths\_json} (see \texttt{signal-bot/app/db/schema.py}, \texttt{signal-bot/app/db/schema\_mysql.py}) \\
+Image-to-text extraction at ingestion & \texttt{signal-bot/app/ingestion.py} calling \texttt{LLMClient.image\_to\_text\_json()} \\
+Pass images into gate/response LLM calls & \texttt{signal-bot/app/jobs/worker.py} passes images into \texttt{LLMClient.decide\_consider()} and \texttt{LLMClient.decide\_and\_respond()} \\
+Store evidence image paths on cases & \texttt{signal-bot/app/jobs/worker.py:\_collect\_evidence\_image\_paths()} and DB field \texttt{cases.evidence\_image\_paths\_json} \\
+Surface KB evidence images at response time & \texttt{signal-bot/app/jobs/worker.py} loads images from retrieved case metadata \texttt{evidence\_image\_paths} \\
 \bottomrule
 \end{tabular}
-\caption{Performance improvements after multimodal implementation}
+\caption{Multimodal capabilities implemented (verifiable in code)}
 \end{table}
 
 \subsection{Implementation Status}
@@ -71,10 +73,10 @@ All priority items from the proposed fix have been implemented:
 \end{itemize}
 
 %==============================================================================
-\section{State-of-the-Art Algorithms (Current Implementation)}
+\section{Algorithms (Current Implementation)}
 %==============================================================================
 
-This section presents the pseudoalgorithms for the current, production-ready multimodal implementation.
+This section presents pseudoalgorithms that mirror the current multimodal implementation in the codebase.
 
 \subsection{Algorithm 1: Multimodal Message Ingestion}
 
@@ -87,22 +89,24 @@ This section presents the pseudoalgorithms for the current, production-ready mul
     \State $stored\_image\_paths \gets []$ \Comment{\textcolor{blue}{NEW: Track valid image paths}}
     \State
     \For{$path$ \textbf{in} $image\_paths$}
-        \State $img\_path \gets \textsc{ResolvePath}(path, storage\_dir)$
+        \State $img\_path \gets \textsc{ResolveAttachmentPath}(path, settings.signal\_bot\_storage)$
+        \State $img\_path \gets \textsc{Resolve}(img\_path)$
         \If{$\neg img\_path.\textsc{Exists}()$}
             \State \textsc{Log.Warning}(``Attachment missing: \{path\}'')
             \State \textbf{continue}
         \EndIf
         \State
-        \State $stored\_image\_paths.\textsc{Append}(img\_path)$ \Comment{\textcolor{blue}{NEW: Store canonical path}}
+        \State $stored\_image\_paths.\textsc{Append}(img\_path)$ \Comment{Store canonical path}
         \State
-        \State \Comment{Still extract text/observations for searchability}
+        \State \Comment{Extract text/observations for searchability}
         \State $img\_bytes \gets \textsc{ReadFile}(img\_path)$
-        \State $extraction \gets \textsc{LLM.ImageToText}(img\_bytes, context\_text)$
+        \State $extraction \gets \textsc{LLM.ImageToTextJSON}(img\_bytes, context\_text)$
         \State $content\_text \gets content\_text + \text{``[image]''} + \textsc{JSON}(extraction)$
+        \State \Comment{On extraction error, store placeholder JSON \{observations: [], extracted\_text: ""\}}
     \EndFor
     \State
-    \State \Comment{\textcolor{blue}{NEW: Store image paths alongside text}}
-    \State \textsc{InsertRawMessage}$(msg\_id, group\_id, ts, hash(sender),$
+    \State \Comment{Store image paths alongside text}
+    \State \textsc{InsertRawMessage}$(msg\_id, group\_id, ts, sha256(sender)[:16],$
     \Statex \hspace{8em} $content\_text, stored\_image\_paths, reply\_to)$
     \State
     \State \textsc{EnqueueJob}$(BUFFER\_UPDATE, \{group\_id, msg\_id\})$
@@ -111,18 +115,18 @@ This section presents the pseudoalgorithms for the current, production-ready mul
 \end{algorithmic}
 \end{algorithm}
 
-\textbf{Key changes from baseline:}
+\textbf{Notable behavior:}
 \begin{itemize}
-    \item Image paths are now stored in the database for multimodal retrieval
-    \item Canonical paths are validated and resolved before storage
-    \item Image-to-text extraction still happens for text-based search
+    \item Image paths are stored in the database for later multimodal calls
+    \item Relative attachment paths are resolved against \texttt{SIGNAL\_BOT\_STORAGE}
+    \item Image-to-text extraction output is appended to message text for searchability
 \end{itemize}
 
 \newpage
 \subsection{Algorithm 2: Case Extraction with Validation}
 
 \begin{algorithm}[H]
-\caption{Case Extraction with Solution Validation --- Eliminates garbage cases}
+\caption{Case Extraction with Solution Validation --- Reject solved cases without solutions}
 \begin{algorithmic}[1]
 \Procedure{HandleBufferUpdate}{$group\_id, msg\_id$}
     \State $msg \gets \textsc{GetRawMessage}(msg\_id)$
@@ -142,7 +146,7 @@ This section presents the pseudoalgorithms for the current, production-ready mul
         \State \Return
     \EndIf
     \State
-    \State \Comment{\textcolor{blue}{NEW: P0 fix - Reject solved cases without solutions}}
+    \State \Comment{Reject solved cases without solutions}
     \If{$case.status = \text{``solved''} \land case.solution\_summary.\textsc{Strip}() = \text{``''}$}
         \State \textsc{Log.Warning}(``Rejecting solved case without solution\_summary'')
         \State \textsc{SetBuffer}$(group\_id, extract.buffer\_new)$
@@ -151,15 +155,16 @@ This section presents the pseudoalgorithms for the current, production-ready mul
     \State
     \State $case\_id \gets \textsc{NewUUID}()$
     \State
-    \State \Comment{\textcolor{blue}{NEW: Collect image paths from evidence messages}}
+    \State \Comment{Collect image paths from evidence messages}
     \State $evidence\_image\_paths \gets \textsc{CollectEvidenceImages}(case.evidence\_ids)$
     \State
     \State \textsc{InsertCase}$(case\_id, group\_id, case.*, evidence\_image\_paths)$
     \State
-    \State $doc\_text \gets case.problem\_title + case.problem\_summary + case.solution\_summary$
+    \State $doc\_text \gets \textsc{JoinLines}(case.problem\_title, case.problem\_summary,$
+    \Statex \hspace{7em} $case.solution\_summary, \text{``tags: ''} + \textsc{Join}(case.tags))$
     \State $embedding \gets \textsc{LLM.Embed}(doc\_text)$
     \State
-    \State \Comment{\textcolor{blue}{NEW: Store image paths in metadata for retrieval}}
+    \State \Comment{Store image paths in metadata for retrieval}
     \State \textsc{Chroma.Upsert}$(case\_id, doc\_text, embedding,$
     \Statex \hspace{6em} $\{group\_id, status, evidence\_ids, evidence\_image\_paths\})$
     \State
@@ -181,9 +186,9 @@ This section presents the pseudoalgorithms for the current, production-ready mul
 \end{algorithmic}
 \end{algorithm}
 
-\textbf{Key changes from baseline:}
+\textbf{Notable behavior:}
 \begin{itemize}
-    \item \textbf{P0 validation}: Solved cases must have non-empty solution summaries
+    \item Solved cases must have non-empty solution summaries
     \item Evidence image paths collected from raw messages
     \item Image paths stored in vector DB metadata for later retrieval
 \end{itemize}
@@ -198,12 +203,12 @@ This section presents the pseudoalgorithms for the current, production-ready mul
     \State $msg \gets \textsc{GetRawMessage}(msg\_id)$ \Comment{Now includes image\_paths}
     \State $context \gets \textsc{GetLastNMessages}(group\_id, n)$
     \State
-    \State \Comment{\textcolor{blue}{NEW: Load images from current message for gate}}
+    \State \Comment{Load images from current message for gate}
     \State $msg\_images \gets \textsc{LoadImages}(msg.image\_paths, max\_gate, budget)$
     \State
     \State $force \gets \textsc{MentionsBot}(msg.content\_text)$
     \If{$\neg force$}
-        \State \Comment{\textcolor{blue}{NEW: P2 - Gate sees images}}
+        \State \Comment{Gate sees images}
         \State $decision \gets \textsc{LLM.DecideConsider}(msg.content\_text, context, msg\_images)$
         \If{$\neg decision.consider$}
             \State \Return \Comment{Ignore greeting/noise}
@@ -213,7 +218,7 @@ This section presents the pseudoalgorithms for the current, production-ready mul
     \State $query\_embedding \gets \textsc{LLM.Embed}(msg.content\_text)$
     \State $retrieved \gets \textsc{Chroma.Retrieve}(group\_id, query\_embedding, k)$
     \State
-    \State \Comment{\textcolor{blue}{NEW: P4 - Collect images from retrieved KB cases}}
+    \State \Comment{Collect images from retrieved KB cases}
     \State $kb\_paths \gets []$
     \For{$item$ \textbf{in} $retrieved$}
         \State $paths \gets item.metadata.evidence\_image\_paths$
@@ -222,7 +227,7 @@ This section presents the pseudoalgorithms for the current, production-ready mul
     \State $kb\_paths \gets kb\_paths[:max\_total\_kb]$
     \State
     \State \Comment{Load KB images (respecting budget after msg images)}
-    \State $remaining\_budget \gets budget - \textsc{TotalSize}(msg\_images)$
+    \State $remaining\_budget \gets \textsc{Max}(budget - \textsc{TotalSize}(msg\_images), 0)$
     \State $kb\_images \gets \textsc{LoadImages}(kb\_paths, max\_respond, remaining\_budget)$
     \State
     \State $all\_images \gets msg\_images + kb\_images$
@@ -230,7 +235,7 @@ This section presents the pseudoalgorithms for the current, production-ready mul
     \State
     \State $cases\_json \gets \textsc{JSON}(retrieved)$
     \State
-    \State \Comment{\textcolor{blue}{NEW: P1 - Responder sees all images}}
+    \State \Comment{Responder sees all images}
     \State $resp \gets \textsc{LLM.DecideAndRespond}(msg.content\_text, context,$
     \Statex \hspace{10em} $cases\_json, all\_images)$
     \State
@@ -248,8 +253,11 @@ This section presents the pseudoalgorithms for the current, production-ready mul
         \EndIf
         \State $data \gets \textsc{ReadFile}(p)$
         \State $size \gets |data|$
-        \If{$size > max\_image\_size \lor total + size > budget\_bytes$}
+        \If{$size > max\_image\_size$}
             \State \textbf{continue}
+        \EndIf
+        \If{$total + size > budget\_bytes$}
+            \State \textbf{break}
         \EndIf
         \State $mime \gets \textsc{GuessMimeType}(p)$
         \State $images.\textsc{Append}((data, mime))$
@@ -260,48 +268,39 @@ This section presents the pseudoalgorithms for the current, production-ready mul
 \end{algorithmic}
 \end{algorithm}
 
-\textbf{Key changes from baseline:}
+\textbf{Notable behavior:}
 \begin{itemize}
     \item \textbf{P2}: Gate stage receives images from user message
     \item \textbf{P1}: Responder receives images from both user message and KB evidence
     \item \textbf{P4}: Evidence images retrieved from case metadata
-    \item Image budgets prevent excessive API costs (5MB/image, 20MB total)
+    \item Image budgets cap multimodal payload size (\texttt{MAX\_IMAGE\_SIZE\_BYTES} and \texttt{MAX\_TOTAL\_IMAGE\_BYTES})
 \end{itemize}
 
 \newpage
 %==============================================================================
-\section{Example Transformations: Messages → Cases}
+\section{Examples (Illustrative)}
 %==============================================================================
 
-This section shows real examples from the evaluation dataset, demonstrating how raw chat messages are transformed into structured, searchable cases with multimodal support.
+This section provides illustrative, synthetic examples to show how messages are transformed into structured cases and how images flow through the pipeline. Message IDs, timestamps, similarity values, and file paths shown below are placeholders and will differ in real runs.
 
-\subsection{Example 1: Flight Controller Compatibility}
+\subsection{Example 1: Compatibility Question (synthetic)}
 
 \subsubsection{Raw Messages (Input)}
 
 \begin{lstlisting}[basicstyle=\small\ttfamily,frame=none]
-User A (ts=1769413000000):
-Good day! Please advise, is the SoloGoodF722 flight controller 
-supported? I want to buy it, but don't know if it will work with 
-your firmware.
+User:
+Is device MODEL_X supported? Which target should I select when flashing?
 
-Developer (ts=1769413120000):
-Yes, it's a full clone of Matek H743 slim v3. The flight monitor 
-will recognize it as such.
-
-User A (ts=1769413180000):
-So I can just select Matek H743 slim v3 when flashing?
-
-Developer (ts=1769413240000):
-Exactly. Everything will work as with original Matek.
+Support:
+Yes. Use target TARGET_Y. The tooling will detect it as TARGET_Y.
 \end{lstlisting}
 
 \subsubsection{Extracted Case Block}
 
 \begin{Verbatim}[fontsize=\small]
 CASE BLOCK:
-problem: SoloGoodF722 compatibility and firmware support
-evidence: [msg_id_1, msg_id_2, msg_id_3, msg_id_4]
+problem: Device compatibility and flashing target selection
+evidence: [msg_id_1, msg_id_2]
 status: solved
 \end{Verbatim}
 
@@ -315,11 +314,11 @@ status: solved
 \midrule
 \texttt{case\_id} & \texttt{c4f2a891-...} \\
 \texttt{status} & \texttt{solved} \\
-\texttt{problem\_title} & Support for SoloGoodF722 flight controller \\
-\texttt{problem\_summary} & Users ask about SoloGoodF722 flight controller support. Questions arose regarding compatibility and firmware flashing. \\
-\texttt{solution\_summary} & Developer confirmed that SoloGoodF722 is a full clone of Matek H743 slim v3. Flight monitor recognizes it as Matek H743 slim v3, allowing successful firmware installation from Matek. \\
-\texttt{tags} & SoloGoodF722, flight controller, Matek H743 slim v3, firmware, compatibility \\
-\texttt{evidence\_ids} & [msg\_id\_1, msg\_id\_2, msg\_id\_3, msg\_id\_4] \\
+\texttt{problem\_title} & Support for device MODEL\_X \\
+\texttt{problem\_summary} & User asks whether MODEL\_X is supported and what target to select when flashing. \\
+\texttt{solution\_summary} & Support confirms compatibility and recommends selecting target TARGET\_Y in the flashing tool. \\
+\texttt{tags} & compatibility, firmware, flashing, target selection \\
+\texttt{evidence\_ids} & [msg\_id\_1, msg\_id\_2] \\
 \texttt{evidence\_image\_paths} & \texttt{[]} (no images in this case) \\
 \bottomrule
 \end{tabular}
@@ -329,32 +328,29 @@ status: solved
 \subsubsection{Embedding \& Storage}
 
 \begin{itemize}
-    \item \textbf{Document text}: Concatenation of title + problem + solution + tags
-    \item \textbf{Embedding}: 768-dimensional vector via \texttt{gemini-embedding-001}
+    \item \textbf{Document text}: Built from title + summaries + tags (see \texttt{signal-bot/app/jobs/worker.py})
+    \item \textbf{Embedding}: Vector produced by the configured \texttt{EMBEDDING\_MODEL}
     \item \textbf{Vector DB}: Stored in ChromaDB with metadata: \texttt{\{group\_id, status, evidence\_ids, evidence\_image\_paths\}}
 \end{itemize}
 
 \newpage
-\subsection{Example 2: Multimodal Case with Images}
+\subsection{Example 2: Multimodal Message with Screenshot (synthetic)}
 
 \subsubsection{Raw Messages (Input)}
 
 \begin{Verbatim}[fontsize=\small]
-User B (ts=1769520000000):
-Help! The drone won't arm. Shows some error "Arm: Need 
-Position Estimate". What does this mean?
-[image: screenshot_mission_planner.png]
+User:
+Please help. I see an error when trying to complete an action. What does it mean?
+[image: <attachment.png>]
 
-Support (ts=1769520120000):
-This means the drone doesn't have a position estimate. In which mode 
-are you trying to arm?
+Support:
+Which mode/step are you in when the error appears?
 
-User B (ts=1769520180000):
-AltHold. In PosHold it arms normally.
+User:
+It happens in MODE\_A. In MODE\_B it works normally.
 
-Support (ts=1769520300000):
-Check EKF and GPS parameters. In AltHold accurate altitude 
-from barometer is needed. Send full parameter log.
+Support:
+Please share logs/config. The screenshot may include an error code we can diagnose.
 \end{Verbatim}
 
 \subsubsection{Structured Case with Image Paths}
@@ -366,10 +362,10 @@ from barometer is needed. Send full parameter log.
 \toprule
 \textbf{Field} & \textbf{Value} \\
 \midrule
-\texttt{problem\_title} & Drone arming error: "Need Position Estimate" \\
-\texttt{problem\_summary} & User cannot arm drone in AltHold mode. Error "Arm: Need Position Estimate" appears. In PosHold mode arming works. \\
-\texttt{solution\_summary} & Problem is related to missing position estimate in AltHold mode. Recommended to check EKF, GPS and barometer parameters. \\
-\texttt{evidence\_image\_paths} & \textcolor{blue}{\texttt{["/path/to/screenshot\_mission\_planner.png"]}} \\
+\texttt{problem\_title} & Error shown in screenshot during MODE\_A \\
+\texttt{problem\_summary} & User cannot complete an action in MODE\_A; screenshot contains an error message/code. MODE\_B works. \\
+\texttt{solution\_summary} & Gather logs/config and troubleshoot based on the exact error text visible in the screenshot and retrieved evidence cases. \\
+\texttt{evidence\_image\_paths} & \textcolor{blue}{\texttt{["<abs\_path\_to\_attachment.png>"]}} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -378,18 +374,16 @@ from barometer is needed. Send full parameter log.
 
 \textbf{At ingestion:}
 \begin{itemize}
-    \item Image extracted to text: \texttt{\{observations: ["Error dialog visible", "Mission Planner interface"], extracted\_text: "Arm: Need Position Estimate"\}}
-    \item \textbf{NEW}: Image path stored: \texttt{/path/to/screenshot\_mission\_planner.png}
+    \item Image extracted to text: \texttt{\{observations: ["..."], extracted\_text: "..."\}}
+    \item Image path stored: \texttt{<abs\_path\_to\_attachment.png>}
 \end{itemize}
 
 \textbf{At retrieval (when user asks similar question):}
 \begin{enumerate}
-    \item User query: "Why won't the drone arm in AltHold?"
-    \item System retrieves this case (high semantic similarity)
-    \item \textbf{NEW}: Loads \texttt{screenshot\_mission\_planner.png} from disk
-    \item Passes image + retrieved case text to LLM
-    \item LLM can see the actual error dialog, not just extracted text
-    \item Bot generates more accurate response referencing visual details
+    \item User query: "What does this screenshot error mean?"
+    \item System retrieves relevant case(s) via semantic similarity search
+    \item Loads evidence image(s) from disk (bounded by size/budget limits)
+    \item Passes image(s) + retrieved case text to the LLM for response generation
 \end{enumerate}
 
 \newpage
@@ -404,10 +398,8 @@ This section demonstrates how the bot retrieves and reasons about cases when ans
 \subsubsection{User Question}
 
 \begin{Verbatim}[fontsize=\small]
-User: Need to control power with at least one output. Antenna gimbal 
-doesn't work on this config. Turns out that "Karma" flight controller 
-has no MNT mode. Can only use RC passthrough to servo output, 
-but that's not enough
+User: Need to control FEATURE\_X but it doesn't work on this configuration. 
+It looks like DEVICE\_Y lacks MODE\_Z. RC passthrough alone is not enough.
 \end{Verbatim}
 
 \subsubsection{Stage 1: Semantic Search}
@@ -415,25 +407,25 @@ but that's not enough
 \textbf{Query embedding:} Generated from user question\\
 \textbf{Search parameters:}
 \begin{itemize}
-    \item \texttt{group\_id}: \texttt{019b5084-b6b0-7009-89a5-7e41f3418f98}
-    \item \texttt{k}: 5 (retrieve top 5 cases)
-    \item \texttt{embedding\_model}: \texttt{gemini-embedding-001}
+    \item \texttt{group\_id}: \texttt{<group\_id>}
+    \item \texttt{k}: \texttt{RETRIEVE\_TOP\_K} (default: 5)
+    \item \texttt{embedding\_model}: \texttt{EMBEDDING\_MODEL} (configurable)
 \end{itemize}
 
-\textbf{Retrieved cases (ranked by similarity):}
+\textbf{Retrieved cases (ranked by similarity score):}
 
 \begin{table}[h]
 \centering
 \small
-\begin{tabular}{clc}
+\begin{tabular}{cl}
 \toprule
-\textbf{Rank} & \textbf{Case Title} & \textbf{Similarity} \\
+\textbf{Rank} & \textbf{Case Title} \\
 \midrule
-1 & Antenna gimbal control on "Karma" & 0.89 \\
-2 & Servo mode configuration & 0.72 \\
-3 & MNT options in flight controller & 0.68 \\
-4 & RC passthrough configuration & 0.65 \\
-5 & Build with SERVO\_GIMBAL & 0.61 \\
+1 & FEATURE\_X control troubleshooting \\
+2 & Output/servo mode configuration \\
+3 & Missing MODE\_Z support on DEVICE\_Y \\
+4 & RC passthrough configuration \\
+5 & Firmware option enabling FEATURE\_X \\
 \bottomrule
 \end{tabular}
 \caption{Top-5 retrieved cases}
@@ -450,8 +442,8 @@ but that's not enough
     \item Case 5: \texttt{evidence\_image\_paths} = \texttt{[]} (no images)
 \end{itemize}
 
-\textbf{Total images loaded:} 0\\
-\textbf{Total budget used:} 0 bytes / 20MB
+\textbf{Total images loaded:} \texttt{<n>}\\
+\textbf{Total budget used:} \texttt{<bytes>} / \texttt{MAX\_TOTAL\_IMAGE\_BYTES}
 
 \subsubsection{Stage 3: LLM Decision}
 
@@ -467,30 +459,19 @@ but that's not enough
 \begin{Verbatim}[fontsize=\small]
 {
   "respond": true,
-  "text": "The \"Karma\" flight controller lacks MNT mode, which prevents 
-antenna gimbal power control. To solve this problem, a build with 
-necessary options (MNT and SERVO_GIMBAL) was created, which is 
-recommended to flash via Mission Planner.",
-  "citations": ["case:c4f2a891-..."]
+  "text": "<answer based on retrieved case evidence>",
+  "citations": ["case:<case_id>"]
 }
 \end{Verbatim}
 
-\textbf{Judge evaluation:}
-\begin{itemize}
-    \item \textbf{Score}: 10/10
-    \item \textbf{Reasoning}: "The bot accurately identified the relevant evidence case and provided a direct, helpful answer."
-    \item \textbf{Pass}: $\checkmark$
-\end{itemize}
-
 \newpage
-\subsection{Example Query 2: EKF Threshold Parameter}
+\subsection{Example Query 2: Configuration Parameter Question}
 
 \subsubsection{User Question}
 
 \begin{Verbatim}[fontsize=\small]
-User: Good day. Analyzing "FS_EKF_THRESH": Value: 0.8. If EKF error 
-exceeds this threshold, Failsafe will trigger. Isn't this a too low 
-value? What are the recommendations?
+User: Good day. Analyzing parameter "PARAM\_X": Value: V. If the system error 
+exceeds this threshold, a failsafe will trigger. Is this too low? What are the recommendations?
 \end{Verbatim}
 
 \subsubsection{Retrieval Results}
@@ -498,21 +479,21 @@ value? What are the recommendations?
 \begin{table}[h]
 \centering
 \small
-\begin{tabular}{clcc}
+\begin{tabular}{clc}
 \toprule
-\textbf{Rank} & \textbf{Case Title} & \textbf{Similarity} & \textbf{Status} \\
+\textbf{Rank} & \textbf{Case Title} & \textbf{Status} \\
 \midrule
-1 & FS\_EKF\_THRESH configuration & 0.92 & solved \\
-2 & EKF failsafe parameters & 0.78 & solved \\
-3 & Barometer and altitude & 0.54 & solved \\
+1 & PARAM\_X configuration & solved \\
+2 & Failsafe parameters & solved \\
+3 & Sensor/estimation troubleshooting & solved \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \textbf{Top case evidence:}
 \begin{itemize}
-    \item \textbf{Problem}: User asks about parameter \texttt{FS\_EKF\_THRESH} and whether 0.8 is a low threshold
-    \item \textbf{Solution}: Developer confirmed that 0.8 is a standard and safe value for most applications
+    \item \textbf{Problem}: User asks about a configuration parameter and whether the current value is appropriate
+    \item \textbf{Solution}: \texttt{<solution summary from retrieved case evidence>}
     \item \textbf{Evidence IDs}: [msg\_id\_42, msg\_id\_43, msg\_id\_44]
     \item \textbf{Images}: No images in evidence
 \end{itemize}
@@ -520,22 +501,10 @@ value? What are the recommendations?
 \subsubsection{Bot Response}
 
 \begin{Verbatim}[fontsize=\small]
-A value of 0.8 for FS_EKF_THRESH is standard and recommended for 
-most applications. This means that if EKF error exceeds 80%, 
-failsafe will activate. For normal operating conditions this is 
-quite sufficient. Raising the threshold is only worthwhile in 
-exceptional cases with poor GPS reception.
+<answer based on retrieved case evidence>
 
-Ref: case:a7b3c...
+Ref: case:<case_id>...
 \end{Verbatim}
-
-\textbf{Evaluation:}
-\begin{itemize}
-    \item Score: 10/10 (perfect answer)
-    \item Retrieved correct case on first attempt
-    \item Provided context-aware explanation
-    \item Cited evidence case
-\end{itemize}
 
 \newpage
 \subsection{Example Query 3: Multimodal Response (with Screenshot)}
@@ -543,122 +512,93 @@ Ref: case:a7b3c...
 \subsubsection{User Question with Image}
 
 \begin{Verbatim}[fontsize=\small]
-User: Look at what Mission Planner shows. Don't understand what 
-kind of error this is. [image: error_screen_123.png]
+User: Look at what the ground control app shows. Don't understand what 
+kind of error this is. [image: <attachment.png>]
 \end{Verbatim}
 
 \subsubsection{Image Processing Pipeline}
 
 \textbf{Step 1: Message ingestion}
 \begin{itemize}
-    \item Image path stored: \texttt{/data/attachments/error\_screen\_123.png}
-    \item Image extracted to text: \texttt{\{"observations": ["Red error banner", "AHRS dialog"], "extracted\_text": "PreArm: AHRS not healthy"\}}
+    \item Image path stored in DB: \texttt{<abs\_path\_to\_attachment.png>}
+    \item Image-to-text JSON appended to \texttt{content\_text}: \texttt{\{"observations": ["..."], "extracted\_text": "..."\}}
 \end{itemize}
 
 \textbf{Step 2: Gate decision (\texttt{decide\_consider})}
 \begin{itemize}
-    \item Message text: "Look at what Mission Planner shows..."
-    \item \textbf{Images loaded:} 1 image (error\_screen\_123.png, 1.2MB)
-    \item LLM sees: text + actual screenshot
-    \item Decision: \texttt{consider=True} (user is asking for help with visible error)
+    \item Message text: "Look at what the ground control app shows..."
+    \item \textbf{Images loaded:} up to \texttt{MAX\_IMAGES\_PER\_GATE} (subject to size/budget limits)
+    \item LLM sees: text + the attached image(s)
+    \item Decision: \texttt{consider=<true/false>}
 \end{itemize}
 
 \textbf{Step 3: Semantic retrieval}
 \begin{itemize}
-    \item Query embedding from: "Mission Planner shows error AHRS not healthy"
-    \item Top retrieved case: "PreArm: AHRS not healthy troubleshooting"
-    \item Case has \texttt{evidence\_image\_paths}: \texttt{["/data/old\_errors/ahrs\_123.png"]}
+    \item Query embedding from: \texttt{<user message text>}
+    \item Top retrieved case: \texttt{<case title>}
+    \item Case may include \texttt{evidence\_image\_paths}: \texttt{["<abs\_path\_to\_evidence.png>"]}
 \end{itemize}
 
 \textbf{Step 4: Response generation (\texttt{decide\_and\_respond})}
 \begin{itemize}
-    \item \textbf{Message images:} 1 (user's screenshot)
-    \item \textbf{KB images:} 1 (evidence from retrieved case)
-    \item \textbf{Total images:} 2
-    \item \textbf{Total size:} 2.4MB / 20MB budget
-    \item LLM sees: user screenshot + similar historical screenshot + case solution text
+    \item \textbf{Message images:} \texttt{<n>}
+    \item \textbf{KB images:} \texttt{<n>}
+    \item \textbf{Total images:} capped by \texttt{MAX\_IMAGES\_PER\_RESPOND}
+    \item \textbf{Total bytes:} capped by \texttt{MAX\_TOTAL\_IMAGE\_BYTES}
+    \item LLM sees: user image(s) + retrieved case text (+ optional KB evidence image(s))
 \end{itemize}
 
 \subsubsection{Bot Response}
 
 \begin{Verbatim}[fontsize=\small]
-Error "PreArm: AHRS not healthy" means that the attitude reference 
-system (AHRS) is not ready. This can be due to:
+<answer based on retrieved case evidence>
 
-1. Insufficient compass/accelerometer calibration
-2. Magnetic interference nearby
-3. IMU data instability
-
-Recommendation: Recalibrate compass in open area, away from metal 
-objects. If that doesn't help - check physical IMU connection.
-
-Ref: case:xyz...
+Ref: case:<case_id>...
 \end{Verbatim}
 
-\textbf{Accuracy improvement from multimodal:}
+\textbf{Why multimodal can help (conceptually):}
 \begin{itemize}
-    \item Without images: Bot might misinterpret vague "error" text
-    \item With images: Bot sees exact error code "AHRS not healthy" in screenshot
-    \item With evidence images: Bot can compare user's screen to known good/bad states
-    \item Result: More specific, actionable answer
+    \item Without images: the model only sees text, which may be ambiguous
+    \item With images: the model can directly see UI text/error codes and other visual context
+    \item With KB evidence images: the model can compare the user's screenshot to historical evidence
 \end{itemize}
 
 \newpage
 %==============================================================================
-\section{Evaluation Results}
+\section{Evaluation and Reproducibility}
 %==============================================================================
+\label{sec:evaluation-and-reproducibility}
 
-\subsection{Large-Scale Evaluation (400 messages, 27 cases)}
+This repository contains tests and evaluation scripts. Most evaluation outputs are written under \texttt{test/data/} and are intentionally gitignored; quantitative metrics therefore depend on the local environment, available decrypted Signal history/attachments, and API credentials.
 
-\textbf{Dataset:} Last 400 messages from real Signal group "Technical Support Academy StabH"\\
-\textbf{Date:} February 9, 2026\\
-\textbf{Model:} \texttt{gemini-2.5-flash-lite} (cost-controlled)\\
-\textbf{Judge:} \texttt{gemini-2.5-flash-lite}
-
-\begin{table}[h]
-\centering
-\begin{tabular}{lrrrc}
-\toprule
-\textbf{Category} & \textbf{N} & \textbf{Passed} & \textbf{Pass Rate} & \textbf{Avg Score} \\
-\midrule
-Should Answer & 27 & 20 & 74.1\% & 7.85/10 \\
-Should Decline & 2 & 1 & 50\% & 5.0/10 \\
-Should Ignore & 2 & 2 & 100\% & 10/10 \\
-\midrule
-\textbf{Overall} & \textbf{31} & \textbf{23} & \textbf{74.2\%} & \textbf{7.61/10} \\
-\bottomrule
-\end{tabular}
-\caption{Evaluation results by category}
-\end{table}
-
-\subsection{Comparison: Before vs After}
-
-\begin{table}[h]
-\centering
-\begin{tabular}{lccc}
-\toprule
-\textbf{Metric} & \textbf{Before} & \textbf{After} & \textbf{Change} \\
-\midrule
-Answer Pass Rate & 8.7\% & 74.1\% & \textcolor{blue}{+65.4 pts} \\
-Avg Answer Score & \textasciitilde2.6/10 & 7.85/10 & \textcolor{blue}{+5.25} \\
-Ignore Pass Rate & 87.1\% & 100\% & \textcolor{blue}{+12.9 pts} \\
-Garbage Cases & 43\% & 0\% & \textcolor{blue}{Eliminated} \\
-\bottomrule
-\end{tabular}
-\caption{Before/after comparison}
-\end{table}
-
-\subsection{Failure Analysis}
-
-Of the 7 failed "should answer" cases (scores < 7):
+\subsection{Unit tests (offline)}
 \begin{itemize}
-    \item \textbf{3 cases}: Ambiguous user question (unclear what is being asked)
-    \item \textbf{2 cases}: Topic not in knowledge base (retrieval found irrelevant cases)
-    \item \textbf{1 case}: Bot correctly identified problem but solution was incomplete
-    \item \textbf{1 case}: Edge case with multiple sub-questions, bot only addressed one
+    \item Run: \texttt{pytest -v}
+    \item Core coverage includes ingestion, buffer/case extraction, Chroma integration, and response gating.
 \end{itemize}
 
-\textbf{Note:} None of the failures were due to multimodal implementation bugs. All were either retrieval mismatches or ambiguous inputs.
+\subsection{LLM-backed quality evaluation (requires \texttt{GOOGLE\_API\_KEY})}
+\begin{itemize}
+    \item Tests: \texttt{test/test\_quality\_eval.py}
+    \item The judge uses Gemini via Google's OpenAI-compatible endpoint.
+\end{itemize}
+
+\subsection{Real-data evaluation (optional; requires decrypted Signal history)}
+\begin{itemize}
+    \item Mine cases: \texttt{python test/mine\_real\_cases.py}
+    \item Run eval: \texttt{python test/run\_real\_quality\_eval.py}
+    \item Streaming eval: \texttt{python test/run\_streaming\_eval.py}
+    \item Image-to-text demo: \texttt{python test/run\_image\_to\_text\_demo.py}
+\end{itemize}
+
+\subsection{Notes on Signal Desktop encryption}
+Signal Desktop backups may require Windows DPAPI decryption under the same Windows user account that created the backup (see \texttt{test/results.md} for a documented example).
+
+\subsection{Embedding model note}
+\begin{itemize}
+    \item Application default: \texttt{EMBEDDING\_MODEL=text-embedding-004} (see \texttt{signal-bot/app/config.py}).
+    \item The real-eval script may override to \texttt{gemini-embedding-001} for compatibility with the OpenAI-style Gemini embeddings endpoint (see \texttt{test/run\_real\_quality\_eval.py}).
+\end{itemize}
 
 \newpage
 %==============================================================================
@@ -676,38 +616,39 @@ Of the 7 failed "should answer" cases (scores < 7):
 \texttt{MAX\_IMAGES\_PER\_GATE} & 3 & Limit images sent to gate decision \\
 \texttt{MAX\_IMAGES\_PER\_RESPOND} & 5 & Limit total images in response call \\
 \texttt{MAX\_KB\_IMAGES\_PER\_CASE} & 2 & Limit evidence images per retrieved case \\
-\texttt{MAX\_IMAGE\_SIZE\_BYTES} & 5,000,000 & Skip images > 5MB \\
-\texttt{MAX\_TOTAL\_IMAGE\_BYTES} & 20,000,000 & Total budget per response (20MB) \\
+\texttt{MAX\_IMAGE\_SIZE\_BYTES} & 5,000,000 & Skip images $>$ 5,000,000 bytes \\
+\texttt{MAX\_TOTAL\_IMAGE\_BYTES} & 20,000,000 & Total budget per response (20,000,000 bytes) \\
 \bottomrule
 \end{tabular}
-\caption{Image budget limits (prevent API cost explosion)}
+\caption{Image budget limits (caps multimodal payload size)}
+\label{tab:image-budget-limits}
 \end{table}
 
-\subsection{Cost Analysis}
+\subsection{Cost considerations}
 
-\textbf{Typical response cost breakdown (400-message eval):}
+The main cost drivers are LLM calls during ingestion and response:
 \begin{itemize}
-    \item Text-only cases: \textasciitilde\$0.02 per response (embedding + gate + respond)
-    \item Cases with 1-2 images: \textasciitilde\$0.08 per response
-    \item Cases with 5 images (max): \textasciitilde\$0.20 per response
-    \item \textbf{Average}: \textasciitilde\$0.05 per response (most cases have 0-1 images)
+    \item \textbf{Ingestion}: optional image-to-text extraction per attachment (\texttt{image\_to\_text\_json})
+    \item \textbf{Retrieval}: embeddings for case documents and user queries (\texttt{embed})
+    \item \textbf{Response}: gate (\texttt{decide\_consider}) and responder (\texttt{decide\_and\_respond}) chat calls, optionally with images
 \end{itemize}
 
-\textbf{Total eval cost:} 27 responses × \$0.05 = \textasciitilde\$1.35
+Actual costs depend on model selection and provider pricing. The implementation enforces strict caps on image count and total bytes to bound multimodal payload size (Table~\ref{tab:image-budget-limits}).
 
 %==============================================================================
 \section{Conclusion}
 %==============================================================================
 
-The multimodal implementation successfully addressed all critical issues identified in the baseline report:
+This implementation adds end-to-end multimodal plumbing:
 
 \begin{enumerate}
-    \item \textbf{Eliminated garbage cases} (P0): Reject solved cases without solutions
-    \item \textbf{Enabled visual reasoning} (P1, P2): Images passed to gate and responder
-    \item \textbf{Preserved image context} (P3, P4): Store paths, retrieve from KB evidence
+    \item \textbf{Reject low-quality cases} (P0): Reject \texttt{status=solved} cases without \texttt{solution\_summary}
+    \item \textbf{Preserve image references} (P3): Store attachment paths in \texttt{raw\_messages.image\_paths\_json}
+    \item \textbf{Use images in decisions and responses} (P1, P2): Pass images into \texttt{decide\_consider} and \texttt{decide\_and\_respond}
+    \item \textbf{Carry evidence images through retrieval} (P4): Store and retrieve \texttt{evidence\_image\_paths} via Chroma metadata
 \end{enumerate}
 
-\textbf{Impact:} Answer pass rate improved from 8.7\% to 74.1\% (8.5x), with no regressions in other categories.
+\textbf{Measuring impact:} Use the scripts in Section~\ref{sec:evaluation-and-reproducibility} to run evaluations in an environment with decrypted data and valid API credentials.
 
 \textbf{Next steps:}
 \begin{itemize}

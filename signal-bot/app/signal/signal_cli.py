@@ -149,13 +149,28 @@ class SignalCliAdapter:
     # Send methods
     # ─────────────────────────────────────────────────────────────────────────
 
-    def send_group_text(self, *, group_id: str, text: str) -> None:
+    def send_group_text(
+        self,
+        *,
+        group_id: str,
+        text: str,
+        quote_timestamp: int | None = None,
+        quote_author: str | None = None,
+        quote_message: str | None = None,
+    ) -> None:
         """Send text message to a group."""
         self.assert_available()
         cmd = [
             self._bin(), "--config", self._config(), "-u", self._user(),
             "send", "-g", group_id, "-m", text,
         ]
+        # Reply-to / quote support (signal-cli `send` flags).
+        if quote_timestamp is not None:
+            cmd.extend(["--quote-timestamp", str(int(quote_timestamp))])
+        if quote_author:
+            cmd.extend(["--quote-author", str(quote_author)])
+        if quote_message:
+            cmd.extend(["--quote-message", str(quote_message)])
         log.info("signal-cli send group_id=%s bytes=%s", group_id, len(text.encode("utf-8")))
         proc = subprocess.run(cmd, capture_output=True, text=True)
         if proc.stdout:

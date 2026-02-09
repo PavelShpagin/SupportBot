@@ -70,6 +70,16 @@ def ingest_message(
             reply_to_id=reply_to_id,
         ),
     )
-    enqueue_job(db, BUFFER_UPDATE, {"group_id": group_id, "message_id": message_id})
-    enqueue_job(db, MAYBE_RESPOND, {"group_id": group_id, "message_id": message_id})
+    # Include original sender/text in job payload so the responder can:
+    # - reply/quote the exact asker (Signal "quote" feature)
+    # - keep user-facing quotes free of internal [image] JSON expansions
+    job_payload = {
+        "group_id": group_id,
+        "message_id": message_id,
+        "sender": sender,
+        "ts": ts,
+        "text": text or "",
+    }
+    enqueue_job(db, BUFFER_UPDATE, job_payload)
+    enqueue_job(db, MAYBE_RESPOND, job_payload)
 

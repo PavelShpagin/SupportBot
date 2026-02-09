@@ -9,7 +9,15 @@ from app.signal.signal_cli import InboundGroupMessage, InboundDirectMessage, Gro
 class SignalAdapter(Protocol):
     """Protocol for Signal communication adapters."""
     
-    def send_group_text(self, *, group_id: str, text: str) -> None: ...
+    def send_group_text(
+        self,
+        *,
+        group_id: str,
+        text: str,
+        quote_timestamp: int | None = None,
+        quote_author: str | None = None,
+        quote_message: str | None = None,
+    ) -> None: ...
     
     def send_direct_text(self, *, recipient: str, text: str) -> None: ...
     
@@ -34,7 +42,15 @@ class SignalAdapter(Protocol):
 class NoopSignalAdapter:
     """Noop adapter for local testing without Signal."""
     
-    def send_group_text(self, *, group_id: str, text: str) -> None:
+    def send_group_text(
+        self,
+        *,
+        group_id: str,
+        text: str,
+        quote_timestamp: int | None = None,
+        quote_author: str | None = None,
+        quote_message: str | None = None,
+    ) -> None:
         return
     
     def send_direct_text(self, *, recipient: str, text: str) -> None:
