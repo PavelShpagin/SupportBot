@@ -34,6 +34,7 @@ if DB_BACKEND == "mysql":
     from app.db.queries_mysql import (
         RawMessage,
         Job,
+        AdminSession,
         insert_raw_message,
         enqueue_job,
         get_raw_message,
@@ -48,6 +49,12 @@ if DB_BACKEND == "mysql":
         claim_next_job,
         complete_job,
         fail_job,
+        get_admin_session,
+        upsert_admin_session,
+        set_admin_awaiting_group_name,
+        set_admin_awaiting_qr_scan,
+        get_admin_by_token,
+        link_admin_to_group,
     )
     
     def create_db(settings):

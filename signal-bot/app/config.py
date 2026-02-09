@@ -76,6 +76,13 @@ class Settings:
     retrieve_top_k: int
     worker_poll_seconds: float
     history_token_ttl_minutes: int
+    
+    # Multimodal limits
+    max_images_per_gate: int
+    max_images_per_respond: int
+    max_kb_images_per_case: int
+    max_image_size_bytes: int
+    max_total_image_bytes: int
 
 
 def load_settings() -> Settings:
@@ -121,5 +128,10 @@ def load_settings() -> Settings:
         retrieve_top_k=_env_int("RETRIEVE_TOP_K", default=5, min_value=1),
         worker_poll_seconds=float(os.getenv("WORKER_POLL_SECONDS", "1")),
         history_token_ttl_minutes=_env_int("HISTORY_TOKEN_TTL_MINUTES", default=60, min_value=1),
+        max_images_per_gate=_env_int("MAX_IMAGES_PER_GATE", default=3, min_value=0),
+        max_images_per_respond=_env_int("MAX_IMAGES_PER_RESPOND", default=5, min_value=0),
+        max_kb_images_per_case=_env_int("MAX_KB_IMAGES_PER_CASE", default=2, min_value=0),
+        max_image_size_bytes=_env_int("MAX_IMAGE_SIZE_BYTES", default=5_000_000, min_value=1),
+        max_total_image_bytes=_env_int("MAX_TOTAL_IMAGE_BYTES", default=20_000_000, min_value=1),
     )
 

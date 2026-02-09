@@ -59,6 +59,11 @@ def make_test_settings(**overrides) -> Settings:
         "retrieve_top_k": 5,
         "worker_poll_seconds": 0.1,
         "history_token_ttl_minutes": 60,
+        "max_images_per_gate": 3,
+        "max_images_per_respond": 5,
+        "max_kb_images_per_case": 2,
+        "max_image_size_bytes": 5_000_000,
+        "max_total_image_bytes": 20_000_000,
     }
     defaults.update(overrides)
     return Settings(**defaults)
@@ -96,6 +101,7 @@ class InMemoryDB:
                 ts INTEGER NOT NULL,
                 sender_hash TEXT NOT NULL,
                 content_text TEXT,
+                image_paths_json TEXT,
                 reply_to_id TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
@@ -118,6 +124,7 @@ class InMemoryDB:
                 problem_summary TEXT NOT NULL,
                 solution_summary TEXT,
                 tags_json TEXT,
+                evidence_image_paths_json TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
@@ -240,8 +247,10 @@ class MockLLMClient:
             problem_summary="", solution_summary="", tags=[], evidence_ids=[]
         )
     
-    def decide_consider(self, *, message: str, context: str) -> DecisionResult:
-        self.decision_calls.append({"message": message, "context": context})
+    def decide_consider(
+        self, *, message: str, context: str, images: List[tuple[bytes, str]] | None = None
+    ) -> DecisionResult:
+        self.decision_calls.append({"message": message, "context": context, "images": images})
         if self._decision_idx < len(self.decision_responses):
             result = self.decision_responses[self._decision_idx]
             self._decision_idx += 1
@@ -249,8 +258,17 @@ class MockLLMClient:
         # Default: don't consider
         return DecisionResult(consider=False)
     
-    def decide_and_respond(self, *, message: str, context: str, cases: str) -> RespondResult:
-        self.respond_calls.append({"message": message, "context": context, "cases": cases})
+    def decide_and_respond(
+        self,
+        *,
+        message: str,
+        context: str,
+        cases: str,
+        images: List[tuple[bytes, str]] | None = None,
+    ) -> RespondResult:
+        self.respond_calls.append(
+            {"message": message, "context": context, "cases": cases, "images": images}
+        )
         if self._respond_idx < len(self.respond_responses):
             result = self.respond_responses[self._respond_idx]
             self._respond_idx += 1

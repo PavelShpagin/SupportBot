@@ -33,15 +33,21 @@ def ingest_message(
 ) -> None:
     content_text = text or ""
     context_text = text or ""
+    stored_image_paths: list[str] = []
 
     for p in image_paths:
         img_path = Path(p)
         if not img_path.is_absolute():
             # signal-cli often reports stored filenames relative to the config dir.
             img_path = Path(settings.signal_bot_storage) / img_path
+        try:
+            img_path = img_path.resolve()
+        except Exception:
+            img_path = img_path.absolute()
         if not img_path.exists():
             log.warning("Attachment missing on disk: %s", img_path)
             continue
+        stored_image_paths.append(str(img_path))
         image_bytes = img_path.read_bytes()
         try:
             j = llm.image_to_text_json(image_bytes=image_bytes, context_text=context_text)
@@ -60,6 +66,7 @@ def ingest_message(
             ts=ts,
             sender_hash=_sender_hash(sender),
             content_text=content_text,
+            image_paths=stored_image_paths,
             reply_to_id=reply_to_id,
         ),
     )

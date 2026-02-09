@@ -15,6 +15,7 @@ DDL_STATEMENTS = [
       ts            NUMBER(19) NOT NULL,
       sender_hash   VARCHAR2(64) NOT NULL,
       content_text  CLOB,
+      image_paths_json CLOB,
       reply_to_id   VARCHAR2(128),
       created_at    TIMESTAMP DEFAULT SYSTIMESTAMP NOT NULL
     )
@@ -35,6 +36,7 @@ DDL_STATEMENTS = [
       problem_summary  CLOB NOT NULL,
       solution_summary CLOB,
       tags_json        CLOB,
+      evidence_image_paths_json CLOB,
       created_at       TIMESTAMP DEFAULT SYSTIMESTAMP NOT NULL,
       updated_at       TIMESTAMP DEFAULT SYSTIMESTAMP NOT NULL,
       CONSTRAINT cases_status_chk CHECK (status IN ('solved', 'open'))

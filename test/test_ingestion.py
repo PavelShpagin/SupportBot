@@ -21,9 +21,17 @@ def insert_raw_message(db: InMemoryDB, msg: RawMessage) -> None:
     """Insert a raw message into the test database."""
     cur = db.cursor()
     cur.execute("""
-        INSERT INTO raw_messages (message_id, group_id, ts, sender_hash, content_text, reply_to_id)
-        VALUES (?, ?, ?, ?, ?, ?)
-    """, (msg.message_id, msg.group_id, msg.ts, msg.sender_hash, msg.content_text, msg.reply_to_id))
+        INSERT INTO raw_messages (message_id, group_id, ts, sender_hash, content_text, image_paths_json, reply_to_id)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    """, (
+        msg.message_id,
+        msg.group_id,
+        msg.ts,
+        msg.sender_hash,
+        msg.content_text,
+        json.dumps(msg.image_paths),
+        msg.reply_to_id,
+    ))
     db.commit()
 
 
@@ -31,7 +39,7 @@ def get_raw_message(db: InMemoryDB, message_id: str) -> RawMessage | None:
     """Get a raw message from the test database."""
     cur = db.cursor()
     cur.execute("""
-        SELECT message_id, group_id, ts, sender_hash, content_text, reply_to_id
+        SELECT message_id, group_id, ts, sender_hash, content_text, image_paths_json, reply_to_id
         FROM raw_messages WHERE message_id = ?
     """, (message_id,))
     row = cur.fetchone()
@@ -43,7 +51,8 @@ def get_raw_message(db: InMemoryDB, message_id: str) -> RawMessage | None:
         ts=row[2],
         sender_hash=row[3],
         content_text=row[4],
-        reply_to_id=row[5],
+        image_paths=json.loads(row[5] or "[]"),
+        reply_to_id=row[6],
     )
 
 
@@ -80,6 +89,7 @@ class TestMessageIngestion:
             ts=1707400000000,
             sender_hash="abc123",
             content_text="Привіт! Не можу зайти в кабінет",
+            image_paths=[],
             reply_to_id=None,
         )
         
@@ -99,6 +109,7 @@ class TestMessageIngestion:
             ts=1707400000000,
             sender_hash="user1",
             content_text="Як скинути пароль?",
+            image_paths=[],
             reply_to_id=None,
         )
         
@@ -108,6 +119,7 @@ class TestMessageIngestion:
             ts=1707400060000,
             sender_hash="support",
             content_text="Використайте форму відновлення на сторінці входу",
+            image_paths=[],
             reply_to_id="msg-001",
         )
         
@@ -125,6 +137,7 @@ class TestMessageIngestion:
             ts=1707400000000,
             sender_hash="user1",
             content_text="Привіт! Чи є мобільний додаток? Хочу завантажити уроки для офлайн перегляду 📱",
+            image_paths=[],
             reply_to_id=None,
         )
         
@@ -142,6 +155,7 @@ class TestMessageIngestion:
             ts=1707400000000,
             sender_hash="user1",
             content_text="Допоможіть з проблемою!",
+            image_paths=[],
             reply_to_id=None,
         )
         
@@ -189,6 +203,7 @@ class TestMessageIngestion:
                 ts=1707400000000 + i * 60000,
                 sender_hash=f"user{i % 3}",
                 content_text=f"Повідомлення номер {i}",
+                image_paths=[],
                 reply_to_id=None,
             )
             insert_raw_message(test_db, msg)

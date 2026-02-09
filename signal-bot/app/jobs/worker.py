@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import logging
+import mimetypes
 import time
 from dataclasses import dataclass
 from typing import Any, Dict, List, TYPE_CHECKING
@@ -44,6 +45,60 @@ def _format_buffer_line(msg: RawMessage) -> str:
 def _mentions_bot(settings: Settings, text: str) -> bool:
     low = text.lower()
     return any(m.lower() in low for m in settings.bot_mention_strings)
+
+
+def _guess_mime(path: str) -> str:
+    mime, _ = mimetypes.guess_type(path)
+    return mime or "image/png"
+
+
+def _load_images(
+    *,
+    settings: Settings,
+    image_paths: List[str],
+    max_images: int,
+    total_budget_bytes: int,
+) -> List[tuple[bytes, str]]:
+    if max_images <= 0 or total_budget_bytes <= 0:
+        return []
+
+    images: List[tuple[bytes, str]] = []
+    total = 0
+    for p in image_paths:
+        if len(images) >= max_images:
+            break
+        try:
+            if not p:
+                continue
+            img_path = p
+            mime = _guess_mime(img_path)
+            with open(img_path, "rb") as f:
+                data = f.read()
+            size = len(data)
+        except Exception:
+            log.warning("Failed to read image for multimodal call: %s", p)
+            continue
+
+        if size > settings.max_image_size_bytes:
+            log.warning("Skipping large image (%s bytes): %s", size, p)
+            continue
+        if total + size > total_budget_bytes:
+            break
+        images.append((data, mime))
+        total += size
+    return images
+
+
+def _collect_evidence_image_paths(deps: WorkerDeps, evidence_ids: List[str]) -> List[str]:
+    paths: List[str] = []
+    for mid in evidence_ids:
+        msg = get_raw_message(deps.db, message_id=mid)
+        if msg is None:
+            continue
+        for p in msg.image_paths:
+            if p:
+                paths.append(p)
+    return paths
 
 
 def worker_loop_forever(deps: WorkerDeps) -> None:
@@ -95,7 +150,13 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         set_buffer(deps.db, group_id=group_id, buffer_text=extract.buffer_new)
         return
 
+    if case.status == "solved" and not case.solution_summary.strip():
+        log.warning("Rejecting solved case without solution_summary")
+        set_buffer(deps.db, group_id=group_id, buffer_text=extract.buffer_new)
+        return
+
     case_id = new_case_id(deps.db)
+    evidence_image_paths = _collect_evidence_image_paths(deps, case.evidence_ids)
     insert_case(
         deps.db,
         case_id=case_id,
@@ -106,6 +167,7 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         solution_summary=case.solution_summary,
         tags=case.tags,
         evidence_ids=case.evidence_ids,
+        evidence_image_paths=evidence_image_paths,
     )
 
     doc_text = "\n".join(
@@ -126,6 +188,7 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
             "group_id": group_id,
             "status": case.status,
             "evidence_ids": case.evidence_ids,
+            "evidence_image_paths": evidence_image_paths,
         },
     )
 
@@ -146,8 +209,14 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
     context = "\n".join(context_lines)
 
     force = _mentions_bot(deps.settings, msg.content_text)
+    msg_images = _load_images(
+        settings=deps.settings,
+        image_paths=msg.image_paths,
+        max_images=deps.settings.max_images_per_gate,
+        total_budget_bytes=deps.settings.max_total_image_bytes,
+    )
     if not force:
-        decision = deps.llm.decide_consider(message=msg.content_text, context=context)
+        decision = deps.llm.decide_consider(message=msg.content_text, context=context, images=msg_images)
         if not decision.consider:
             return
 
@@ -162,8 +231,34 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         k=deps.settings.retrieve_top_k,
     )
 
+    kb_paths: List[str] = []
+    for item in retrieved:
+        paths = item.get("metadata", {}).get("evidence_image_paths") or []
+        if not isinstance(paths, list):
+            continue
+        kb_paths.extend([str(p) for p in paths if str(p)])
+
+    max_kb = deps.settings.max_kb_images_per_case * max(1, len(retrieved))
+    kb_paths = kb_paths[:max_kb]
+
+    kb_images = _load_images(
+        settings=deps.settings,
+        image_paths=kb_paths,
+        max_images=deps.settings.max_images_per_respond,
+        total_budget_bytes=max(deps.settings.max_total_image_bytes - sum(len(b) for b, _ in msg_images), 0),
+    )
+
+    all_images = msg_images + kb_images
+    if len(all_images) > deps.settings.max_images_per_respond:
+        all_images = all_images[: deps.settings.max_images_per_respond]
+
     cases_json = json.dumps(retrieved, ensure_ascii=False, indent=2)
-    resp = deps.llm.decide_and_respond(message=msg.content_text, context=context, cases=cases_json)
+    resp = deps.llm.decide_and_respond(
+        message=msg.content_text,
+        context=context,
+        cases=cases_json,
+        images=all_images,
+    )
     if not resp.respond:
         return
 

@@ -15,6 +15,7 @@ DDL_STATEMENTS = [
       ts            BIGINT NOT NULL,
       sender_hash   VARCHAR(64) NOT NULL,
       content_text  LONGTEXT,
+      image_paths_json LONGTEXT,
       reply_to_id   VARCHAR(128),
       created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
       INDEX idx_raw_messages_group_ts (group_id, ts DESC)
@@ -36,6 +37,7 @@ DDL_STATEMENTS = [
       problem_summary  LONGTEXT NOT NULL,
       solution_summary LONGTEXT,
       tags_json        LONGTEXT,
+      evidence_image_paths_json LONGTEXT,
       created_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
       updated_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
       CONSTRAINT cases_status_chk CHECK (status IN ('solved', 'open')),
@@ -79,6 +81,17 @@ DDL_STATEMENTS = [
       CONSTRAINT jobs_status_chk CHECK (status IN ('pending', 'in_progress', 'done', 'failed')),
       INDEX idx_jobs_status_type (status, type),
       INDEX idx_jobs_updated (updated_at)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    """,
+    """
+    CREATE TABLE admin_sessions (
+      admin_id       VARCHAR(128) PRIMARY KEY,
+      pending_group_id   VARCHAR(128),
+      pending_group_name VARCHAR(256),
+      pending_token      VARCHAR(64),
+      state              VARCHAR(32) NOT NULL DEFAULT 'awaiting_group_name',
+      updated_at         TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+      CONSTRAINT admin_sessions_state_chk CHECK (state IN ('awaiting_group_name', 'awaiting_qr_scan', 'idle'))
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     """,
 ]

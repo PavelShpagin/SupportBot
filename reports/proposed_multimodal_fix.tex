@@ -1,0 +1,589 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+\lstset{style=mystyle}
+
+\title{SupportBot Multimodal Fix Proposal\\
+\large Pseudoalgorithms for Full Flow Improvement}
+\author{Technical Report}
+\date{February 8, 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This document presents the proposed changes to SupportBot's architecture to support multimodal (text + images) processing. The current system loses visual information by converting images to text descriptions early in the pipeline. The proposed fix sends raw images to the multimodal LLM (Gemini) at decision and response stages while maintaining text-only embeddings for retrieval (Option B approach). Additionally, we address the 43\% garbage case rate in the knowledge base.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+%==============================================================================
+\section{Executive Summary}
+%==============================================================================
+
+\subsection{Current Problems Identified}
+
+\begin{enumerate}
+    \item \textbf{43\% garbage cases}: Nearly half of extracted cases have empty \texttt{solution\_summary}
+    \item \textbf{Images reduced to text}: Visual context (screenshots, error dialogs, hardware photos) is lost at ingestion
+    \item \textbf{Gate sees text only}: \texttt{decide\_consider()} cannot understand ``look at this error'' messages
+    \item \textbf{Responder sees text only}: \texttt{decide\_and\_respond()} cannot reason about what user is showing
+    \item \textbf{Eval shows 8.7\% pass rate}: On ``answer'' label messages where bot should have helped
+\end{enumerate}
+
+\subsection{Proposed Changes (Priority Order)}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{clcc}
+\toprule
+\textbf{Priority} & \textbf{Change} & \textbf{Effort} & \textbf{Impact} \\
+\midrule
+P0 & Reject cases without solutions & Low & High \\
+P1 & Pass images to \texttt{decide\_and\_respond()} & Medium & High \\
+P2 & Pass images to \texttt{decide\_consider()} & Medium & Medium \\
+P3 & Store image paths in \texttt{raw\_messages} & Low & Enables P1/P2 \\
+P4 & Include images in KB case evidence & Medium & Medium \\
+\bottomrule
+\end{tabular}
+\caption{Proposed changes by priority}
+\end{table}
+
+%==============================================================================
+\section{Current Algorithm (As-Is)}
+%==============================================================================
+
+For reference, here is the current flow with problems highlighted.
+
+\subsection{Algorithm 1: Message Ingestion (Current)}
+
+\begin{algorithm}[H]
+\caption{Current Message Ingestion --- \textcolor{red}{Loses image data}}
+\begin{algorithmic}[1]
+\Procedure{IngestMessage}{$msg\_id, group\_id, sender, ts, text, image\_paths$}
+    \State $content\_text \gets text$
+    \For{$path$ \textbf{in} $image\_paths$}
+        \State $img\_bytes \gets \textsc{ReadFile}(path)$
+        \State $extraction \gets \textsc{LLM.ImageToText}(img\_bytes, text)$ \Comment{\textcolor{red}{Lossy!}}
+        \State \Comment{Returns \{observations: [...], extracted\_text: "..."\}}
+        \State $content\_text \gets content\_text + \text{``[image]''} + \textsc{JSON}(extraction)$
+    \EndFor
+    \State \textcolor{red}{// Original images discarded after this point!}
+    \State \textsc{InsertRawMessage}$(msg\_id, group\_id, ts, hash(sender), content\_text)$
+    \State \textsc{EnqueueJob}$(BUFFER\_UPDATE, \{group\_id, msg\_id\})$
+    \State \textsc{EnqueueJob}$(MAYBE\_RESPOND, \{group\_id, msg\_id\})$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Algorithm 2: Case Extraction (Current)}
+
+\begin{algorithm}[H]
+\caption{Current Case Extraction --- \textcolor{red}{Creates garbage cases}}
+\begin{algorithmic}[1]
+\Procedure{HandleBufferUpdate}{$group\_id, msg\_id$}
+    \State $msg \gets \textsc{GetRawMessage}(msg\_id)$
+    \State $line \gets \textsc{FormatBufferLine}(msg)$
+    \State $buffer \gets \textsc{GetBuffer}(group\_id)$
+    \State $buffer\_new \gets buffer + line$
+    \State
+    \State $extract \gets \textsc{LLM.ExtractCase}(buffer\_new)$
+    \If{$\neg extract.found$}
+        \State \textsc{SetBuffer}$(group\_id, buffer\_new)$
+        \State \Return
+    \EndIf
+    \State
+    \State $case \gets \textsc{LLM.MakeCase}(extract.case\_block)$
+    \If{$\neg case.keep$}
+        \State \textsc{SetBuffer}$(group\_id, extract.buffer\_new)$
+        \State \Return
+    \EndIf
+    \State
+    \State \textcolor{red}{// BUG: No validation that solution\_summary is non-empty!}
+    \State $case\_id \gets \textsc{NewUUID}()$
+    \State \textsc{InsertCase}$(case\_id, group\_id, case.*)$
+    \State
+    \State $doc\_text \gets case.problem\_title + case.problem\_summary + case.solution\_summary$
+    \State $embedding \gets \textsc{LLM.Embed}(doc\_text)$ \Comment{Text-only}
+    \State \textsc{Chroma.Upsert}$(case\_id, doc\_text, embedding, \{group\_id\})$
+    \State \textsc{SetBuffer}$(group\_id, extract.buffer\_new)$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Algorithm 3: Response Pipeline (Current)}
+
+\begin{algorithm}[H]
+\caption{Current Response Pipeline --- \textcolor{red}{Text-only, no images}}
+\begin{algorithmic}[1]
+\Procedure{HandleMaybeRespond}{$group\_id, msg\_id$}
+    \State $msg \gets \textsc{GetRawMessage}(msg\_id)$
+    \State $context \gets \textsc{GetLastNMessages}(group\_id, n)$ \Comment{\textcolor{red}{Text only}}
+    \State
+    \If{$\neg \textsc{MentionsBot}(msg.content\_text)$}
+        \State $decision \gets \textsc{LLM.DecideConsider}(msg.content\_text, context)$
+        \Comment{\textcolor{red}{No images!}}
+        \If{$\neg decision.consider$}
+            \State \Return \Comment{Silent exit}
+        \EndIf
+    \EndIf
+    \State
+    \State $query\_emb \gets \textsc{LLM.Embed}(msg.content\_text)$ \Comment{Text-only}
+    \State $cases \gets \textsc{Chroma.Query}(query\_emb, k, group\_id)$
+    \State
+    \State $resp \gets \textsc{LLM.DecideAndRespond}(msg.content\_text, context, cases)$
+    \Comment{\textcolor{red}{No images!}}
+    \If{$resp.respond$}
+        \State \textsc{Signal.SendGroupText}$(group\_id, resp.text)$
+    \EndIf
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+%==============================================================================
+\section{Proposed Algorithm (To-Be)}
+%==============================================================================
+
+\subsection{Algorithm 1': Message Ingestion (Proposed)}
+
+Key change: \textbf{Store image paths} in database for later retrieval.
+
+\begin{algorithm}[H]
+\caption{Proposed Message Ingestion --- Preserves image references}
+\begin{algorithmic}[1]
+\Procedure{IngestMessage}{$msg\_id, group\_id, sender, ts, text, image\_paths$}
+    \State $content\_text \gets text$
+    \State $stored\_image\_paths \gets []$ \Comment{\textcolor{codegreen}{NEW: Track stored images}}
+    \State
+    \For{$path$ \textbf{in} $image\_paths$}
+        \State $img\_bytes \gets \textsc{ReadFile}(path)$
+        \State \Comment{Still extract text for embedding/search purposes}
+        \State $extraction \gets \textsc{LLM.ImageToText}(img\_bytes, text)$
+        \State $content\_text \gets content\_text + \text{``[image]''} + \textsc{JSON}(extraction)$
+        \State
+        \State \textcolor{codegreen}{// NEW: Store canonical path for later retrieval}
+        \State $canonical\_path \gets \textsc{CanonicalImagePath}(path)$
+        \State $stored\_image\_paths \gets stored\_image\_paths + [canonical\_path]$
+    \EndFor
+    \State
+    \State \textcolor{codegreen}{// NEW: Store image\_paths\_json in raw\_messages table}
+    \State \textsc{InsertRawMessage}$(msg\_id, group\_id, ts, hash(sender), content\_text,$
+    \State \hspace{4em} $\textsc{JSON}(stored\_image\_paths))$ \Comment{\textcolor{codegreen}{NEW field}}
+    \State
+    \State \textsc{EnqueueJob}$(BUFFER\_UPDATE, \{group\_id, msg\_id\})$
+    \State \textsc{EnqueueJob}$(MAYBE\_RESPOND, \{group\_id, msg\_id\})$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Algorithm 2': Case Extraction (Proposed)}
+
+Key changes: 
+\begin{itemize}
+    \item \textbf{Reject cases without solutions}
+    \item \textbf{Store image paths in case evidence}
+\end{itemize}
+
+\begin{algorithm}[H]
+\caption{Proposed Case Extraction --- Validates quality, preserves images}
+\begin{algorithmic}[1]
+\Procedure{HandleBufferUpdate}{$group\_id, msg\_id$}
+    \State $msg \gets \textsc{GetRawMessage}(msg\_id)$
+    \State $line \gets \textsc{FormatBufferLine}(msg)$
+    \State $buffer \gets \textsc{GetBuffer}(group\_id)$
+    \State $buffer\_new \gets buffer + line$
+    \State
+    \State $extract \gets \textsc{LLM.ExtractCase}(buffer\_new)$
+    \If{$\neg extract.found$}
+        \State \textsc{SetBuffer}$(group\_id, buffer\_new)$
+        \State \Return
+    \EndIf
+    \State
+    \State $case \gets \textsc{LLM.MakeCase}(extract.case\_block)$
+    \If{$\neg case.keep$}
+        \State \textsc{SetBuffer}$(group\_id, extract.buffer\_new)$
+        \State \Return
+    \EndIf
+    \State
+    \State \textcolor{codegreen}{// NEW: Validate that solved cases have actual solutions}
+    \If{$case.status = \text{``solved''} \land \textsc{IsEmpty}(case.solution\_summary)$}
+        \State \textsc{Log.Warning}$(\text{``Rejecting solved case without solution''})$
+        \State \textsc{SetBuffer}$(group\_id, extract.buffer\_new)$
+        \State \Return \Comment{\textcolor{codegreen}{Reject garbage}}
+    \EndIf
+    \State
+    \State $case\_id \gets \textsc{NewUUID}()$
+    \State
+    \State \textcolor{codegreen}{// NEW: Collect image paths from evidence messages}
+    \State $evidence\_image\_paths \gets []$
+    \For{$evidence\_msg\_id$ \textbf{in} $case.evidence\_ids$}
+        \State $evidence\_msg \gets \textsc{GetRawMessage}(evidence\_msg\_id)$
+        \If{$evidence\_msg \neq \text{null}$}
+            \State $evidence\_image\_paths \gets evidence\_image\_paths + evidence\_msg.image\_paths$
+        \EndIf
+    \EndFor
+    \State
+    \State \textsc{InsertCase}$(case\_id, group\_id, case.*, evidence\_image\_paths)$
+    \State
+    \State $doc\_text \gets case.problem\_title + case.problem\_summary + case.solution\_summary$
+    \State $embedding \gets \textsc{LLM.Embed}(doc\_text)$
+    \State \textsc{Chroma.Upsert}$(case\_id, doc\_text, embedding,$
+    \State \hspace{4em} $\{group\_id, evidence\_image\_paths\})$ \Comment{\textcolor{codegreen}{Include paths in metadata}}
+    \State \textsc{SetBuffer}$(group\_id, extract.buffer\_new)$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Algorithm 3': Response Pipeline (Proposed)}
+
+Key changes:
+\begin{itemize}
+    \item \textbf{Load and pass images to gate}
+    \item \textbf{Load and pass images to responder}
+    \item \textbf{Include KB case images in responder context}
+\end{itemize}
+
+\begin{algorithm}[H]
+\caption{Proposed Response Pipeline --- Multimodal gate and responder}
+\begin{algorithmic}[1]
+\Procedure{HandleMaybeRespond}{$group\_id, msg\_id$}
+    \State $msg \gets \textsc{GetRawMessage}(msg\_id)$
+    \State $context \gets \textsc{GetLastNMessages}(group\_id, n)$
+    \State
+    \State \textcolor{codegreen}{// NEW: Load images from current message}
+    \State $msg\_images \gets []$
+    \For{$path$ \textbf{in} $msg.image\_paths$}
+        \If{$\textsc{FileExists}(path)$}
+            \State $msg\_images \gets msg\_images + [\textsc{ReadFile}(path)]$
+        \EndIf
+    \EndFor
+    \State
+    \If{$\neg \textsc{MentionsBot}(msg.content\_text)$}
+        \State \textcolor{codegreen}{// NEW: Pass images to gate (multimodal Gemini)}
+        \State $decision \gets \textsc{LLM.DecideConsider}(msg.content\_text, context, msg\_images)$
+        \If{$\neg decision.consider$}
+            \State \Return
+        \EndIf
+    \EndIf
+    \State
+    \State $query\_emb \gets \textsc{LLM.Embed}(msg.content\_text)$ \Comment{Still text-only}
+    \State $cases \gets \textsc{Chroma.Query}(query\_emb, k, group\_id)$
+    \State
+    \State \textcolor{codegreen}{// NEW: Load images from retrieved KB cases (optional, for evidence)}
+    \State $kb\_images \gets []$
+    \For{$case$ \textbf{in} $cases$}
+        \For{$path$ \textbf{in} $case.metadata.evidence\_image\_paths$}
+            \If{$\textsc{FileExists}(path) \land |kb\_images| < MAX\_KB\_IMAGES$}
+                \State $kb\_images \gets kb\_images + [\textsc{ReadFile}(path)]$
+            \EndIf
+        \EndFor
+    \EndFor
+    \State
+    \State \textcolor{codegreen}{// NEW: Pass all images to responder (multimodal Gemini)}
+    \State $all\_images \gets msg\_images + kb\_images$
+    \State $resp \gets \textsc{LLM.DecideAndRespond}(msg.content\_text, context, cases, all\_images)$
+    \If{$resp.respond$}
+        \State \textsc{Signal.SendGroupText}$(group\_id, resp.text)$
+    \EndIf
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+%==============================================================================
+\section{LLM Client Changes}
+%==============================================================================
+
+\subsection{Algorithm 4': Multimodal Decision Gate}
+
+\begin{algorithm}[H]
+\caption{Proposed \texttt{decide\_consider()} --- Accepts images}
+\begin{algorithmic}[1]
+\Function{LLM.DecideConsider}{$message, context, images$}
+    \State $system \gets P\_DECISION\_SYSTEM$ \Comment{Same prompt, Gemini handles images}
+    \State $user\_content \gets []$
+    \State
+    \State \textcolor{codegreen}{// Build multimodal content array}
+    \State $user\_content \gets user\_content + [\{\text{``type''}: \text{``text''}, \text{``text''}: \text{``MESSAGE:''} + message\}]$
+    \State
+    \For{$img\_bytes$ \textbf{in} $images$}
+        \State $b64 \gets \textsc{Base64Encode}(img\_bytes)$
+        \State $user\_content \gets user\_content + [\{$
+        \State \hspace{2em} $\text{``type''}: \text{``image\_url''},$
+        \State \hspace{2em} $\text{``image\_url''}: \{\text{``url''}: \text{``data:image/png;base64,''} + b64\}$
+        \State $\}]$
+    \EndFor
+    \State
+    \State $user\_content \gets user\_content + [\{\text{``type''}: \text{``text''}, \text{``text''}: \text{``CONTEXT:''} + context\}]$
+    \State
+    \State $response \gets \textsc{Gemini.ChatCompletion}(system, user\_content)$
+    \State \Return $\textsc{ParseJSON}(response, DecisionResult)$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Algorithm 5': Multimodal Responder}
+
+\begin{algorithm}[H]
+\caption{Proposed \texttt{decide\_and\_respond()} --- Accepts images}
+\begin{algorithmic}[1]
+\Function{LLM.DecideAndRespond}{$message, context, cases, images$}
+    \State $system \gets P\_RESPOND\_SYSTEM$ \Comment{Same prompt}
+    \State $user\_content \gets []$
+    \State
+    \State \textcolor{codegreen}{// Text part}
+    \State $text\_part \gets \text{``MESSAGE:''} + message$
+    \State $text\_part \gets text\_part + \text{``\textbackslash n\textbackslash nCONTEXT:''} + context$
+    \State $text\_part \gets text\_part + \text{``\textbackslash n\textbackslash nRETRIEVED CASES:''} + \textsc{JSON}(cases)$
+    \State $user\_content \gets user\_content + [\{\text{``type''}: \text{``text''}, \text{``text''}: text\_part\}]$
+    \State
+    \State \textcolor{codegreen}{// Images part (user's screenshots + KB evidence)}
+    \For{$i, img\_bytes$ \textbf{in} $\textsc{Enumerate}(images)$}
+        \If{$i < MAX\_IMAGES\_PER\_REQUEST$} \Comment{Limit to avoid token overflow}
+            \State $b64 \gets \textsc{Base64Encode}(img\_bytes)$
+            \State $mime \gets \textsc{DetectMimeType}(img\_bytes)$
+            \State $user\_content \gets user\_content + [\{$
+            \State \hspace{2em} $\text{``type''}: \text{``image\_url''},$
+            \State \hspace{2em} $\text{``image\_url''}: \{\text{``url''}: \text{``data:''} + mime + \text{``;base64,''} + b64\}$
+            \State $\}]$
+        \EndIf
+    \EndFor
+    \State
+    \State $response \gets \textsc{Gemini.ChatCompletion}(system, user\_content)$
+    \State \Return $\textsc{ParseJSON}(response, RespondResult)$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+%==============================================================================
+\section{Database Schema Changes}
+%==============================================================================
+
+\subsection{Table: raw\_messages}
+
+\begin{lstlisting}[language=SQL, caption=Schema change for raw\_messages]
+-- Add column to store image paths
+ALTER TABLE raw_messages 
+ADD COLUMN image_paths_json TEXT DEFAULT '[]';
+
+-- Example content:
+-- ["attachments/abc123.png", "attachments/def456.jpg"]
+\end{lstlisting}
+
+\subsection{Table: cases}
+
+\begin{lstlisting}[language=SQL, caption=Schema change for cases]
+-- Add column to store evidence image paths
+ALTER TABLE cases 
+ADD COLUMN evidence_image_paths_json TEXT DEFAULT '[]';
+
+-- Example content:
+-- ["attachments/abc123.png", "attachments/def456.jpg"]
+\end{lstlisting}
+
+%==============================================================================
+\section{Configuration Changes}
+%==============================================================================
+
+\begin{lstlisting}[language=Python, caption=New settings in config.py]
+@dataclass(frozen=True)
+class Settings:
+    # ... existing fields ...
+    
+    # NEW: Multimodal settings
+    max_images_per_gate: int = 3        # Max images for decide_consider
+    max_images_per_respond: int = 5     # Max images for decide_and_respond
+    max_kb_images_per_case: int = 2     # Max images from each KB case
+    
+    # Image size limits (to avoid token overflow)
+    max_image_size_bytes: int = 5_000_000  # 5MB per image
+    max_total_image_bytes: int = 20_000_000  # 20MB total per request
+\end{lstlisting}
+
+%==============================================================================
+\section{Prompt Changes}
+%==============================================================================
+
+The prompts remain largely the same since Gemini naturally handles multimodal input. However, we can enhance them slightly:
+
+\begin{lstlisting}[language=Python, caption=Enhanced prompts.py]
+P_DECISION_SYSTEM = """Determine if new message should be considered 
+for bot response.
+Return ONLY JSON with keys:
+- consider: boolean
+
+consider=true only if:
+- message asks for help or clarification, AND
+- not trivial (greetings, "ok", emoji only), AND
+- relates to group support context.
+
+IMPORTANT: If message contains images (error screenshots, hardware 
+photos, wiring diagrams), consider their content when deciding.
+Questions like "look at this" or "what's wrong here" with image 
+= consider=true.
+"""
+
+P_RESPOND_SYSTEM = """Decide whether to respond in group, prepare 
+response if yes.
+Return ONLY JSON with keys:
+- respond: boolean
+- text: string (empty if respond=false)
+- citations: array of short strings (e.g., ["case:123"])
+
+Rules:
+- respond=true only if you can answer using found cases and context.
+- If uncertain, set respond=false (don't guess).
+- Keep response short and to the point.
+- Respond in UKRAINIAN.
+- If responding, add 1-3 references to relevant cases.
+
+IMPORTANT: If user provided images, analyze them carefully:
+- Error screenshots: identify error code, program context
+- Hardware photos: identify device type, visible issues
+- Diagrams: understand wiring/connection scheme
+Base response on what you SEE in images + KB case information.
+"""
+\end{lstlisting}
+
+%==============================================================================
+\section{Implementation Checklist}
+%==============================================================================
+
+\subsection{Phase 1: Fix Garbage Cases (P0)}
+
+\begin{itemize}
+    \item[$\square$] Add validation in \texttt{\_handle\_buffer\_update()} to reject cases where \texttt{status="solved"} but \texttt{solution\_summary} is empty
+    \item[$\square$] Add logging for rejected cases
+    \item[$\square$] Run cleanup script to remove existing garbage cases from Chroma
+    \item[$\square$] Re-run eval to measure improvement
+\end{itemize}
+
+\subsection{Phase 2: Database Schema (P3)}
+
+\begin{itemize}
+    \item[$\square$] Add \texttt{image\_paths\_json} column to \texttt{raw\_messages}
+    \item[$\square$] Add \texttt{evidence\_image\_paths\_json} column to \texttt{cases}
+    \item[$\square$] Update \texttt{insert\_raw\_message()} to store image paths
+    \item[$\square$] Update \texttt{insert\_case()} to store evidence image paths
+    \item[$\square$] Update \texttt{get\_raw\_message()} to return image paths
+\end{itemize}
+
+\subsection{Phase 3: Multimodal LLM Client (P1, P2)}
+
+\begin{itemize}
+    \item[$\square$] Update \texttt{LLMClient.\_json\_call()} to accept optional \texttt{images} parameter
+    \item[$\square$] Update \texttt{decide\_consider()} signature to accept \texttt{images: list[bytes]}
+    \item[$\square$] Update \texttt{decide\_and\_respond()} signature to accept \texttt{images: list[bytes]}
+    \item[$\square$] Add image size validation and limiting
+    \item[$\square$] Add MIME type detection for images
+\end{itemize}
+
+\subsection{Phase 4: Worker Pipeline (P1, P2)}
+
+\begin{itemize}
+    \item[$\square$] Update \texttt{\_handle\_maybe\_respond()} to load images from \texttt{msg.image\_paths}
+    \item[$\square$] Update \texttt{\_handle\_maybe\_respond()} to load KB case evidence images
+    \item[$\square$] Pass images to \texttt{decide\_consider()}
+    \item[$\square$] Pass images to \texttt{decide\_and\_respond()}
+    \item[$\square$] Add configuration for image limits
+\end{itemize}
+
+\subsection{Phase 5: Testing and Evaluation}
+
+\begin{itemize}
+    \item[$\square$] Update \texttt{run\_streaming\_eval.py} to test multimodal flow
+    \item[$\square$] Add test cases with images
+    \item[$\square$] Re-run full eval and compare pass rates
+    \item[$\square$] Measure latency impact of image loading
+\end{itemize}
+
+%==============================================================================
+\section{Expected Improvements}
+%==============================================================================
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lcc}
+\toprule
+\textbf{Metric} & \textbf{Current} & \textbf{Expected} \\
+\midrule
+``answer'' pass rate & 8.7\% & 40--60\% \\
+``ignore'' pass rate & 87.1\% & 85--90\% \\
+Garbage cases in KB & 43\% & $<$5\% \\
+Overall pass rate & 61.3\% & 70--80\% \\
+\bottomrule
+\end{tabular}
+\caption{Expected metric improvements}
+\end{table}
+
+\textbf{Note}: The ``answer'' pass rate may not reach very high levels because many questions in the eval set ask about topics not covered in the KB. The multimodal fix helps the bot \textit{understand} questions better, but it cannot answer questions for which no knowledge exists.
+
+%==============================================================================
+\section{Risk Assessment}
+%==============================================================================
+
+\begin{table}[h]
+\centering
+\begin{tabular}{p{4cm}p{3cm}p{5cm}}
+\toprule
+\textbf{Risk} & \textbf{Severity} & \textbf{Mitigation} \\
+\midrule
+Increased latency from image loading & Medium & Limit image count and size; async loading \\
+Token overflow with many images & High & Enforce \texttt{max\_images\_per\_request} limit \\
+Increased API costs & Low & Images processed by same Gemini call; minimal extra cost \\
+Image storage growth & Low & Images already stored by Signal; we only store paths \\
+\bottomrule
+\end{tabular}
+\caption{Risk assessment}
+\end{table}
+
+%==============================================================================
+\section{Conclusion}
+%==============================================================================
+
+The proposed changes address the two main issues identified in the evaluation:
+
+\begin{enumerate}
+    \item \textbf{Garbage KB}: Fixed by validating that solved cases have non-empty solutions before storage.
+    \item \textbf{Missing visual context}: Fixed by passing raw images to Gemini at decision and response stages.
+\end{enumerate}
+
+The approach maintains text-only embeddings for retrieval (avoiding the complexity of multimodal embeddings like Voyage AI), while leveraging Gemini's native multimodal capabilities for understanding user screenshots and evidence images.
+
+This is a pragmatic ``Option B'' approach that delivers significant value with moderate implementation effort.
+
+\end{document}

@@ -3,7 +3,10 @@
 Quality demonstration script for SupportBot.
 
 Shows real examples of bot behavior with Gemini evaluation.
-Run: GOOGLE_API_KEY=your_key python run_quality_demo.py
+
+Run (recommended):
+  - Put `GOOGLE_API_KEY=...` in `.env` (repo root), OR export it in your shell
+  - `python test/run_quality_demo.py`
 """
 
 import json
@@ -15,9 +18,31 @@ from dataclasses import dataclass
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "signal-bot"))
 
+def _maybe_load_dotenv(dotenv_path: Path) -> None:
+    """
+    Load key=value pairs from .env, stripping CRLF, without overriding existing env.
+    """
+    if not dotenv_path.exists():
+        return
+    for raw in dotenv_path.read_text(encoding="utf-8", errors="ignore").splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        k, v = line.split("=", 1)
+        k = k.strip()
+        v = v.strip().strip("\r")
+        if not k:
+            continue
+        if (v.startswith("'") and v.endswith("'")) or (v.startswith('"') and v.endswith('"')):
+            v = v[1:-1]
+        os.environ.setdefault(k, v)
+
+
+_maybe_load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+
 if not os.environ.get("GOOGLE_API_KEY"):
     print("ERROR: GOOGLE_API_KEY environment variable not set")
-    print("Run: GOOGLE_API_KEY=your_key python run_quality_demo.py")
+    print("Put GOOGLE_API_KEY in .env or export it, then rerun.")
     sys.exit(1)
 
 from openai import OpenAI
@@ -62,6 +87,11 @@ def create_settings() -> Settings:
         retrieve_top_k=5,
         worker_poll_seconds=1,
         history_token_ttl_minutes=60,
+        max_images_per_gate=3,
+        max_images_per_respond=5,
+        max_kb_images_per_case=2,
+        max_image_size_bytes=5_000_000,
+        max_total_image_bytes=20_000_000,
     )
 
 

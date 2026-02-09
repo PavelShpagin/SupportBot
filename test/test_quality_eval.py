@@ -10,7 +10,10 @@ This evaluates:
 5. Appropriate silence when no knowledge exists
 
 Run with:
-    GOOGLE_API_KEY=your_key python -m pytest test_quality_eval.py -v -s
+    # Recommended: put GOOGLE_API_KEY in .env (repo root)
+    RUN_REAL_LLM_TESTS=1 pytest test/test_quality_eval.py -v -s
+
+By default this test module is skipped to avoid accidental API usage/cost.
 """
 
 import json
@@ -24,10 +27,35 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "signal-bot"))
 
-# Skip all tests if no API key
+def _maybe_load_dotenv(dotenv_path: Path) -> None:
+    """
+    Load key=value pairs from .env, stripping CRLF, without overriding existing env.
+    """
+    if not dotenv_path.exists():
+        return
+    for raw in dotenv_path.read_text(encoding="utf-8", errors="ignore").splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        k, v = line.split("=", 1)
+        k = k.strip()
+        v = v.strip().strip("\r")
+        if not k:
+            continue
+        if (v.startswith("'") and v.endswith("'")) or (v.startswith('"') and v.endswith('"')):
+            v = v[1:-1]
+        os.environ.setdefault(k, v)
+
+
+# Optional convenience: load repo-root .env for local runs (does not override).
+_maybe_load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+
+_run_real = os.environ.get("RUN_REAL_LLM_TESTS", "").strip().lower() in {"1", "true", "yes", "y"}
+
+# Skip unless explicitly enabled + API key available
 pytestmark = pytest.mark.skipif(
-    not os.environ.get("GOOGLE_API_KEY"),
-    reason="GOOGLE_API_KEY not set"
+    not (_run_real and os.environ.get("GOOGLE_API_KEY")),
+    reason="Set RUN_REAL_LLM_TESTS=1 and GOOGLE_API_KEY (in .env or environment)",
 )
 
 
@@ -364,6 +392,11 @@ class RealBotTester:
             retrieve_top_k=5,
             worker_poll_seconds=1,
             history_token_ttl_minutes=60,
+            max_images_per_gate=3,
+            max_images_per_respond=5,
+            max_kb_images_per_case=2,
+            max_image_size_bytes=5_000_000,
+            max_total_image_bytes=20_000_000,
         )
         
         self.llm = LLMClient(self.settings)

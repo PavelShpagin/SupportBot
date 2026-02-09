@@ -15,7 +15,20 @@ class RawMessage:
     ts: int
     sender_hash: str
     content_text: str
+    image_paths: List[str]
     reply_to_id: str | None
+
+
+def _parse_json_list(raw: str | None) -> List[str]:
+    if not raw:
+        return []
+    try:
+        data = json.loads(raw)
+    except Exception:
+        return []
+    if not isinstance(data, list):
+        return []
+    return [str(x) for x in data if str(x)]
 
 
 def insert_raw_message(db: Oracle, msg: RawMessage) -> None:
@@ -24,8 +37,8 @@ def insert_raw_message(db: Oracle, msg: RawMessage) -> None:
         try:
             cur.execute(
                 """
-                INSERT INTO raw_messages(message_id, group_id, ts, sender_hash, content_text, reply_to_id)
-                VALUES(:message_id, :group_id, :ts, :sender_hash, :content_text, :reply_to_id)
+                INSERT INTO raw_messages(message_id, group_id, ts, sender_hash, content_text, image_paths_json, reply_to_id)
+                VALUES(:message_id, :group_id, :ts, :sender_hash, :content_text, :image_paths_json, :reply_to_id)
                 """,
                 {
                     "message_id": msg.message_id,
@@ -33,6 +46,7 @@ def insert_raw_message(db: Oracle, msg: RawMessage) -> None:
                     "ts": msg.ts,
                     "sender_hash": msg.sender_hash,
                     "content_text": msg.content_text,
+                    "image_paths_json": json.dumps(msg.image_paths, ensure_ascii=False),
                     "reply_to_id": msg.reply_to_id,
                 },
             )
@@ -64,7 +78,7 @@ def get_raw_message(db: Oracle, message_id: str) -> Optional[RawMessage]:
         cur = conn.cursor()
         cur.execute(
             """
-            SELECT message_id, group_id, ts, sender_hash, content_text, reply_to_id
+            SELECT message_id, group_id, ts, sender_hash, content_text, image_paths_json, reply_to_id
             FROM raw_messages
             WHERE message_id = :message_id
             """,
@@ -79,7 +93,8 @@ def get_raw_message(db: Oracle, message_id: str) -> Optional[RawMessage]:
             ts=int(row[2]),
             sender_hash=row[3],
             content_text=row[4] or "",
-            reply_to_id=row[5],
+            image_paths=_parse_json_list(row[5]),
+            reply_to_id=row[6],
         )
 
 
@@ -150,16 +165,17 @@ def insert_case(
     solution_summary: str,
     tags: List[str],
     evidence_ids: List[str],
+    evidence_image_paths: List[str],
 ) -> None:
     with db.connection() as conn:
         cur = conn.cursor()
         cur.execute(
             """
             INSERT INTO cases(
-              case_id, group_id, status, problem_title, problem_summary, solution_summary, tags_json, created_at, updated_at
+              case_id, group_id, status, problem_title, problem_summary, solution_summary, tags_json, evidence_image_paths_json, created_at, updated_at
             )
             VALUES(
-              :case_id, :group_id, :status, :problem_title, :problem_summary, :solution_summary, :tags_json, SYSTIMESTAMP, SYSTIMESTAMP
+              :case_id, :group_id, :status, :problem_title, :problem_summary, :solution_summary, :tags_json, :evidence_image_paths_json, SYSTIMESTAMP, SYSTIMESTAMP
             )
             """,
             {
@@ -170,6 +186,7 @@ def insert_case(
                 "problem_summary": problem_summary,
                 "solution_summary": solution_summary,
                 "tags_json": json.dumps(tags, ensure_ascii=False),
+                "evidence_image_paths_json": json.dumps(evidence_image_paths, ensure_ascii=False),
             },
         )
         for mid in evidence_ids:

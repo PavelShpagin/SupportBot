@@ -348,8 +348,9 @@ pytest test/test_*.py -v
 ### Run Quality Evaluation (requires API key)
 
 ```bash
-export GOOGLE_API_KEY=your_key_here
-pytest test/test_quality_eval.py -v -s
+# Recommended: put GOOGLE_API_KEY=... in .env (repo root), OR export it in your shell
+# This test is skipped by default to avoid accidental API usage/cost.
+RUN_REAL_LLM_TESTS=1 pytest test/test_quality_eval.py -v -s
 ```
 
 ### Run Interactive Demos
