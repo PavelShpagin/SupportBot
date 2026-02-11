@@ -131,7 +131,7 @@ class LLMClient:
     def decide_consider(
         self, *, message: str, context: str, images: list[tuple[bytes, str]] | None = None
     ) -> DecisionResult:
-        user = f"MESSAGE:\n{message}\n\nCONTEXT (last messages):\n{context}"
+        user = f"MESSAGE:\n{message}\n\nCONTEXT (незавершені обговорення з buffer):\n{context}"
         return self._json_call(
             model=self.settings.model_decision,
             system=P.P_DECISION_SYSTEM,
@@ -146,13 +146,19 @@ class LLMClient:
         message: str,
         context: str,
         cases: str,
+        buffer: str = "",
         images: list[tuple[bytes, str]] | None = None,
     ) -> RespondResult:
-        user = (
-            f"MESSAGE:\n{message}\n\n"
-            f"CONTEXT (last messages):\n{context}\n\n"
-            f"RETRIEVED CASES (top-K):\n{cases}"
-        )
+        # Build user prompt with buffer context if available
+        parts = [
+            f"MESSAGE:\n{message}",
+            f"CONTEXT (last messages):\n{context}",
+            f"RETRIEVED CASES (top-K):\n{cases}",
+        ]
+        if buffer.strip():
+            parts.append(f"BUFFER (ongoing discussions):\n{buffer}")
+        
+        user = "\n\n".join(parts)
         return self._json_call(
             model=self.settings.model_respond,
             system=P.P_RESPOND_SYSTEM,

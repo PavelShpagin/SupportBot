@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import logging
 import mimetypes
+import re
 import time
 from dataclasses import dataclass
 from typing import Any, Dict, List, TYPE_CHECKING
@@ -40,6 +41,112 @@ class WorkerDeps:
 def _format_buffer_line(msg: RawMessage) -> str:
     reply = f" reply_to={msg.reply_to_id}" if msg.reply_to_id else ""
     return f"{msg.sender_hash} ts={msg.ts}{reply}\n{msg.content_text}\n\n"
+
+
+@dataclass(frozen=True)
+class BufferMessageBlock:
+    idx: int
+    start_line: int
+    end_line: int
+    raw_text: str
+
+
+_BUFFER_HEADER_RE = re.compile(r"^[^\n]*\sts=\d+(?:\sreply_to=\S+)?\n", re.MULTILINE)
+
+
+def _parse_buffer_blocks(buffer_text: str) -> List[BufferMessageBlock]:
+    """Parse buffer into exact message blocks with stable 0-based indexes."""
+    if not buffer_text:
+        return []
+
+    headers = list(_BUFFER_HEADER_RE.finditer(buffer_text))
+    if not headers:
+        return []
+
+    blocks: List[BufferMessageBlock] = []
+    for i, m in enumerate(headers):
+        start = m.start()
+        end = headers[i + 1].start() if i + 1 < len(headers) else len(buffer_text)
+        raw = buffer_text[start:end]
+        start_line = buffer_text.count("\n", 0, start) + 1
+        end_line = start_line + raw.count("\n")
+        blocks.append(
+            BufferMessageBlock(
+                idx=i,
+                start_line=start_line,
+                end_line=end_line,
+                raw_text=raw,
+            )
+        )
+    return blocks
+
+
+def _format_numbered_buffer_for_extract(blocks: List[BufferMessageBlock]) -> str:
+    """Build numbered extract input so LLM can return exact idx/line spans."""
+    out: List[str] = []
+    for b in blocks:
+        out.append(f"### MSG idx={b.idx} lines={b.start_line}-{b.end_line}")
+        out.append(b.raw_text.rstrip("\n"))
+        out.append("### END")
+        out.append("")
+    return "\n".join(out).strip()
+
+
+def _trim_buffer(buffer_text: str, max_age_hours: int, max_messages: int) -> str:
+    """Trim buffer to enforce age and size limits.
+    
+    Removes oldest messages first until within limits.
+    """
+    import time as _time
+    
+    if not buffer_text:
+        return ""
+    
+    # Parse buffer into message blocks with timestamps
+    blocks = buffer_text.split("\n\n")
+    parsed_blocks: List[tuple] = []  # (timestamp, block_text)
+    
+    for block in blocks:
+        block = block.strip()
+        if not block:
+            continue
+        
+        # Extract timestamp from first line
+        first_line = block.split("\n")[0] if block else ""
+        ts_value = 0
+        if " ts=" in first_line:
+            ts_start = first_line.find(" ts=") + 4
+            ts_end = first_line.find(" ", ts_start)
+            if ts_end == -1:
+                ts_end = len(first_line)
+            try:
+                ts_value = int(first_line[ts_start:ts_end])
+            except ValueError:
+                pass
+        
+        parsed_blocks.append((ts_value, block))
+    
+    if not parsed_blocks:
+        return ""
+    
+    # Sort by timestamp (oldest first)
+    parsed_blocks.sort(key=lambda x: x[0])
+    
+    # Apply age limit (remove messages older than max_age_hours)
+    current_ts = int(_time.time() * 1000)  # Current time in milliseconds
+    max_age_ms = max_age_hours * 3600 * 1000
+    cutoff_ts = current_ts - max_age_ms
+    
+    filtered_blocks = [(ts, block) for ts, block in parsed_blocks if ts >= cutoff_ts or ts == 0]
+    
+    # Apply message count limit (keep most recent)
+    if len(filtered_blocks) > max_messages:
+        filtered_blocks = filtered_blocks[-max_messages:]
+    
+    # Reconstruct buffer
+    if not filtered_blocks:
+        return ""
+    return "\n\n".join(block for _, block in filtered_blocks) + "\n\n"
 
 
 def _mentions_bot(settings: Settings, text: str) -> bool:
@@ -128,6 +235,29 @@ def _split_case_document(doc: str) -> tuple[str, str, str]:
     return title, problem, solution
 
 
+def _get_solution_message_for_reply(
+    db, case: Dict[str, Any]
+) -> tuple[str | None, int | None, str | None]:
+    """
+    Get the last message from evidence_ids to reply to (the solution message).
+    Returns (message_id, timestamp, text) or (None, None, None).
+    """
+    evidence_ids = case.get("metadata", {}).get("evidence_ids") or []
+    if not evidence_ids:
+        return None, None, None
+    
+    # Get the last evidence message (typically contains the solution)
+    last_msg_id = evidence_ids[-1] if isinstance(evidence_ids, list) else None
+    if not last_msg_id:
+        return None, None, None
+    
+    msg = get_raw_message(db, message_id=str(last_msg_id))
+    if not msg:
+        return None, None, None
+    
+    return str(msg.message_id), int(msg.ts), str(msg.content_text or "")
+
+
 def _pick_history_solution_refs(retrieved: List[Dict[str, Any]], *, max_refs: int) -> List[Dict[str, str]]:
     """
     Pick 1..N solved cases that contain a non-empty solution summary.
@@ -212,62 +342,115 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
     line = _format_buffer_line(msg)
     buf = get_buffer(deps.db, group_id=group_id)
     buf2 = (buf or "") + line
+    
+    # Trim buffer to enforce size/age limits before processing
+    buf2 = _trim_buffer(
+        buf2, 
+        max_age_hours=deps.settings.buffer_max_age_hours,
+        max_messages=deps.settings.buffer_max_messages
+    )
 
-    extract = deps.llm.extract_case_from_buffer(buffer_text=buf2)
-    if not extract.found:
+    blocks = _parse_buffer_blocks(buf2)
+    if not blocks:
         set_buffer(deps.db, group_id=group_id, buffer_text=buf2)
         return
 
-    # We extracted exactly one solved case; normalize it into a structured case.
-    case = deps.llm.make_case(case_block_text=extract.case_block)
-    if not case.keep:
-        set_buffer(deps.db, group_id=group_id, buffer_text=extract.buffer_new)
+    numbered_buffer = _format_numbered_buffer_for_extract(blocks)
+    extract = deps.llm.extract_case_from_buffer(buffer_text=numbered_buffer)
+    if not extract.cases:
+        set_buffer(deps.db, group_id=group_id, buffer_text=buf2)
         return
 
-    if case.status == "solved" and not case.solution_summary.strip():
-        log.warning("Rejecting solved case without solution_summary")
-        set_buffer(deps.db, group_id=group_id, buffer_text=extract.buffer_new)
+    # Hard safety: if any returned span is out of bounds, reject this extract output.
+    n_blocks = len(blocks)
+    if any(c.start_idx < 0 or c.end_idx >= n_blocks for c in extract.cases):
+        log.warning(
+            "Rejecting extract result with out-of-range spans (n_blocks=%s): %s",
+            n_blocks,
+            [(c.start_idx, c.end_idx) for c in extract.cases],
+        )
+        set_buffer(deps.db, group_id=group_id, buffer_text=buf2)
         return
 
-    case_id = new_case_id(deps.db)
-    evidence_image_paths = _collect_evidence_image_paths(deps, case.evidence_ids)
-    insert_case(
-        deps.db,
-        case_id=case_id,
-        group_id=group_id,
-        status=case.status,
-        problem_title=case.problem_title,
-        problem_summary=case.problem_summary,
-        solution_summary=case.solution_summary,
-        tags=case.tags,
-        evidence_ids=case.evidence_ids,
-        evidence_image_paths=evidence_image_paths,
+    accepted_ranges: List[tuple[int, int]] = []
+    for span in extract.cases:
+        # Build exact case block from indexed message slice.
+        case_block_text = "".join(blocks[i].raw_text for i in range(span.start_idx, span.end_idx + 1))
+        case = deps.llm.make_case(case_block_text=case_block_text)
+        if not case.keep:
+            continue
+
+        if case.status != "solved":
+            log.info(
+                "Skipping non-solved extracted span idx=%s..%s (status=%s)",
+                span.start_idx,
+                span.end_idx,
+                case.status,
+            )
+            continue
+
+        if not case.solution_summary.strip():
+            log.warning("Rejecting solved case without solution_summary for span %s..%s", span.start_idx, span.end_idx)
+            continue
+
+        case_id = new_case_id(deps.db)
+        evidence_image_paths = _collect_evidence_image_paths(deps, case.evidence_ids)
+        insert_case(
+            deps.db,
+            case_id=case_id,
+            group_id=group_id,
+            status=case.status,
+            problem_title=case.problem_title,
+            problem_summary=case.problem_summary,
+            solution_summary=case.solution_summary,
+            tags=case.tags,
+            evidence_ids=case.evidence_ids,
+            evidence_image_paths=evidence_image_paths,
+        )
+
+        # Build doc_text with clear labels for retrieval
+        doc_text = "\n".join(
+            [
+                f"[SOLVED] {case.problem_title.strip()}",
+                f"Проблема: {case.problem_summary.strip()}",
+                f"Рішення: {case.solution_summary.strip()}",
+                "tags: " + ", ".join(case.tags),
+            ]
+        ).strip()
+        embedding = deps.llm.embed(text=doc_text)
+
+        deps.rag.upsert_case(
+            case_id=case_id,
+            document=doc_text,
+            embedding=embedding,
+            metadata={
+                "group_id": group_id,
+                "status": case.status,
+                "evidence_ids": case.evidence_ids,
+                "evidence_image_paths": evidence_image_paths,
+            },
+        )
+        accepted_ranges.append((span.start_idx, span.end_idx))
+
+    if not accepted_ranges:
+        set_buffer(deps.db, group_id=group_id, buffer_text=buf2)
+        return
+
+    remove_idx: set[int] = set()
+    for start_idx, end_idx in accepted_ranges:
+        remove_idx.update(range(start_idx, end_idx + 1))
+    kept_blocks = [b.raw_text for b in blocks if b.idx not in remove_idx]
+    buffer_new = "".join(kept_blocks)
+
+    set_buffer(deps.db, group_id=group_id, buffer_text=buffer_new)
+    log.info(
+        "Extracted solved spans group_id=%s total_messages=%s removed_ranges=%s removed_messages=%s remaining_messages=%s",
+        group_id,
+        len(blocks),
+        accepted_ranges,
+        len(remove_idx),
+        len(blocks) - len(remove_idx),
     )
-
-    doc_text = "\n".join(
-        [
-            case.problem_title.strip(),
-            case.problem_summary.strip(),
-            case.solution_summary.strip(),
-            "tags: " + ", ".join(case.tags),
-        ]
-    ).strip()
-    embedding = deps.llm.embed(text=doc_text)
-
-    deps.rag.upsert_case(
-        case_id=case_id,
-        document=doc_text,
-        embedding=embedding,
-        metadata={
-            "group_id": group_id,
-            "status": case.status,
-            "evidence_ids": case.evidence_ids,
-            "evidence_image_paths": evidence_image_paths,
-        },
-    )
-
-    set_buffer(deps.db, group_id=group_id, buffer_text=extract.buffer_new)
-    log.info("New case created: case_id=%s group_id=%s", case_id, group_id)
 
 
 def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
@@ -279,8 +462,11 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         log.warning("MAYBE_RESPOND: message not found: %s", message_id)
         return
 
-    context_lines = get_last_messages_text(deps.db, group_id=group_id, n=deps.settings.context_last_n)
-    context = "\n".join(context_lines)
+    # Get CLEAN buffer (only unsolved threads after extraction)
+    buffer = get_buffer(deps.db, group_id=group_id) or ""
+    
+    # Use clean buffer for both gate and response (keep it simple)
+    context = buffer
 
     force = _mentions_bot(deps.settings, msg.content_text)
     msg_images = _load_images(
@@ -305,11 +491,10 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         k=deps.settings.retrieve_top_k,
     )
 
-    # Trust requirement: if we respond, we must reference at least one concrete solution
-    # from a solved historical case.
-    history_refs = _pick_history_solution_refs(retrieved, max_refs=1)
-    if not history_refs:
-        log.info("No solved cases with solutions found in retrieval; staying silent")
+    # Minimal safety: only block if truly nothing available (edge case)
+    # Trust the LLM to make the final decision based on case relevance
+    if len(retrieved) == 0 and len(buffer.strip()) == 0:
+        log.info("No retrieved cases and empty buffer; staying silent")
         return
 
     kb_paths: List[str] = []
@@ -338,11 +523,15 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         message=msg.content_text,
         context=context,
         cases=cases_json,
+        buffer=buffer,
         images=all_images,
     )
     if not resp.respond:
         return
 
+    # NOW extract history refs for citation (after LLM decided to respond)
+    history_refs = _pick_history_solution_refs(retrieved, max_refs=1)
+    
     # Ensure at least one case citation is present (best-effort, even if model forgets).
     required_case_cits = [f'case:{r["case_id"]}' for r in history_refs]
     cits = list(dict.fromkeys((resp.citations or []) + required_case_cits))
@@ -352,20 +541,47 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
     if cits:
         out = out.rstrip() + "\n\nRefs: " + ", ".join(cits[:3]) + "\n"
 
-    # Reply directly to the asker by quoting their message (Signal "reply" UX).
+    # NEW: Dual-reply strategy for trust:
+    # 1. Reply to the user's question (quote_author)
+    # 2. Also reply to the solution message from the top-1 case (if high confidence)
+    
     quote_author = str(payload.get("sender") or "").strip()
     quote_ts_raw = payload.get("ts")
     quote_ts = int(quote_ts_raw) if quote_ts_raw is not None else int(msg.ts)
     quote_msg = str(payload.get("text") or "").strip()
-
-    if quote_author:
+    
+    # Check if we have high confidence (top-1 case with good similarity)
+    # If so, also reply to the solution message from that case
+    solution_msg_id, solution_ts, solution_text = None, None, None
+    if len(retrieved) > 0:
+        top_case = retrieved[0]
+        # If distance is low (high similarity), reply to solution message too
+        distance = top_case.get("distance", 1.0)
+        if distance < 0.5:  # High confidence threshold
+            solution_msg_id, solution_ts, solution_text = _get_solution_message_for_reply(deps.db, top_case)
+    
+    # For now, prioritize replying to the solution message (more useful for verification)
+    # If solution message found, quote it; otherwise quote the question
+    final_quote_ts = solution_ts if solution_ts else quote_ts
+    final_quote_author = None  # Solution message author not readily available
+    final_quote_msg = solution_text[:200] if solution_text else (quote_msg if quote_msg else None)
+    
+    # Add @ mention for the person asking
+    mention_recipients = [quote_author] if quote_author else []
+    
+    if final_quote_ts:
         deps.signal.send_group_text(
             group_id=group_id,
             text=out,
-            quote_timestamp=quote_ts,
-            quote_author=quote_author,
-            quote_message=quote_msg if quote_msg else None,
+            quote_timestamp=final_quote_ts,
+            quote_author=final_quote_author,
+            quote_message=final_quote_msg,
+            mention_recipients=mention_recipients,
         )
     else:
-        deps.signal.send_group_text(group_id=group_id, text=out)
+        deps.signal.send_group_text(
+            group_id=group_id, 
+            text=out,
+            mention_recipients=mention_recipients,
+        )
 

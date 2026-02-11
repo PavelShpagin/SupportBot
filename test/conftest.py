@@ -41,8 +41,8 @@ def make_test_settings(**overrides) -> Settings:
         "openai_api_key": os.environ.get("GOOGLE_API_KEY", "test-key"),
         "model_img": "gemini-3-pro-preview",
         "model_decision": "gemini-2.5-flash-lite",
-        "model_extract": "gemini-2.5-flash-lite",
-        "model_case": "gemini-2.5-flash-lite",
+        "model_extract": "gemini-3-pro-preview",
+        "model_case": "gemini-3-pro-preview",
         "model_respond": "gemini-3-pro-preview",
         "model_blocks": "gemini-3-pro-preview",
         "embedding_model": "text-embedding-004",
@@ -59,6 +59,8 @@ def make_test_settings(**overrides) -> Settings:
         "retrieve_top_k": 5,
         "worker_poll_seconds": 0.1,
         "history_token_ttl_minutes": 60,
+        "buffer_max_age_hours": 168,
+        "buffer_max_messages": 500,
         "max_images_per_gate": 3,
         "max_images_per_respond": 5,
         "max_kb_images_per_case": 2,
@@ -233,7 +235,7 @@ class MockLLMClient:
             self._extract_idx += 1
             return result
         # Default: no case found
-        return ExtractResult(found=False, case_block="", buffer_new=buffer_text)
+        return ExtractResult(cases=[])
     
     def make_case(self, *, case_block_text: str) -> CaseResult:
         self.case_calls.append(case_block_text)
@@ -255,8 +257,8 @@ class MockLLMClient:
             result = self.decision_responses[self._decision_idx]
             self._decision_idx += 1
             return result
-        # Default: don't consider
-        return DecisionResult(consider=False)
+        # Default: don't consider, tag as noise
+        return DecisionResult(consider=False, tag="noise")
     
     def decide_and_respond(
         self,
@@ -264,10 +266,11 @@ class MockLLMClient:
         message: str,
         context: str,
         cases: str,
+        buffer: str = "",
         images: List[tuple[bytes, str]] | None = None,
     ) -> RespondResult:
         self.respond_calls.append(
-            {"message": message, "context": context, "cases": cases, "images": images}
+            {"message": message, "context": context, "cases": cases, "buffer": buffer, "images": images}
         )
         if self._respond_idx < len(self.respond_responses):
             result = self.respond_responses[self._respond_idx]
@@ -357,11 +360,24 @@ class MockSignalAdapter:
     
     sent_messages: List[Dict[str, Any]] = field(default_factory=list)
     
-    def send_group_text(self, *, group_id: str, text: str) -> None:
+    def send_group_text(
+        self, 
+        *, 
+        group_id: str, 
+        text: str,
+        quote_timestamp: int | None = None,
+        quote_author: str | None = None,
+        quote_message: str | None = None,
+        mention_recipients: List[str] | None = None,
+    ) -> None:
         self.sent_messages.append({
             "type": "group",
             "group_id": group_id,
             "text": text,
+            "quote_timestamp": quote_timestamp,
+            "quote_author": quote_author,
+            "quote_message": quote_message,
+            "mention_recipients": mention_recipients or [],
         })
     
     def send_direct_text(self, *, recipient: str, text: str) -> None:
@@ -464,3 +480,68 @@ def format_chat_buffer(messages: List[Dict[str, Any]]) -> str:
 def format_buffer():
     """Provide buffer formatting function."""
     return format_chat_buffer
+
+
+# =============================================================================
+# Helper Functions for Tests
+# =============================================================================
+
+def insert_test_message(db: InMemoryDB, **kwargs) -> None:
+    """Helper to insert a raw message for testing (SQLite-compatible)."""
+    import json
+    cur = db.cursor()
+    cur.execute(
+        """
+        INSERT INTO raw_messages(message_id, group_id, ts, sender_hash, content_text, image_paths_json, reply_to_id)
+        VALUES(?, ?, ?, ?, ?, ?, ?)
+        """,
+        (
+            kwargs["message_id"],
+            kwargs["group_id"],
+            kwargs["ts"],
+            kwargs["sender_hash"],
+            kwargs.get("content_text", ""),
+            json.dumps(kwargs.get("image_paths", []), ensure_ascii=False),
+            kwargs.get("reply_to_id"),
+        ),
+    )
+    db.commit()
+
+
+def get_test_raw_message(db: InMemoryDB, message_id: str):
+    """Helper to get a raw message for testing (SQLite-compatible)."""
+    import json
+    from app.db import RawMessage
+    cur = db.cursor()
+    cur.execute(
+        """
+        SELECT message_id, group_id, ts, sender_hash, content_text, image_paths_json, reply_to_id
+        FROM raw_messages
+        WHERE message_id = ?
+        """,
+        (message_id,),
+    )
+    row = cur.fetchone()
+    if not row:
+        return None
+    return RawMessage(
+        message_id=row[0],
+        group_id=row[1],
+        ts=row[2],
+        sender_hash=row[3],
+        content_text=row[4],
+        image_paths=json.loads(row[5]) if row[5] else [],
+        reply_to_id=row[6],
+    )
+
+
+@pytest.fixture
+def insert_message():
+    """Provide helper function to insert test messages."""
+    return insert_test_message
+
+
+@pytest.fixture
+def get_message():
+    """Provide helper function to get test messages."""
+    return get_test_raw_message

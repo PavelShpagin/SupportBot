@@ -29,6 +29,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import sys
 from dataclasses import asdict
 from pathlib import Path
@@ -93,6 +94,64 @@ def _chunk_lines(lines: list[str], *, max_chars: int, overlap_messages: int) -> 
     if cur:
         chunks.append("".join(cur))
     return chunks
+
+
+def _extract_image_observations(case_block: str, llm, repo: Path, enable_image_processing: bool = True) -> str:
+    """
+    Enhance case_block with image context markers to improve retrieval.
+    Detects images and adds surrounding text context for better embedding.
+    """
+    if not enable_image_processing:
+        return case_block
+    
+    # Check if block has any image attachments
+    if '[ATTACHMENT image' not in case_block and '[ATTACHMENT application/pdf' not in case_block:
+        return case_block
+    
+    # Extract surrounding context to understand what the image/PDF is about
+    lines = case_block.split('\n')
+    contexts = []
+    
+    for i, line in enumerate(lines):
+        if '[ATTACHMENT' in line:
+            # Get text BEFORE attachment (what user said when sending image)
+            text_before = []
+            j = i - 1
+            while j >= 0 and len(text_before) < 3:
+                line_clean = lines[j].strip()
+                # Skip headers (sender ts=...)
+                if not re.match(r'^[a-f0-9-]+\s+ts=\d+', line_clean) and line_clean:
+                    text_before.insert(0, line_clean)
+                j -= 1
+            
+            # Get text AFTER attachment (user's follow-up or explanation)
+            text_after = []
+            j = i + 1
+            while j < len(lines) and len(text_after) < 3:
+                line_clean = lines[j].strip()
+                # Skip headers
+                if not re.match(r'^[a-f0-9-]+\s+ts=\d+', line_clean) and line_clean:
+                    text_after.append(line_clean)
+                    # Stop if we hit next sender
+                    if j + 1 < len(lines) and re.match(r'^[a-f0-9-]+\s+ts=\d+', lines[j + 1].strip()):
+                        break
+                j += 1
+            
+            # Combine context
+            ctx_parts = text_before + text_after
+            if ctx_parts:
+                ctx_text = ' '.join(ctx_parts)
+                if len(ctx_text) > 15:  # Meaningful text only
+                    contexts.append(ctx_text[:300])
+    
+    # Add enhancement if we found context
+    if contexts:
+        # Deduplicate
+        unique_contexts = list(dict.fromkeys(contexts))
+        enhancement = f"\n\n[Візуальні матеріали: {'; '.join(unique_contexts)}]"
+        return case_block + enhancement
+    
+    return case_block
 
 
 def main() -> None:
@@ -203,8 +262,16 @@ def main() -> None:
 
     structured: list[dict[str, Any]] = []
     kept = 0
+    images_processed = 0
     for idx, block in enumerate(case_blocks, 1):
-        case = llm.make_case(case_block_text=block)
+        # Enhance case_block with image context if images present
+        has_img = '[ATTACHMENT' in block
+        enhanced_block = _extract_image_observations(block, llm, repo)
+        if has_img and enhanced_block != block:
+            images_processed += 1
+            print(f"Block {idx}: Enhanced with image context", flush=True)
+        
+        case = llm.make_case(case_block_text=enhanced_block)
         if not case.keep:
             continue
 
@@ -215,6 +282,7 @@ def main() -> None:
             continue
 
         # Build doc_text with clear section labels
+        # Use enhanced_block for better context
         solution_text = (case.solution_summary or "").strip()
         if case.status == "solved" and solution_text:
             doc_text = "\n".join([
@@ -249,7 +317,7 @@ def main() -> None:
                 "evidence_ids": case.evidence_ids,
                 "doc_text": doc_text,
                 "embedding": emb,
-                "case_block": block,
+                "case_block": enhanced_block,  # Store enhanced version with image context
             }
         )
 
@@ -271,6 +339,7 @@ def main() -> None:
                 "source_messages_path": str(data_path),
                 "source_messages_used": len(msgs),
                 "kept_cases": kept,
+                "images_processed": images_processed,
                 "cases": structured,
             },
             ensure_ascii=False,
@@ -280,6 +349,7 @@ def main() -> None:
     )
     print(f"Wrote structured cases: {out_struct}", flush=True)
     print(f"Kept structured cases: {kept}", flush=True)
+    print(f"Images processed: {images_processed}", flush=True)
 
 
 if __name__ == "__main__":
