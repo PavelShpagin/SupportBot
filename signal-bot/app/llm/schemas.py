@@ -52,7 +52,7 @@ class CaseResult(BaseModel):
 
 class DecisionResult(BaseModel):
     consider: bool
-    tag: Literal["new_question", "ongoing_discussion", "noise"] = "new_question"
+    tag: Literal["new_question", "ongoing_discussion", "noise", "statement"] = "new_question"
 
 
 class RespondResult(BaseModel):
