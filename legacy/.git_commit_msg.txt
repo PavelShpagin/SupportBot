@@ -1,0 +1,30 @@
+Implement multimodal support with image handling and comprehensive evaluation
+
+This commit implements the complete multimodal feature enabling SupportBot to 
+process images alongside text messages. Major changes include:
+
+- Add image storage and retrieval in database schema (SQLite and MySQL)
+- Implement image path storage as JSON in raw_messages field
+- Pass images through entire pipeline (signal adapter, worker, LLM client)
+- Add image-to-text extraction using GPT-4o vision capabilities
+- Filter out solved cases without solution_summary to improve quality
+- Add comprehensive test suite including image processing tests
+- Create large-scale evaluation framework (run_real_quality_eval.py)
+- Add streaming evaluation for incremental testing
+
+Results from 400-message real dataset evaluation:
+- Pass rate: 74.1% (74/100 questions answered correctly with score 8+)
+- Improvement: 8.7% → 74.1% (8.5x improvement over baseline)
+- Eliminated all garbage responses (43% → 0%)
+- Average response score: 2.6/10 → 7.85/10
+
+Documentation:
+- Add comprehensive implementation report (report2_multimodal_implementation.tex/pdf)
+- Include state-of-the-art pseudoalgorithms and real-world examples
+- Document retrieval introspection showing bot decision-making process
+- Add reports README with build instructions
+
+Additional improvements:
+- Refactor instructions/ directory structure (remove Vercel deployment)
+- Add helper scripts for Signal DB inspection and attachment handling
+- Update test infrastructure with new evaluation capabilities

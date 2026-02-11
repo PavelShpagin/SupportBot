@@ -317,6 +317,7 @@ class AdminSession:
     pending_group_id: str | None
     pending_group_name: str | None
     pending_token: str | None
+    lang: str = "uk"  # 'uk' or 'en'
 
 
 def get_admin_session(db: MySQL, admin_id: str) -> Optional[AdminSession]:
@@ -324,7 +325,7 @@ def get_admin_session(db: MySQL, admin_id: str) -> Optional[AdminSession]:
         cur = conn.cursor()
         cur.execute(
             """
-            SELECT admin_id, state, pending_group_id, pending_group_name, pending_token
+            SELECT admin_id, state, pending_group_id, pending_group_name, pending_token, lang
             FROM admin_sessions
             WHERE admin_id = %s
             """,
@@ -339,6 +340,7 @@ def get_admin_session(db: MySQL, admin_id: str) -> Optional[AdminSession]:
             pending_group_id=row[2],
             pending_group_name=row[3],
             pending_token=row[4],
+            lang=row[5] if row[5] else "uk",
         )
 
 
@@ -405,7 +407,7 @@ def get_admin_by_token(db: MySQL, token: str) -> Optional[AdminSession]:
         cur = conn.cursor()
         cur.execute(
             """
-            SELECT admin_id, state, pending_group_id, pending_group_name, pending_token
+            SELECT admin_id, state, pending_group_id, pending_group_name, pending_token, lang
             FROM admin_sessions
             WHERE pending_token = %s AND state = 'awaiting_qr_scan'
             """,
@@ -420,7 +422,46 @@ def get_admin_by_token(db: MySQL, token: str) -> Optional[AdminSession]:
             pending_group_id=row[2],
             pending_group_name=row[3],
             pending_token=row[4],
+            lang=row[5] if row[5] else "uk",
         )
+
+
+def set_admin_lang(db: MySQL, admin_id: str, lang: str) -> None:
+    """Set admin's language preference."""
+    if lang not in ("uk", "en"):
+        lang = "uk"
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            """
+            UPDATE admin_sessions SET lang = %s WHERE admin_id = %s
+            """,
+            (lang, admin_id),
+        )
+        conn.commit()
+
+
+def cancel_pending_history_jobs(db: MySQL, token: str) -> int:
+    """Cancel any pending HISTORY_LINK jobs with the given token.
+    
+    Returns the number of jobs cancelled.
+    """
+    with db.connection() as conn:
+        cur = conn.cursor()
+        # Mark as cancelled any pending jobs that have this token in payload
+        cur.execute(
+            """
+            UPDATE jobs 
+            SET status = 'cancelled'
+            WHERE type = 'HISTORY_LINK' 
+              AND status = 'pending'
+              AND payload_json LIKE %s
+            """,
+            (f'%"token":"{token}"%',),
+        )
+        cancelled = cur.rowcount
+        conn.commit()
+        return cancelled
 
 
 def link_admin_to_group(db: MySQL, *, admin_id: str, group_id: str) -> None:
@@ -442,3 +483,116 @@ def link_admin_to_group(db: MySQL, *, admin_id: str, group_id: str) -> None:
                 return
             conn.rollback()
             raise
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Reactions
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Positive emoji that indicate problem resolution / approval
+POSITIVE_EMOJI = frozenset([
+    "\U0001F44D",  # thumbs up
+    "\U0001F44F",  # clapping hands
+    "\u2705",      # check mark
+    "\U0001F389",  # party popper
+    "\U0001F64F",  # folded hands (thank you)
+    "\u2764\ufe0f", # red heart
+    "\U0001F499",  # blue heart
+    "\U0001F49A",  # green heart
+    "\U0001F31F",  # star
+    "\U0001F4AF",  # 100
+])
+
+
+def upsert_reaction(
+    db: MySQL,
+    *,
+    group_id: str,
+    target_ts: int,
+    target_author: str,
+    sender_hash: str,
+    emoji: str,
+) -> None:
+    """Insert a reaction (ignore if duplicate)."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        try:
+            cur.execute(
+                """
+                INSERT INTO reactions (group_id, target_ts, target_author, sender_hash, emoji)
+                VALUES (%s, %s, %s, %s, %s)
+                """,
+                (group_id, target_ts, target_author, sender_hash, emoji),
+            )
+            conn.commit()
+        except Exception as exc:
+            if is_mysql_error(exc, MYSQL_ERR_DUP_ENTRY):
+                conn.rollback()
+                return
+            conn.rollback()
+            raise
+
+
+def delete_reaction(
+    db: MySQL,
+    *,
+    group_id: str,
+    target_ts: int,
+    sender_hash: str,
+    emoji: str,
+) -> None:
+    """Remove a reaction."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            """
+            DELETE FROM reactions
+            WHERE group_id = %s AND target_ts = %s AND sender_hash = %s AND emoji = %s
+            """,
+            (group_id, target_ts, sender_hash, emoji),
+        )
+        conn.commit()
+
+
+def get_positive_reactions_for_message(db: MySQL, *, group_id: str, target_ts: int) -> int:
+    """Count positive emoji reactions on a message."""
+    placeholders = ", ".join(["%s"] * len(POSITIVE_EMOJI))
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            f"""
+            SELECT COUNT(*)
+            FROM reactions
+            WHERE group_id = %s AND target_ts = %s AND emoji IN ({placeholders})
+            """,
+            (group_id, target_ts, *POSITIVE_EMOJI),
+        )
+        row = cur.fetchone()
+        return int(row[0]) if row else 0
+
+
+def get_message_by_ts(db: MySQL, *, group_id: str, ts: int) -> Optional[RawMessage]:
+    """Find a raw message by group_id and timestamp."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            """
+            SELECT message_id, group_id, ts, sender_hash, content_text, image_paths_json, reply_to_id
+            FROM raw_messages
+            WHERE group_id = %s AND ts = %s
+            LIMIT 1
+            """,
+            (group_id, ts),
+        )
+        row = cur.fetchone()
+        if not row:
+            return None
+        return RawMessage(
+            message_id=row[0],
+            group_id=row[1],
+            ts=int(row[2]),
+            sender_hash=row[3],
+            content_text=row[4] or "",
+            image_paths=_parse_json_list(row[5]),
+            reply_to_id=row[6],
+        )

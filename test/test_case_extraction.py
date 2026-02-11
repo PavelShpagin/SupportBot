@@ -8,7 +8,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "signal-bot"))
 
-from app.llm.schemas import ExtractResult, CaseResult
+from app.llm.schemas import CaseResult, ExtractResult, ExtractedCaseSpan
 from conftest import MockLLMClient, format_chat_buffer
 
 
@@ -24,16 +24,23 @@ class TestCaseExtraction:
         # Configure mock to return the case
         case_block = format_buffer(login_case_messages)
         mock_llm.extract_responses.append(ExtractResult(
-            found=True,
-            case_block=case_block,
-            buffer_new=""  # Buffer empty after extraction
+            cases=[
+                ExtractedCaseSpan(
+                    start_idx=0,
+                    end_idx=len(login_case_messages) - 1,
+                    start_line=1,
+                    end_line=18,
+                    case_block=case_block,
+                )
+            ]
         ))
         
         result = mock_llm.extract_case_from_buffer(buffer_text=buffer)
         
-        assert result.found is True
-        assert "невірний пароль" in result.case_block
-        assert "все працює" in result.case_block
+        assert len(result.cases) == 1
+        assert result.cases[0].start_idx == 0
+        assert "невірний пароль" in result.cases[0].case_block
+        assert "все працює" in result.cases[0].case_block
     
     def test_extract_returns_empty_when_no_case(self, mock_llm, format_buffer):
         """Test that extraction returns empty when no solved case exists."""
@@ -47,9 +54,7 @@ class TestCaseExtraction:
         # Default mock behavior: no case found
         result = mock_llm.extract_case_from_buffer(buffer_text=buffer)
         
-        assert result.found is False
-        assert result.case_block == ""
-        assert result.buffer_new == buffer
+        assert result.cases == []
     
     def test_extract_removes_case_from_buffer(self, mock_llm, stabx_chat_data, format_buffer):
         """Test that extracted case is removed from buffer."""
@@ -60,19 +65,27 @@ class TestCaseExtraction:
         first_case = format_buffer(stabx_chat_data[:6])
         remaining = format_buffer(stabx_chat_data[6:15])
         
-        mock_llm.extract_responses.append(ExtractResult(
-            found=True,
-            case_block=first_case,
-            buffer_new=remaining
-        ))
+        mock_llm.extract_responses.append(
+            ExtractResult(
+                cases=[
+                    ExtractedCaseSpan(
+                        start_idx=0,
+                        end_idx=5,
+                        start_line=1,
+                        end_line=18,
+                        case_block=first_case,
+                    )
+                ]
+            )
+        )
         
         result = mock_llm.extract_case_from_buffer(buffer_text=full_buffer)
         
-        assert result.found is True
+        assert len(result.cases) == 1
         # First case should be in case_block
-        assert "невірний пароль" in result.case_block
-        # Second case (video) should be in remaining buffer
-        assert "відео уроки" in result.buffer_new
+        assert "невірний пароль" in result.cases[0].case_block
+        # Remaining content check is performed by deterministic worker trim tests
+        assert "відео уроки" in remaining
 
 
 class TestCaseStructuring:

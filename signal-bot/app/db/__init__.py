@@ -35,6 +35,7 @@ if DB_BACKEND == "mysql":
         RawMessage,
         Job,
         AdminSession,
+        POSITIVE_EMOJI,
         insert_raw_message,
         enqueue_job,
         get_raw_message,
@@ -55,6 +56,10 @@ if DB_BACKEND == "mysql":
         set_admin_awaiting_qr_scan,
         get_admin_by_token,
         link_admin_to_group,
+        upsert_reaction,
+        delete_reaction,
+        get_positive_reactions_for_message,
+        get_message_by_ts,
     )
     
     def create_db(settings):

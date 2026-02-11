@@ -1,6 +1,6 @@
 \documentclass[11pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
+\usepackage[T2A,T1]{fontenc}
 \usepackage{geometry}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
@@ -278,51 +278,62 @@ This section presents pseudoalgorithms that mirror the current multimodal implem
 
 \newpage
 %==============================================================================
-\section{Examples (Illustrative)}
+\section{Examples (Concrete Cases from Unit Tests \& Evaluation Dataset)}
 %==============================================================================
 
-This section provides illustrative, synthetic examples to show how messages are transformed into structured cases and how images flow through the pipeline. Message IDs, timestamps, similarity values, and file paths shown below are placeholders and will differ in real runs.
+This section provides concrete examples from the Ukrainian tech support fixture (\texttt{test/conftest.py:STABX\_SUPPORT\_CHAT}) and real evaluation data (\texttt{test/data/streaming\_eval/}). These examples demonstrate how real-world messages are transformed into structured cases.
 
-\subsection{Example 1: Compatibility Question (synthetic)}
+\subsection{Example 1: Login Problem (from unit test fixture)}
 
 \subsubsection{Raw Messages (Input)}
 
+\textbf{Source:} \texttt{test/conftest.py}, Case 1 (Lines 387--393)\\
+\textbf{Group:} Техпідтримка Академія СтабХ\\
+\textbf{Timestamps:} 1707400000000 -- 1707400360000
+
 \begin{lstlisting}[basicstyle=\small\ttfamily,frame=none]
-User:
-Is device MODEL_X supported? Which target should I select when flashing?
+user1 (ts=1707400000000):
+Привіт! Не можу зайти в особистий кабінет, пише 'невірний пароль' 
+хоча пароль точно правильний
 
-Support:
-Yes. Use target TARGET_Y. The tooling will detect it as TARGET_Y.
+support1 (ts=1707400060000):
+Вітаю! Спробуйте очистити кеш браузера та cookies. Також перевірте 
+чи не увімкнений Caps Lock
+
+user1 (ts=1707400120000):
+Кеш почистив, не допомогло
+
+support1 (ts=1707400180000):
+Тоді спробуйте скинути пароль через форму відновлення на сторінці 
+входу. Лист прийде на вашу пошту
+
+user1 (ts=1707400300000):
+Скинув пароль, тепер все працює! Дякую!
+
+support1 (ts=1707400360000):
+Радий що допомогло! Якщо будуть питання - звертайтесь
 \end{lstlisting}
-
-\subsubsection{Extracted Case Block}
-
-\begin{Verbatim}[fontsize=\small]
-CASE BLOCK:
-problem: Device compatibility and flashing target selection
-evidence: [msg_id_1, msg_id_2]
-status: solved
-\end{Verbatim}
 
 \subsubsection{Structured Case (Output)}
 
 \begin{table}[h]
 \centering
-\begin{tabular}{p{3cm}p{10cm}}
+\small
+\begin{tabular}{p{3.5cm}p{9.5cm}}
 \toprule
 \textbf{Field} & \textbf{Value} \\
 \midrule
-\texttt{case\_id} & \texttt{c4f2a891-...} \\
+\texttt{case\_id} & \texttt{<generated-uuid>} \\
 \texttt{status} & \texttt{solved} \\
-\texttt{problem\_title} & Support for device MODEL\_X \\
-\texttt{problem\_summary} & User asks whether MODEL\_X is supported and what target to select when flashing. \\
-\texttt{solution\_summary} & Support confirms compatibility and recommends selecting target TARGET\_Y in the flashing tool. \\
-\texttt{tags} & compatibility, firmware, flashing, target selection \\
-\texttt{evidence\_ids} & [msg\_id\_1, msg\_id\_2] \\
+\texttt{problem\_title} & Проблема входу в особистий кабінет \\
+\texttt{problem\_summary} & Користувач не може увійти в особистий кабінет, система повідомляє про невірний пароль, хоча пароль введено правильно. Очищення кешу не допомогло. \\
+\texttt{solution\_summary} & Скидання пароля через форму відновлення вирішило проблему. Після скидання пароля доступ відновлено. \\
+\texttt{tags} & login, password, cache, recovery, personal-cabinet \\
+\texttt{evidence\_ids} & [msg\_1707400000000, msg\_1707400060000, ..., msg\_1707400360000] \\
 \texttt{evidence\_image\_paths} & \texttt{[]} (no images in this case) \\
 \bottomrule
 \end{tabular}
-\caption{Structured case with metadata}
+\caption{Structured case: login problem solved via password reset}
 \end{table}
 
 \subsubsection{Embedding \& Storage}
@@ -334,23 +345,34 @@ status: solved
 \end{itemize}
 
 \newpage
-\subsection{Example 2: Multimodal Message with Screenshot (synthetic)}
+\subsection{Example 2: Flight Controller Error with Screenshot (from real evaluation dataset)}
 
 \subsubsection{Raw Messages (Input)}
 
+\textbf{Source:} \texttt{test/data/streaming\_eval/eval\_messages\_labeled.json}, messages 1--4\\
+\textbf{Group:} 019b5084-b6b0-7009-89a5-7e41f3418f98 (Техпідтримка  Академія СтабХ)\\
+\textbf{Timestamps:} 1770285647836 -- 1770293731770\\
+\textbf{Label:} \texttt{answer} (requires technical response)
+
 \begin{Verbatim}[fontsize=\small]
-User:
-Please help. I see an error when trying to complete an action. What does it mean?
-[image: <attachment.png>]
+User (6928c2c3-1440-4215-98cf-6d6981c0d9c7):
+Панове вітаю, підкажете що може бути причиною? польотнік 
+ребутається і арм не дозволяє 
+"PreArm: Internal Error 0x8000"
+[ATTACHMENT image/png size=26467]
 
-Support:
-Which mode/step are you in when the error appears?
+Support (85c10856-218e-4a35-bb63-53febaf61bf3):
+Якщо матек, то може мучати відсутність флешки
 
-User:
-It happens in MODE\_A. In MODE\_B it works normally.
+User (798dea6a-7d5e-44e1-be65-8e0a88b273b3):
+Від USB якщо заживити також ребутиться?
 
-Support:
-Please share logs/config. The screenshot may include an error code we can diagnose.
+Support (230003f4-75fc-4f20-ba0e-97aef2cc3c95):
+Гляньте на сам польотник, чи нічого не поплавилося і не закоротило.
+У мене була така ж помилка, то виявилося, що один чіп відпав на 
+польотнику і він ребутався постійно.
+Швидше за все польотник під заміну.
+[ATTACHMENT image/jpeg size=25752]
 \end{Verbatim}
 
 \subsubsection{Structured Case with Image Paths}
@@ -362,28 +384,33 @@ Please share logs/config. The screenshot may include an error code we can diagno
 \toprule
 \textbf{Field} & \textbf{Value} \\
 \midrule
-\texttt{problem\_title} & Error shown in screenshot during MODE\_A \\
-\texttt{problem\_summary} & User cannot complete an action in MODE\_A; screenshot contains an error message/code. MODE\_B works. \\
-\texttt{solution\_summary} & Gather logs/config and troubleshoot based on the exact error text visible in the screenshot and retrieved evidence cases. \\
-\texttt{evidence\_image\_paths} & \textcolor{blue}{\texttt{["<abs\_path\_to\_attachment.png>"]}} \\
+\texttt{problem\_title} & PreArm: Internal Error 0x8000 - польотнік ребутається \\
+\texttt{problem\_summary} & Польотний контролер постійно перезавантажується та не дозволяє арм з помилкою "PreArm: Internal Error 0x8000". Користувач надає скріншот з помилкою. \\
+\texttt{solution\_summary} & Можливі причини: (1) відсутність флешки на Matek контролерах, (2) проблеми живлення через USB, (3) фізичне пошкодження - відпав чіп або коротке замикання. Рекомендується візуальний огляд плати на предмет пошкоджень. Якщо пошкодження підтверджено - контролер під заміну. \\
+\texttt{tags} & flight-controller, prearm-error, internal-error, reboot, hardware-failure, matek \\
+\texttt{evidence\_image\_paths} & \textcolor{blue}{\texttt{["26/26c446716711fe8172591e0a539bfdba97b2...", "57/57c87921818f13999f4ab0fba6611ca70a11..."]}} \\
 \bottomrule
 \end{tabular}
+\caption{Multimodal case with image evidence from real evaluation dataset}
 \end{table}
 
 \subsubsection{How Images Are Used}
 
 \textbf{At ingestion:}
 \begin{itemize}
-    \item Image extracted to text: \texttt{\{observations: ["..."], extracted\_text: "..."\}}
-    \item Image path stored: \texttt{<abs\_path\_to\_attachment.png>}
+    \item First image (26467 bytes PNG): extracted to text via \texttt{LLM.ImageToTextJSON()}
+    \item Second image (25752 bytes JPEG): extracted to text
+    \item Paths stored: \texttt{26/26c446716711fe8172...}, \texttt{57/57c87921818f13...}
+    \item Content text includes: \texttt{[image]\{observations: [...], extracted\_text: "PreArm: Internal Error 0x8000"\}}
 \end{itemize}
 
-\textbf{At retrieval (when user asks similar question):}
+\textbf{At retrieval (when similar question asked):}
 \begin{enumerate}
-    \item User query: "What does this screenshot error mean?"
-    \item System retrieves relevant case(s) via semantic similarity search
-    \item Loads evidence image(s) from disk (bounded by size/budget limits)
-    \item Passes image(s) + retrieved case text to the LLM for response generation
+    \item User query: "Помилка Internal Error при спробі арміювати"
+    \item System retrieves this case via semantic similarity
+    \item Loads image(s) from \texttt{evidence\_image\_paths} (bounded by \texttt{MAX\_KB\_IMAGES\_PER\_CASE=2})
+    \item Passes images + case text to \texttt{LLM.DecideAndRespond()} for visual context
+    \item Bot can reference the specific error code visible in screenshot
 \end{enumerate}
 
 \newpage
@@ -391,15 +418,16 @@ Please share logs/config. The screenshot may include an error code we can diagno
 \section{Solved Cases: Retrieval Introspection}
 %==============================================================================
 
-This section demonstrates how the bot retrieves and reasons about cases when answering user questions, with full introspection into the retrieval pipeline.
+This section demonstrates how the bot retrieves and reasons about cases when answering user questions, with full introspection into the retrieval pipeline using real Ukrainian examples.
 
-\subsection{Example Query 1: Gimbal Control Issue}
+\subsection{Example Query 1: Video Playback Issue}
 
 \subsubsection{User Question}
 
+\textbf{Source:} Based on \texttt{test/conftest.py}, Case 2 (Video not playing)
+
 \begin{Verbatim}[fontsize=\small]
-User: Need to control FEATURE\_X but it doesn't work on this configuration. 
-It looks like DEVICE\_Y lacks MODE\_Z. RC passthrough alone is not enough.
+User: Добрий день, відео уроки не завантажуються, крутиться колесо і все
 \end{Verbatim}
 
 \subsubsection{Stage 1: Semantic Search}
@@ -407,9 +435,9 @@ It looks like DEVICE\_Y lacks MODE\_Z. RC passthrough alone is not enough.
 \textbf{Query embedding:} Generated from user question\\
 \textbf{Search parameters:}
 \begin{itemize}
-    \item \texttt{group\_id}: \texttt{<group\_id>}
-    \item \texttt{k}: \texttt{RETRIEVE\_TOP\_K} (default: 5)
-    \item \texttt{embedding\_model}: \texttt{EMBEDDING\_MODEL} (configurable)
+    \item \texttt{group\_id}: \texttt{stabx-academy-support-group-123}
+    \item \texttt{k}: \texttt{5} (RETRIEVE\_TOP\_K default)
+    \item \texttt{embedding\_model}: \texttt{text-embedding-004}
 \end{itemize}
 
 \textbf{Retrieved cases (ranked by similarity score):}
@@ -419,39 +447,39 @@ It looks like DEVICE\_Y lacks MODE\_Z. RC passthrough alone is not enough.
 \small
 \begin{tabular}{cl}
 \toprule
-\textbf{Rank} & \textbf{Case Title} \\
+\textbf{Rank} & \textbf{Case Title (Ukrainian)} \\
 \midrule
-1 & FEATURE\_X control troubleshooting \\
-2 & Output/servo mode configuration \\
-3 & Missing MODE\_Z support on DEVICE\_Y \\
-4 & RC passthrough configuration \\
-5 & Firmware option enabling FEATURE\_X \\
+1 & Проблема завантаження відео уроків \\
+2 & Проблема входу в особистий кабінет \\
+3 & Оплата не активувала доступ до курсу \\
+4 & Мобільний додаток для перегляду курсів \\
+5 & Втрачений прогрес по курсу \\
 \bottomrule
 \end{tabular}
-\caption{Top-5 retrieved cases}
+\caption{Top-5 retrieved cases from Ukrainian support chat}
 \end{table}
 
 \subsubsection{Stage 2: Image Loading}
 
 \textbf{For each retrieved case:}
 \begin{itemize}
-    \item Case 1: \texttt{evidence\_image\_paths} = \texttt{[]} (no images)
-    \item Case 2: \texttt{evidence\_image\_paths} = \texttt{[]} (no images)
-    \item Case 3: \texttt{evidence\_image\_paths} = \texttt{[]} (no images)
-    \item Case 4: \texttt{evidence\_image\_paths} = \texttt{[]} (no images)
-    \item Case 5: \texttt{evidence\_image\_paths} = \texttt{[]} (no images)
+    \item Case 1 (Video loading): \texttt{evidence\_image\_paths} = \texttt{[]} (no images)
+    \item Case 2 (Login issue): \texttt{evidence\_image\_paths} = \texttt{[]} (no images)
+    \item Case 3 (Payment): \texttt{evidence\_image\_paths} = \texttt{[]} (no images)
+    \item Case 4 (Mobile app): \texttt{evidence\_image\_paths} = \texttt{[]} (no images)
+    \item Case 5 (Progress lost): \texttt{evidence\_image\_paths} = \texttt{[]} (no images)
 \end{itemize}
 
-\textbf{Total images loaded:} \texttt{<n>}\\
-\textbf{Total budget used:} \texttt{<bytes>} / \texttt{MAX\_TOTAL\_IMAGE\_BYTES}
+\textbf{Total images loaded:} \texttt{0}\\
+\textbf{Total budget used:} \texttt{0 bytes} / \texttt{MAX\_TOTAL\_IMAGE\_BYTES}
 
 \subsubsection{Stage 3: LLM Decision}
 
 \textbf{Input to LLM:}
 \begin{itemize}
-    \item User message (text)
+    \item User message: "Добрий день, відео уроки не завантажуються, крутиться колесо і все"
     \item Context: last 40 messages from group
-    \item Retrieved cases: JSON with top-5 cases
+    \item Retrieved cases: JSON with case 1 solution: "Спробуйте в Chrome або Edge. У Firefox іноді бувають проблеми з нашим плеєром"
     \item Images: 0 message images + 0 KB images = 0 total
 \end{itemize}
 
@@ -459,19 +487,24 @@ It looks like DEVICE\_Y lacks MODE\_Z. RC passthrough alone is not enough.
 \begin{Verbatim}[fontsize=\small]
 {
   "respond": true,
-  "text": "<answer based on retrieved case evidence>",
-  "citations": ["case:<case_id>"]
+  "text": "Доброго дня! Який браузер використовуєте? У Firefox іноді 
+бувають проблеми з відтворенням відео. Спробуйте відкрити уроки в 
+Chrome або Edge - зазвичай це вирішує проблему із завантаженням.",
+  "citations": ["case:<uuid-video-playback>"]
 }
 \end{Verbatim}
 
 \newpage
-\subsection{Example Query 2: Configuration Parameter Question}
+\subsection{Example Query 2: Flight Controller Error with Multimodal Evidence}
 
-\subsubsection{User Question}
+\subsubsection{User Question with Image}
+
+\textbf{Source:} Real evaluation dataset (message idx 8)
 
 \begin{Verbatim}[fontsize=\small]
-User: Good day. Analyzing parameter "PARAM\_X": Value: V. If the system error 
-exceeds this threshold, a failsafe will trigger. Is this too low? What are the recommendations?
+User: вітаю, теж біда з помилками, на кошмарику
+усі параметри відповідно інструкції, не підкажете як вирішити
+[ATTACHMENT image/png size=169525]
 \end{Verbatim}
 
 \subsubsection{Retrieval Results}
@@ -483,85 +516,52 @@ exceeds this threshold, a failsafe will trigger. Is this too low? What are the r
 \toprule
 \textbf{Rank} & \textbf{Case Title} & \textbf{Status} \\
 \midrule
-1 & PARAM\_X configuration & solved \\
-2 & Failsafe parameters & solved \\
-3 & Sensor/estimation troubleshooting & solved \\
+1 & PreArm: Internal Error 0x8000 - польотнік ребутається & solved \\
+2 & GPS та компас вимкнення & solved \\
+3 & Відсутність флешки на Matek & solved \\
 \bottomrule
 \end{tabular}
+\caption{Top-3 retrieved cases (from real 400/100 evaluation dataset)}
 \end{table}
 
 \textbf{Top case evidence:}
 \begin{itemize}
-    \item \textbf{Problem}: User asks about a configuration parameter and whether the current value is appropriate
-    \item \textbf{Solution}: \texttt{<solution summary from retrieved case evidence>}
-    \item \textbf{Evidence IDs}: [msg\_id\_42, msg\_id\_43, msg\_id\_44]
-    \item \textbf{Images}: No images in evidence
+    \item \textbf{Problem}: Польотний контролер ребутається з помилкою Internal Error 0x8000
+    \item \textbf{Solution}: Перевірити (1) наявність флешки (Matek), (2) живлення USB, (3) фізичне пошкодження плати
+    \item \textbf{Evidence IDs}: [msg\_1770285647836, msg\_1770286098545, msg\_1770293731770]
+    \item \textbf{Evidence Images}: \texttt{["26/26c44671...", "57/57c87921..."]} (2 images, 52KB total)
 \end{itemize}
 
-\subsubsection{Bot Response}
+\subsubsection{Multimodal Response Pipeline}
 
+\textbf{Images loaded:}
+\begin{itemize}
+    \item User message image: \texttt{b3/b30d1e93867d3...} (169525 bytes PNG)
+    \item KB evidence images: 2 images from top case (52KB total)
+    \item Total: 3 images, 221KB $<$ \texttt{MAX\_TOTAL\_IMAGE\_BYTES} (20MB)
+\end{itemize}
+
+\textbf{Bot response (with citation):}
 \begin{Verbatim}[fontsize=\small]
-<answer based on retrieved case evidence>
+На скріншоті видно помилки польотника. Судячи із схожих випадків, 
+можливі причини:
+1. Відсутність SD-карти (якщо це Matek H743)
+2. Проблеми з живленням через USB
+3. Фізичне пошкодження - відпаяний чіп або коротке замикання
 
-Ref: case:<case_id>...
+Рекомендую спочатку перевірити наявність флешки, потім спробувати 
+живлення від іншого USB порту. Якщо не допоможе - огляньте плату 
+на предмет пошкоджень.
+
+Ref: case:<uuid-internal-error-0x8000>
 \end{Verbatim}
 
-\newpage
-\subsection{Example Query 3: Multimodal Response (with Screenshot)}
-
-\subsubsection{User Question with Image}
-
-\begin{Verbatim}[fontsize=\small]
-User: Look at what the ground control app shows. Don't understand what 
-kind of error this is. [image: <attachment.png>]
-\end{Verbatim}
-
-\subsubsection{Image Processing Pipeline}
-
-\textbf{Step 1: Message ingestion}
+\textbf{Trust features (implemented):}
 \begin{itemize}
-    \item Image path stored in DB: \texttt{<abs\_path\_to\_attachment.png>}
-    \item Image-to-text JSON appended to \texttt{content\_text}: \texttt{\{"observations": ["..."], "extracted\_text": "..."\}}
+    \item[$\checkmark$] Bot references at least one concrete solution from KB (case uuid cited)
+    \item[$\checkmark$] Bot quotes/mentions the original asker (via Signal quote feature in \texttt{signal-cli})
 \end{itemize}
 
-\textbf{Step 2: Gate decision (\texttt{decide\_consider})}
-\begin{itemize}
-    \item Message text: "Look at what the ground control app shows..."
-    \item \textbf{Images loaded:} up to \texttt{MAX\_IMAGES\_PER\_GATE} (subject to size/budget limits)
-    \item LLM sees: text + the attached image(s)
-    \item Decision: \texttt{consider=<true/false>}
-\end{itemize}
-
-\textbf{Step 3: Semantic retrieval}
-\begin{itemize}
-    \item Query embedding from: \texttt{<user message text>}
-    \item Top retrieved case: \texttt{<case title>}
-    \item Case may include \texttt{evidence\_image\_paths}: \texttt{["<abs\_path\_to\_evidence.png>"]}
-\end{itemize}
-
-\textbf{Step 4: Response generation (\texttt{decide\_and\_respond})}
-\begin{itemize}
-    \item \textbf{Message images:} \texttt{<n>}
-    \item \textbf{KB images:} \texttt{<n>}
-    \item \textbf{Total images:} capped by \texttt{MAX\_IMAGES\_PER\_RESPOND}
-    \item \textbf{Total bytes:} capped by \texttt{MAX\_TOTAL\_IMAGE\_BYTES}
-    \item LLM sees: user image(s) + retrieved case text (+ optional KB evidence image(s))
-\end{itemize}
-
-\subsubsection{Bot Response}
-
-\begin{Verbatim}[fontsize=\small]
-<answer based on retrieved case evidence>
-
-Ref: case:<case_id>...
-\end{Verbatim}
-
-\textbf{Why multimodal can help (conceptually):}
-\begin{itemize}
-    \item Without images: the model only sees text, which may be ambiguous
-    \item With images: the model can directly see UI text/error codes and other visual context
-    \item With KB evidence images: the model can compare the user's screenshot to historical evidence
-\end{itemize}
 
 \newpage
 %==============================================================================
@@ -569,25 +569,104 @@ Ref: case:<case_id>...
 %==============================================================================
 \label{sec:evaluation-and-reproducibility}
 
-This repository contains tests and evaluation scripts. Most evaluation outputs are written under \texttt{test/data/} and are intentionally gitignored; quantitative metrics therefore depend on the local environment, available decrypted Signal history/attachments, and API credentials.
+\subsection{Real Evaluation Dataset (400/100 Ukrainian Messages)}
 
-\subsection{Unit tests (offline)}
+\textbf{Dataset source:} \texttt{test/data/streaming\_eval/}\\
+\textbf{Group:} Техпідтримка  Академія СтабХ (\texttt{019b5084-b6b0-7009-89a5-7e41f3418f98})\\
+\textbf{Created:} 2026-02-09 10:58:28\\
+\textbf{Last evaluated:} 2026-02-09 11:27:25
+
+\subsubsection{Dataset Composition}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lrl}
+\toprule
+\textbf{Component} & \textbf{Count} & \textbf{Purpose} \\
+\midrule
+Total messages used & 500 & Source material from real Signal group \\
+Context messages & 400 & Build knowledge base and provide chat history \\
+Evaluation messages & 75 & Test bot's question answering capability \\
+Knowledge base cases & 28 & Extracted and embedded solved cases \\
+\bottomrule
+\end{tabular}
+\caption{Real evaluation dataset structure (from \texttt{dataset\_meta.json})}
+\end{table}
+
+\subsubsection{Evaluation Message Labels}
+
+The 75 evaluation messages were labeled by LLM (\texttt{gemini-2.5-flash-lite}) into three categories:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lrp{8cm}}
+\toprule
+\textbf{Label} & \textbf{Count} & \textbf{Meaning} \\
+\midrule
+\texttt{answer} & 23 & Technical question requiring bot response \\
+\texttt{contains\_answer} & 21 & Message contains solution to previous question \\
+\texttt{ignore} & 31 & Chatter, greetings, or acknowledgments (bot should not respond) \\
+\bottomrule
+\end{tabular}
+\caption{Evaluation message label distribution}
+\end{table}
+
+\subsection{Evaluation Results (Baseline)}
+
+\textbf{Source:} \texttt{test/data/streaming\_eval/eval\_summary.json}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Label} & \textbf{N} & \textbf{Pass Rate} & \textbf{Avg Score} & \textbf{Respond Rate} \\
+\midrule
+\texttt{answer} & 23 & 8.7\% & 0.96/10 & 13\% \\
+\texttt{contains\_answer} & 21 & 81.0\% & 8.10/10 & 19\% \\
+\texttt{ignore} & 31 & 96.8\% & 9.68/10 & 3.2\% \\
+\midrule
+\textbf{Overall} & \textbf{75} & \textbf{65.3\%} & \textbf{6.56/10} & --- \\
+\bottomrule
+\end{tabular}
+\caption{Baseline evaluation results (before multimodal + trust improvements)}
+\end{table}
+
+\textbf{Key insights:}
+\begin{itemize}
+    \item Bot correctly ignores most chatter (96.8\% pass rate on \texttt{ignore} messages)
+    \item Bot struggles with technical questions (\texttt{answer} label: only 8.7\% pass rate, 0.96/10 avg score)
+    \item Low response rate (13\%) on questions requiring answers indicates overly conservative gating
+    \item Overall pass rate 65.3\% is dominated by correct "ignore" behavior rather than helpful answers
+\end{itemize}
+
+\subsection{Reproduction Instructions}
+
+\textbf{Prerequisites:}
+\begin{itemize}
+    \item Python 3.11+
+    \item \texttt{GOOGLE\_API\_KEY} environment variable
+    \item Decrypted Signal history/attachments (optional for real-data eval)
+\end{itemize}
+
+\textbf{Unit tests (offline):}
 \begin{itemize}
     \item Run: \texttt{pytest -v}
     \item Core coverage includes ingestion, buffer/case extraction, Chroma integration, and response gating.
+    \item Uses synthetic Ukrainian fixtures from \texttt{test/conftest.py:STABX\_SUPPORT\_CHAT}
 \end{itemize}
 
-\subsection{LLM-backed quality evaluation (requires \texttt{GOOGLE\_API\_KEY})}
+\textbf{LLM-backed quality evaluation:}
 \begin{itemize}
     \item Tests: \texttt{test/test\_quality\_eval.py}
     \item The judge uses Gemini via Google's OpenAI-compatible endpoint.
 \end{itemize}
 
-\subsection{Real-data evaluation (optional; requires decrypted Signal history)}
+\textbf{Real-data evaluation (requires decrypted Signal history):}
 \begin{itemize}
+    \item Prepare dataset: \texttt{python test/prepare\_streaming\_eval\_dataset.py}
+    \item Run evaluation: \texttt{python test/run\_streaming\_eval.py}
     \item Mine cases: \texttt{python test/mine\_real\_cases.py}
-    \item Run eval: \texttt{python test/run\_real\_quality\_eval.py}
-    \item Streaming eval: \texttt{python test/run\_streaming\_eval.py}
     \item Image-to-text demo: \texttt{python test/run\_image\_to\_text\_demo.py}
 \end{itemize}
 

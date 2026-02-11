@@ -1,0 +1,161 @@
+# Production Docker Compose for SupportBot
+# Deploy with: docker compose -f docker-compose.prod.yml up -d
+
+services:
+  # ============================================================================
+  # Database Layer
+  # ============================================================================
+  db:
+    image: mysql:8.0
+    container_name: supportbot-db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-supportbot}
+      MYSQL_USER: ${MYSQL_USER:-supportbot}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-supportbot}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-rootpassword}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - supportbot-net
+
+  # ============================================================================
+  # Vector Database (ChromaDB for RAG)
+  # ============================================================================
+  rag:
+    image: chromadb/chroma:latest
+    container_name: supportbot-rag
+    environment:
+      - IS_PERSISTENT=TRUE
+      - ANONYMIZED_TELEMETRY=FALSE
+    volumes:
+      - chroma_data:/data
+    healthcheck:
+      test: ["CMD", "bash", "-lc", "exec 3<>/dev/tcp/127.0.0.1/8000"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - supportbot-net
+
+  # ============================================================================
+  # Main Bot Service (FastAPI + Signal CLI + Worker)
+  # ============================================================================
+  signal-bot:
+    build:
+      context: .
+      dockerfile: signal-bot/Dockerfile
+    container_name: supportbot-api
+    env_file: .env
+    environment:
+      - CHROMA_URL=http://rag:8000
+      - MYSQL_HOST=db
+      - ANONYMIZED_TELEMETRY=FALSE
+    ports:
+      - "8000:8000"
+    volumes:
+      - signal_bot_data:/var/lib/signal/bot
+      - history_data:/var/lib/history
+    depends_on:
+      db:
+        condition: service_healthy
+      rag:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - supportbot-net
+
+  # ============================================================================
+  # Signal Ingest Service (History Sync via QR Link)
+  # ============================================================================
+  signal-ingest:
+    build:
+      context: .
+      dockerfile: signal-ingest/Dockerfile
+    container_name: supportbot-ingest
+    env_file: .env
+    environment:
+      - SIGNAL_BOT_URL=http://signal-bot:8000
+    volumes:
+      - signal_ingest_data:/var/lib/signal/ingest
+      - history_data:/var/lib/history
+    depends_on:
+      signal-bot:
+        condition: service_healthy
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - supportbot-net
+
+  # ============================================================================
+  # Redis (for future scaling - job queue, caching)
+  # ============================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: supportbot-redis
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - supportbot-net
+
+# ============================================================================
+# Volumes - Persistent Data
+# ============================================================================
+volumes:
+  mysql_data:
+    name: supportbot-mysql
+  chroma_data:
+    name: supportbot-chroma
+  signal_bot_data:
+    name: supportbot-signal-bot
+  signal_ingest_data:
+    name: supportbot-signal-ingest
+  history_data:
+    name: supportbot-history
+  redis_data:
+    name: supportbot-redis
+
+# ============================================================================
+# Network
+# ============================================================================
+networks:
+  supportbot-net:
+    name: supportbot-network
+    driver: bridge

@@ -17,7 +17,7 @@ from typing import List, Dict, Any
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "signal-bot"))
 
-from app.llm.schemas import CaseResult, DecisionResult, ExtractResult, RespondResult
+from app.llm.schemas import CaseResult, DecisionResult, ExtractResult, ExtractedCaseSpan, RespondResult
 from conftest import (
     MockLLMClient, MockChromaRag, MockSignalAdapter, InMemoryDB,
     format_chat_buffer, STABX_SUPPORT_CHAT, make_test_settings
@@ -174,16 +174,22 @@ tags: {', '.join(case['tags'])}
         # First extraction: login case
         login_case_msgs = stabx_chat_data[:6]
         mock_llm.extract_responses.append(ExtractResult(
-            found=True,
-            case_block=format_buffer(login_case_msgs),
-            buffer_new=format_buffer(stabx_chat_data[6:])
+            cases=[
+                ExtractedCaseSpan(
+                    start_idx=0,
+                    end_idx=5,
+                    start_line=1,
+                    end_line=18,
+                    case_block=format_buffer(login_case_msgs),
+                )
+            ]
         ))
         
         result = mock_llm.extract_case_from_buffer(buffer_text=buffer)
         
-        assert result.found is True
-        assert "невірний пароль" in result.case_block
-        assert "Скинув пароль" in result.case_block
+        assert len(result.cases) == 1
+        assert "невірний пароль" in result.cases[0].case_block
+        assert "Скинув пароль" in result.cases[0].case_block
         
         # Verify call was made
         assert len(mock_llm.extract_calls) == 1
@@ -369,11 +375,12 @@ class TestE2ERealLLM:
         result = real_llm.extract_case_from_buffer(buffer_text=buffer)
         
         print(f"\n=== Real LLM Extract Result ===")
-        print(f"Found: {result.found}")
-        print(f"Case block length: {len(result.case_block)}")
+        print(f"Found cases: {len(result.cases)}")
+        first_len = len(result.cases[0].case_block) if result.cases else 0
+        print(f"First case block length: {first_len}")
         
-        assert result.found is True, "Should find a solved case"
-        assert len(result.case_block) > 50, "Case block should have content"
+        assert len(result.cases) > 0, "Should find a solved case"
+        assert len(result.cases[0].case_block) > 50, "Case block should have content"
     
     def test_real_case_structuring(self, real_llm, stabx_chat_data, format_buffer):
         """Test real LLM case structuring."""

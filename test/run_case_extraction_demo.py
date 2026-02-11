@@ -77,6 +77,8 @@ def create_settings() -> Settings:
         retrieve_top_k=5,
         worker_poll_seconds=1,
         history_token_ttl_minutes=60,
+        buffer_max_age_hours=168,
+        buffer_max_messages=1000,
         max_images_per_gate=3,
         max_images_per_respond=5,
         max_kb_images_per_case=2,
@@ -173,12 +175,13 @@ def run_demo():
     
     extract_result = llm.extract_case_from_buffer(buffer_text=CHAT_BUFFER)
     
-    print(f"Found case: {extract_result.found}")
-    if extract_result.found:
+    print(f"Found cases: {len(extract_result.cases)}")
+    if extract_result.cases:
+        first_case = extract_result.cases[0]
         print()
         print("Extracted case block:")
         print("-" * 40)
-        print(extract_result.case_block[:500])
+        print(first_case.case_block[:500])
         print("-" * 40)
     print()
     
@@ -186,13 +189,14 @@ def run_demo():
     # Step 2: Structure the case
     # =========================================================================
     
-    if extract_result.found:
+    if extract_result.cases:
         print("╔" + "═" * 78 + "╗")
         print("║ STEP 2: Structure the case for knowledge base                             ║")
         print("╚" + "═" * 78 + "╝")
         print()
         
-        case_result = llm.make_case(case_block_text=extract_result.case_block)
+        first_case = extract_result.cases[0]
+        case_result = llm.make_case(case_block_text=first_case.case_block)
         
         print(f"Keep: {case_result.keep}")
         print(f"Status: {case_result.status}")
@@ -227,18 +231,29 @@ def run_demo():
     # Step 3: Continue extraction (get more cases)
     # =========================================================================
     
-    if extract_result.found and extract_result.buffer_new:
+    if extract_result.cases:
+        # Demo deterministic trim by indexes from the first extracted case.
+        start_idx = extract_result.cases[0].start_idx
+        end_idx = extract_result.cases[0].end_idx
+        raw_blocks = [b for b in CHAT_BUFFER.split("\n\n") if b.strip()]
+        remaining_blocks = [b for i, b in enumerate(raw_blocks) if i < start_idx or i > end_idx]
+        remaining_buffer = "\n\n".join(remaining_blocks).strip()
+        if remaining_buffer:
+            remaining_buffer += "\n\n"
+        else:
+            remaining_buffer = ""
+
         print("╔" + "═" * 78 + "╗")
         print("║ STEP 4: Extract next case from remaining buffer                           ║")
         print("╚" + "═" * 78 + "╝")
         print()
         
-        extract_result2 = llm.extract_case_from_buffer(buffer_text=extract_result.buffer_new)
+        extract_result2 = llm.extract_case_from_buffer(buffer_text=remaining_buffer)
         
-        print(f"Found another case: {extract_result2.found}")
+        print(f"Found another case: {len(extract_result2.cases) > 0}")
         
-        if extract_result2.found:
-            case_result2 = llm.make_case(case_block_text=extract_result2.case_block)
+        if extract_result2.cases:
+            case_result2 = llm.make_case(case_block_text=extract_result2.cases[0].case_block)
             
             if case_result2.keep:
                 print()
@@ -273,11 +288,11 @@ user_jkl ts=1707402030000
     
     greeting_extract = llm.extract_case_from_buffer(buffer_text=greeting_buffer)
     
-    if not greeting_extract.found:
+    if not greeting_extract.cases:
         print("✅ Correctly: No case extracted from greetings")
     else:
         print("⚠️ Warning: Case extracted from greetings (checking if kept...)")
-        case = llm.make_case(case_block_text=greeting_extract.case_block)
+        case = llm.make_case(case_block_text=greeting_extract.cases[0].case_block)
         if not case.keep:
             print("✅ Correctly: Case rejected at structuring step")
         else:

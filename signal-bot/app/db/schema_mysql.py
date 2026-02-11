@@ -90,8 +90,23 @@ DDL_STATEMENTS = [
       pending_group_name VARCHAR(256),
       pending_token      VARCHAR(64),
       state              VARCHAR(32) NOT NULL DEFAULT 'awaiting_group_name',
+      lang               VARCHAR(2) NOT NULL DEFAULT 'uk',
       updated_at         TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
-      CONSTRAINT admin_sessions_state_chk CHECK (state IN ('awaiting_group_name', 'awaiting_qr_scan', 'idle'))
+      CONSTRAINT admin_sessions_state_chk CHECK (state IN ('awaiting_group_name', 'awaiting_qr_scan', 'idle')),
+      CONSTRAINT admin_sessions_lang_chk CHECK (lang IN ('uk', 'en'))
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    """,
+    """
+    CREATE TABLE reactions (
+      id            BIGINT AUTO_INCREMENT PRIMARY KEY,
+      group_id      VARCHAR(128) NOT NULL,
+      target_ts     BIGINT NOT NULL,
+      target_author VARCHAR(128) NOT NULL,
+      sender_hash   VARCHAR(64) NOT NULL,
+      emoji         VARCHAR(32) NOT NULL,
+      created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+      INDEX idx_reactions_target (group_id, target_ts),
+      UNIQUE KEY uk_reactions_unique (group_id, target_ts, sender_hash, emoji)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     """,
 ]

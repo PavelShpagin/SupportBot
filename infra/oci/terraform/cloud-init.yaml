@@ -5,9 +5,21 @@ package_upgrade: true
 packages:
   - docker.io
   - docker-compose-plugin
+  - curl
+  - git
 
 runcmd:
+  # Enable Docker
   - [ bash, -lc, "systemctl enable --now docker" ]
-  - [ bash, -lc, "mkdir -p /var/lib/signal/bot /var/lib/signal/ingest /var/lib/chroma /var/lib/history /var/lib/adb_wallet" ]
-  - [ bash, -lc, "chmod 0755 /var/lib/signal /var/lib/chroma /var/lib/history /var/lib/adb_wallet || true" ]
+  
+  # Add ubuntu user to docker group
+  - [ bash, -lc, "usermod -aG docker ubuntu" ]
+  
+  # Create required directories for SupportBot
+  - [ bash, -lc, "mkdir -p /var/lib/signal/bot /var/lib/signal/ingest /var/lib/history" ]
+  - [ bash, -lc, "chown -R ubuntu:ubuntu /var/lib/signal /var/lib/history" ]
+  - [ bash, -lc, "chmod 0755 /var/lib/signal /var/lib/signal/bot /var/lib/signal/ingest /var/lib/history" ]
+  
+  # Create project directory
+  - [ bash, -lc, "mkdir -p /home/ubuntu/supportbot && chown ubuntu:ubuntu /home/ubuntu/supportbot" ]
 

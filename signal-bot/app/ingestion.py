@@ -18,6 +18,10 @@ def _sender_hash(sender: str) -> str:
     return hashlib.sha256(sender.encode("utf-8")).hexdigest()[:16]
 
 
+# Expose for use in main.py reaction handler
+hash_sender = _sender_hash
+
+
 def ingest_message(
     *,
     settings: Settings,

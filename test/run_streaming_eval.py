@@ -356,6 +356,11 @@ def main() -> int:
     context_window: List[str] = []
     context_window_size = 5
     
+    # Build a simulated buffer from all context messages (simulating real buffer behavior)
+    # Buffer format: "sender ts=timestamp\ncontent\n\n"
+    buffer_lines: List[str] = []
+    buffer_max_messages = 100  # Keep last N messages in buffer
+    
     print("\n=== Running Evaluation ===")
     
     for msg in eval_messages:
@@ -389,21 +394,31 @@ def main() -> int:
                 print(f"  Embedding error: {e}")
                 retrieved_cases = []
             
-            if retrieved_cases:
-                # Format cases for respond prompt
-                cases_json = json.dumps([
-                    {
-                        "case_id": f"kb-{c.get('idx')}",
-                        "document": c.get("doc_text", ""),
-                        "metadata": {"group_id": group_id},
-                        "distance": None,
-                    }
-                    for c in retrieved_cases
-                ], ensure_ascii=False, indent=2)
-                
-                resp = llm.decide_and_respond(message=body, context=full_context, cases=cases_json)
-                if resp.respond:
-                    response_text = (resp.text or "").strip()
+            # Format cases for respond prompt (include status in metadata)
+            cases_json = json.dumps([
+                {
+                    "case_id": f"kb-{c.get('idx')}",
+                    "document": c.get("doc_text", ""),
+                    "metadata": {
+                        "group_id": group_id,
+                        "status": c.get("status", "open"),
+                    },
+                    "distance": None,
+                }
+                for c in retrieved_cases
+            ], ensure_ascii=False, indent=2)
+            
+            # Build buffer text from accumulated messages
+            buffer_text = "\n\n".join(buffer_lines[-buffer_max_messages:])
+            
+            resp = llm.decide_and_respond(
+                message=body, 
+                context=full_context, 
+                cases=cases_json,
+                buffer=buffer_text,
+            )
+            if resp.respond:
+                response_text = (resp.text or "").strip()
         
         # Step 3: Judge the result based on label
         if label == "answer":
@@ -445,6 +460,9 @@ def main() -> int:
         
         # Update context window
         context_window.append(f"{sender}: {body[:100]}")
+        
+        # Update buffer (simulating real buffer accumulation)
+        buffer_lines.append(f"{sender} ts={timestamp}\n{body}")
         
         # Progress
         status = "PASS" if judged.passed else "FAIL"

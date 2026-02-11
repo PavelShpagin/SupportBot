@@ -292,16 +292,30 @@ def main() -> int:
     llm = LLMClient(settings)
     
     kb_cases: List[Dict[str, Any]] = []
+    skipped_open = 0
+    skipped_no_solution = 0
     for idx, cb in enumerate(case_blocks, 1):
         try:
             case = llm.make_case(case_block_text=cb["case_block"])
             if not case.keep:
                 continue
             
+            # FILTER: Only include SOLVED cases in KB
+            if case.status != "solved":
+                skipped_open += 1
+                continue
+            
+            # Reject solved cases without solutions (quality gate)
+            if not case.solution_summary.strip():
+                print(f"Case {idx}: Rejecting solved case without solution_summary")
+                skipped_no_solution += 1
+                continue
+            
+            # Build doc_text with clear section labels (only solved cases reach here)
             doc_text = "\n".join([
-                (case.problem_title or "").strip(),
-                (case.problem_summary or "").strip(),
-                (case.solution_summary or "").strip(),
+                f"[SOLVED] {(case.problem_title or '').strip()}",
+                f"Проблема: {(case.problem_summary or '').strip()}",
+                f"Рішення: {(case.solution_summary or '').strip()}",
                 "tags: " + ", ".join(case.tags or []),
             ]).strip()
             
@@ -312,6 +326,7 @@ def main() -> int:
                 "problem_title": case.problem_title,
                 "problem_summary": case.problem_summary,
                 "solution_summary": case.solution_summary,
+                "status": case.status,
                 "tags": case.tags,
                 "doc_text": doc_text,
                 "embedding": embedding,
@@ -324,7 +339,7 @@ def main() -> int:
         except Exception as e:
             print(f"Case {idx}: ERROR - {e}")
     
-    print(f"Built KB with {len(kb_cases)} structured cases")
+    print(f"Built KB with {len(kb_cases)} SOLVED cases (skipped: {skipped_open} open, {skipped_no_solution} no solution)")
     
     # Save KB
     kb_path = out_dir / "context_kb.json"

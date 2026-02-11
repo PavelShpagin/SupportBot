@@ -87,6 +87,8 @@ def create_settings() -> Settings:
         retrieve_top_k=5,
         worker_poll_seconds=1,
         history_token_ttl_minutes=60,
+        buffer_max_age_hours=168,
+        buffer_max_messages=1000,
         max_images_per_gate=3,
         max_images_per_respond=5,
         max_kb_images_per_case=2,

@@ -20,6 +20,8 @@ from app.db import (
     new_case_id,
     insert_case,
     get_last_messages_text,
+    get_positive_reactions_for_message,
+    get_message_by_ts,
 )
 from app.jobs import types as job_types
 from app.llm.client import LLMClient
@@ -38,9 +40,10 @@ class WorkerDeps:
     signal: SignalAdapter
 
 
-def _format_buffer_line(msg: RawMessage) -> str:
+def _format_buffer_line(msg: RawMessage, positive_reactions: int = 0) -> str:
     reply = f" reply_to={msg.reply_to_id}" if msg.reply_to_id else ""
-    return f"{msg.sender_hash} ts={msg.ts}{reply}\n{msg.content_text}\n\n"
+    reactions = f" reactions={positive_reactions}" if positive_reactions > 0 else ""
+    return f"{msg.sender_hash} ts={msg.ts}{reply}{reactions}\n{msg.content_text}\n\n"
 
 
 @dataclass(frozen=True)
@@ -339,7 +342,9 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         log.warning("BUFFER_UPDATE: message not found: %s", message_id)
         return
 
-    line = _format_buffer_line(msg)
+    # Check for positive reactions on this message
+    positive_reactions = get_positive_reactions_for_message(deps.db, group_id=group_id, target_ts=msg.ts)
+    line = _format_buffer_line(msg, positive_reactions=positive_reactions)
     buf = get_buffer(deps.db, group_id=group_id)
     buf2 = (buf or "") + line
     

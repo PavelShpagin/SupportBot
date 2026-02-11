@@ -6,7 +6,7 @@ import threading
 import time
 import shutil
 import subprocess
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable, Optional
 
@@ -41,29 +41,29 @@ Learn more: https://supportbot.info/
 
 Which group would you like to connect?"""
 
-QR_MESSAGE_UK = """Відскануйте цей QR-код у Signal, щоб підтвердити доступ до групи "{group_name}".
+QR_MESSAGE_UK = """Відскануйте цей QR-код у Signal протягом 60 секунд (Налаштування -> Пов'язані пристрої -> Додати пристрій).
 
-Після сканування я зможу обробити історію групи та почати відповідати на питання.
+Після сканування я зможу обробити історію групи "{group_name}" та почати відповідати на питання."""
 
-Якщо ви хочете підключити іншу групу, просто напишіть її назву."""
+QR_MESSAGE_EN = """Scan this QR code in Signal within 60 seconds (Settings -> Linked Devices -> Link New Device).
 
-QR_MESSAGE_EN = """Scan this QR code in Signal to confirm access to group "{group_name}".
-
-After scanning, I'll be able to process the group history and start answering questions.
-
-If you want to connect a different group, just send its name."""
+After scanning, I'll be able to process the history of group "{group_name}" and start answering questions."""
 
 SUCCESS_MESSAGE_UK = """Успішно підключено до групи "{group_name}"!
 
-Я почну обробляти історію та формувати базу знань. Це може зайняти кілька хвилин.
+Обробка історії завершена. База знань готова.
 
 Хочете підключити ще одну групу? Напишіть її назву."""
 
 SUCCESS_MESSAGE_EN = """Successfully connected to group "{group_name}"!
 
-I'll start processing the history and building the knowledge base. This may take a few minutes.
+History processing complete. Knowledge base is ready.
 
 Want to connect another group? Send its name."""
+
+SCAN_RECEIVED_UK = """QR-код відскановано! Завантажую історію групи "{group_name}"..."""
+
+SCAN_RECEIVED_EN = """QR code scanned! Loading history for group "{group_name}"..."""
 
 FAILURE_MESSAGE_UK = """Не вдалося підключитися до групи "{group_name}".
 
@@ -93,6 +93,32 @@ GROUP_NOT_FOUND_EN = """Couldn't find a group with that name. Make sure:
 
 Try again or send a different group name."""
 
+SEARCHING_GROUP_UK = """Шукаю групу "{group_name}"..."""
+
+SEARCHING_GROUP_EN = """Searching for group "{group_name}"..."""
+
+PROCESSING_MESSAGE_UK = """Знайшов групу "{group_name}"! Генерую QR-код..."""
+
+PROCESSING_MESSAGE_EN = """Found group "{group_name}"! Generating QR code..."""
+
+LANG_CHANGED_UK = """Мову змінено на українську."""
+
+LANG_CHANGED_EN = """Language changed to English."""
+
+LANG_HELP_UK = """Команди для зміни мови:
+/uk - українська
+/en - English"""
+
+LANG_HELP_EN = """Language commands:
+/uk - Ukrainian
+/en - English"""
+
+
+# Helper to get message by language
+def _msg(uk: str, en: str, lang: str = "uk") -> str:
+    """Return message in specified language."""
+    return uk if lang == "uk" else en
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Models
@@ -118,6 +144,16 @@ class InboundDirectMessage(BaseModel):
     image_paths: list[str] = Field(default_factory=list)
 
 
+class InboundReaction(BaseModel):
+    """Emoji reaction to a message in a group chat."""
+    group_id: str
+    sender: str
+    target_ts: int  # timestamp of the message being reacted to
+    target_author: str  # author of the message being reacted to
+    emoji: str
+    is_remove: bool = False  # True if reaction is being removed
+
+
 class GroupInfo(BaseModel):
     """Information about a group the bot is a member of."""
     group_id: str
@@ -131,6 +167,7 @@ class GroupInfo(BaseModel):
 @dataclass(frozen=True)
 class SignalCliAdapter:
     settings: Settings
+    _lock: threading.RLock = field(default_factory=threading.RLock, init=False, repr=False)
 
     def _bin(self) -> str:
         return self.settings.signal_cli
@@ -140,6 +177,10 @@ class SignalCliAdapter:
 
     def _user(self) -> str:
         return self.settings.signal_bot_e164
+    
+    def _run(self, cmd: list[str]) -> subprocess.CompletedProcess[str]:
+        with self._lock:
+            return subprocess.run(cmd, capture_output=True, text=True)
 
     def assert_available(self) -> None:
         if shutil.which(self._bin()) is None:
@@ -157,8 +198,9 @@ class SignalCliAdapter:
         quote_timestamp: int | None = None,
         quote_author: str | None = None,
         quote_message: str | None = None,
+        mention_recipients: List[str] | None = None,
     ) -> None:
-        """Send text message to a group."""
+        """Send text message to a group with optional quote/reply and mentions."""
         self.assert_available()
         cmd = [
             self._bin(), "--config", self._config(), "-u", self._user(),
@@ -171,8 +213,12 @@ class SignalCliAdapter:
             cmd.extend(["--quote-author", str(quote_author)])
         if quote_message:
             cmd.extend(["--quote-message", str(quote_message)])
-        log.info("signal-cli send group_id=%s bytes=%s", group_id, len(text.encode("utf-8")))
-        proc = subprocess.run(cmd, capture_output=True, text=True)
+        # Mention support - signal-cli expects UUIDs
+        if mention_recipients:
+            for recipient in mention_recipients:
+                cmd.extend(["--mention", str(recipient)])
+        log.info("signal-cli send group_id=%s bytes=%s mentions=%s", group_id, len(text.encode("utf-8")), len(mention_recipients or []))
+        proc = self._run(cmd)
         if proc.stdout:
             log.info("signal-cli stdout: %s", proc.stdout.strip())
         if proc.stderr:
@@ -188,7 +234,7 @@ class SignalCliAdapter:
             "send", "-m", text, recipient,
         ]
         log.info("signal-cli send direct recipient=%s bytes=%s", recipient, len(text.encode("utf-8")))
-        proc = subprocess.run(cmd, capture_output=True, text=True)
+        proc = self._run(cmd)
         if proc.stdout:
             log.info("signal-cli stdout: %s", proc.stdout.strip())
         if proc.stderr:
@@ -207,7 +253,7 @@ class SignalCliAdapter:
             cmd.extend(["-m", caption])
         cmd.append(recipient)
         log.info("signal-cli send image recipient=%s path=%s", recipient, image_path)
-        proc = subprocess.run(cmd, capture_output=True, text=True)
+        proc = self._run(cmd)
         if proc.stdout:
             log.info("signal-cli stdout: %s", proc.stdout.strip())
         if proc.stderr:
@@ -216,65 +262,126 @@ class SignalCliAdapter:
             raise RuntimeError(f"signal-cli send image failed (exit {proc.returncode})")
 
     # ─────────────────────────────────────────────────────────────────────────
-    # Admin onboarding messages
+    # Admin onboarding messages (with language support)
     # ─────────────────────────────────────────────────────────────────────────
 
-    def send_onboarding_prompt(self, *, recipient: str) -> None:
+    def send_onboarding_prompt(self, *, recipient: str, lang: str = "uk") -> None:
         """Send the initial onboarding message asking for group name."""
-        text = ONBOARDING_PROMPT_UK + "\n\n---\n\n" + ONBOARDING_PROMPT_EN
+        text = _msg(ONBOARDING_PROMPT_UK, ONBOARDING_PROMPT_EN, lang)
         try:
             self.send_direct_text(recipient=recipient, text=text)
-            log.info("Sent onboarding prompt to %s", recipient)
+            log.info("Sent onboarding prompt to %s (lang=%s)", recipient, lang)
         except Exception:
             log.exception("Failed to send onboarding prompt to %s", recipient)
 
-    def send_qr_for_group(self, *, recipient: str, group_name: str, qr_path: str) -> None:
+    def send_qr_for_group(self, *, recipient: str, group_name: str, qr_path: str, lang: str = "uk") -> None:
         """Send QR code image with explanation to admin."""
-        caption = (
-            QR_MESSAGE_UK.format(group_name=group_name) +
-            "\n\n---\n\n" +
-            QR_MESSAGE_EN.format(group_name=group_name)
+        caption = _msg(
+            QR_MESSAGE_UK.format(group_name=group_name),
+            QR_MESSAGE_EN.format(group_name=group_name),
+            lang
         )
         try:
             self.send_direct_image(recipient=recipient, image_path=qr_path, caption=caption)
-            log.info("Sent QR for group %s to %s", group_name, recipient)
+            log.info("Sent QR for group %s to %s (lang=%s)", group_name, recipient, lang)
         except Exception:
             log.exception("Failed to send QR to %s", recipient)
 
-    def send_success_message(self, *, recipient: str, group_name: str) -> None:
+    def send_success_message(self, *, recipient: str, group_name: str, lang: str = "uk") -> None:
         """Send success confirmation after QR scan."""
-        text = (
-            SUCCESS_MESSAGE_UK.format(group_name=group_name) +
-            "\n\n---\n\n" +
-            SUCCESS_MESSAGE_EN.format(group_name=group_name)
+        text = _msg(
+            SUCCESS_MESSAGE_UK.format(group_name=group_name),
+            SUCCESS_MESSAGE_EN.format(group_name=group_name),
+            lang
         )
         try:
             self.send_direct_text(recipient=recipient, text=text)
-            log.info("Sent success message to %s for group %s", recipient, group_name)
+            log.info("Sent success message to %s for group %s (lang=%s)", recipient, group_name, lang)
         except Exception:
             log.exception("Failed to send success message to %s", recipient)
 
-    def send_failure_message(self, *, recipient: str, group_name: str) -> None:
+    def send_failure_message(self, *, recipient: str, group_name: str, lang: str = "uk") -> None:
         """Send failure message if QR scan failed."""
-        text = (
-            FAILURE_MESSAGE_UK.format(group_name=group_name) +
-            "\n\n---\n\n" +
-            FAILURE_MESSAGE_EN.format(group_name=group_name)
+        text = _msg(
+            FAILURE_MESSAGE_UK.format(group_name=group_name),
+            FAILURE_MESSAGE_EN.format(group_name=group_name),
+            lang
         )
         try:
             self.send_direct_text(recipient=recipient, text=text)
-            log.info("Sent failure message to %s for group %s", recipient, group_name)
+            log.info("Sent failure message to %s for group %s (lang=%s)", recipient, group_name, lang)
         except Exception:
             log.exception("Failed to send failure message to %s", recipient)
 
-    def send_group_not_found(self, *, recipient: str) -> None:
+    def send_group_not_found(self, *, recipient: str, lang: str = "uk") -> None:
         """Send message when group name doesn't match any known group."""
-        text = GROUP_NOT_FOUND_UK + "\n\n---\n\n" + GROUP_NOT_FOUND_EN
+        text = _msg(GROUP_NOT_FOUND_UK, GROUP_NOT_FOUND_EN, lang)
         try:
             self.send_direct_text(recipient=recipient, text=text)
-            log.info("Sent group not found message to %s", recipient)
+            log.info("Sent group not found message to %s (lang=%s)", recipient, lang)
         except Exception:
             log.exception("Failed to send group not found message to %s", recipient)
+
+    def send_processing_message(self, *, recipient: str, group_name: str, lang: str = "uk") -> None:
+        """Send message when group is found and QR is being generated."""
+        text = _msg(
+            PROCESSING_MESSAGE_UK.format(group_name=group_name),
+            PROCESSING_MESSAGE_EN.format(group_name=group_name),
+            lang
+        )
+        try:
+            self.send_direct_text(recipient=recipient, text=text)
+            log.info("Sent processing message to %s for group %s (lang=%s)", recipient, group_name, lang)
+        except Exception:
+            log.exception("Failed to send processing message to %s", recipient)
+
+    def send_searching_message(self, *, recipient: str, group_name: str, lang: str = "uk") -> None:
+        """Send instant feedback when user sends group name."""
+        text = _msg(
+            SEARCHING_GROUP_UK.format(group_name=group_name),
+            SEARCHING_GROUP_EN.format(group_name=group_name),
+            lang
+        )
+        try:
+            self.send_direct_text(recipient=recipient, text=text)
+            log.info("Sent searching message to %s for group %s (lang=%s)", recipient, group_name, lang)
+        except Exception:
+            log.exception("Failed to send searching message to %s", recipient)
+
+    def send_scan_received_message(self, *, recipient: str, group_name: str, lang: str = "uk") -> None:
+        """Send message when QR code is scanned and history processing starts."""
+        text = _msg(
+            SCAN_RECEIVED_UK.format(group_name=group_name),
+            SCAN_RECEIVED_EN.format(group_name=group_name),
+            lang
+        )
+        try:
+            self.send_direct_text(recipient=recipient, text=text)
+            log.info("Sent scan received message to %s for group %s (lang=%s)", recipient, group_name, lang)
+        except Exception:
+            log.exception("Failed to send scan received message to %s", recipient)
+
+    def send_progress_message(self, *, recipient: str, group_name: str, progress_text: str, lang: str = "uk") -> None:
+        """Send progress update during history processing."""
+        text = _msg(
+            PROGRESS_MESSAGE_UK.format(group_name=group_name, progress_text=progress_text),
+            PROGRESS_MESSAGE_EN.format(group_name=group_name, progress_text=progress_text),
+            lang
+        )
+        try:
+            self.send_direct_text(recipient=recipient, text=text)
+            log.info("Sent progress message to %s for group %s (lang=%s)", recipient, group_name, lang)
+        except Exception:
+            log.exception("Failed to send progress message to %s", recipient)
+
+    def send_lang_changed(self, *, recipient: str, lang: str) -> None:
+        """Send language change confirmation."""
+        text = _msg(LANG_CHANGED_UK, LANG_CHANGED_EN, lang)
+        try:
+            self.send_direct_text(recipient=recipient, text=text)
+            log.info("Sent lang changed message to %s (lang=%s)", recipient, lang)
+        except Exception:
+            log.exception("Failed to send lang changed message to %s", recipient)
 
     # ─────────────────────────────────────────────────────────────────────────
     # List groups
@@ -284,10 +391,10 @@ class SignalCliAdapter:
         """List all groups the bot is a member of."""
         self.assert_available()
         cmd = [
-            self._bin(), "--config", self._config(), "-u", self._user(),
-            "listGroups", "-d", "--output", "json",
+            self._bin(), "--output", "json", "--config", self._config(), "-u", self._user(),
+            "listGroups", "-d",
         ]
-        proc = subprocess.run(cmd, capture_output=True, text=True)
+        proc = self._run(cmd)
         if proc.returncode != 0:
             log.warning("signal-cli listGroups failed: %s", proc.stderr)
             return []
@@ -331,36 +438,38 @@ class SignalCliAdapter:
         *,
         on_group_message: Callable[[InboundGroupMessage], None],
         on_direct_message: Callable[[InboundDirectMessage], None],
+        on_reaction: Callable[[InboundReaction], None] | None = None,
     ) -> None:
         """
         Signal receive loop. Dispatches:
         - Group messages -> on_group_message
         - Direct (1:1) messages -> on_direct_message
         """
+        log.info("Starting Signal receive loop...")
         self.assert_available()
 
+        timeout_seconds = 1  # Fast polling for instant response
         cmd = [
-            self._bin(), "--config", self._config(), "-u", self._user(),
-            "receive", "--output", "json",
+            self._bin(), "--output", "json", "--config", self._config(), "-u", self._user(),
+            "receive",
+            "--timeout", str(timeout_seconds),
         ]
 
+        log.info("Signal receive loop cmd: %s", " ".join(cmd))
         while True:
-            log.info("Starting signal-cli receive loop")
-            proc = subprocess.Popen(
-                cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, bufsize=1,
-            )
-
-            def _drain_stderr() -> None:
-                assert proc.stderr is not None
-                for line in proc.stderr:
+            proc = self._run(cmd)
+            if proc.stderr:
+                for line in proc.stderr.splitlines():
                     if line.strip():
                         log.info("signal-cli stderr: %s", line.strip())
 
-            threading.Thread(target=_drain_stderr, daemon=True).start()
+            if proc.returncode != 0:
+                log.warning("signal-cli receive failed (rc=%s); restarting soon", proc.returncode)
+                time.sleep(2)
+                continue
 
-            assert proc.stdout is not None
             buf = ""
-            for line in proc.stdout:
+            for line in proc.stdout.splitlines(True):
                 if not line:
                     continue
                 buf += line
@@ -389,9 +498,18 @@ class SignalCliAdapter:
                         log.exception("on_direct_message handler failed")
                     continue
 
-            rc = proc.wait(timeout=5)
-            log.warning("signal-cli receive loop exited (rc=%s); restarting soon", rc)
-            time.sleep(2)
+                # Try parsing as reaction
+                if on_reaction is not None:
+                    reaction = _parse_reaction(obj)
+                    if reaction is not None:
+                        try:
+                            on_reaction(reaction)
+                        except Exception:
+                            log.exception("on_reaction handler failed")
+                        continue
+            # Normal (timeout) exit: loop again.
+            # Small pause to avoid starving other signal-cli commands that need the config lock.
+            time.sleep(0.2)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -523,4 +641,67 @@ def _parse_direct_message(obj: dict) -> Optional[InboundDirectMessage]:
         ts=ts_i,
         text=str(text or ""),
         image_paths=image_paths,
+    )
+
+
+def _parse_reaction(obj: dict) -> Optional[InboundReaction]:
+    """Parse an emoji reaction from signal-cli JSON."""
+    env = obj.get("envelope") if isinstance(obj, dict) else None
+    if not isinstance(env, dict):
+        return None
+
+    sender = (
+        env.get("sourceNumber")
+        or env.get("sourceUuid")
+        or env.get("source")
+        or ""
+    )
+    if not sender:
+        return None
+
+    dm = env.get("dataMessage")
+    if not isinstance(dm, dict):
+        return None
+
+    # Must have groupInfo to be a group reaction
+    group_info = dm.get("groupInfo")
+    if not isinstance(group_info, dict):
+        return None
+    group_id = group_info.get("groupId")
+    if not group_id:
+        return None
+
+    # Must have reaction field
+    reaction = dm.get("reaction")
+    if not isinstance(reaction, dict):
+        return None
+
+    emoji = reaction.get("emoji") or ""
+    if not emoji:
+        return None
+
+    target_ts = reaction.get("targetSentTimestamp") or reaction.get("targetTimestamp")
+    if target_ts is None:
+        return None
+    try:
+        target_ts_i = int(target_ts)
+    except Exception:
+        return None
+
+    target_author = (
+        reaction.get("targetAuthorNumber")
+        or reaction.get("targetAuthorUuid")
+        or reaction.get("targetAuthor")
+        or ""
+    )
+
+    is_remove = bool(reaction.get("isRemove", False))
+
+    return InboundReaction(
+        group_id=str(group_id),
+        sender=str(sender),
+        target_ts=target_ts_i,
+        target_author=str(target_author),
+        emoji=str(emoji),
+        is_remove=is_remove,
     )

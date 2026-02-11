@@ -77,6 +77,13 @@ class Settings:
     worker_poll_seconds: float
     history_token_ttl_minutes: int
     
+    # HTTP API (debug-only endpoints)
+    http_debug_endpoints_enabled: bool
+    
+    # Buffer limits
+    buffer_max_age_hours: int
+    buffer_max_messages: int
+    
     # Multimodal limits
     max_images_per_gate: int
     max_images_per_respond: int
@@ -110,8 +117,8 @@ def load_settings() -> Settings:
         openai_api_key=_env("GOOGLE_API_KEY", required=True),
         model_img=_env("MODEL_IMG", default="gemini-3-pro-preview"),
         model_decision=_env("MODEL_DECISION", default="gemini-2.5-flash-lite"),
-        model_extract=_env("MODEL_EXTRACT", default="gemini-2.5-flash-lite"),
-        model_case=_env("MODEL_CASE", default="gemini-2.5-flash-lite"),
+        model_extract=_env("MODEL_EXTRACT", default="gemini-3-pro-preview"),
+        model_case=_env("MODEL_CASE", default="gemini-3-pro-preview"),
         model_respond=_env("MODEL_RESPOND", default="gemini-3-pro-preview"),
         model_blocks=_env("MODEL_BLOCKS", default="gemini-3-pro-preview"),
         embedding_model=_env("EMBEDDING_MODEL", default="text-embedding-004"),
@@ -128,6 +135,9 @@ def load_settings() -> Settings:
         retrieve_top_k=_env_int("RETRIEVE_TOP_K", default=5, min_value=1),
         worker_poll_seconds=float(os.getenv("WORKER_POLL_SECONDS", "1")),
         history_token_ttl_minutes=_env_int("HISTORY_TOKEN_TTL_MINUTES", default=60, min_value=1),
+        http_debug_endpoints_enabled=_env_bool("HTTP_DEBUG_ENDPOINTS_ENABLED", default=False),
+        buffer_max_age_hours=_env_int("BUFFER_MAX_AGE_HOURS", default=168, min_value=1),  # 7 days
+        buffer_max_messages=_env_int("BUFFER_MAX_MESSAGES", default=500, min_value=10),
         max_images_per_gate=_env_int("MAX_IMAGES_PER_GATE", default=3, min_value=0),
         max_images_per_respond=_env_int("MAX_IMAGES_PER_RESPOND", default=5, min_value=0),
         max_kb_images_per_case=_env_int("MAX_KB_IMAGES_PER_CASE", default=2, min_value=0),

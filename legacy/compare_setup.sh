@@ -1,0 +1,25 @@
+#!/bin/bash
+# Quick comparison: Traditional pip vs uv
+
+echo "================================"
+echo "Installation Method Comparison"
+echo "================================"
+echo ""
+echo "Option 1: Traditional pip (SLOW)"
+echo "  Time: ~2-5 minutes"
+echo "  Commands:"
+echo "    python -m venv .venv"
+echo "    source .venv/bin/activate"
+echo "    pip install -r signal-bot/requirements.txt"
+echo "    pip install -r signal-ingest/requirements.txt"
+echo "    pip install -r test/requirements.txt"
+echo ""
+echo "Option 2: uv (FAST) ⚡"
+echo "  Time: ~10-30 seconds"
+echo "  Commands:"
+echo "    ./setup_env.sh"
+echo ""
+echo "================================"
+echo ""
+read -p "Press Enter to run fast setup with uv..."
+./setup_env.sh
