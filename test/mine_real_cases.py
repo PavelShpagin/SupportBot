@@ -208,14 +208,27 @@ def main() -> None:
         if not case.keep:
             continue
 
-        doc_text = "\n".join(
-            [
-                (case.problem_title or "").strip(),
-                (case.problem_summary or "").strip(),
-                (case.solution_summary or "").strip(),
+        # Quality gate: Only keep solved cases with solutions
+        # Reject: solved cases without solutions OR open/unsolved cases
+        if case.status != "solved" or not case.solution_summary.strip():
+            print(f"Block {idx}: Rejecting case (status={case.status}, has_solution={bool(case.solution_summary.strip())})", flush=True)
+            continue
+
+        # Build doc_text with clear section labels
+        solution_text = (case.solution_summary or "").strip()
+        if case.status == "solved" and solution_text:
+            doc_text = "\n".join([
+                f"[{case.status.upper()}] {(case.problem_title or '').strip()}",
+                f"Проблема: {(case.problem_summary or '').strip()}",
+                f"Рішення: {solution_text}",
                 "tags: " + ", ".join(case.tags or []),
-            ]
-        ).strip()
+            ]).strip()
+        else:
+            doc_text = "\n".join([
+                f"[{(case.status or 'open').upper()}] {(case.problem_title or '').strip()}",
+                f"Проблема: {(case.problem_summary or '').strip()}",
+                "tags: " + ", ".join(case.tags or []),
+            ]).strip()
         try:
             emb = llm.embed(text=doc_text) if doc_text else []
         except Exception as e:
