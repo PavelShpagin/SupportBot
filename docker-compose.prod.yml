@@ -65,8 +65,8 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - signal_bot_data:/var/lib/signal/bot
-      - history_data:/var/lib/history
+      - /var/lib/signal/bot:/var/lib/signal/bot
+      - /var/lib/history:/var/lib/history
     depends_on:
       db:
         condition: service_healthy
@@ -87,7 +87,35 @@ services:
       - supportbot-net
 
   # ============================================================================
+  # Signal Desktop (Headless - for real 45-day history sync)
+  # Runs Signal Desktop with Xvfb, exposes API to query the SQLite DB
+  # ============================================================================
+  signal-desktop:
+    build:
+      context: .
+      dockerfile: signal-desktop/Dockerfile
+    container_name: supportbot-desktop
+    env_file: .env
+    environment:
+      - SIGNAL_DATA_DIR=/home/signal/.config/Signal
+      - SIGNAL_BOT_URL=http://signal-bot:8000
+    shm_size: "2gb"
+    volumes:
+      - /var/lib/signal/desktop:/home/signal/.config/Signal
+    ports:
+      - "8001:8001"  # API for querying messages
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - supportbot-net
+
+  # ============================================================================
   # Signal Ingest Service (History Sync via QR Link)
+  # Uses Signal Desktop for real history when USE_SIGNAL_DESKTOP=true
   # ============================================================================
   signal-ingest:
     build:
@@ -97,12 +125,17 @@ services:
     env_file: .env
     environment:
       - SIGNAL_BOT_URL=http://signal-bot:8000
+      - SIGNAL_DESKTOP_URL=http://signal-desktop:8001
+      - USE_SIGNAL_DESKTOP=${USE_SIGNAL_DESKTOP:-true}
+    shm_size: "1gb"
     volumes:
-      - signal_ingest_data:/var/lib/signal/ingest
-      - history_data:/var/lib/history
+      - /var/lib/signal/ingest:/var/lib/signal/ingest
+      - /var/lib/history:/var/lib/history
     depends_on:
       signal-bot:
         condition: service_healthy
+      signal-desktop:
+        condition: service_started
     restart: unless-stopped
     logging:
       driver: json-file
@@ -137,18 +170,14 @@ services:
 
 # ============================================================================
 # Volumes - Persistent Data
+# Note: signal-bot and signal-ingest use bind mounts to /var/lib/signal/*
+#       to prevent data loss from volume name changes
 # ============================================================================
 volumes:
   mysql_data:
     name: supportbot-mysql
   chroma_data:
     name: supportbot-chroma
-  signal_bot_data:
-    name: supportbot-signal-bot
-  signal_ingest_data:
-    name: supportbot-signal-ingest
-  history_data:
-    name: supportbot-history
   redis_data:
     name: supportbot-redis
 

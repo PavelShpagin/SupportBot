@@ -214,3 +214,17 @@ def fail_job(db: Database, *, job_id: int, attempts: int, max_attempts: int = 3)
             )
         conn.commit()
 
+
+def is_job_cancelled(db: Database, *, job_id: int) -> bool:
+    """Check if a job has been cancelled (e.g., user started a new linking attempt)."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        if isinstance(db, MySQL):
+            cur.execute("SELECT status FROM jobs WHERE job_id = %s", (job_id,))
+        else:
+            cur.execute("SELECT status FROM jobs WHERE job_id = :job_id", {"job_id": job_id})
+        row = cur.fetchone()
+        if row is None:
+            return True  # Job doesn't exist, treat as cancelled
+        return row[0] == "cancelled"
+

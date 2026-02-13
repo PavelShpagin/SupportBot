@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import List, Optional
 
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 from pydantic import BaseModel, Field
 
 from app.config import load_settings
@@ -37,6 +37,7 @@ from app.logging_config import configure_logging
 from app.rag.chroma import create_chroma
 from app.signal.adapter import NoopSignalAdapter, SignalAdapter
 from app.signal.signal_cli import SignalCliAdapter, InboundGroupMessage, InboundDirectMessage, InboundReaction
+from app.signal.link_device import LinkDeviceManager, is_account_registered
 from app.ingestion import hash_sender
 
 
@@ -62,6 +63,57 @@ deps = WorkerDeps(settings=settings, db=db, llm=llm, rag=rag, signal=signal)
 
 
 app = FastAPI()
+
+_signal_listener_started = False
+_signal_listener_lock = threading.Lock()
+
+
+def _maybe_start_signal_listener() -> None:
+    """
+    Start the signal-cli receive loop once the account is registered/linked.
+
+    This prevents infinite "User ... is not registered" spam and avoids
+    competing signal-cli processes during provisioning.
+    """
+    global _signal_listener_started
+    if _signal_listener_started:
+        return
+    if not settings.signal_listener_enabled or not isinstance(signal, SignalCliAdapter):
+        return
+
+    with _signal_listener_lock:
+        if _signal_listener_started:
+            return
+        if not is_account_registered(config_dir=settings.signal_bot_storage, e164=settings.signal_bot_e164):
+            log.warning(
+                "Signal account not registered/linked yet (%s). "
+                "Link it via /signal/link-device/qr (debug endpoint) and then the listener will start.",
+                settings.signal_bot_e164,
+            )
+            return
+
+        threading.Thread(
+            target=signal.listen_forever,
+            kwargs={
+                "on_group_message": _handle_group_message,
+                "on_direct_message": _handle_direct_message,
+                "on_reaction": _handle_reaction,
+                "on_contact_removed": _handle_contact_removed,
+            },
+            daemon=True,
+        ).start()
+        _signal_listener_started = True
+        log.info("Signal listener started")
+
+
+link_device = LinkDeviceManager(
+    signal_cli_bin=settings.signal_cli,
+    config_dir=settings.signal_bot_storage,
+    expected_e164=settings.signal_bot_e164,
+    device_name="SupportBot",
+    link_timeout_seconds=180,
+    on_linked=_maybe_start_signal_listener,
+)
 
 
 def _detect_language(text: str) -> str:
@@ -106,48 +158,40 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
     Handle 1:1 messages from admins.
     
     Flow:
-    1. Admin sends first message -> bot sends onboarding prompt (no search)
+    1. Admin sends first message (ANYTHING) -> bot sends welcome, detects lang
     2. Admin sends group name -> bot finds group, generates QR, sends it
     3. Admin scans QR -> success/fail notification, then loop back to step 2
     4. If admin sends new message mid-process -> abort current, restart with new group
+    5. On contact removed -> session is deleted, so re-add goes to step 1
     
     Language commands: /uk, /en
     """
-    from app.db.queries_mysql import set_admin_lang, cancel_pending_history_jobs
+    from app.db.queries_mysql import set_admin_lang, cancel_pending_history_jobs, cancel_all_history_jobs_for_admin
     
     admin_id = m.sender
     text = m.text.strip()
     
     log.info("Direct message from %s: %s", admin_id, text[:100])
     
-    # Get or create admin session
+    # Get admin session - None means brand new user
     session = get_admin_session(db, admin_id)
     
     if session is None:
-        # Brand new admin - detect language, send onboarding, DON'T search yet
+        # Brand new admin - detect language, send welcome, DON'T search yet
         detected_lang = _detect_language(text)
-        log.info("New admin %s, detected language: %s, sending onboarding only", admin_id, detected_lang)
+        log.info("New admin %s, detected language: %s, sending welcome", admin_id, detected_lang)
         set_admin_awaiting_group_name(db, admin_id)
         set_admin_lang(db, admin_id, detected_lang)
         if isinstance(signal, SignalCliAdapter):
-            signal.send_onboarding_prompt(recipient=admin_id, lang=detected_lang)
-        # Don't search - wait for next message
+            sent = signal.send_onboarding_prompt(recipient=admin_id, lang=detected_lang)
+            if not sent:
+                # User blocked us - clear session
+                from app.db.queries_mysql import delete_admin_session
+                delete_admin_session(db, admin_id)
+                log.info("Cleared session for blocked user %s", admin_id)
         return
     
     lang = session.lang
-    
-    # Handle language commands
-    if text.lower() in ("/uk", "/ua"):
-        set_admin_lang(db, admin_id, "uk")
-        if isinstance(signal, SignalCliAdapter):
-            signal.send_lang_changed(recipient=admin_id, lang="uk")
-        return
-    
-    if text.lower() == "/en":
-        set_admin_lang(db, admin_id, "en")
-        if isinstance(signal, SignalCliAdapter):
-            signal.send_lang_changed(recipient=admin_id, lang="en")
-        return
     
     if not text:
         # Empty message - resend prompt
@@ -182,6 +226,12 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
     
     # INSTANT FEEDBACK: Tell user we found it and generating QR
     signal.send_processing_message(recipient=admin_id, group_name=group.group_name, lang=lang)
+    
+    # Cancel any existing history jobs for this admin before creating a new one
+    # This ensures only ONE job runs at a time per admin (signal-cli can only link one device)
+    cancelled = cancel_all_history_jobs_for_admin(db, admin_id)
+    if cancelled:
+        log.info("Cancelled %d existing history jobs for admin %s", cancelled, admin_id)
     
     # Generate token and create history token
     token = uuid.uuid4().hex
@@ -255,23 +305,87 @@ def _handle_reaction(r: InboundReaction) -> None:
         log.info("Reaction added: group=%s ts=%s emoji=%s", r.group_id, r.target_ts, r.emoji)
 
 
+def _handle_contact_removed(phone_number: str) -> None:
+    """
+    Handle when a user removes/blocks the bot.
+    
+    This clears their admin session so they get a fresh start
+    if they re-add the bot later.
+    """
+    from app.db.queries_mysql import delete_admin_session, cancel_all_history_jobs_for_admin
+    
+    log.info("Contact removed/blocked us: %s - clearing their session", phone_number)
+    
+    # Cancel any pending history jobs for this admin
+    try:
+        cancelled = cancel_all_history_jobs_for_admin(db, phone_number)
+        if cancelled:
+            log.info("Cancelled %d pending history jobs for removed contact %s", cancelled, phone_number)
+    except Exception:
+        log.exception("Failed to cancel history jobs for %s", phone_number)
+    
+    # Delete their admin session
+    try:
+        delete_admin_session(db, phone_number)
+        log.info("Deleted admin session for removed contact: %s", phone_number)
+    except Exception:
+        log.exception("Failed to delete admin session for %s", phone_number)
+
+
 @app.on_event("startup")
 def _startup() -> None:
     t = threading.Thread(target=worker_loop_forever, args=(deps,), daemon=True)
     t.start()
 
-    if settings.signal_listener_enabled and isinstance(signal, SignalCliAdapter):
-        threading.Thread(
-            target=signal.listen_forever,
-            kwargs={
-                "on_group_message": _handle_group_message,
-                "on_direct_message": _handle_direct_message,
-                "on_reaction": _handle_reaction,
-            },
-            daemon=True,
-        ).start()
+    # Start listener only if the account is already linked/registered.
+    _maybe_start_signal_listener()
 
     log.info("Startup complete")
+
+
+@app.get("/signal/link-device/qr")
+def signal_link_device_qr() -> Response:
+    """
+    Debug-only: generate and return a QR PNG for `signal-cli link`.
+
+    Open this endpoint in a desktop browser and scan the QR on your phone:
+      Signal -> Settings -> Linked devices -> Link new device
+    """
+    if not settings.http_debug_endpoints_enabled:
+        raise HTTPException(status_code=404, detail="Not found")
+
+    link_device.start()
+    png = link_device.wait_for_qr(timeout_seconds=5.0)
+    if not png:
+        snap = link_device.snapshot()
+        raise HTTPException(status_code=503, detail=f"QR not ready (status={snap.status})")
+    return Response(content=png, media_type="image/png")
+
+
+@app.get("/signal/link-device/status")
+def signal_link_device_status() -> dict:
+    """Debug-only: view current link-device status and last output lines."""
+    if not settings.http_debug_endpoints_enabled:
+        raise HTTPException(status_code=404, detail="Not found")
+    snap = link_device.snapshot()
+    return {
+        "status": snap.status,
+        "started_at": snap.started_at,
+        "ended_at": snap.ended_at,
+        "exit_code": snap.exit_code,
+        "url": snap.url,
+        "error": snap.error,
+        "output_tail": snap.output_tail[-50:],
+    }
+
+
+@app.post("/signal/link-device/cancel")
+def signal_link_device_cancel() -> dict:
+    """Debug-only: cancel an in-progress link-device flow."""
+    if not settings.http_debug_endpoints_enabled:
+        raise HTTPException(status_code=404, detail="Not found")
+    ok = link_device.cancel()
+    return {"ok": ok}
 
 
 @app.get("/healthz")
@@ -421,6 +535,11 @@ def _format_progress_message(key: str, lang: str, **kwargs) -> str:
     total = kwargs.get("total", 0)
     
     if key == "collecting":
+        if count and int(count) > 0:
+            if lang == "uk":
+                return f"Збираю повідомлення з історії чату... (вже {count})"
+            else:
+                return f"Collecting messages from chat history... ({count} so far)"
         return "Збираю повідомлення з історії чату..." if lang == "uk" else "Collecting messages from chat history..."
     
     elif key == "found_messages":
@@ -469,7 +588,7 @@ def history_progress(req: HistoryProgressRequest) -> dict:
     )
     
     if isinstance(signal, SignalCliAdapter):
-        signal.send_message(recipient=admin_id, text=progress_text)
+        signal.send_direct_text(recipient=admin_id, text=progress_text)
     
     return {"ok": True}
 
@@ -478,6 +597,10 @@ class HistoryLinkResultRequest(BaseModel):
     """Called by signal-ingest when processing completes or fails."""
     token: str
     success: bool
+    message_count: int | None = None
+    cases_found: int | None = None
+    cases_inserted: int | None = None
+    note: str | None = None
 
 
 @app.post("/history/link-result")
@@ -503,6 +626,24 @@ def history_link_result(req: HistoryLinkResultRequest) -> dict:
                 link_admin_to_group(db, admin_id=admin_id, group_id=group_id)
         else:
             signal.send_failure_message(recipient=admin_id, group_name=group_name, lang=lang)
+
+        # Optional: send a short summary of what was actually imported.
+        if req.message_count is not None or req.cases_inserted is not None or req.note:
+            if lang == "uk":
+                summary = (
+                    f"Підсумок імпорту: повідомлень={req.message_count if req.message_count is not None else '?'}"
+                    f", кейсів додано={req.cases_inserted if req.cases_inserted is not None else '?'}."
+                )
+                if req.note:
+                    summary += f"\n{req.note}"
+            else:
+                summary = (
+                    f"Import summary: messages={req.message_count if req.message_count is not None else '?'}"
+                    f", cases_added={req.cases_inserted if req.cases_inserted is not None else '?'}."
+                )
+                if req.note:
+                    summary += f"\n{req.note}"
+            signal.send_direct_text(recipient=admin_id, text=summary)
     
     # Reset admin state to allow connecting another group
     set_admin_awaiting_group_name(db, admin_id)
@@ -566,16 +707,19 @@ def history_cases(req: HistoryCasesRequest) -> dict:
             ]
         ).strip()
         embedding = llm.embed(text=doc_text)
+        metadata = {
+            "group_id": req.group_id,
+            "status": case.status,
+            "evidence_ids": case.evidence_ids,
+        }
+        if evidence_image_paths:
+            metadata["evidence_image_paths"] = evidence_image_paths
+
         rag.upsert_case(
             case_id=case_id,
             document=doc_text,
             embedding=embedding,
-            metadata={
-                "group_id": req.group_id,
-                "status": case.status,
-                "evidence_ids": case.evidence_ids,
-                "evidence_image_paths": evidence_image_paths,
-            },
+            metadata=metadata,
         )
         kept += 1
 

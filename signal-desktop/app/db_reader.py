@@ -1,0 +1,301 @@
+"""
+Read messages from Signal Desktop's SQLCipher database.
+
+Signal Desktop stores its encryption key in a JSON config file.
+The DB is at: ~/.config/Signal/sql/db.sqlite
+The key is at: ~/.config/Signal/config.json (field: "key")
+"""
+from __future__ import annotations
+
+import json
+import logging
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Optional
+
+log = logging.getLogger(__name__)
+
+
+@dataclass(frozen=True)
+class SignalMessage:
+    """A message from the Signal Desktop database."""
+    id: str
+    conversation_id: str
+    timestamp: int  # ms since epoch
+    sender: Optional[str]
+    body: str
+    type: str  # 'incoming', 'outgoing', etc.
+    group_id: Optional[str] = None
+    group_name: Optional[str] = None
+
+
+def _get_db_key(signal_data_dir: str) -> str:
+    """Extract the SQLCipher key from Signal Desktop's config.json."""
+    config_path = Path(signal_data_dir) / "config.json"
+    if not config_path.exists():
+        raise RuntimeError(f"Signal Desktop config not found: {config_path}")
+    
+    with open(config_path) as f:
+        config = json.load(f)
+    
+    key = config.get("key")
+    if not key:
+        raise RuntimeError("No 'key' field in Signal Desktop config.json")
+    
+    return key
+
+
+def _open_db(signal_data_dir: str):
+    """Open the Signal Desktop SQLCipher database."""
+    # Try sqlcipher3-binary first (better compatibility), then pysqlcipher3
+    sqlcipher = None
+    try:
+        import sqlcipher3 as sqlcipher
+        log.info("Using sqlcipher3 (sqlcipher3-binary)")
+    except ImportError:
+        try:
+            from pysqlcipher3 import dbapi2 as sqlcipher
+            log.info("Using pysqlcipher3")
+        except ImportError:
+            raise RuntimeError("No SQLCipher library found. Install sqlcipher3-binary or pysqlcipher3")
+    
+    db_path = Path(signal_data_dir) / "sql" / "db.sqlite"
+    if not db_path.exists():
+        raise RuntimeError(f"Signal Desktop DB not found: {db_path}")
+    
+    key = _get_db_key(signal_data_dir)
+    
+    conn = sqlcipher.connect(str(db_path))
+    try:
+        # Signal Desktop uses SQLCipher 4 with specific settings
+        # Order matters: cipher_compatibility and cipher_page_size BEFORE key
+        conn.execute("PRAGMA cipher_compatibility = 4;")
+        conn.execute("PRAGMA cipher_page_size = 4096;")
+        conn.execute(f"PRAGMA key = \"x'{key}'\";")
+        
+        # Verify we can read
+        tables = conn.execute("SELECT name FROM sqlite_master WHERE type='table' LIMIT 1;").fetchall()
+        log.info("DB opened successfully, found tables")
+        return conn
+    except Exception as e:
+        conn.close()
+        raise RuntimeError(f"Failed to open Signal DB: {e}")
+    
+    return conn
+
+
+def _get_table_columns(conn, table: str) -> set[str]:
+    """Get column names for a table."""
+    rows = conn.execute(f"PRAGMA table_info({table})").fetchall()
+    return {r[1] for r in rows}
+
+
+def get_conversations(signal_data_dir: str) -> list[dict]:
+    """Get all conversations from Signal Desktop DB."""
+    conn = _open_db(signal_data_dir)
+    try:
+        cols = _get_table_columns(conn, "conversations")
+        
+        # Build query based on available columns
+        select_cols = ["id"]
+        if "type" in cols:
+            select_cols.append("type")
+        if "name" in cols:
+            select_cols.append("name")
+        if "profileName" in cols:
+            select_cols.append("profileName")
+        if "groupId" in cols:
+            select_cols.append("groupId")
+        
+        q = f"SELECT {', '.join(select_cols)} FROM conversations"
+        rows = conn.execute(q).fetchall()
+        
+        result = []
+        for row in rows:
+            d = {}
+            for i, col in enumerate(select_cols):
+                d[col] = row[i]
+            result.append(d)
+        
+        return result
+    finally:
+        conn.close()
+
+
+def get_messages(
+    signal_data_dir: str,
+    conversation_id: Optional[str] = None,
+    since_timestamp: Optional[int] = None,
+    limit: int = 100,
+) -> list[SignalMessage]:
+    """
+    Get messages from Signal Desktop DB.
+    
+    Args:
+        signal_data_dir: Path to Signal Desktop data directory
+        conversation_id: Filter to specific conversation (optional)
+        since_timestamp: Only get messages after this timestamp (ms, optional)
+        limit: Maximum number of messages to return
+    
+    Returns:
+        List of SignalMessage objects, oldest first
+    """
+    conn = _open_db(signal_data_dir)
+    try:
+        msg_cols = _get_table_columns(conn, "messages")
+        conv_cols = _get_table_columns(conn, "conversations")
+        
+        # Determine column names (Signal Desktop schema varies by version)
+        ts_col = "sent_at" if "sent_at" in msg_cols else "timestamp"
+        conv_id_col = "conversationId" if "conversationId" in msg_cols else "conversation_id"
+        body_col = "body" if "body" in msg_cols else "message"
+        type_col = "type" if "type" in msg_cols else None
+        
+        # Sender column
+        sender_col = None
+        for candidate in ["sourceServiceId", "sourceUuid", "source"]:
+            if candidate in msg_cols:
+                sender_col = candidate
+                break
+        
+        # Build the query
+        select_parts = [
+            f"m.id",
+            f"m.{conv_id_col} as conversation_id",
+            f"m.{ts_col} as timestamp",
+            f"m.{body_col} as body",
+        ]
+        
+        if sender_col:
+            select_parts.append(f"m.{sender_col} as sender")
+        else:
+            select_parts.append("NULL as sender")
+        
+        if type_col:
+            select_parts.append(f"m.{type_col} as msg_type")
+        else:
+            select_parts.append("'unknown' as msg_type")
+        
+        # Join with conversations to get group info
+        if "groupId" in conv_cols:
+            select_parts.append("c.groupId as group_id")
+        else:
+            select_parts.append("NULL as group_id")
+        
+        if "name" in conv_cols:
+            select_parts.append("c.name as group_name")
+        else:
+            select_parts.append("NULL as group_name")
+        
+        q = f"""
+            SELECT {', '.join(select_parts)}
+            FROM messages m
+            LEFT JOIN conversations c ON m.{conv_id_col} = c.id
+            WHERE m.{body_col} IS NOT NULL AND m.{body_col} != ''
+        """
+        
+        params: list = []
+        
+        if conversation_id:
+            q += f" AND m.{conv_id_col} = ?"
+            params.append(conversation_id)
+        
+        if since_timestamp:
+            q += f" AND m.{ts_col} > ?"
+            params.append(since_timestamp)
+        
+        q += f" ORDER BY m.{ts_col} ASC LIMIT ?"
+        params.append(limit)
+        
+        rows = conn.execute(q, params).fetchall()
+        
+        result = []
+        for row in rows:
+            try:
+                msg = SignalMessage(
+                    id=str(row[0]),
+                    conversation_id=str(row[1]) if row[1] else "",
+                    timestamp=int(row[2]) if row[2] else 0,
+                    body=str(row[3] or ""),
+                    sender=str(row[4]) if row[4] else None,
+                    type=str(row[5]) if row[5] else "unknown",
+                    group_id=str(row[6]) if row[6] else None,
+                    group_name=str(row[7]) if row[7] else None,
+                )
+                if msg.body:  # Skip empty messages
+                    result.append(msg)
+            except Exception as e:
+                log.warning("Failed to parse message row: %s", e)
+                continue
+        
+        return result
+    finally:
+        conn.close()
+
+
+def get_group_messages(
+    signal_data_dir: str,
+    group_id: Optional[str] = None,
+    group_name: Optional[str] = None,
+    limit: int = 800,
+) -> list[SignalMessage]:
+    """
+    Get messages for a specific group by ID or name.
+    
+    This is useful for history ingestion - getting all messages from a group.
+    """
+    conn = _open_db(signal_data_dir)
+    try:
+        msg_cols = _get_table_columns(conn, "messages")
+        conv_cols = _get_table_columns(conn, "conversations")
+        
+        # First, find the conversation ID for this group
+        conv_id = None
+        
+        if group_id and "groupId" in conv_cols:
+            row = conn.execute(
+                "SELECT id FROM conversations WHERE groupId = ? LIMIT 1",
+                (group_id,)
+            ).fetchone()
+            if row:
+                conv_id = row[0]
+        
+        if not conv_id and group_name and "name" in conv_cols:
+            # Try exact match first
+            row = conn.execute(
+                "SELECT id FROM conversations WHERE LOWER(name) = LOWER(?) LIMIT 1",
+                (group_name,)
+            ).fetchone()
+            if row:
+                conv_id = row[0]
+            else:
+                # Partial match
+                row = conn.execute(
+                    "SELECT id FROM conversations WHERE LOWER(name) LIKE LOWER(?) LIMIT 1",
+                    (f"%{group_name}%",)
+                ).fetchone()
+                if row:
+                    conv_id = row[0]
+        
+        if not conv_id:
+            log.warning("Group not found: group_id=%s, group_name=%s", group_id, group_name)
+            return []
+        
+        return get_messages(
+            signal_data_dir=signal_data_dir,
+            conversation_id=str(conv_id),
+            limit=limit,
+        )
+    finally:
+        conn.close()
+
+
+def is_db_available(signal_data_dir: str) -> bool:
+    """Check if Signal Desktop DB is available and can be opened."""
+    try:
+        conn = _open_db(signal_data_dir)
+        conn.close()
+        return True
+    except Exception as e:
+        log.debug("Signal Desktop DB not available: %s", e)
+        return False

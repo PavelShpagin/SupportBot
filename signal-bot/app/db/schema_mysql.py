@@ -78,7 +78,7 @@ DDL_STATEMENTS = [
       status       VARCHAR(16) NOT NULL,
       attempts     INT DEFAULT 0 NOT NULL,
       updated_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
-      CONSTRAINT jobs_status_chk CHECK (status IN ('pending', 'in_progress', 'done', 'failed')),
+      CONSTRAINT jobs_status_chk CHECK (status IN ('pending', 'in_progress', 'done', 'failed', 'cancelled')),
       INDEX idx_jobs_status_type (status, type),
       INDEX idx_jobs_updated (updated_at)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci

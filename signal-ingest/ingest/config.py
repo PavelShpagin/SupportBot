@@ -55,6 +55,10 @@ class Settings:
     history_dir: str
     signal_bot_url: str
 
+    # Signal Desktop service (optional - for real history ingestion)
+    signal_desktop_url: str
+    use_signal_desktop: bool
+
     history_max_seconds: float
     history_idle_seconds: float
     chunk_max_chars: int
@@ -85,8 +89,12 @@ def load_settings() -> Settings:
         signal_ingest_storage=_env("SIGNAL_INGEST_STORAGE", default="/var/lib/signal/ingest"),
         history_dir=_env("HISTORY_DIR", default="/var/lib/history"),
         signal_bot_url=_env("SIGNAL_BOT_URL", default="http://signal-bot:8000"),
-        history_max_seconds=_env_float("HISTORY_MAX_SECONDS", default=180.0, min_value=10.0),
-        history_idle_seconds=_env_float("HISTORY_IDLE_SECONDS", default=10.0, min_value=2.0),
+        # Signal Desktop service for real 45-day history ingestion
+        signal_desktop_url=_env("SIGNAL_DESKTOP_URL", default="http://signal-desktop:8001"),
+        use_signal_desktop=_env("USE_SIGNAL_DESKTOP", default="false").lower() in ("true", "1", "yes"),
+        # Linking can trigger a bursty sync; keep the receive window generous by default.
+        history_max_seconds=_env_float("HISTORY_MAX_SECONDS", default=600.0, min_value=10.0),
+        history_idle_seconds=_env_float("HISTORY_IDLE_SECONDS", default=20.0, min_value=2.0),
         chunk_max_chars=int(_env("HISTORY_CHUNK_MAX_CHARS", default="12000")),
         chunk_overlap_messages=int(_env("HISTORY_CHUNK_OVERLAP_MESSAGES", default="3")),
         worker_poll_seconds=_env_float("WORKER_POLL_SECONDS", default=1.0, min_value=0.1),

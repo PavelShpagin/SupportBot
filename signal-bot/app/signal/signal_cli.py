@@ -43,27 +43,39 @@ Which group would you like to connect?"""
 
 QR_MESSAGE_UK = """Відскануйте цей QR-код у Signal протягом 60 секунд (Налаштування -> Пов'язані пристрої -> Додати пристрій).
 
-Після сканування я зможу обробити історію групи "{group_name}" та почати відповідати на питання."""
+Після сканування я зможу обробити історію групи "{group_name}" та почати відповідати на питання.
+
+Під час підключення на телефоні виберіть «Перенести історію повідомлень» (якщо зʼявиться).
+
+Якщо після сканування пристрій не додався - QR-код застарів. Напишіть назву групи ще раз для нового коду."""
 
 QR_MESSAGE_EN = """Scan this QR code in Signal within 60 seconds (Settings -> Linked Devices -> Link New Device).
 
-After scanning, I'll be able to process the history of group "{group_name}" and start answering questions."""
+After scanning, I'll be able to process the history of group "{group_name}" and start answering questions.
 
-SUCCESS_MESSAGE_UK = """Успішно підключено до групи "{group_name}"!
+During linking on your phone, choose “Transfer Message History” (if prompted).
 
-Обробка історії завершена. База знань готова.
+If no device was added after scanning - the QR code has expired. Send the group name again for a new code."""
+
+SUCCESS_MESSAGE_UK = """Успішно підключено до групи "{group_name}"! ✅
+
+Бот тепер відстежує нові повідомлення в групі та навчатиметься з них.
+
+💡 Порада: Щоб швидше навчити бота, перешліть йому в групу кілька важливих вирішених питань з минулого.
 
 Хочете підключити ще одну групу? Напишіть її назву."""
 
-SUCCESS_MESSAGE_EN = """Successfully connected to group "{group_name}"!
+SUCCESS_MESSAGE_EN = """Successfully connected to group "{group_name}"! ✅
 
-History processing complete. Knowledge base is ready.
+The bot now monitors new messages in the group and will learn from them.
+
+💡 Tip: To train the bot faster, forward a few important solved questions from the past to the group.
 
 Want to connect another group? Send its name."""
 
-SCAN_RECEIVED_UK = """QR-код відскановано! Завантажую історію групи "{group_name}"..."""
+SCAN_RECEIVED_UK = """QR-код відскановано! Підключаюсь до групи "{group_name}"..."""
 
-SCAN_RECEIVED_EN = """QR code scanned! Loading history for group "{group_name}"..."""
+SCAN_RECEIVED_EN = """QR code scanned! Connecting to group "{group_name}"..."""
 
 FAILURE_MESSAGE_UK = """Не вдалося підключитися до групи "{group_name}".
 
@@ -226,8 +238,11 @@ class SignalCliAdapter:
         if proc.returncode != 0:
             raise RuntimeError(f"signal-cli send failed (exit {proc.returncode})")
 
-    def send_direct_text(self, *, recipient: str, text: str) -> None:
-        """Send text message to a user (1:1 chat)."""
+    def send_direct_text(self, *, recipient: str, text: str) -> bool:
+        """Send text message to a user (1:1 chat).
+        
+        Returns True if sent successfully, False if user appears to have blocked/removed us.
+        """
         self.assert_available()
         cmd = [
             self._bin(), "--config", self._config(), "-u", self._user(),
@@ -238,9 +253,15 @@ class SignalCliAdapter:
         if proc.stdout:
             log.info("signal-cli stdout: %s", proc.stdout.strip())
         if proc.stderr:
+            stderr_lower = proc.stderr.lower()
             log.info("signal-cli stderr: %s", proc.stderr.strip())
+            # Detect blocked/removed user
+            if "unregistered" in stderr_lower or "not found" in stderr_lower or "unknown" in stderr_lower:
+                log.warning("User %s appears to have blocked/removed us", recipient)
+                return False
         if proc.returncode != 0:
             raise RuntimeError(f"signal-cli send failed (exit {proc.returncode})")
+        return True
 
     def send_direct_image(self, *, recipient: str, image_path: str, caption: str = "") -> None:
         """Send image to a user (1:1 chat) with optional caption."""
@@ -265,14 +286,20 @@ class SignalCliAdapter:
     # Admin onboarding messages (with language support)
     # ─────────────────────────────────────────────────────────────────────────
 
-    def send_onboarding_prompt(self, *, recipient: str, lang: str = "uk") -> None:
-        """Send the initial onboarding message asking for group name."""
+    def send_onboarding_prompt(self, *, recipient: str, lang: str = "uk") -> bool:
+        """Send the initial onboarding message asking for group name.
+        
+        Returns True if sent successfully, False if user blocked/removed us.
+        """
         text = _msg(ONBOARDING_PROMPT_UK, ONBOARDING_PROMPT_EN, lang)
         try:
-            self.send_direct_text(recipient=recipient, text=text)
-            log.info("Sent onboarding prompt to %s (lang=%s)", recipient, lang)
+            result = self.send_direct_text(recipient=recipient, text=text)
+            if result:
+                log.info("Sent onboarding prompt to %s (lang=%s)", recipient, lang)
+            return result
         except Exception:
             log.exception("Failed to send onboarding prompt to %s", recipient)
+            return False
 
     def send_qr_for_group(self, *, recipient: str, group_name: str, qr_path: str, lang: str = "uk") -> None:
         """Send QR code image with explanation to admin."""
@@ -439,11 +466,13 @@ class SignalCliAdapter:
         on_group_message: Callable[[InboundGroupMessage], None],
         on_direct_message: Callable[[InboundDirectMessage], None],
         on_reaction: Callable[[InboundReaction], None] | None = None,
+        on_contact_removed: Callable[[str], None] | None = None,
     ) -> None:
         """
         Signal receive loop. Dispatches:
         - Group messages -> on_group_message
         - Direct (1:1) messages -> on_direct_message
+        - Contact removed/blocked -> on_contact_removed(phone_number)
         """
         log.info("Starting Signal receive loop...")
         self.assert_available()
@@ -506,6 +535,16 @@ class SignalCliAdapter:
                             on_reaction(reaction)
                         except Exception:
                             log.exception("on_reaction handler failed")
+                        continue
+
+                # Try parsing as contact removed/blocked event
+                if on_contact_removed is not None:
+                    removed_contact = _parse_contact_removed(obj)
+                    if removed_contact is not None:
+                        try:
+                            on_contact_removed(removed_contact)
+                        except Exception:
+                            log.exception("on_contact_removed handler failed")
                         continue
             # Normal (timeout) exit: loop again.
             # Small pause to avoid starving other signal-cli commands that need the config lock.
@@ -705,3 +744,83 @@ def _parse_reaction(obj: dict) -> Optional[InboundReaction]:
         emoji=str(emoji),
         is_remove=is_remove,
     )
+
+
+def _parse_contact_removed(obj: dict) -> Optional[str]:
+    """
+    Parse contact removed/blocked events from signal-cli JSON.
+    
+    When a user deletes/blocks the bot, Signal may send:
+    1. A syncMessage with blockedNumbers update
+    2. A receiptMessage with error for unregistered/blocked contact
+    3. A contactsUpdate indicating contact was removed
+    
+    Returns the phone number of the contact who removed/blocked us, or None.
+    """
+    env = obj.get("envelope") if isinstance(obj, dict) else None
+    if not isinstance(env, dict):
+        return None
+
+    sender = (
+        env.get("sourceNumber")
+        or env.get("sourceUuid")
+        or env.get("source")
+        or ""
+    )
+
+    # Check for syncMessage with contacts update (contact removed themselves)
+    sync_msg = env.get("syncMessage")
+    if isinstance(sync_msg, dict):
+        # Check for blocked numbers list update
+        blocked = sync_msg.get("blockedNumbers") or sync_msg.get("blocked")
+        if isinstance(blocked, dict):
+            numbers = blocked.get("numbers") or blocked.get("groupIds") or []
+            if numbers:
+                log.info("Received blocked numbers sync: %s", numbers)
+                # This is our blocked list, not theirs - skip
+        
+        # Check for contacts sync that indicates removal
+        contacts = sync_msg.get("contacts")
+        if isinstance(contacts, dict):
+            # Contact sync happened - might indicate changes
+            log.debug("Received contacts sync message")
+
+    # Check for receipt message with unregistered user error
+    # This happens when we try to send to someone who blocked us
+    receipt = env.get("receiptMessage")
+    if isinstance(receipt, dict):
+        # Delivery receipt with error
+        error_msg = receipt.get("error") or ""
+        if "unregistered" in str(error_msg).lower() or "blocked" in str(error_msg).lower():
+            if sender:
+                log.info("Contact appears to have blocked/removed us: %s (error: %s)", sender, error_msg)
+                return str(sender)
+
+    # Check for typing indicator stop that might indicate block
+    # (less reliable but can be a signal)
+    typing = env.get("typingMessage")
+    if isinstance(typing, dict):
+        # Just typing, not a removal
+        pass
+
+    # Check for callMessage errors (blocked contacts can't call)
+    call_msg = env.get("callMessage")
+    if isinstance(call_msg, dict):
+        error = call_msg.get("error")
+        if error and sender:
+            log.info("Call error from %s: %s (may indicate block)", sender, error)
+
+    # The most reliable detection: when we get a "stale devices" or 
+    # "unregistered user" error on send, but that's handled elsewhere.
+    # Here we look for explicit contact removal sync messages.
+    
+    # Check for dataMessage that's a contact card removal
+    data_msg = env.get("dataMessage")
+    if isinstance(data_msg, dict):
+        # Check for end session message (user reset safety number / removed us)
+        if data_msg.get("endSession"):
+            if sender:
+                log.info("Received end session from %s - they may have removed us", sender)
+                return str(sender)
+
+    return None

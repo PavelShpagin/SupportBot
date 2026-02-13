@@ -441,23 +441,66 @@ def set_admin_lang(db: MySQL, admin_id: str, lang: str) -> None:
         conn.commit()
 
 
+def delete_admin_session(db: MySQL, admin_id: str) -> bool:
+    """Delete admin session when user removes/blocks the bot.
+    
+    This allows them to get a fresh start if they re-add the bot.
+    Returns True if a session was deleted.
+    """
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            """
+            DELETE FROM admin_sessions WHERE admin_id = %s
+            """,
+            (admin_id,),
+        )
+        deleted = cur.rowcount > 0
+        conn.commit()
+        return deleted
+
+
 def cancel_pending_history_jobs(db: MySQL, token: str) -> int:
-    """Cancel any pending HISTORY_LINK jobs with the given token.
+    """Cancel any pending or claimed HISTORY_LINK jobs with the given token.
     
     Returns the number of jobs cancelled.
     """
     with db.connection() as conn:
         cur = conn.cursor()
-        # Mark as cancelled any pending jobs that have this token in payload
+        # Mark as cancelled any pending OR claimed jobs that have this token in payload
+        # We cancel claimed jobs too because the user wants to abort the current operation
         cur.execute(
             """
             UPDATE jobs 
             SET status = 'cancelled'
             WHERE type = 'HISTORY_LINK' 
-              AND status = 'pending'
+              AND status IN ('pending', 'in_progress')
               AND payload_json LIKE %s
             """,
             (f'%"token":"{token}"%',),
+        )
+        cancelled = cur.rowcount
+        conn.commit()
+        return cancelled
+
+
+def cancel_all_history_jobs_for_admin(db: MySQL, admin_id: str) -> int:
+    """Cancel ALL pending, claimed, or in_progress HISTORY_LINK jobs for this admin.
+    
+    This is called when starting a new history link to ensure only one job runs at a time.
+    Returns the number of jobs cancelled.
+    """
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            """
+            UPDATE jobs 
+            SET status = 'cancelled'
+            WHERE type = 'HISTORY_LINK' 
+              AND status IN ('pending', 'in_progress')
+              AND payload_json LIKE %s
+            """,
+            (f'%"admin_id":"{admin_id}"%',),
         )
         cancelled = cur.rowcount
         conn.commit()

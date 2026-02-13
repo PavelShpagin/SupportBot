@@ -74,7 +74,7 @@ DDL_STATEMENTS = [
       status       VARCHAR2(16) NOT NULL,
       attempts     NUMBER DEFAULT 0 NOT NULL,
       updated_at   TIMESTAMP DEFAULT SYSTIMESTAMP NOT NULL,
-      CONSTRAINT jobs_status_chk CHECK (status IN ('pending', 'in_progress', 'done', 'failed'))
+      CONSTRAINT jobs_status_chk CHECK (status IN ('pending', 'in_progress', 'done', 'failed', 'cancelled'))
     )
     """,
 ]

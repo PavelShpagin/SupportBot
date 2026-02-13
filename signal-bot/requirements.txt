@@ -3,9 +3,8 @@ uvicorn[standard]==0.32.1
 pydantic==2.10.4
 mysql-connector-python==9.1.0
 oracledb==2.5.0
-chromadb==0.5.23
+chromadb>=1.0.0
 openai==1.59.4
 httpx==0.28.1
 qrcode==8.0
 pillow==11.0.0
-
