@@ -12,7 +12,7 @@ class CaseSearchAgent:
         self.llm = llm
         self.public_url = public_url
         
-    def search(self, query, group_id=None, k=3):
+    def search(self, query, group_id=None, db=None, k=3):
         """Searches cases for relevant problems/solutions."""
         print(f"DEBUG: Searching Cases for '{query}' (group_id={group_id})...")
         if not self.rag or not self.llm:
@@ -33,6 +33,17 @@ class CaseSearchAgent:
             
             formatted_results = []
             for r in results:
+                # Validate existence if DB is available (prevent 404 links)
+                if db:
+                    # We need to import get_case here to avoid circular imports if possible,
+                    # or assume it's passed/available. 
+                    # Since we can't easily import from app.db inside this class if it's imported by app.db (unlikely),
+                    # let's try importing at top level or here.
+                    from app.db import get_case
+                    if not get_case(db, r["case_id"]):
+                        print(f"CaseSearchAgent: Case {r['case_id']} found in RAG but not in DB. Skipping.")
+                        continue
+
                 # Parse doc text to extract problem/solution if possible
                 # Doc format: Title\nProblem\nSolution\nTags
                 doc = r.get("document", "")
@@ -65,9 +76,9 @@ class CaseSearchAgent:
             print(f"Case Search error: {e}")
             return []
 
-    def answer(self, question, group_id=None):
+    def answer(self, question, group_id=None, db=None):
         # Simple wrapper for the unified agent to call
-        results = self.search(question, group_id=group_id)
+        results = self.search(question, group_id=group_id, db=db)
         if not results:
             return "No relevant cases found."
             

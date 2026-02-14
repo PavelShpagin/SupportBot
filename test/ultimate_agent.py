@@ -53,7 +53,7 @@ class UltimateAgent:
         # 4. Synthesizer Model
         self.synthesizer = genai.GenerativeModel(MODEL_NAME)
 
-    def answer(self, question, group_id=None):
+    def answer(self, question, group_id=None, db=None):
         print(f"\n--- Ultimate Processing: {question} (group={group_id}) ---")
         
         # 1. Get Docs Answer (Fastest, Most Trusted)
@@ -78,7 +78,7 @@ class UltimateAgent:
         case_ans = "Case Agent not available."
         if self.case_agent:
             try:
-                case_ans = self.case_agent.answer(question, group_id=group_id)
+                case_ans = self.case_agent.answer(question, group_id=group_id, db=db)
             except Exception as e:
                 case_ans = f"Error: {e}"
         # print(f"Case Answer: {case_ans[:100]}...")

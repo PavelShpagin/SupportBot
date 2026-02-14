@@ -8,7 +8,7 @@ from .gemini_agent import GeminiAgent, build_context_from_description, build_con
 from .chat_search_agent import ChatSearchAgent
 from .case_search_agent import CaseSearchAgent
 from app.config import load_settings
-from app.db import get_group_docs
+from app.db import get_group_docs, get_case
 from app.rag.chroma import create_chroma
 from app.llm.client import LLMClient
 
@@ -150,7 +150,7 @@ class UltimateAgent:
         case_ans = "Case Agent not available."
         if self.case_agent:
             try:
-                case_ans = self.case_agent.answer(question, group_id=group_id)
+                case_ans = self.case_agent.answer(question, group_id=group_id, db=db)
             except Exception as e:
                 case_ans = f"Error: {e}"
 

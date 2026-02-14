@@ -33,7 +33,7 @@ class CaseSearchAgent:
             print("Embeddings NOT found. Please run build_case_index.py first (or use a file with embeddings).")
             # For now, we assume the file has embeddings as seen in the read_file output
             
-    def search(self, query, group_id=None, k=3):
+    def search(self, query, group_id=None, db=None, k=3):
         """Searches cases for relevant problems/solutions."""
         print(f"DEBUG: Searching Cases for '{query}' (group_id={group_id})...")
         try:
@@ -73,9 +73,9 @@ class CaseSearchAgent:
             print(f"Case Search error: {e}")
             return []
 
-    def answer(self, question, group_id=None):
+    def answer(self, question, group_id=None, db=None):
         # Simple wrapper for the unified agent to call
-        results = self.search(question, group_id=group_id)
+        results = self.search(question, group_id=group_id, db=db)
         if not results:
             return "No relevant cases found."
             
