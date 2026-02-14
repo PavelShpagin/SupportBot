@@ -150,7 +150,7 @@ class UltimateAgent:
         case_ans = "Case Agent not available."
         if self.case_agent:
             try:
-                case_ans = self.case_agent.answer(question)
+                case_ans = self.case_agent.answer(question, group_id=group_id)
             except Exception as e:
                 case_ans = f"Error: {e}"
 

@@ -12,9 +12,9 @@ class CaseSearchAgent:
         self.llm = llm
         self.public_url = public_url
         
-    def search(self, query, k=3):
+    def search(self, query, group_id=None, k=3):
         """Searches cases for relevant problems/solutions."""
-        print(f"DEBUG: Searching Cases for '{query}'...")
+        print(f"DEBUG: Searching Cases for '{query}' (group_id={group_id})...")
         if not self.rag or not self.llm:
             print("CaseSearchAgent: RAG or LLM not initialized.")
             return []
@@ -23,8 +23,13 @@ class CaseSearchAgent:
             # Embed query
             query_emb = self.llm.embed(text=query)
             
-            # Search global cases
-            results = self.rag.search_all_cases(embedding=query_emb, k=k)
+            # Search cases - RESTRICTED TO GROUP
+            if group_id:
+                results = self.rag.retrieve_cases(group_id=group_id, embedding=query_emb, k=k)
+            else:
+                # Strict isolation: if no group_id, do not return any cases
+                print("CaseSearchAgent: No group_id provided, skipping case search for security.")
+                return []
             
             formatted_results = []
             for r in results:
@@ -60,9 +65,9 @@ class CaseSearchAgent:
             print(f"Case Search error: {e}")
             return []
 
-    def answer(self, question):
+    def answer(self, question, group_id=None):
         # Simple wrapper for the unified agent to call
-        results = self.search(question)
+        results = self.search(question, group_id=group_id)
         if not results:
             return "No relevant cases found."
             
