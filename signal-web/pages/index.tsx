@@ -19,7 +19,7 @@ export default function Home() {
       <Head>
         <title>SupportBot</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="icon" type="image/svg+xml" href="/supportbot-logo.svg" />
+        <link rel="icon" type="image/png" href="/supportbot-logo.png" />
       </Head>
 
       <style jsx global>{`
@@ -120,14 +120,36 @@ export default function Home() {
           font-size: 15px;
           line-height: 1.55;
         }
+        ol li::before {
+          content: counter(steps);
+          flex-shrink: 0;
+          width: 24px;
+          height: 24px;
+          background: var(--signal-blue);
+          color: #fff;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 12px;
+          font-weight: 600;
+          margin-top: 0px;
+        }
         ol li:last-child { border-bottom: none; padding-bottom: 0; }
 
         ul { list-style: none; }
         ul li {
           position: relative;
-          padding: 7px 0 7px 16px;
+          padding: 7px 0 7px 24px;
           font-size: 15px;
           line-height: 1.55;
+        }
+        ul li::before {
+          content: "•";
+          position: absolute;
+          left: 8px;
+          color: var(--signal-blue);
+          font-weight: bold;
         }
 
         code {
@@ -167,7 +189,7 @@ export default function Home() {
         <div className="card">
           <header>
             <div className="header-left">
-              <img src="/supportbot-logo.svg" alt="SupportBot" className="logo" />
+              <img src="/supportbot-logo.png" alt="SupportBot" className="logo" />
               <span className="brand">SupportBot</span>
             </div>
             <div className="lang-switch">
@@ -194,8 +216,9 @@ export default function Home() {
               <h2>Як додати до групи</h2>
               <ol>
                 <li>Отримайте номер бота від адміністратора</li>
+                <li>Додайте бота до своїх контактів у Signal (щоб бачити повідомлення)</li>
                 <li>У Signal: відкрийте групу → натисніть назву групи → «Додати учасників» → введіть номер бота</li>
-                <li>Напишіть боту в особисті повідомлення назву групи</li>
+                <li>Напишіть боту в особисті повідомлення назву групи (або "Hi" для початку)</li>
                 <li>Бот надішле QR-код — відскануйте його в Signal, щоб підтвердити доступ</li>
                 <li>Готово — бот починає працювати</li>
               </ol>
@@ -205,6 +228,7 @@ export default function Home() {
                 <li>Бот відповідає лише тоді, коли впевнений у відповіді</li>
                 <li>Щоб викликати бота напряму, наберіть <code>@SupportBot</code>, виберіть бота зі списку і напишіть питання</li>
                 <li>Бот враховує текст та зображення</li>
+                <li>Для скидання налаштувань напишіть боту <code>/reset</code></li>
               </ul>
 
               <h2>Зміна мови</h2>
@@ -223,8 +247,9 @@ export default function Home() {
               <h2>Adding to a group</h2>
               <ol>
                 <li>Get the bot&apos;s phone number from your administrator</li>
+                <li>Add the bot to your Signal contacts (to receive messages)</li>
                 <li>In Signal: open the group → tap the group name → &quot;Add members&quot; → enter the bot&apos;s number</li>
-                <li>Send the bot a direct message with the group name</li>
+                <li>Send the bot a direct message with the group name (or "Hi" to start)</li>
                 <li>The bot will send a QR code — scan it in Signal to confirm access</li>
                 <li>Done — the bot starts working</li>
               </ol>
@@ -234,6 +259,7 @@ export default function Home() {
                 <li>The bot replies only when it is confident in the answer</li>
                 <li>To invoke it directly, type <code>@SupportBot</code>, pick the bot from the mention list, then write your question</li>
                 <li>The bot considers text and images</li>
+                <li>To reset configuration, send <code>/reset</code> to the bot</li>
               </ul>
 
               <h2>Change language</h2>

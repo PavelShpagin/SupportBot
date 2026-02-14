@@ -214,6 +214,22 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
     
     lang = session.lang
     
+    text = m.text.strip()
+    
+    # Check for reset/greeting commands to force a fresh start
+    # This handles cases where user removed bot but we didn't get the event,
+    # or just wants to restart the flow.
+    RESET_COMMANDS = {"/start", "/reset", "hi", "hello", "привіт", "start", "reset", "menu"}
+    if text.lower() in RESET_COMMANDS:
+        log.info("Admin %s sent reset/greeting: %s - resetting session", admin_id, text)
+        # Cancel any pending jobs
+        cancel_all_history_jobs_for_admin(db, admin_id)
+        # Delete session
+        from app.db.queries_mysql import delete_admin_session
+        delete_admin_session(db, admin_id)
+        # Force session to None to trigger new user flow below
+        session = None
+
     if not text:
         # Empty message - resend prompt
         if isinstance(signal, SignalCliAdapter):

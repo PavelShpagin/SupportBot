@@ -471,11 +471,19 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
 
     # Use Ultimate Agent
     try:
+        # Check if group has linked admins (is active)
+        from app.db.queries_mysql import get_group_admins, upsert_group_docs
+        admins = get_group_admins(deps.db, group_id)
+        
+        # If no admins are linked to this group, we should not respond.
+        # This prevents the bot from spamming groups where it was added but not configured.
+        if not admins:
+            log.info("Group %s has no linked admins. Skipping response.", group_id)
+            return
+
         # Check for admin commands
         if msg.content_text.strip().startswith("/setdocs"):
             # Check if sender is admin
-            from app.db.queries_mysql import get_group_admins, upsert_group_docs
-            admins = get_group_admins(deps.db, group_id)
             sender = str(payload.get("sender") or "")
             
             if sender in admins:
