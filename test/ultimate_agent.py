@@ -22,7 +22,11 @@ class UltimateAgent:
         print("Initializing Ultimate Agent...")
         
         # 1. Docs Agent (Official Rules)
-        description_path = "test/description.txt"
+        # Try paper/repo/docs.txt first (Signal specific), then fallback to test/description.txt
+        description_path = "paper/repo/docs.txt"
+        if not os.path.exists(description_path):
+            description_path = "test/description.txt"
+            
         if os.path.exists(description_path):
             context = build_context_from_description(description_path)
             self.docs_agent = GeminiAgent(context)
@@ -49,8 +53,8 @@ class UltimateAgent:
         # 4. Synthesizer Model
         self.synthesizer = genai.GenerativeModel(MODEL_NAME)
 
-    def answer(self, question):
-        print(f"\n--- Ultimate Processing: {question} ---")
+    def answer(self, question, group_id=None):
+        print(f"\n--- Ultimate Processing: {question} (group={group_id}) ---")
         
         # 1. Get Docs Answer (Fastest, Most Trusted)
         docs_ans = "Docs Agent not available."
@@ -59,21 +63,25 @@ class UltimateAgent:
                 docs_ans = self.docs_agent.answer(question)
             except Exception as e:
                 docs_ans = f"Error: {e}"
-        print(f"Docs Answer: {docs_ans[:100]}...")
+        # print(f"Docs Answer: {docs_ans[:100]}...")
 
         # Optimization: If Docs Agent confidently answers (not SKIP/INSUFFICIENT), we might stop here?
         # BUT: Sometimes Cases/Chat have *better* practical details. 
         # Let's run all for the "Ultimate" version to ensure max quality.
         # We can optimize later.
+        
+        # If Docs said SKIP, we trust it and stop immediately to save latency/cost.
+        if "SKIP" in docs_ans:
+            return "SKIP"
 
         # 2. Get Case Answer
         case_ans = "Case Agent not available."
         if self.case_agent:
             try:
-                case_ans = self.case_agent.answer(question)
+                case_ans = self.case_agent.answer(question, group_id=group_id)
             except Exception as e:
                 case_ans = f"Error: {e}"
-        print(f"Case Answer: {case_ans[:100]}...")
+        # print(f"Case Answer: {case_ans[:100]}...")
 
         # 3. Get Chat Answer
         chat_ans = "Chat Agent not available."
@@ -82,7 +90,7 @@ class UltimateAgent:
                 chat_ans = self.chat_agent.answer(question)
             except Exception as e:
                 chat_ans = f"Error: {e}"
-        print(f"Chat Answer: {chat_ans[:100]}...")
+        # print(f"Chat Answer: {chat_ans[:100]}...")
         
         # 4. Check for SKIP/INSUFFICIENT
         docs_failed = "INSUFFICIENT_INFO" in docs_ans or "SKIP" in docs_ans
@@ -90,10 +98,6 @@ class UltimateAgent:
         case_failed = "No relevant cases" in case_ans or "No relevant" in case_ans
         chat_failed = "No relevant discussions" in chat_ans or "SKIP" in chat_ans
         
-        # If Docs said SKIP (Noise), we trust it and stop.
-        if "SKIP" in docs_ans:
-            return "SKIP"
-
         # If all failed, Tag Admin
         if docs_failed and case_failed and chat_failed:
             return "INSUFFICIENT_INFO" # Will be converted to Tag Admin by Gate
@@ -126,7 +130,7 @@ RULES:
 4. **CONFLICT RESOLUTION**: If sources contradict, trust Docs > Cases > Chat.
 5. **CITATIONS**: You MUST keep the citations from the original answers.
    - Format: "Answer... [Source: Docs/Case #123/Chat Date]"
-6. **TONE**: Helpful, technical, concise. Ukrainian language.
+6. **TONE**: Helpful, technical, concise. English language.
 
 Output ONLY the final response.
 """

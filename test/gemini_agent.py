@@ -45,26 +45,65 @@ genai.configure(api_key=GOOGLE_API_KEY)
 MODEL_NAME = "gemini-2.0-flash" 
 TARGET_MODEL = "models/gemini-2.0-flash" 
 
+import subprocess
+
 def fetch_doc_content(url):
-    """Fetches text content from a Google Doc URL."""
+    """Fetches text content from a URL (Google Doc or generic)."""
     print(f"DEBUG: Fetching content for {url}", flush=True)
-    # Convert edit URL to export URL
-    # https://docs.google.com/document/d/DOC_ID/edit... -> https://docs.google.com/document/d/DOC_ID/export?format=txt
+    
+    # 1. Google Doc Special Handling
     match = re.search(r"/document/d/([a-zA-Z0-9-_]+)", url)
     if match:
         doc_id = match.group(1)
         export_url = f"https://docs.google.com/document/d/{doc_id}/export?format=txt"
         try:
-            print(f"DEBUG: Requesting {export_url}", flush=True)
+            print(f"DEBUG: Requesting Google Doc {export_url}", flush=True)
             response = requests.get(export_url, timeout=10)
             response.raise_for_status()
             print(f"DEBUG: Fetched {len(response.text)} chars", flush=True)
             return response.text
         except Exception as e:
-            print(f"Error fetching {url}: {e}", flush=True)
+            print(f"Error fetching Google Doc {url}: {e}", flush=True)
             return f"[Error fetching content from {url}]"
-    print(f"DEBUG: Skipping non-doc URL", flush=True)
-    return f"[Skipped non-doc URL: {url}]"
+
+    # 2. Generic URL Handling
+    try:
+        print(f"DEBUG: Requesting Generic URL {url}", flush=True)
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}
+        response = requests.get(url, headers=headers, timeout=10)
+        response.raise_for_status()
+        
+        # Simple HTML cleanup
+        text = response.text
+        # Remove scripts and styles
+        text = re.sub(r'<script\b[^>]*>.*?</script>', '', text, flags=re.DOTALL)
+        text = re.sub(r'<style\b[^>]*>.*?</style>', '', text, flags=re.DOTALL)
+        # Remove tags
+        text = re.sub(r'<[^>]+>', ' ', text)
+        # Collapse whitespace
+        text = re.sub(r'\s+', ' ', text).strip()
+        
+        print(f"DEBUG: Fetched {len(text)} chars (cleaned)", flush=True)
+        return text
+    except Exception as e:
+        print(f"Error fetching {url}: {e}", flush=True)
+        # Try curl fallback
+        try:
+            print(f"DEBUG: Trying curl fallback for {url}", flush=True)
+            result = subprocess.run(['curl', '-L', '-s', url], capture_output=True, text=True, timeout=10)
+            if result.returncode == 0 and result.stdout:
+                text = result.stdout
+                # Simple HTML cleanup
+                text = re.sub(r'<script\b[^>]*>.*?</script>', '', text, flags=re.DOTALL)
+                text = re.sub(r'<style\b[^>]*>.*?</style>', '', text, flags=re.DOTALL)
+                text = re.sub(r'<[^>]+>', ' ', text)
+                text = re.sub(r'\s+', ' ', text).strip()
+                print(f"DEBUG: Fetched {len(text)} chars (curl)", flush=True)
+                return text
+        except Exception as curl_e:
+            print(f"Curl failed: {curl_e}", flush=True)
+            
+        return f"[Error fetching content from {url}]"
 
 def build_context_from_description(description_path):
     """Reads description.txt, fetches docs, and builds context."""
