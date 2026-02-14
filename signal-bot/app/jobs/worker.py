@@ -531,8 +531,15 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         buffer=buffer,
         images=all_images,
     )
+    out = ""
     if not resp.respond:
-        return
+        if force:
+            # If explicitly tagged but LLM has no answer, reply with a concise fallback
+            out = "На жаль, я не маю достатньо інформації, щоб відповісти."
+        else:
+            return
+    else:
+        out = resp.text.strip()
 
     # NOW extract history refs for citation (after LLM decided to respond)
     history_refs = _pick_history_solution_refs(retrieved, max_refs=1)
@@ -540,8 +547,6 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
     # Ensure at least one case citation is present (best-effort, even if model forgets).
     required_case_cits = [f'case:{r["case_id"]}' for r in history_refs]
     cits = list(dict.fromkeys((resp.citations or []) + required_case_cits))
-
-    out = resp.text.strip()
     # User requested to hide refs and history block for cleaner UI
     # out = _append_history_block(out, history_refs)
     # if cits:
