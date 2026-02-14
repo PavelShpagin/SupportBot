@@ -216,19 +216,20 @@ export default function Home() {
               <h2>Як додати до групи</h2>
               <ol>
                 <li>Отримайте номер бота від адміністратора</li>
-                <li>Додайте бота до своїх контактів у Signal (щоб бачити повідомлення)</li>
+                <li>Додайте бота до своїх контактів у Signal (це обов&apos;язково для активації)</li>
                 <li>У Signal: відкрийте групу → натисніть назву групи → «Додати учасників» → введіть номер бота</li>
-                <li>Напишіть боту в особисті повідомлення назву групи (або "Hi" для початку)</li>
+                <li>Напишіть боту в особисті повідомлення назву групи</li>
                 <li>Бот надішле QR-код — відскануйте його в Signal, щоб підтвердити доступ</li>
                 <li>Готово — бот починає працювати</li>
               </ol>
 
               <h2>Як користуватися</h2>
               <ul>
+                <li>Бот відповідає в групі тільки якщо є хоча б один підключений Admin у контактах</li>
+                <li>Якщо Admin видаляє бота з контактів, доступ і мовні налаштування скидаються автоматично</li>
                 <li>Бот відповідає лише тоді, коли впевнений у відповіді</li>
                 <li>Щоб викликати бота напряму, наберіть <code>@SupportBot</code>, виберіть бота зі списку і напишіть питання</li>
                 <li>Бот враховує текст та зображення</li>
-                <li>Для скидання налаштувань напишіть боту <code>/reset</code></li>
               </ul>
 
               <h2>Зміна мови</h2>
@@ -247,19 +248,20 @@ export default function Home() {
               <h2>Adding to a group</h2>
               <ol>
                 <li>Get the bot&apos;s phone number from your administrator</li>
-                <li>Add the bot to your Signal contacts (to receive messages)</li>
+                <li>Add the bot to your Signal contacts (required to activate group responses)</li>
                 <li>In Signal: open the group → tap the group name → &quot;Add members&quot; → enter the bot&apos;s number</li>
-                <li>Send the bot a direct message with the group name (or "Hi" to start)</li>
+                <li>Send the bot a direct message with the group name</li>
                 <li>The bot will send a QR code — scan it in Signal to confirm access</li>
                 <li>Done — the bot starts working</li>
               </ol>
 
               <h2>How to use</h2>
               <ul>
+                <li>The bot replies in a group only when at least one linked Admin still has the bot in contacts</li>
+                <li>If an Admin removes the bot from contacts, access and language preferences are reset automatically</li>
                 <li>The bot replies only when it is confident in the answer</li>
                 <li>To invoke it directly, type <code>@SupportBot</code>, pick the bot from the mention list, then write your question</li>
                 <li>The bot considers text and images</li>
-                <li>To reset configuration, send <code>/reset</code> to the bot</li>
               </ul>
 
               <h2>Change language</h2>

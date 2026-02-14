@@ -541,6 +541,37 @@ def get_group_admins(db: MySQL, group_id: str) -> List[str]:
         return [r[0] for r in rows]
 
 
+def unlink_admin_from_all_groups(db: MySQL, admin_id: str) -> int:
+    """Remove all group links for an admin. Returns number of removed links."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            """
+            DELETE FROM admins_groups
+            WHERE admin_id = %s
+            """,
+            (admin_id,),
+        )
+        removed = cur.rowcount
+        conn.commit()
+        return removed
+
+
+def list_known_admin_ids(db: MySQL) -> List[str]:
+    """Return all admin IDs seen in sessions or admin-group links."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            """
+            SELECT admin_id FROM admin_sessions
+            UNION
+            SELECT admin_id FROM admins_groups
+            """
+        )
+        rows = cur.fetchall()
+        return [str(r[0]) for r in rows if r and r[0]]
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Reactions
 # ─────────────────────────────────────────────────────────────────────────────

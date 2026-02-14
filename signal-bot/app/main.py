@@ -174,6 +174,49 @@ def _detect_language(text: str) -> str:
     return "uk"
 
 
+def _prune_disconnected_admins() -> None:
+    """
+    Keep DB state in sync with current Signal contacts.
+
+    If a user removes the bot from contacts/friends, we must clear:
+    - admin session (including language/state)
+    - pending history jobs
+    - admin<->group links
+    """
+    if not isinstance(signal, SignalCliAdapter):
+        return
+
+    contacts = signal.list_contacts()
+    if contacts is None:
+        # Do not mutate DB when contact sync fails.
+        return
+
+    from app.db.queries_mysql import (
+        list_known_admin_ids,
+        delete_admin_session,
+        cancel_all_history_jobs_for_admin,
+        unlink_admin_from_all_groups,
+    )
+
+    known_admins = list_known_admin_ids(db)
+    for admin_id in known_admins:
+        if admin_id in contacts:
+            continue
+        log.info("Admin %s is no longer in contacts. Cleaning all state.", admin_id)
+        try:
+            cancel_all_history_jobs_for_admin(db, admin_id)
+        except Exception:
+            log.exception("Failed to cancel jobs for disconnected admin %s", admin_id)
+        try:
+            delete_admin_session(db, admin_id)
+        except Exception:
+            log.exception("Failed to delete session for disconnected admin %s", admin_id)
+        try:
+            unlink_admin_from_all_groups(db, admin_id)
+        except Exception:
+            log.exception("Failed to unlink groups for disconnected admin %s", admin_id)
+
+
 def _handle_direct_message(m: InboundDirectMessage) -> None:
     """
     Handle 1:1 messages from admins.
@@ -188,6 +231,9 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
     Language commands: /uk, /en
     """
     from app.db.queries_mysql import set_admin_lang, cancel_pending_history_jobs, cancel_all_history_jobs_for_admin
+
+    # Reconcile stale admins first so re-added users always start fresh.
+    _prune_disconnected_admins()
     
     admin_id = m.sender
     text = m.text.strip()
@@ -207,28 +253,13 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
             sent = signal.send_onboarding_prompt(recipient=admin_id, lang=detected_lang)
             if not sent:
                 # User blocked us - clear session
-                from app.db.queries_mysql import delete_admin_session
+                from app.db.queries_mysql import delete_admin_session, unlink_admin_from_all_groups
                 delete_admin_session(db, admin_id)
+                unlink_admin_from_all_groups(db, admin_id)
                 log.info("Cleared session for blocked user %s", admin_id)
         return
     
     lang = session.lang
-    
-    text = m.text.strip()
-    
-    # Check for reset/greeting commands to force a fresh start
-    # This handles cases where user removed bot but we didn't get the event,
-    # or just wants to restart the flow.
-    RESET_COMMANDS = {"/start", "/reset", "hi", "hello", "привіт", "start", "reset", "menu"}
-    if text.lower() in RESET_COMMANDS:
-        log.info("Admin %s sent reset/greeting: %s - resetting session", admin_id, text)
-        # Cancel any pending jobs
-        cancel_all_history_jobs_for_admin(db, admin_id)
-        # Delete session
-        from app.db.queries_mysql import delete_admin_session
-        delete_admin_session(db, admin_id)
-        # Force session to None to trigger new user flow below
-        session = None
 
     if not text:
         # Empty message - resend prompt
@@ -349,7 +380,11 @@ def _handle_contact_removed(phone_number: str) -> None:
     This clears their admin session so they get a fresh start
     if they re-add the bot later.
     """
-    from app.db.queries_mysql import delete_admin_session, cancel_all_history_jobs_for_admin
+    from app.db.queries_mysql import (
+        delete_admin_session,
+        cancel_all_history_jobs_for_admin,
+        unlink_admin_from_all_groups,
+    )
     
     log.info("Contact removed/blocked us: %s - clearing their session", phone_number)
     
@@ -368,11 +403,29 @@ def _handle_contact_removed(phone_number: str) -> None:
     except Exception:
         log.exception("Failed to delete admin session for %s", phone_number)
 
+    # Remove all admin-group links so group processing is disabled immediately.
+    try:
+        unlinked = unlink_admin_from_all_groups(db, phone_number)
+        if unlinked:
+            log.info("Removed %d group links for removed contact %s", unlinked, phone_number)
+    except Exception:
+        log.exception("Failed to unlink groups for %s", phone_number)
+
 
 @app.on_event("startup")
 def _startup() -> None:
     t = threading.Thread(target=worker_loop_forever, args=(deps,), daemon=True)
     t.start()
+
+    def _admin_reconcile_loop() -> None:
+        while True:
+            try:
+                _prune_disconnected_admins()
+            except Exception:
+                log.exception("Admin reconcile loop failed")
+            time.sleep(60)
+
+    threading.Thread(target=_admin_reconcile_loop, daemon=True).start()
 
     # Start listener only if the account is already linked/registered.
     _maybe_start_signal_listener()

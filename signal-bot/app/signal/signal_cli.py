@@ -448,6 +448,45 @@ class SignalCliAdapter:
         except Exception:
             log.exception("Failed to send lang changed message to %s", recipient)
 
+    def list_contacts(self) -> Optional[set[str]]:
+        """
+        Return current Signal contacts known to this account.
+        Returns None when the command fails.
+        """
+        self.assert_available()
+        cmd = [
+            self._bin(), "--output", "json", "--config", self._config(), "-u", self._user(),
+            "listContacts",
+        ]
+        proc = self._run(cmd)
+        if proc.returncode != 0:
+            log.warning("signal-cli listContacts failed: %s", (proc.stderr or "").strip())
+            return None
+
+        raw = (proc.stdout or "").strip()
+        if not raw:
+            return set()
+
+        contacts: set[str] = set()
+        try:
+            data = json.loads(raw)
+        except json.JSONDecodeError:
+            log.warning("Failed to parse listContacts output as JSON")
+            return None
+
+        items = data if isinstance(data, list) else data.get("contacts", []) if isinstance(data, dict) else []
+        if not isinstance(items, list):
+            return set()
+
+        for item in items:
+            if not isinstance(item, dict):
+                continue
+            for key in ("number", "phoneNumber", "uuid", "id"):
+                val = item.get(key)
+                if val:
+                    contacts.add(str(val))
+        return contacts
+
     # ─────────────────────────────────────────────────────────────────────────
     # List groups
     # ─────────────────────────────────────────────────────────────────────────

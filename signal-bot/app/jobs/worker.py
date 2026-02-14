@@ -472,13 +472,15 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
     # Use Ultimate Agent
     try:
         # Check if group has linked admins (is active)
-        from app.db.queries_mysql import get_group_admins, upsert_group_docs
+        from app.db.queries_mysql import get_group_admins, upsert_group_docs, get_admin_session
         admins = get_group_admins(deps.db, group_id)
+        active_admins = [aid for aid in admins if get_admin_session(deps.db, aid) is not None]
         
         # If no admins are linked to this group, we should not respond.
-        # This prevents the bot from spamming groups where it was added but not configured.
-        if not admins:
-            log.info("Group %s has no linked admins. Skipping response.", group_id)
+        # This prevents the bot from spamming groups where it was added but not configured,
+        # and also blocks stale groups when admins removed the bot from contacts.
+        if not active_admins:
+            log.info("Group %s has no active linked admins. Skipping response.", group_id)
             return
 
         # Check for admin commands
@@ -486,7 +488,7 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
             # Check if sender is admin
             sender = str(payload.get("sender") or "")
             
-            if sender in admins:
+            if sender in active_admins:
                 parts = msg.content_text.strip().split()
                 if len(parts) > 1:
                     urls = parts[1:]
@@ -524,11 +526,9 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
             # If answer became empty or just placeholder, leave it as is (just the mention)
             pass
             
-            # Find admins for this group
-            from app.db.queries_mysql import get_group_admins
-            admins = get_group_admins(deps.db, group_id)
-            if admins:
-                mention_recipients.extend(admins)
+            # Mention only active admins (contacts still connected).
+            if active_admins:
+                mention_recipients.extend(active_admins)
             else:
                 # Fallback if no admin found in DB - revert to text tag
                 answer = answer.replace("[[MENTION_PLACEHOLDER]]", "@admin")
