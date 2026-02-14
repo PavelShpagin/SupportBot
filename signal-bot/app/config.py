@@ -90,6 +90,9 @@ class Settings:
     max_kb_images_per_case: int
     max_image_size_bytes: int
     max_total_image_bytes: int
+    
+    # Web
+    public_url: str
 
 
 def load_settings() -> Settings:
@@ -143,5 +146,6 @@ def load_settings() -> Settings:
         max_kb_images_per_case=_env_int("MAX_KB_IMAGES_PER_CASE", default=2, min_value=0),
         max_image_size_bytes=_env_int("MAX_IMAGE_SIZE_BYTES", default=5_000_000, min_value=1),
         max_total_image_bytes=_env_int("MAX_TOTAL_IMAGE_BYTES", default=20_000_000, min_value=1),
+        public_url=_env("PUBLIC_URL", default="http://localhost:3000"),
     )
 

@@ -109,6 +109,15 @@ DDL_STATEMENTS = [
       UNIQUE KEY uk_reactions_unique (group_id, target_ts, sender_hash, emoji)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     """,
+    """
+    CREATE TABLE chat_groups (
+      group_id      VARCHAR(128) PRIMARY KEY,
+      group_name    VARCHAR(256),
+      docs_urls     LONGTEXT,
+      created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+      updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    """,
 ]
 
 

@@ -62,7 +62,7 @@ def ingest_message(
                 {"observations": [], "extracted_text": ""}, ensure_ascii=False
             )
 
-    insert_raw_message(
+    inserted = insert_raw_message(
         db,
         RawMessage(
             message_id=message_id,
@@ -74,6 +74,11 @@ def ingest_message(
             reply_to_id=reply_to_id,
         ),
     )
+    
+    if not inserted:
+        log.info("Message %s already exists, skipping response generation", message_id)
+        return
+
     # Include original sender/text in job payload so the responder can:
     # - reply/quote the exact asker (Signal "quote" feature)
     # - keep user-facing quotes free of internal [image] JSON expansions

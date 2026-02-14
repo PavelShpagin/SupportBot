@@ -27,6 +27,7 @@ from app.jobs import types as job_types
 from app.llm.client import LLMClient
 from app.rag.chroma import ChromaRag
 from app.signal.adapter import SignalAdapter
+from app.agent.ultimate_agent import UltimateAgent
 
 log = logging.getLogger(__name__)
 
@@ -38,6 +39,7 @@ class WorkerDeps:
     llm: LLMClient
     rag: ChromaRag
     signal: SignalAdapter
+    ultimate_agent: UltimateAgent
 
 
 def _format_buffer_line(msg: RawMessage, positive_reactions: int = 0) -> str:
@@ -467,132 +469,76 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         log.warning("MAYBE_RESPOND: message not found: %s", message_id)
         return
 
-    # Get CLEAN buffer (only unsolved threads after extraction)
-    buffer = get_buffer(deps.db, group_id=group_id) or ""
-    
-    # Use clean buffer for both gate and response (keep it simple)
-    context = buffer
+    # Use Ultimate Agent
+    try:
+        # Check for admin commands
+        if msg.content_text.strip().startswith("/setdocs"):
+            # Check if sender is admin
+            from app.db.queries_mysql import get_group_admins, upsert_group_docs
+            admins = get_group_admins(deps.db, group_id)
+            sender = str(payload.get("sender") or "")
+            
+            if sender in admins:
+                parts = msg.content_text.strip().split()
+                if len(parts) > 1:
+                    urls = parts[1:]
+                    upsert_group_docs(deps.db, group_id, urls)
+                    deps.signal.send_group_text(group_id=group_id, text=f"Documentation updated for this group ({len(urls)} URLs).")
+                    return
+                else:
+                    deps.signal.send_group_text(group_id=group_id, text="Usage: /setdocs <url1> <url2> ...")
+                    return
+            else:
+                # Not authorized
+                log.warning("User %s tried to set docs but is not admin", sender)
+                return
 
-    force = _mentions_bot(deps.settings, msg.content_text)
-    msg_images = _load_images(
-        settings=deps.settings,
-        image_paths=msg.image_paths,
-        max_images=deps.settings.max_images_per_gate,
-        total_budget_bytes=deps.settings.max_total_image_bytes,
-    )
-    if not force:
-        decision = deps.llm.decide_consider(message=msg.content_text, context=context, images=msg_images)
-        if not decision.consider:
-            return
+        # Check for bot mention to force response (optional, but good for UX)
+        force = _mentions_bot(deps.settings, msg.content_text)
+        
+        answer = deps.ultimate_agent.answer(msg.content_text, group_id=group_id, db=deps.db)
+        
+        if answer == "SKIP":
+            if force:
+                answer = "Вибачте, я не зрозумів запитання або це не стосується моєї компетенції."
+            else:
+                return
+            
+        mention_recipients = []
+        # quote_author is handled by --quote-author, so we don't need to add it to mention_recipients
+        # unless we specifically want to mention them in the text body.
+        
+        # Check for admin tag request
+        if "[[TAG_ADMIN]]" in answer or "@admin" in answer:
+            # Replace the tag with our internal placeholder for signal-cli
+            answer = answer.replace("[[TAG_ADMIN]]", "[[MENTION_PLACEHOLDER]]").replace("@admin", "[[MENTION_PLACEHOLDER]]").strip()
+            
+            # If answer became empty or just placeholder, leave it as is (just the mention)
+            pass
+            
+            # Find admins for this group
+            from app.db.queries_mysql import get_group_admins
+            admins = get_group_admins(deps.db, group_id)
+            if admins:
+                mention_recipients.extend(admins)
+            else:
+                # Fallback if no admin found in DB - revert to text tag
+                answer = answer.replace("[[MENTION_PLACEHOLDER]]", "@admin")
 
-    query_text = msg.content_text.strip()
-    if not query_text:
-        return
-
-    query_embedding = deps.llm.embed(text=query_text)
-    retrieved = deps.rag.retrieve_cases(
-        group_id=group_id,
-        embedding=query_embedding,
-        k=deps.settings.retrieve_top_k,
-    )
-
-    # Minimal safety: only block if truly nothing available (edge case)
-    # Trust the LLM to make the final decision based on case relevance
-    if len(retrieved) == 0 and len(buffer.strip()) == 0:
-        log.info("No retrieved cases and empty buffer; staying silent")
-        return
-
-    kb_paths: List[str] = []
-    for item in retrieved:
-        paths = item.get("metadata", {}).get("evidence_image_paths") or []
-        if not isinstance(paths, list):
-            continue
-        kb_paths.extend([str(p) for p in paths if str(p)])
-
-    max_kb = deps.settings.max_kb_images_per_case * max(1, len(retrieved))
-    kb_paths = kb_paths[:max_kb]
-
-    kb_images = _load_images(
-        settings=deps.settings,
-        image_paths=kb_paths,
-        max_images=deps.settings.max_images_per_respond,
-        total_budget_bytes=max(deps.settings.max_total_image_bytes - sum(len(b) for b, _ in msg_images), 0),
-    )
-
-    all_images = msg_images + kb_images
-    if len(all_images) > deps.settings.max_images_per_respond:
-        all_images = all_images[: deps.settings.max_images_per_respond]
-
-    cases_json = json.dumps(retrieved, ensure_ascii=False, indent=2)
-    resp = deps.llm.decide_and_respond(
-        message=msg.content_text,
-        context=context,
-        cases=cases_json,
-        buffer=buffer,
-        images=all_images,
-    )
-    out = ""
-    if not resp.respond:
-        if force:
-            # If explicitly tagged but LLM has no answer, reply with a concise fallback
-            out = "На жаль, я не маю достатньо інформації, щоб відповісти."
-        else:
-            return
-    else:
-        out = resp.text.strip()
-
-    # NOW extract history refs for citation (after LLM decided to respond)
-    history_refs = _pick_history_solution_refs(retrieved, max_refs=1)
-    
-    # Ensure at least one case citation is present (best-effort, even if model forgets).
-    required_case_cits = [f'case:{r["case_id"]}' for r in history_refs]
-    cits = list(dict.fromkeys((resp.citations or []) + required_case_cits))
-    # User requested to hide refs and history block for cleaner UI
-    # out = _append_history_block(out, history_refs)
-    # if cits:
-    #     out = out.rstrip() + "\n\nRefs: " + ", ".join(cits[:3]) + "\n"
-
-    # NEW: Dual-reply strategy for trust:
-    # 1. Reply to the user's question (quote_author)
-    # 2. Also reply to the solution message from the top-1 case (if high confidence)
-    
-    quote_author = str(payload.get("sender") or "").strip()
-    quote_ts_raw = payload.get("ts")
-    quote_ts = int(quote_ts_raw) if quote_ts_raw is not None else int(msg.ts)
-    quote_msg = str(payload.get("text") or "").strip()
-    
-    # Check if we have high confidence (top-1 case with good similarity)
-    # If so, also reply to the solution message from that case
-    solution_msg_id, solution_ts, solution_text, solution_author = None, None, None, None
-    if len(retrieved) > 0:
-        top_case = retrieved[0]
-        # If distance is low (high similarity), reply to solution message too
-        distance = top_case.get("distance", 1.0)
-        if distance < 0.5:  # High confidence threshold
-            solution_msg_id, solution_ts, solution_text, solution_author = _get_solution_message_for_reply(deps.db, top_case)
-    
-    # For now, prioritize replying to the solution message (more useful for verification)
-    # If solution message found, quote it; otherwise quote the question
-    final_quote_ts = solution_ts if solution_ts else quote_ts
-    final_quote_author = solution_author if solution_ts else quote_author
-    final_quote_msg = solution_text[:200] if solution_text else (quote_msg if quote_msg else None)
-    
-    # Add @ mention for the person asking
-    mention_recipients = [quote_author] if quote_author else []
-    
-    if final_quote_ts and final_quote_author:
+        # Send response
+        quote_author = str(payload.get("sender") or "").strip()
+        quote_ts_raw = payload.get("ts")
+        quote_ts = int(quote_ts_raw) if quote_ts_raw is not None else int(msg.ts)
+        quote_msg = str(payload.get("text") or "").strip()
+        
         deps.signal.send_group_text(
             group_id=group_id,
-            text=out,
-            quote_timestamp=final_quote_ts,
-            quote_author=final_quote_author,
-            quote_message=final_quote_msg,
+            text=answer,
+            quote_timestamp=quote_ts,
+            quote_author=quote_author,
+            quote_message=quote_msg,
             mention_recipients=mention_recipients,
         )
-    else:
-        deps.signal.send_group_text(
-            group_id=group_id, 
-            text=out,
-            mention_recipients=mention_recipients,
-        )
-
+        
+    except Exception as e:
+        log.exception("Ultimate Agent failed: %s", e)

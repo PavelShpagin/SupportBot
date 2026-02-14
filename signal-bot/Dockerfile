@@ -36,6 +36,7 @@ COPY signal-bot/requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
 COPY signal-bot/app /app/app
+COPY signal-bot/data /app/data
 
 EXPOSE 8000
 

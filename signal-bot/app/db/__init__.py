@@ -56,10 +56,15 @@ if DB_BACKEND == "mysql":
         set_admin_awaiting_qr_scan,
         get_admin_by_token,
         link_admin_to_group,
+        get_group_admins,
         upsert_reaction,
         delete_reaction,
         get_positive_reactions_for_message,
         get_message_by_ts,
+        get_case,
+        get_case_evidence,
+        upsert_group_docs,
+        get_group_docs,
     )
     
     def create_db(settings):

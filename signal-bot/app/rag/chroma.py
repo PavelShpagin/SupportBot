@@ -32,6 +32,18 @@ class ChromaRag:
             where={"group_id": group_id},
             include=["documents", "metadatas", "distances"],
         )
+        return self._format_results(out)
+
+    def search_all_cases(self, *, embedding: list[float], k: int) -> List[Dict[str, Any]]:
+        col = self._collection()
+        out = col.query(
+            query_embeddings=[embedding],
+            n_results=k,
+            include=["documents", "metadatas", "distances"],
+        )
+        return self._format_results(out)
+
+    def _format_results(self, out: Dict[str, Any]) -> List[Dict[str, Any]]:
         # out fields are lists per query (we always do 1 query)
         ids = (out.get("ids") or [[]])[0]
         docs = (out.get("documents") or [[]])[0]

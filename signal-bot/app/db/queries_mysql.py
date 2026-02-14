@@ -31,7 +31,7 @@ def _parse_json_list(raw: str | None) -> List[str]:
     return [str(x) for x in data if str(x)]
 
 
-def insert_raw_message(db: MySQL, msg: RawMessage) -> None:
+def insert_raw_message(db: MySQL, msg: RawMessage) -> bool:
     with db.connection() as conn:
         cur = conn.cursor()
         try:
@@ -51,11 +51,12 @@ def insert_raw_message(db: MySQL, msg: RawMessage) -> None:
                 ),
             )
             conn.commit()
+            return True
         except Exception as exc:
             # Error 1062: Duplicate entry (duplicate message_id)
             if is_mysql_error(exc, MYSQL_ERR_DUP_ENTRY):
                 conn.rollback()
-                return
+                return False
             conn.rollback()
             raise
 
@@ -208,9 +209,9 @@ def validate_history_token(db: MySQL, *, token: str, group_id: str) -> bool:
             SELECT 1
             FROM history_tokens
             WHERE token = %s
-              AND group_id = %s
-              AND used_at IS NULL
-              AND expires_at > NOW()
+            AND group_id = %s
+            AND used_at IS NULL
+            AND expires_at > NOW()
             """,
             (token, group_id),
         )
@@ -528,6 +529,18 @@ def link_admin_to_group(db: MySQL, *, admin_id: str, group_id: str) -> None:
             raise
 
 
+def get_group_admins(db: MySQL, group_id: str) -> List[str]:
+    """Get list of admin IDs (phone numbers) for a group."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            "SELECT admin_id FROM admins_groups WHERE group_id = %s",
+            (group_id,),
+        )
+        rows = cur.fetchall()
+        return [r[0] for r in rows]
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Reactions
 # ─────────────────────────────────────────────────────────────────────────────
@@ -639,3 +652,94 @@ def get_message_by_ts(db: MySQL, *, group_id: str, ts: int) -> Optional[RawMessa
             image_paths=_parse_json_list(row[5]),
             reply_to_id=row[6],
         )
+
+
+def get_case(db: MySQL, case_id: str) -> Optional[Dict[str, Any]]:
+    """Get case details by ID."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            """
+            SELECT case_id, group_id, status, problem_title, problem_summary, solution_summary, tags_json, evidence_image_paths_json, created_at
+            FROM cases
+            WHERE case_id = %s
+            """,
+            (case_id,),
+        )
+        row = cur.fetchone()
+        if not row:
+            return None
+        return {
+            "case_id": row[0],
+            "group_id": row[1],
+            "status": row[2],
+            "problem_title": row[3],
+            "problem_summary": row[4],
+            "solution_summary": row[5],
+            "tags": _parse_json_list(row[6]),
+            "evidence_image_paths": _parse_json_list(row[7]),
+            "created_at": row[8].isoformat() if row[8] else None,
+        }
+
+
+def get_case_evidence(db: MySQL, case_id: str) -> List[RawMessage]:
+    """Get all messages associated with a case."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            """
+            SELECT rm.message_id, rm.group_id, rm.ts, rm.sender_hash, rm.content_text, rm.image_paths_json, rm.reply_to_id
+            FROM raw_messages rm
+            JOIN case_evidence ce ON rm.message_id = ce.message_id
+            WHERE ce.case_id = %s
+            ORDER BY rm.ts ASC
+            """,
+            (case_id,),
+        )
+        rows = cur.fetchall()
+        return [
+            RawMessage(
+                message_id=r[0],
+                group_id=r[1],
+                ts=int(r[2]),
+                sender_hash=r[3],
+                content_text=r[4] or "",
+                image_paths=_parse_json_list(r[5]),
+                reply_to_id=r[6],
+            )
+            for r in rows
+        ]
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Group Configuration (Docs)
+# ─────────────────────────────────────────────────────────────────────────────
+
+def upsert_group_docs(db: MySQL, group_id: str, docs_urls: List[str]) -> None:
+    """Set documentation URLs for a group."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            """
+            INSERT INTO chat_groups (group_id, docs_urls)
+            VALUES (%s, %s)
+            ON DUPLICATE KEY UPDATE
+                docs_urls = VALUES(docs_urls)
+            """,
+            (group_id, json.dumps(docs_urls, ensure_ascii=False)),
+        )
+        conn.commit()
+
+
+def get_group_docs(db: MySQL, group_id: str) -> List[str]:
+    """Get documentation URLs for a group. Returns empty list if not set."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            "SELECT docs_urls FROM chat_groups WHERE group_id = %s",
+            (group_id,),
+        )
+        row = cur.fetchone()
+        if not row or not row[0]:
+            return []
+        return _parse_json_list(row[0])

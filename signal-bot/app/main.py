@@ -8,7 +8,9 @@ from pathlib import Path
 from typing import List, Optional
 
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse, Response
+from fastapi.responses import FileResponse, Response, HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from app.config import load_settings
@@ -22,6 +24,8 @@ from app.db import (
     new_case_id,
     insert_case,
     get_raw_message,
+    get_case,
+    get_case_evidence,
     get_admin_session,
     set_admin_awaiting_group_name,
     set_admin_awaiting_qr_scan,
@@ -39,6 +43,7 @@ from app.signal.adapter import NoopSignalAdapter, SignalAdapter
 from app.signal.signal_cli import SignalCliAdapter, InboundGroupMessage, InboundDirectMessage, InboundReaction
 from app.signal.link_device import LinkDeviceManager, is_account_registered
 from app.ingestion import hash_sender
+from app.agent.ultimate_agent import UltimateAgent
 
 
 settings = load_settings()
@@ -51,6 +56,7 @@ ensure_schema(db)
 
 rag = create_chroma(settings)
 llm = LLMClient(settings)
+ultimate_agent = UltimateAgent()
 
 signal: SignalAdapter
 if settings.signal_listener_enabled:
@@ -59,10 +65,25 @@ if settings.signal_listener_enabled:
 else:
     signal = NoopSignalAdapter()
 
-deps = WorkerDeps(settings=settings, db=db, llm=llm, rag=rag, signal=signal)
+deps = WorkerDeps(settings=settings, db=db, llm=llm, rag=rag, signal=signal, ultimate_agent=ultimate_agent)
 
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Mount static files (images)
+# Assuming images are stored in /var/lib/signal/...
+try:
+    app.mount("/static", StaticFiles(directory="/var/lib/signal"), name="static")
+except Exception as e:
+    log.warning(f"Could not mount /var/lib/signal: {e}")
 
 _signal_listener_started = False
 _signal_listener_lock = threading.Lock()
@@ -386,6 +407,190 @@ def signal_link_device_cancel() -> dict:
         raise HTTPException(status_code=404, detail="Not found")
     ok = link_device.cancel()
     return {"ok": ok}
+
+
+@app.get("/api/cases/{case_id}")
+def get_case_endpoint(case_id: str):
+    case = get_case(db, case_id)
+    if not case:
+        raise HTTPException(status_code=404, detail="Case not found")
+    
+    evidence = get_case_evidence(db, case_id)
+    
+    evidence_data = []
+    for msg in evidence:
+        # Transform image paths to static URLs
+        # Assuming paths are like /var/lib/signal/...
+        images = []
+        for p in msg.image_paths:
+            if p.startswith("/var/lib/signal/"):
+                images.append(p.replace("/var/lib/signal/", "/static/"))
+            else:
+                images.append(p)
+
+        evidence_data.append({
+            "message_id": msg.message_id,
+            "ts": msg.ts,
+            "sender_hash": msg.sender_hash,
+            "content_text": msg.content_text,
+            "images": images,
+            "reply_to_id": msg.reply_to_id,
+        })
+
+    case["evidence"] = evidence_data
+    return case
+
+
+@app.get("/")
+def root() -> dict:
+    return {"status": "ok", "service": "SupportBot"}
+
+
+@app.get("/chat/{message_id}", response_class=HTMLResponse)
+def view_chat_context(message_id: str):
+    """View context for a specific chat message."""
+    # We need to access the chat index. It's loaded in UltimateAgent -> ChatSearchAgent -> ChatSearchTool
+    # But those are inside the worker process or ultimate agent instance.
+    # For simplicity, let's load the index here on demand (or cache it).
+    
+    index_path = Path("data/chat_index.pkl")
+    if not index_path.exists():
+        raise HTTPException(status_code=404, detail="Chat index not found")
+        
+    try:
+        # Simple caching to avoid reloading pickle on every request
+        if not hasattr(view_chat_context, "tool"):
+            from app.agent.chat_search_agent import ChatSearchTool
+            view_chat_context.tool = ChatSearchTool(str(index_path))
+            
+        context = view_chat_context.tool.get_context(message_id, radius=5)
+        if context == "Message not found.":
+             raise HTTPException(status_code=404, detail="Message not found in index")
+             
+        # Format HTML
+        html = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Chat Context</title>
+            <style>
+                body {{ font-family: monospace; max-width: 800px; margin: 0 auto; padding: 20px; background: #f5f5f5; }}
+                .message {{ padding: 5px 10px; margin-bottom: 5px; border-radius: 3px; background: white; }}
+                .message.highlight {{ background: #fff3cd; border: 1px solid #ffeeba; font-weight: bold; }}
+                .meta {{ color: #666; font-size: 0.8em; }}
+            </style>
+        </head>
+        <body>
+            <h3>Chat Context</h3>
+            <div class="chat-log">
+        """
+        
+        # Parse the plain text context returned by tool to make it nicer
+        # Context format: ">>> [HH:MM] Sender: Text"
+        for line in context.splitlines():
+            is_target = line.startswith(">>>")
+            clean_line = line.replace(">>> ", "").replace("    ", "")
+            css_class = "message highlight" if is_target else "message"
+            html += f'<div class="{css_class}">{clean_line}</div>'
+            
+        html += """
+            </div>
+        </body>
+        </html>
+        """
+        return HTMLResponse(content=html)
+        
+    except Exception as e:
+        log.exception("Error viewing chat context")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/case/{case_id}", response_class=HTMLResponse)
+def view_case(case_id: str):
+    case = get_case(db, case_id)
+    
+    # Fallback: Check static JSON if not in DB
+    if not case:
+        try:
+            import json
+            cases_path = Path("data/signal_cases_structured.json")
+            if cases_path.exists():
+                with open(cases_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    # Check if case_id matches "idx" (integer)
+                    if case_id.isdigit():
+                        idx = int(case_id)
+                        for c in data.get("cases", []):
+                            if c.get("idx") == idx:
+                                # Adapt to expected format
+                                case = {
+                                    "problem_title": "Case #" + str(idx),
+                                    "status": "solved",
+                                    "problem_summary": c.get("problem_summary"),
+                                    "solution_summary": c.get("solution_summary"),
+                                }
+                                # Static cases don't have detailed message evidence in the JSON usually, 
+                                # or it's in a different format. We'll just show the summary.
+                                break
+        except Exception as e:
+            log.warning(f"Failed to lookup static case: {e}")
+
+    if not case:
+        raise HTTPException(status_code=404, detail="Case not found")
+    
+    evidence = get_case_evidence(db, case_id)
+    
+    # Simple HTML template
+    html = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Case {case_id}</title>
+        <style>
+            body {{ font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }}
+            .case-header {{ border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-bottom: 20px; }}
+            .status {{ display: inline-block; padding: 5px 10px; border-radius: 5px; background: #eee; }}
+            .status.solved {{ background: #d4edda; color: #155724; }}
+            .message {{ border: 1px solid #eee; padding: 10px; margin-bottom: 10px; border-radius: 5px; }}
+            .meta {{ color: #666; font-size: 0.9em; margin-bottom: 5px; }}
+            img {{ max-width: 100%; height: auto; margin-top: 10px; }}
+        </style>
+    </head>
+    <body>
+        <div class="case-header">
+            <h1>{case.get('problem_title', 'Case ' + case_id)}</h1>
+            <div class="status {case.get('status', 'open')}">{case.get('status', 'open')}</div>
+            <p><strong>Problem:</strong> {case.get('problem_summary', '')}</p>
+            <p><strong>Solution:</strong> {case.get('solution_summary', '')}</p>
+        </div>
+        
+        <h2>Evidence</h2>
+        <div class="evidence-list">
+    """
+    
+    if evidence:
+        for msg in evidence:
+            ts_str = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(msg.ts / 1000))
+            html += f"""
+                <div class="message">
+                    <div class="meta">{msg.sender_hash[:8]} at {ts_str}</div>
+                    <div class="content">{msg.content_text}</div>
+            """
+            for p in msg.image_paths:
+                # Serve images via /static if possible, or just show path
+                if p.startswith("/var/lib/signal/"):
+                    url = p.replace("/var/lib/signal/", "/static/")
+                    html += f'<img src="{url}" loading="lazy" />'
+            html += "</div>"
+    else:
+        html += "<p><em>No detailed message evidence available for this case.</em></p>"
+        
+    html += """
+        </div>
+    </body>
+    </html>
+    """
+    return HTMLResponse(content=html)
 
 
 @app.get("/healthz")

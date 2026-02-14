@@ -210,10 +210,55 @@ class SignalCliAdapter:
     ) -> None:
         """Send text message to a group with optional quote/reply and mentions."""
         self.assert_available()
+        
+        # Handle mentions manually by appending placeholders and calculating offsets
+        # signal-cli format: start:length:recipient
+        final_text = text
+        mentions_arg = []
+        
+        if mention_recipients:
+            placeholder = "[[MENTION_PLACEHOLDER]]"
+            if placeholder in final_text:
+                # Replace placeholder with mentions
+                parts = final_text.split(placeholder, 1)
+                prefix = parts[0]
+                suffix = parts[1]
+                
+                current_text = prefix
+                
+                for recipient in mention_recipients:
+                    # Add space if needed before mention
+                    if current_text and not current_text.endswith(" ") and not current_text.endswith("\n"):
+                        current_text += " "
+                    
+                    start = len(current_text.encode('utf-16-le')) // 2
+                    current_text += "@"
+                    mentions_arg.append(f"{start}:1:{recipient}")
+                
+                final_text = current_text + suffix
+            else:
+                # Append to end (legacy behavior)
+                for recipient in mention_recipients:
+                    # Simple strategy: Append " @"
+                    start = len(final_text.encode('utf-16-le')) // 2 # Java uses UTF-16 code units
+                    
+                    # Check if text ends with newline, if not add space
+                    if final_text and not final_text.endswith("\n") and not final_text.endswith(" "):
+                        final_text += " "
+                        start += 1
+                    
+                    final_text += "@"
+                    mentions_arg.append(f"{start}:1:{recipient}")
+                
         cmd = [
             self._bin(), "--config", self._config(), "-u", self._user(),
-            "send", "-g", group_id, "-m", text,
+            "send", "-g", group_id, "-m", final_text,
         ]
+        
+        # Add mention arguments
+        for m in mentions_arg:
+            cmd.extend(["--mention", m])
+
         # Reply-to / quote support (signal-cli `send` flags).
         if quote_timestamp is not None:
             cmd.extend(["--quote-timestamp", str(int(quote_timestamp))])
@@ -221,32 +266,8 @@ class SignalCliAdapter:
             cmd.extend(["--quote-author", str(quote_author)])
         if quote_message:
             cmd.extend(["--quote-message", str(quote_message)])
-        # Mention support - signal-cli expects UUIDs
-        # IMPORTANT: signal-cli mentions must be in format 'start:length:recipientNumber'
-        # But `signal-cli send` with `--mention` flag handles the formatting if we provide just the recipient ID.
-        # Wait, the error says: "Invalid mention syntax (+380953326340) expected 'start:length:recipientNumber'"
-        # This means `signal-cli` version we are using (0.13.x) requires explicit start:length format for --mention.
-        # However, calculating start:length is hard because we don't know where the mention is in the text.
-        #
-        # FIX: Instead of trying to use --mention flag which is tricky, let's just append the mention to the text
-        # and let signal-cli handle it? No, signal-cli needs explicit metadata.
-        #
-        # Actually, newer signal-cli versions support `start:length:recipient` format in `--mention`.
-        # But we are just passing the recipient ID.
-        #
-        # Alternative: Don't use --mention flag. Just put the name in the text.
-        # The user will see the name but it won't be a clickable link.
-        # This avoids the crash.
-        
-        # if mention_recipients:
-        #     for recipient in mention_recipients:
-        #         cmd.extend(["--mention", str(recipient)])
-        
-        # Log that we are skipping mentions to avoid crash
-        if mention_recipients:
-            log.warning("Skipping explicit mentions for %s to avoid signal-cli syntax error", mention_recipients)
 
-        log.info("signal-cli send group_id=%s bytes=%s mentions=%s", group_id, len(text.encode("utf-8")), len(mention_recipients or []))
+        log.info("signal-cli send group_id=%s bytes=%s mentions=%s", group_id, len(final_text.encode("utf-8")), len(mentions_arg))
         proc = self._run(cmd)
         if proc.stdout:
             log.info("signal-cli stdout: %s", proc.stdout.strip())
