@@ -240,25 +240,25 @@ def _split_case_document(doc: str) -> tuple[str, str, str]:
 
 def _get_solution_message_for_reply(
     db, case: Dict[str, Any]
-) -> tuple[str | None, int | None, str | None]:
+) -> tuple[str | None, int | None, str | None, str | None]:
     """
     Get the last message from evidence_ids to reply to (the solution message).
-    Returns (message_id, timestamp, text) or (None, None, None).
+    Returns (message_id, timestamp, text, author) or (None, None, None, None).
     """
     evidence_ids = case.get("metadata", {}).get("evidence_ids") or []
     if not evidence_ids:
-        return None, None, None
+        return None, None, None, None
     
     # Get the last evidence message (typically contains the solution)
     last_msg_id = evidence_ids[-1] if isinstance(evidence_ids, list) else None
     if not last_msg_id:
-        return None, None, None
+        return None, None, None, None
     
     msg = get_raw_message(db, message_id=str(last_msg_id))
     if not msg:
-        return None, None, None
+        return None, None, None, None
     
-    return str(msg.message_id), int(msg.ts), str(msg.content_text or "")
+    return str(msg.message_id), int(msg.ts), str(msg.content_text or ""), str(msg.sender)
 
 
 def _pick_history_solution_refs(retrieved: List[Dict[str, Any]], *, max_refs: int) -> List[Dict[str, str]]:
@@ -542,9 +542,10 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
     cits = list(dict.fromkeys((resp.citations or []) + required_case_cits))
 
     out = resp.text.strip()
-    out = _append_history_block(out, history_refs)
-    if cits:
-        out = out.rstrip() + "\n\nRefs: " + ", ".join(cits[:3]) + "\n"
+    # User requested to hide refs and history block for cleaner UI
+    # out = _append_history_block(out, history_refs)
+    # if cits:
+    #     out = out.rstrip() + "\n\nRefs: " + ", ".join(cits[:3]) + "\n"
 
     # NEW: Dual-reply strategy for trust:
     # 1. Reply to the user's question (quote_author)
@@ -557,24 +558,24 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
     
     # Check if we have high confidence (top-1 case with good similarity)
     # If so, also reply to the solution message from that case
-    solution_msg_id, solution_ts, solution_text = None, None, None
+    solution_msg_id, solution_ts, solution_text, solution_author = None, None, None, None
     if len(retrieved) > 0:
         top_case = retrieved[0]
         # If distance is low (high similarity), reply to solution message too
         distance = top_case.get("distance", 1.0)
         if distance < 0.5:  # High confidence threshold
-            solution_msg_id, solution_ts, solution_text = _get_solution_message_for_reply(deps.db, top_case)
+            solution_msg_id, solution_ts, solution_text, solution_author = _get_solution_message_for_reply(deps.db, top_case)
     
     # For now, prioritize replying to the solution message (more useful for verification)
     # If solution message found, quote it; otherwise quote the question
     final_quote_ts = solution_ts if solution_ts else quote_ts
-    final_quote_author = None  # Solution message author not readily available
+    final_quote_author = solution_author if solution_ts else quote_author
     final_quote_msg = solution_text[:200] if solution_text else (quote_msg if quote_msg else None)
     
     # Add @ mention for the person asking
     mention_recipients = [quote_author] if quote_author else []
     
-    if final_quote_ts:
+    if final_quote_ts and final_quote_author:
         deps.signal.send_group_text(
             group_id=group_id,
             text=out,
