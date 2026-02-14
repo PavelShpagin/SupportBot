@@ -53,7 +53,7 @@ def main():
         print(f"File not found: {messages_path}")
         return
         
-    messages = load_messages(messages_path, limit=500)
+    messages = load_messages(messages_path, limit=1000)
     
     # 4. Run Evaluation
     results = []
