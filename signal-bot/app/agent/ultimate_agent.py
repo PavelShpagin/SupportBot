@@ -202,7 +202,8 @@ DECISION PROTOCOL:
    - If valid info exists, write a helpful response.
    - **PRIORITIZE OFFICIAL INFO**: Trust Docs > Cases > Chat.
    - **BE CONCISE**: Write short, direct paragraphs. No fluff. No bold/stars unless critical.
-   - **CITATIONS**: You MUST keep the citations (e.g. [Source: Docs...], [Source: Case #123 (http://...)]).
+   - **CITATIONS**: You MUST keep the citations.
+   - **FORMAT**: For cases, use ONLY the bracketed link: [http://...]. Do NOT add "Source:", "Case:", or IDs.
    - **LANGUAGE**: Ukrainian.
 
 CRITICAL:

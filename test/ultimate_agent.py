@@ -129,7 +129,7 @@ RULES:
 3. **USE CHAT CAUTIOUSLY**: Use Chat History only if it adds unique value (e.g. specific hardware compatibility confirmed by users).
 4. **CONFLICT RESOLUTION**: If sources contradict, trust Docs > Cases > Chat.
 5. **CITATIONS**: You MUST keep the citations from the original answers.
-   - Format: "Answer... [Source: Docs/Case #123/Chat Date]"
+   - **FORMAT**: For cases, use ONLY the bracketed link: [http://...]. Do NOT add "Source:", "Case:", or IDs.
 6. **TONE**: Helpful, technical, concise. English language.
 
 Output ONLY the final response.

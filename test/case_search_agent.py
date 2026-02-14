@@ -82,9 +82,10 @@ class CaseSearchAgent:
         # Format for synthesis
         text = "Found similar past cases:\n"
         for r in results:
-            text += f"- Case #{r['id']} (Score: {r['score']:.2f}):\n"
+            text += f"- (Score: {r['score']:.2f}):\n"
             text += f"  Problem: {r['problem']}\n"
             text += f"  Solution: {r['solution']}\n"
+            text += f"  Link: [{self.public_url}/case/{r['id']}]\n"
             
         return text
 
