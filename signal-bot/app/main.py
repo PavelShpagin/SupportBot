@@ -411,9 +411,13 @@ def signal_link_device_cancel() -> dict:
 
 @app.get("/api/cases/{case_id}")
 def get_case_endpoint(case_id: str):
+    case_id = case_id.strip()
+    log.info(f"API Request: get_case_endpoint for {case_id}")
+    
     case = get_case(db, case_id)
     if not case:
-        raise HTTPException(status_code=404, detail="Case not found")
+        log.warning(f"API Error: Case {case_id} not found in DB")
+        raise HTTPException(status_code=404, detail=f"Case {case_id} not found")
     
     evidence = get_case_evidence(db, case_id)
     
