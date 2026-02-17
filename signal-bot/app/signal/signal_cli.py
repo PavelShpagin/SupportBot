@@ -93,13 +93,13 @@ GROUP_NOT_FOUND_UK = """Не знайшов групу з такою назво�
 1. Ви додали мене до цієї групи
 2. Назва написана правильно
 
-Спробуйте ще раз або напишіть іншу назву групи. Напишіть /reset для початку."""
+Спробуйте ще раз або напишіть іншу назву групи."""
 
 GROUP_NOT_FOUND_EN = """Couldn't find a group with that name. Make sure:
 1. You've added me to this group
 2. The name is spelled correctly
 
-Try again or send a different group name. Send /reset to start over."""
+Try again or send a different group name."""
 
 SEARCHING_GROUP_UK = """Шукаю групу "{group_name}"..."""
 

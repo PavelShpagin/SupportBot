@@ -86,6 +86,8 @@ else:
 
 deps = WorkerDeps(settings=settings, db=db, llm=llm, rag=rag, signal=signal, ultimate_agent=ultimate_agent)
 
+# Global lock for pruning to prevent concurrent runs
+_prune_lock = threading.Lock()
 
 app = FastAPI()
 
@@ -233,7 +235,23 @@ def _prune_disconnected_admins() -> None:
     - admin<->group links
 
     When the bot is removed from a group, we unlink all admins from that group.
+    
+    Uses a lock to prevent concurrent runs.
     """
+    # Acquire lock with timeout to prevent blocking indefinitely
+    acquired = _prune_lock.acquire(blocking=False)
+    if not acquired:
+        log.debug("Prune already running, skipping this cycle")
+        return
+    
+    try:
+        _do_prune()
+    finally:
+        _prune_lock.release()
+
+
+def _do_prune() -> None:
+    """Internal prune logic (called with lock held)."""
     from app.db.queries_mysql import (
         list_known_admin_ids,
         list_groups_with_linked_admins,
@@ -337,17 +355,7 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
             signal.send_direct_text(recipient=admin_id, text=msg)
         return
 
-    # Reset command (hidden/debug)
-    if text_lower == "/reset":
-        if session:
-            delete_admin_session(db, admin_id)
-            session = None
-        msg = "Session reset. Send any message to start over."
-        if isinstance(signal, SignalCliAdapter):
-            signal.send_direct_text(recipient=admin_id, text=msg)
-        return
-        
-    # Ignore other commands to prevent accidental group searches
+    # Ignore commands other than language to prevent accidental group searches
     if text.startswith("/"):
         msg = "Unknown command. Available: /en, /uk"
         if isinstance(signal, SignalCliAdapter):
