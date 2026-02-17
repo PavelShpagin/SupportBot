@@ -16,6 +16,7 @@ from __future__ import annotations
 import json
 import logging
 import time
+import urllib.parse
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -100,7 +101,8 @@ def _get_desktop_screenshot(settings) -> bytes:
 
 def _get_desktop_messages(settings, group_id: str, group_name: str, limit: int = 800) -> List[dict]:
     """Get messages from Signal Desktop for a specific group."""
-    url = settings.signal_desktop_url.rstrip("/") + f"/group/{group_id}/messages"
+    encoded_group_id = urllib.parse.quote(group_id, safe="")
+    url = settings.signal_desktop_url.rstrip("/") + f"/group/{encoded_group_id}/messages"
     params = {"limit": limit, "group_name": group_name}
     
     try:
