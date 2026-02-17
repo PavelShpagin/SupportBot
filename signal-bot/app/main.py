@@ -243,8 +243,8 @@ def _prune_disconnected_admins() -> None:
         unlink_all_admins_from_group,
     )
 
-    # 1. Prune admins no longer in contacts (signal-cli only; Signal Desktop has no contact list)
-    if isinstance(signal, SignalCliAdapter):
+    # 1. Prune admins no longer in contacts (clear state when user removes bot)
+    if hasattr(signal, "list_contacts"):
         contacts = signal.list_contacts()
         if contacts is not None:
             known_admins = list_known_admin_ids(db)
@@ -378,15 +378,15 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
             session = None
     
     if session is None:
-        # Brand new admin - detect language, send welcome, DON'T search yet
+        # Brand new admin (or re-added after remove) - detect language, send welcome
         detected_lang = _detect_language(text)
         log.info("New admin %s, detected language: %s, sending welcome", admin_id, detected_lang)
         set_admin_awaiting_group_name(db, admin_id)
         set_admin_lang(db, admin_id, detected_lang)
-        if isinstance(signal, SignalCliAdapter):
+        if not isinstance(signal, NoopSignalAdapter):
             sent = signal.send_onboarding_prompt(recipient=admin_id, lang=detected_lang)
-            if not sent:
-                # User blocked us - clear session
+            if isinstance(signal, SignalCliAdapter) and not sent:
+                # User blocked us - clear session (signal-cli can detect send failure)
                 from app.db.queries_mysql import unlink_admin_from_all_groups
                 delete_admin_session(db, admin_id)
                 unlink_admin_from_all_groups(db, admin_id)
@@ -397,7 +397,7 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
 
     if not text:
         # Empty message - resend prompt
-        if isinstance(signal, SignalCliAdapter):
+        if not isinstance(signal, NoopSignalAdapter):
             signal.send_onboarding_prompt(recipient=admin_id, lang=lang)
         return
     
@@ -557,7 +557,7 @@ def _startup() -> None:
                 _prune_disconnected_admins()
             except Exception:
                 log.exception("Admin reconcile loop failed")
-            time.sleep(60)
+            time.sleep(15)  # Prune every 15s so re-add gets fresh state quickly
 
     threading.Thread(target=_admin_reconcile_loop, daemon=True).start()
 

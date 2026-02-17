@@ -41,7 +41,7 @@ Learn more: https://supportbot.info/
 
 Which group would you like to connect?"""
 
-QR_MESSAGE_UK = """Відскануйте цей QR-код у Signal протягом 60 секунд (Налаштування -> Пов'язані пристрої -> Додати пристрій).
+QR_MESSAGE_UK = """Відскануйте цей QR-код у Signal протягом 10 хвилин (Налаштування -> Пов'язані пристрої -> Додати пристрій).
 
 Після сканування я зможу обробити історію групи "{group_name}" та почати відповідати на питання.
 
@@ -49,7 +49,7 @@ QR_MESSAGE_UK = """Відскануйте цей QR-код у Signal протя�
 
 Якщо після сканування пристрій не додався - QR-код застарів. Напишіть назву групи ще раз для нового коду."""
 
-QR_MESSAGE_EN = """Scan this QR code in Signal within 60 seconds (Settings -> Linked Devices -> Link New Device).
+QR_MESSAGE_EN = """Scan this QR code in Signal within 10 minutes (Settings -> Linked Devices -> Link New Device).
 
 After scanning, I'll be able to process the history of group "{group_name}" and start answering questions.
 
@@ -93,13 +93,13 @@ GROUP_NOT_FOUND_UK = """Не знайшов групу з такою назво�
 1. Ви додали мене до цієї групи
 2. Назва написана правильно
 
-Спробуйте ще раз або напишіть іншу назву групи."""
+Спробуйте ще раз або напишіть іншу назву групи. Напишіть /reset для початку."""
 
 GROUP_NOT_FOUND_EN = """Couldn't find a group with that name. Make sure:
 1. You've added me to this group
 2. The name is spelled correctly
 
-Try again or send a different group name."""
+Try again or send a different group name. Send /reset to start over."""
 
 SEARCHING_GROUP_UK = """Шукаю групу "{group_name}"..."""
 
@@ -304,13 +304,13 @@ class SignalCliAdapter:
     def send_direct_image(self, *, recipient: str, image_path: str, caption: str = "") -> None:
         """Send image to a user (1:1 chat) with optional caption."""
         self.assert_available()
+        # Note: recipient must come before -a, otherwise -a consumes it as an attachment path
         cmd = [
             self._bin(), "--config", self._config(), "-u", self._user(),
-            "send", "-a", image_path,
+            "send", recipient, "-a", image_path,
         ]
         if caption:
             cmd.extend(["-m", caption])
-        cmd.append(recipient)
         log.info("signal-cli send image recipient=%s path=%s", recipient, image_path)
         proc = self._run(cmd)
         if proc.stdout:

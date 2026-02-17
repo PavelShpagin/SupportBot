@@ -106,6 +106,10 @@ def get_conversations(signal_data_dir: str) -> list[dict]:
             select_cols.append("profileName")
         if "groupId" in cols:
             select_cols.append("groupId")
+        if "e164" in cols:
+            select_cols.append("e164")
+        if "uuid" in cols:
+            select_cols.append("uuid")
         
         q = f"SELECT {', '.join(select_cols)} FROM conversations"
         rows = conn.execute(q).fetchall()
@@ -120,6 +124,24 @@ def get_conversations(signal_data_dir: str) -> list[dict]:
         return result
     finally:
         conn.close()
+
+
+def get_contacts_from_db(signal_data_dir: str) -> set[str]:
+    """Get contact identifiers (e164, uuid, id) from private conversations. No DevTools needed."""
+    result = set()
+    try:
+        convs = get_conversations(signal_data_dir)
+        for c in convs:
+            if c.get("type") != "private":
+                continue
+            for key in ("e164", "uuid", "id"):
+                val = c.get(key)
+                if val and isinstance(val, str) and len(val) > 2:
+                    result.add(val)
+        return result
+    except Exception as e:
+        log.warning("Failed to get contacts from DB: %s", e)
+        return set()
 
 
 def get_messages(

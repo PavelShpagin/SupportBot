@@ -29,6 +29,7 @@ from app.config import load_settings
 from app.db_reader import (
     SignalMessage as DBSignalMessage,
     get_conversations,
+    get_contacts_from_db,
     get_group_messages,
     get_messages,
     is_db_available,
@@ -146,6 +147,19 @@ async def list_conversations():
         return {"conversations": convs}
     except Exception as e:
         log.exception("Failed to get conversations")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/contacts")
+async def list_contacts():
+    """List contact identifiers from DB (no DevTools needed). For pruning when user removes bot."""
+    if not is_db_available(settings.signal_data_dir):
+        raise HTTPException(status_code=503, detail="Signal Desktop not ready")
+    try:
+        contacts = get_contacts_from_db(settings.signal_data_dir)
+        return {"contacts": list(contacts)}
+    except Exception as e:
+        log.exception("Failed to get contacts")
         raise HTTPException(status_code=500, detail=str(e))
 
 
