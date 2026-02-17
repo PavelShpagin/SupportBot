@@ -179,47 +179,25 @@ class UltimateAgent:
         # 5. Synthesize
         lang_instruction = "Ukrainian (українська)" if lang == "uk" else "English"
         
-        prompt = f"""
-You are a Senior Support Engineer. You have received answers from three sources:
-1. **Documentation** (Official Source - Highest Priority)
-2. **Past Cases** (Solved Tickets - High Priority)
-3. **Chat History** (Community Discussion - Medium Priority)
+        prompt = f"""You are a support bot. Answer the user's question directly and concisely.
 
-User Question: "{question}"
+Question: "{question}"
 
-Docs Agent Answer:
-{docs_ans}
+Sources:
+DOCS: {docs_ans}
+CASES: {case_ans}
+CHAT: {chat_ans}
 
-Case Agent Answer:
-{case_ans}
+RULES:
+1. Give a DIRECT ANSWER in 1-3 sentences. No introductions, no "Based on..." or "According to...".
+2. If a case has the solution, state the solution directly, then add ONE link at the end.
+3. Use {lang_instruction} language.
+4. If ALL sources say "no info" or "not found" → output ONLY "[[TAG_ADMIN]]" (nothing else).
+5. NO bullet points, NO lists, NO multiple links. Just answer + one link if relevant.
 
-Chat Agent Answer:
-{chat_ans}
+GOOD example: "Використовуйте термосумку для захисту дрона від замерзання. [https://supportbot.info/case/xxx]"
+BAD example: "Знайдено декілька випадків... Ось посилання: [link1], [link2], [link3]"
 
-TASK:
-Synthesize a final answer for the user.
-
-DECISION PROTOCOL:
-1. **EVALUATE**: Read the answers from Docs, Cases, and Chat.
-2. **CHECK VALIDITY**: 
-   - Use "[[TAG_ADMIN]]" ONLY when ALL sources have NO relevant information (INSUFFICIENT_INFO, No relevant cases, No relevant discussions).
-   - Do NOT use [[TAG_ADMIN]] if you can provide ANY useful answer from the sources - even a partial answer is better than tagging.
-   - When all sources truly fail -> Output "[[TAG_ADMIN]]" ONLY. Do not add any text.
-3. **SYNTHESIZE**:
-   - If valid info exists, write a helpful response.
-   - **PRIORITIZE OFFICIAL INFO**: Trust Docs > Cases > Chat.
-   - **BE CONCISE**: Write short, direct paragraphs. No fluff. No bold/stars unless critical.
-   - **CITATIONS**: You MUST keep the citations.
-   - **FORMAT**: For cases, use ONLY the bracketed link: [http://...]. Do NOT add "Source:", "Case:", or IDs.
-   - **LANGUAGE**: {lang_instruction}. Write your response in this language.
-
-CRITICAL:
-- Output "[[TAG_ADMIN]]" ONLY when ALL sources failed and you have nothing useful to say. If any source has relevant info, synthesize an answer instead.
-- Do NOT apologize.
-- Do NOT make up info.
-- Do NOT use "Tip..." or "Загальна порада:".
-
-Output ONLY the final response.
-"""
+Answer:"""
         response = self.synthesizer.generate_content(prompt)
         return response.text.strip()
