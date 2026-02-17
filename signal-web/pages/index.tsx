@@ -5,8 +5,22 @@ export default function Home() {
   const [lang, setLang] = useState<'uk' | 'en'>('uk');
 
   useEffect(() => {
+    // Check URL params first
     const params = new URLSearchParams(window.location.search);
-    if (params.get('lang') === 'en') setLang('en');
+    const urlLang = params.get('lang');
+    
+    if (urlLang === 'en' || urlLang === 'uk') {
+      setLang(urlLang);
+    } else {
+      // Auto-detect browser language
+      const browserLang = navigator.language.toLowerCase();
+      if (browserLang.startsWith('uk') || browserLang.startsWith('ru')) {
+        setLang('uk');
+      } else if (browserLang.startsWith('en')) {
+        setLang('en');
+      }
+      // Default is already 'uk' for other languages
+    }
   }, []);
 
   const changeLang = (newLang: 'uk' | 'en') => {
@@ -235,7 +249,7 @@ export default function Home() {
               <h2>Зміна мови</h2>
               <ul>
                 <li>Напишіть <code>/ua</code> — бот відповідатиме українською</li>
-                <li>Напишіть <code>/en</code> — бот відповідатиме англійською</li>
+                <li>Напишіть <code>/en</code> — бот відповідатиме англійською (English)</li>
               </ul>
 
               <div className="note">Бот обробляє повідомлення для формування бази знань. Використовуйте зі згоди учасників групи.</div>
@@ -266,7 +280,7 @@ export default function Home() {
 
               <h2>Change language</h2>
               <ul>
-                <li>Send <code>/ua</code> — bot will reply in Ukrainian</li>
+                <li>Send <code>/ua</code> — bot will reply in українська</li>
                 <li>Send <code>/en</code> — bot will reply in English</li>
               </ul>
 

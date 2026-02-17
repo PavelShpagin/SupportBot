@@ -50,7 +50,14 @@ export default function CasePage() {
       });
   }, [id]);
 
-  if (loading) return <div className="p-8 text-center">Loading...</div>;
+  if (loading) return (
+    <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="flex flex-col items-center gap-4">
+        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-gray-600 text-sm">Loading case...</p>
+      </div>
+    </div>
+  );
   if (error) return <div className="p-8 text-center text-red-500">Error: {error}</div>;
   if (!data) return null;
 
