@@ -3,9 +3,10 @@ Signal Desktop headless service.
 
 This service runs Signal Desktop with Xvfb and provides an HTTP API to:
 1. Check if Signal Desktop is linked/ready
-2. Get the QR code for linking (via VNC or screenshot)
+2. Get the QR code for linking (via screenshot)
 3. Poll for new messages from the SQLite database
 4. Get messages for specific groups (for history ingestion)
+5. Send messages to individuals and groups via Chrome DevTools Protocol
 """
 from __future__ import annotations
 
@@ -17,20 +18,22 @@ import os
 import subprocess
 import time
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List
 
 import httpx
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, BackgroundTasks
 from fastapi.responses import Response
+from pydantic import BaseModel, Field
 
 from app.config import load_settings
 from app.db_reader import (
-    SignalMessage,
+    SignalMessage as DBSignalMessage,
     get_conversations,
     get_group_messages,
     get_messages,
     is_db_available,
 )
+from app.devtools import DevToolsClient, get_devtools_client, SignalConversation
 
 logging.basicConfig(
     level=logging.INFO,
@@ -45,6 +48,29 @@ settings = load_settings()
 _last_message_ts: int = 0
 _last_message_ts_lock = asyncio.Lock()
 
+# DevTools client (initialized on first use)
+_devtools: Optional[DevToolsClient] = None
+_devtools_lock = asyncio.Lock()
+
+
+async def get_devtools() -> DevToolsClient:
+    """Get or initialize the DevTools client."""
+    global _devtools
+    async with _devtools_lock:
+        if _devtools is None or not _devtools.is_connected:
+            _devtools = DevToolsClient(debug_port=9222)
+            connected = await _devtools.connect()
+            if connected:
+                # Install message hook for receiving messages
+                await _devtools.setup_message_hook()
+            else:
+                log.warning("Failed to connect to Signal Desktop DevTools")
+        return _devtools
+
+
+# ?????????????????????????????????????????????????????????????????????????????
+# Health & Status
+# ?????????????????????????????????????????????????????????????????????????????
 
 @app.get("/healthz")
 async def healthz():
@@ -60,6 +86,7 @@ async def status():
     Returns:
         - linked: True if Signal Desktop has been linked to a user account
         - db_available: True if the SQLCipher DB can be opened
+        - devtools_connected: True if DevTools connection is active
         - conversations_count: Number of conversations in DB
         - has_user_conversations: True if there are non-system conversations
     """
@@ -72,14 +99,10 @@ async def status():
             convs = get_conversations(settings.signal_data_dir)
             conversations_count = len(convs)
             # Check if there are any non-system conversations
-            # Signal creates a "Signal" system conversation immediately,
-            # but real user conversations only appear after linking
             for c in convs:
-                # Groups are definitely user conversations
                 if c.get("type") == "group":
                     has_user_conversations = True
                     break
-                # Private conversations with a profileName other than "Signal" are user convos
                 profile = c.get("profileName") or ""
                 if c.get("type") == "private" and profile and profile != "Signal":
                     has_user_conversations = True
@@ -87,18 +110,30 @@ async def status():
         except Exception as e:
             log.warning("Failed to get conversations: %s", e)
     
-    # Consider linked only if we have actual user conversations
-    # (not just the Signal system conversation)
-    is_linked = db_available and has_user_conversations
+    # Consider linked if DB is available
+    is_linked = db_available
+    
+    # Check DevTools connection
+    devtools_connected = False
+    try:
+        devtools = await get_devtools()
+        devtools_connected = devtools.is_connected
+    except Exception:
+        pass
     
     return {
         "linked": is_linked,
         "db_available": db_available,
+        "devtools_connected": devtools_connected,
         "conversations_count": conversations_count,
         "has_user_conversations": has_user_conversations,
         "signal_data_dir": settings.signal_data_dir,
     }
 
+
+# ?????????????????????????????????????????????????????????????????????????????
+# Conversations & Messages (read from SQLite)
+# ?????????????????????????????????????????????????????????????????????????????
 
 @app.get("/conversations")
 async def list_conversations():
@@ -111,6 +146,35 @@ async def list_conversations():
         return {"conversations": convs}
     except Exception as e:
         log.exception("Failed to get conversations")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/conversations/devtools")
+async def list_conversations_devtools():
+    """List all conversations via DevTools (alternative to SQLite)."""
+    try:
+        devtools = await get_devtools()
+        if not devtools.is_connected:
+            raise HTTPException(status_code=503, detail="DevTools not connected")
+        
+        convs = await devtools.list_conversations()
+        return {
+            "conversations": [
+                {
+                    "id": c.id,
+                    "type": c.type,
+                    "name": c.name,
+                    "group_id": c.group_id,
+                    "e164": c.e164,
+                    "uuid": c.uuid,
+                }
+                for c in convs
+            ]
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        log.exception("Failed to get conversations via DevTools")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -131,7 +195,6 @@ async def poll_messages(
     global _last_message_ts
     
     try:
-        # Use the tracked timestamp if not provided
         actual_since = since_ts
         if actual_since is None:
             async with _last_message_ts_lock:
@@ -144,7 +207,6 @@ async def poll_messages(
             limit=limit,
         )
         
-        # Update last seen timestamp
         if msgs:
             async with _last_message_ts_lock:
                 max_ts = max(m.timestamp for m in msgs)
@@ -173,9 +235,9 @@ async def poll_messages(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.get("/group/{group_id}/messages")
+@app.get("/group/messages")
 async def get_group_history(
-    group_id: str,
+    group_id: str = Query(..., description="Group ID"),
     group_name: Optional[str] = Query(None, description="Group name (fallback if ID not found)"),
     limit: int = Query(800, description="Maximum messages to return"),
 ):
@@ -218,6 +280,186 @@ async def get_group_history(
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# ?????????????????????????????????????????????????????????????????????????????
+# Send Messages (via DevTools)
+# ?????????????????????????????????????????????????????????????????????????????
+
+class SendMessageRequest(BaseModel):
+    """Request body for sending a message."""
+    recipient: str = Field(..., description="Phone number in E.164 format (e.g., +12345678910)")
+    text: str = Field(..., description="Message text to send")
+    expire_timer: int = Field(0, description="Disappearing message timer in seconds (0 = no expiration)")
+
+
+class SendGroupMessageRequest(BaseModel):
+    """Request body for sending a group message."""
+    group_id: str = Field(..., description="Group ID or group name")
+    text: str = Field(..., description="Message text to send")
+    expire_timer: int = Field(0, description="Disappearing message timer in seconds (0 = no expiration)")
+
+
+class SendImageRequest(BaseModel):
+    """Request body for sending an image."""
+    recipient: str = Field(..., description="Phone number in E.164 format")
+    image_path: str = Field(..., description="Path to image file")
+    caption: str = Field("", description="Optional caption for the image")
+
+
+@app.post("/send")
+async def send_message(request: SendMessageRequest):
+    """
+    Send a text message to a Signal user.
+    
+    Uses Chrome DevTools Protocol to automate Signal Desktop.
+    """
+    try:
+        devtools = await get_devtools()
+        if not devtools.is_connected:
+            raise HTTPException(status_code=503, detail="DevTools not connected to Signal Desktop")
+        
+        success = await devtools.send_message(
+            recipient=request.recipient,
+            text=request.text,
+            expire_timer=request.expire_timer,
+        )
+        
+        if success:
+            return {"success": True, "message": "Message sent"}
+        else:
+            raise HTTPException(status_code=500, detail="Failed to send message")
+            
+    except HTTPException:
+        raise
+    except Exception as e:
+        log.exception("Failed to send message")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/send/group")
+async def send_group_message(request: SendGroupMessageRequest):
+    """
+    Send a text message to a Signal group.
+    
+    Uses Chrome DevTools Protocol to automate Signal Desktop.
+    """
+    try:
+        devtools = await get_devtools()
+        if not devtools.is_connected:
+            raise HTTPException(status_code=503, detail="DevTools not connected to Signal Desktop")
+        
+        success = await devtools.send_group_message(
+            group_id=request.group_id,
+            text=request.text,
+            expire_timer=request.expire_timer,
+        )
+        
+        if success:
+            return {"success": True, "message": "Group message sent"}
+        else:
+            raise HTTPException(status_code=500, detail="Failed to send group message")
+            
+    except HTTPException:
+        raise
+    except Exception as e:
+        log.exception("Failed to send group message")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/send/image")
+async def send_image(request: SendImageRequest):
+    """
+    Send an image to a Signal user.
+    
+    Note: Image sending is not yet fully implemented via DevTools.
+    """
+    try:
+        devtools = await get_devtools()
+        if not devtools.is_connected:
+            raise HTTPException(status_code=503, detail="DevTools not connected to Signal Desktop")
+        
+        success = await devtools.send_image(
+            recipient=request.recipient,
+            image_path=request.image_path,
+            caption=request.caption,
+        )
+        
+        if success:
+            return {"success": True, "message": "Image sent"}
+        else:
+            raise HTTPException(status_code=501, detail="Image sending not yet implemented via DevTools")
+            
+    except HTTPException:
+        raise
+    except Exception as e:
+        log.exception("Failed to send image")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ?????????????????????????????????????????????????????????????????????????????
+# Groups
+# ?????????????????????????????????????????????????????????????????????????????
+
+@app.get("/groups")
+async def list_groups():
+    """List all groups the user is a member of."""
+    try:
+        devtools = await get_devtools()
+        if not devtools.is_connected:
+            raise HTTPException(status_code=503, detail="DevTools not connected")
+        
+        convs = await devtools.list_conversations()
+        groups = [c for c in convs if c.type == "group"]
+        
+        return {
+            "groups": [
+                {
+                    "id": g.id,
+                    "name": g.name,
+                    "group_id": g.group_id,
+                }
+                for g in groups
+            ]
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        log.exception("Failed to list groups")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/groups/find")
+async def find_group(name: str = Query(..., description="Group name to search for")):
+    """Find a group by name (case-insensitive partial match)."""
+    try:
+        devtools = await get_devtools()
+        if not devtools.is_connected:
+            raise HTTPException(status_code=503, detail="DevTools not connected")
+        
+        group = await devtools.find_group_by_name(name)
+        
+        if group:
+            return {
+                "found": True,
+                "group": {
+                    "id": group.id,
+                    "name": group.name,
+                    "group_id": group.group_id,
+                }
+            }
+        else:
+            return {"found": False, "group": None}
+            
+    except HTTPException:
+        raise
+    except Exception as e:
+        log.exception("Failed to find group")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ?????????????????????????????????????????????????????????????????????????????
+# Screenshot & Reset
+# ?????????????????????????????????????????????????????????????????????????????
+
 @app.get("/screenshot")
 async def take_screenshot(crop_qr: bool = Query(True, description="Crop to just the QR code area")):
     """
@@ -225,45 +467,40 @@ async def take_screenshot(crop_qr: bool = Query(True, description="Crop to just 
     
     By default, crops to just the QR code area so users can scan directly.
     Set crop_qr=false to get the full screenshot.
-    
-    This requires xwd and ImageMagick to be installed.
     """
     try:
-        # Take screenshot using xwd + convert
-        result = subprocess.run(
-            ["xwd", "-root", "-display", ":99"],
-            capture_output=True,
-            timeout=10,
-        )
-        if result.returncode != 0:
-            raise HTTPException(status_code=500, detail="Failed to capture screenshot")
-        
+        # Use ImageMagick's import command to capture the screen
         if crop_qr:
-            # Crop to QR code area (Signal Desktop QR is roughly in center-left)
-            # Adjusted based on feedback: moved down and slightly larger
-            convert_result = subprocess.run(
-                ["convert", "xwd:-", "-crop", "340x340+105+210", "+repage", "png:-"],
-                input=result.stdout,
+            # Signal Desktop QR code linking screen (1024x768):
+            # The QR code itself is ~255x255 pixels
+            # QR code is at approximately x=[163, 418], y=[270, 525]
+            # Center is (290, 397)
+            # Crop a 300x300 area centered on the QR, then add white padding
+            # Crop: 300x300 starting at (140, 247)
+            result = subprocess.run(
+                ["import", "-window", "root", "-display", ":99", 
+                 "-crop", "300x300+140+247", "+repage",
+                 "-bordercolor", "white", "-border", "25x25",
+                 "png:-"],
                 capture_output=True,
                 timeout=10,
             )
         else:
-            # Convert XWD to PNG without cropping
-            convert_result = subprocess.run(
-                ["convert", "xwd:-", "png:-"],
-                input=result.stdout,
+            result = subprocess.run(
+                ["import", "-window", "root", "-display", ":99", "png:-"],
                 capture_output=True,
                 timeout=10,
             )
         
-        if convert_result.returncode != 0:
-            raise HTTPException(status_code=500, detail="Failed to convert screenshot")
+        if result.returncode != 0:
+            log.error("Screenshot failed: %s", result.stderr.decode() if result.stderr else "unknown error")
+            raise HTTPException(status_code=500, detail="Failed to capture screenshot")
         
-        return Response(content=convert_result.stdout, media_type="image/png")
+        return Response(content=result.stdout, media_type="image/png")
     except subprocess.TimeoutExpired:
         raise HTTPException(status_code=500, detail="Screenshot timed out")
     except FileNotFoundError:
-        raise HTTPException(status_code=500, detail="xwd or convert not installed")
+        raise HTTPException(status_code=500, detail="import (ImageMagick) not installed")
     except Exception as e:
         log.exception("Screenshot failed")
         raise HTTPException(status_code=500, detail=str(e))
@@ -285,16 +522,18 @@ async def reset_signal_desktop():
     
     This clears the Signal data directory and restarts Signal Desktop,
     causing it to show the QR code for linking.
-    
-    Used for history ingestion: user scans QR → Signal Desktop links to their account
-    → syncs their 45-day history → we read it.
     """
     import shutil
-    import signal as sig
     
     signal_data_dir = Path(settings.signal_data_dir)
     
     log.info("Resetting Signal Desktop - clearing data directory: %s", signal_data_dir)
+    
+    # Disconnect DevTools
+    global _devtools
+    if _devtools:
+        await _devtools.disconnect()
+        _devtools = None
     
     # Kill Signal Desktop process
     try:
@@ -303,10 +542,9 @@ async def reset_signal_desktop():
     except Exception as e:
         log.warning("Failed to kill Signal Desktop: %s", e)
     
-    # Wait a moment for process to die
     await asyncio.sleep(2)
     
-    # Clear data directory (keep the directory itself)
+    # Clear data directory
     try:
         if signal_data_dir.exists():
             for item in signal_data_dir.iterdir():
@@ -319,20 +557,56 @@ async def reset_signal_desktop():
         log.exception("Failed to clear Signal data directory")
         raise HTTPException(status_code=500, detail=f"Failed to clear data: {e}")
     
-    # Restart Signal Desktop (it should show linking QR on startup)
+    # Restart Signal Desktop with remote debugging
     try:
         subprocess.Popen(
-            ["signal-desktop", "--no-sandbox", "--disable-gpu"],
+            ["signal-desktop", "--no-sandbox", "--disable-gpu", "--remote-debugging-port=9222"],
             env={**os.environ, "DISPLAY": ":99"},
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
         )
-        log.info("Started Signal Desktop")
+        log.info("Started Signal Desktop with remote debugging")
     except Exception as e:
         log.exception("Failed to start Signal Desktop")
         raise HTTPException(status_code=500, detail=f"Failed to start Signal Desktop: {e}")
     
-    # Wait for it to start and show QR
     await asyncio.sleep(5)
     
     return {"status": "reset", "message": "Signal Desktop reset. Use /screenshot to get QR code."}
+
+
+# ?????????????????????????????????????????????????????????????????????????????
+# DevTools Management
+# ?????????????????????????????????????????????????????????????????????????????
+
+@app.post("/devtools/connect")
+async def connect_devtools():
+    """Manually connect to Signal Desktop DevTools."""
+    try:
+        devtools = await get_devtools()
+        if devtools.is_connected:
+            return {"connected": True, "message": "Connected to DevTools"}
+        else:
+            return {"connected": False, "message": "Failed to connect to DevTools"}
+    except Exception as e:
+        log.exception("Failed to connect to DevTools")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/devtools/disconnect")
+async def disconnect_devtools():
+    """Disconnect from Signal Desktop DevTools."""
+    global _devtools
+    if _devtools:
+        await _devtools.disconnect()
+        _devtools = None
+    return {"connected": False, "message": "Disconnected from DevTools"}
+
+
+@app.get("/devtools/status")
+async def devtools_status():
+    """Check DevTools connection status."""
+    global _devtools
+    if _devtools and _devtools.is_connected:
+        return {"connected": True}
+    return {"connected": False}
