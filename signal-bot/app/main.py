@@ -295,7 +295,38 @@ def _do_prune() -> None:
     for group_id in linked_groups:
         if group_id in current_groups:
             continue
-        log.info("Bot no longer in group %s. Unlinking all admins.", group_id)
+        log.info("Bot no longer in group %s. Cleaning up all data for compliance.", group_id)
+        
+        # First, get case IDs for RAG cleanup before deleting from DB
+        from app.db.queries_mysql import get_case_ids_for_group, delete_all_group_data
+        try:
+            case_ids = get_case_ids_for_group(db, group_id)
+        except Exception:
+            log.exception("Failed to get case IDs for group %s", group_id)
+            case_ids = []
+        
+        # Delete from RAG
+        if case_ids:
+            try:
+                from app.rag.chroma import create_chroma
+                rag = create_chroma(settings)
+                rag.delete_cases(case_ids)
+                log.info("Deleted %d cases from RAG for group %s", len(case_ids), group_id)
+            except Exception:
+                log.exception("Failed to delete cases from RAG for group %s", group_id)
+        
+        # Delete all group data from DB
+        try:
+            stats = delete_all_group_data(db, group_id)
+            log.info(
+                "Deleted group data for %s: cases=%d, evidence=%d, messages=%d, reactions=%d, jobs=%d",
+                group_id, stats["cases"], stats["case_evidence"], stats["raw_messages"],
+                stats["reactions"], stats["jobs"]
+            )
+        except Exception:
+            log.exception("Failed to delete group data for %s", group_id)
+        
+        # Unlink admins
         try:
             unlinked = unlink_all_admins_from_group(db, group_id)
             if unlinked:

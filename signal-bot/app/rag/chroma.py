@@ -63,6 +63,14 @@ class ChromaRag:
             )
         return results
 
+    def delete_cases(self, case_ids: List[str]) -> int:
+        """Delete cases from RAG by their IDs. Returns number deleted."""
+        if not case_ids:
+            return 0
+        col = self._collection()
+        col.delete(ids=case_ids)
+        return len(case_ids)
+
 
 def create_chroma(settings: Settings) -> ChromaRag:
     u = urlparse(settings.chroma_url)

@@ -582,6 +582,76 @@ def unlink_all_admins_from_group(db: MySQL, group_id: str) -> int:
         return removed
 
 
+def delete_all_group_data(db: MySQL, group_id: str) -> dict:
+    """
+    Delete ALL data associated with a group for compliance.
+    Called when bot is removed from a group.
+    
+    Returns dict with counts of deleted items.
+    """
+    stats = {
+        "cases": 0,
+        "case_evidence": 0,
+        "raw_messages": 0,
+        "buffer": 0,
+        "group_docs": 0,
+        "reactions": 0,
+        "jobs": 0,
+    }
+    
+    with db.connection() as conn:
+        cur = conn.cursor()
+        
+        # 1. Get all case_ids for this group (needed for case_evidence cleanup)
+        cur.execute("SELECT case_id FROM cases WHERE group_id = %s", (group_id,))
+        case_ids = [r[0] for r in cur.fetchall()]
+        
+        # 2. Delete case_evidence for all cases in this group
+        if case_ids:
+            placeholders = ",".join(["%s"] * len(case_ids))
+            cur.execute(f"DELETE FROM case_evidence WHERE case_id IN ({placeholders})", case_ids)
+            stats["case_evidence"] = cur.rowcount
+        
+        # 3. Delete cases
+        cur.execute("DELETE FROM cases WHERE group_id = %s", (group_id,))
+        stats["cases"] = cur.rowcount
+        
+        # 4. Delete raw_messages
+        cur.execute("DELETE FROM raw_messages WHERE group_id = %s", (group_id,))
+        stats["raw_messages"] = cur.rowcount
+        
+        # 5. Delete buffer
+        cur.execute("DELETE FROM buffers WHERE group_id = %s", (group_id,))
+        stats["buffer"] = cur.rowcount
+        
+        # 6. Delete group_docs
+        cur.execute("DELETE FROM group_docs WHERE group_id = %s", (group_id,))
+        stats["group_docs"] = cur.rowcount
+        
+        # 7. Delete reactions for this group
+        cur.execute("DELETE FROM reactions WHERE group_id = %s", (group_id,))
+        stats["reactions"] = cur.rowcount
+        
+        # 8. Delete pending jobs for this group
+        cur.execute(
+            "DELETE FROM jobs WHERE status = 'pending' AND payload_json LIKE %s",
+            (f'%"{group_id}"%',)
+        )
+        stats["jobs"] = cur.rowcount
+        
+        conn.commit()
+    
+    return stats
+
+
+def get_case_ids_for_group(db: MySQL, group_id: str) -> List[str]:
+    """Get all case IDs for a group (for RAG cleanup)."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute("SELECT case_id FROM cases WHERE group_id = %s", (group_id,))
+        return [r[0] for r in cur.fetchall()]
+
+
 def list_known_admin_ids(db: MySQL) -> List[str]:
     """Return all admin IDs seen in sessions or admin-group links."""
     with db.connection() as conn:
