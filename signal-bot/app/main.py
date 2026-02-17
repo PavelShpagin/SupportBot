@@ -4,6 +4,7 @@ import logging
 import threading
 import time
 import uuid
+from datetime import datetime
 from pathlib import Path
 from typing import List, Optional
 
@@ -42,6 +43,15 @@ from app.rag.chroma import create_chroma
 from app.signal.adapter import NoopSignalAdapter, SignalAdapter
 from app.signal.signal_cli import SignalCliAdapter, InboundGroupMessage, InboundDirectMessage, InboundReaction
 from app.signal.link_device import LinkDeviceManager, is_account_registered
+
+# Optional import for Signal Desktop adapter (not always available)
+SignalDesktopAdapter = None
+try:
+    import importlib
+    _sd_module = importlib.import_module("app.signal.signal_desktop")
+    SignalDesktopAdapter = _sd_module.SignalDesktopAdapter
+except (ImportError, ModuleNotFoundError):
+    pass  # SignalDesktopAdapter stays None
 from app.ingestion import hash_sender
 from app.agent.ultimate_agent import UltimateAgent
 
@@ -59,7 +69,16 @@ llm = LLMClient(settings)
 ultimate_agent = UltimateAgent()
 
 signal: SignalAdapter
-if settings.signal_listener_enabled:
+if getattr(settings, 'use_signal_desktop', False) and SignalDesktopAdapter is not None:
+    # Use Signal Desktop for both sending and receiving (no signal-cli needed)
+    log.info("Using Signal Desktop adapter at %s", settings.signal_desktop_url)
+    signal = SignalDesktopAdapter(settings, desktop_url=settings.signal_desktop_url)
+    try:
+        signal.assert_available()
+        log.info("Signal Desktop adapter connected successfully")
+    except Exception as e:
+        log.warning("Signal Desktop not available yet: %s", e)
+elif settings.signal_listener_enabled:
     signal = SignalCliAdapter(settings)
     signal.assert_available()
 else:
@@ -91,14 +110,44 @@ _signal_listener_lock = threading.Lock()
 
 def _maybe_start_signal_listener() -> None:
     """
-    Start the signal-cli receive loop once the account is registered/linked.
+    Start the signal receive loop once the account is registered/linked.
 
-    This prevents infinite "User ... is not registered" spam and avoids
-    competing signal-cli processes during provisioning.
+    For signal-cli: prevents infinite "User ... is not registered" spam.
+    For Signal Desktop: starts polling the Signal Desktop service.
     """
     global _signal_listener_started
     if _signal_listener_started:
         return
+    
+    # For Signal Desktop adapter
+    if SignalDesktopAdapter is not None and isinstance(signal, SignalDesktopAdapter):
+        with _signal_listener_lock:
+            if _signal_listener_started:
+                return
+            
+            # Check if Signal Desktop is linked
+            if not signal.is_linked():
+                log.warning(
+                    "Signal Desktop not linked yet. "
+                    "Link it via the signal-desktop /screenshot endpoint."
+                )
+                return
+            
+            threading.Thread(
+                target=signal.listen_forever,
+                kwargs={
+                    "on_group_message": _handle_group_message,
+                    "on_direct_message": _handle_direct_message,
+                    "on_reaction": _handle_reaction,
+                    "on_contact_removed": _handle_contact_removed,
+                },
+                daemon=True,
+            ).start()
+            _signal_listener_started = True
+            log.info("Signal Desktop listener started")
+        return
+    
+    # For signal-cli adapter
     if not settings.signal_listener_enabled or not isinstance(signal, SignalCliAdapter):
         return
 
@@ -124,7 +173,7 @@ def _maybe_start_signal_listener() -> None:
             daemon=True,
         ).start()
         _signal_listener_started = True
-        log.info("Signal listener started")
+        log.info("Signal CLI listener started")
 
 
 link_device = LinkDeviceManager(
@@ -132,7 +181,7 @@ link_device = LinkDeviceManager(
     config_dir=settings.signal_bot_storage,
     expected_e164=settings.signal_bot_e164,
     device_name="SupportBot",
-    link_timeout_seconds=180,
+    link_timeout_seconds=settings.signal_link_timeout_seconds,
     on_linked=_maybe_start_signal_listener,
 )
 
@@ -230,7 +279,12 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
     
     Language commands: /uk, /en
     """
-    from app.db.queries_mysql import set_admin_lang, cancel_pending_history_jobs, cancel_all_history_jobs_for_admin
+    from app.db.queries_mysql import (
+        set_admin_lang,
+        cancel_pending_history_jobs,
+        cancel_all_history_jobs_for_admin,
+        delete_admin_session,
+    )
 
     # Reconcile stale admins first so re-added users always start fresh.
     _prune_disconnected_admins()
@@ -242,6 +296,28 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
     
     # Get admin session - None means brand new user
     session = get_admin_session(db, admin_id)
+
+    # Self-heal stale onboarding sessions: if a user comes back much later,
+    # restart from welcome instead of treating random text as a group name.
+    if (
+        session is not None
+        and session.state == "awaiting_group_name"
+        and session.updated_at is not None
+    ):
+        session_age_seconds = (datetime.utcnow() - session.updated_at).total_seconds()
+        stale_after_seconds = settings.admin_session_stale_minutes * 60
+        if session_age_seconds >= stale_after_seconds:
+            log.info(
+                "Admin %s session is stale (age=%ss >= %ss). Restarting onboarding.",
+                admin_id,
+                int(session_age_seconds),
+                stale_after_seconds,
+            )
+            try:
+                delete_admin_session(db, admin_id)
+            except Exception:
+                log.exception("Failed to delete stale session for %s", admin_id)
+            session = None
     
     if session is None:
         # Brand new admin - detect language, send welcome, DON'T search yet
@@ -253,7 +329,7 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
             sent = signal.send_onboarding_prompt(recipient=admin_id, lang=detected_lang)
             if not sent:
                 # User blocked us - clear session
-                from app.db.queries_mysql import delete_admin_session, unlink_admin_from_all_groups
+                from app.db.queries_mysql import unlink_admin_from_all_groups
                 delete_admin_session(db, admin_id)
                 unlink_admin_from_all_groups(db, admin_id)
                 log.info("Cleared session for blocked user %s", admin_id)
@@ -840,6 +916,10 @@ def _format_progress_message(key: str, lang: str, **kwargs) -> str:
         else:
             return f"Found {count} solved cases. Saving to knowledge base..."
     
+    elif key == "qr_sent":
+        # QR code was sent separately with instructions, no additional message needed
+        return ""
+    
     return key
 
 
@@ -865,10 +945,74 @@ def history_progress(req: HistoryProgressRequest) -> dict:
         total=req.total or 0
     )
     
-    if isinstance(signal, SignalCliAdapter):
+    if isinstance(signal, SignalCliAdapter) and progress_text:
         signal.send_direct_text(recipient=admin_id, text=progress_text)
     
     return {"ok": True}
+
+
+class HistoryQrCodeRequest(BaseModel):
+    """Called by signal-ingest to send QR code image to user."""
+    token: str
+    qr_image_base64: str
+
+
+@app.post("/history/qr-code")
+def history_qr_code(req: HistoryQrCodeRequest) -> dict:
+    """
+    Callback from signal-ingest to send QR code to user for scanning.
+    """
+    import base64
+    import tempfile
+    import os
+    
+    session = get_admin_by_token(db, req.token)
+    if session is None:
+        log.warning("No admin session found for token %s (qr-code)", req.token)
+        return {"ok": False, "error": "session_not_found"}
+    
+    admin_id = session.admin_id
+    lang = session.lang
+    
+    # Decode and save QR image temporarily
+    try:
+        qr_bytes = base64.b64decode(req.qr_image_base64)
+        
+        # Save to temp file
+        with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as f:
+            f.write(qr_bytes)
+            qr_path = f.name
+        
+        # Send QR code to user with instructions
+        if lang == "uk":
+            caption = (
+                "Відскануйте цей QR-код у Signal:\n\n"
+                "1. Відкрийте Signal на телефоні\n"
+                "2. Налаштування → Пов'язані пристрої → Додати пристрій\n"
+                "3. Відскануйте QR-код\n\n"
+                "Очікую сканування (2 хв)..."
+            )
+        else:
+            caption = (
+                "Scan this QR code in Signal:\n\n"
+                "1. Open Signal on your phone\n"
+                "2. Settings → Linked Devices → Link New Device\n"
+                "3. Scan the QR code\n\n"
+                "Waiting for scan (2 min)..."
+            )
+        
+        if isinstance(signal, SignalCliAdapter):
+            # Send QR image with instructions as caption (single message)
+            signal.send_direct_image(recipient=admin_id, image_path=qr_path, caption=caption)
+        
+        # Clean up temp file
+        os.unlink(qr_path)
+        
+        return {"ok": True}
+        
+    except Exception as e:
+        log.exception("Failed to send QR code to user")
+        return {"ok": False, "error": str(e)}
 
 
 class HistoryLinkResultRequest(BaseModel):
