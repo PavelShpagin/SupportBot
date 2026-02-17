@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import uuid
 from dataclasses import dataclass
+from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 from app.db.mysql import MySQL, is_mysql_error, MYSQL_ERR_DUP_ENTRY
@@ -319,6 +320,7 @@ class AdminSession:
     pending_group_name: str | None
     pending_token: str | None
     lang: str = "uk"  # 'uk' or 'en'
+    updated_at: datetime | None = None
 
 
 def get_admin_session(db: MySQL, admin_id: str) -> Optional[AdminSession]:
@@ -326,7 +328,7 @@ def get_admin_session(db: MySQL, admin_id: str) -> Optional[AdminSession]:
         cur = conn.cursor()
         cur.execute(
             """
-            SELECT admin_id, state, pending_group_id, pending_group_name, pending_token, lang
+            SELECT admin_id, state, pending_group_id, pending_group_name, pending_token, lang, updated_at
             FROM admin_sessions
             WHERE admin_id = %s
             """,
@@ -342,6 +344,7 @@ def get_admin_session(db: MySQL, admin_id: str) -> Optional[AdminSession]:
             pending_group_name=row[3],
             pending_token=row[4],
             lang=row[5] if row[5] else "uk",
+            updated_at=row[6] if len(row) > 6 else None,
         )
 
 
@@ -551,6 +554,28 @@ def unlink_admin_from_all_groups(db: MySQL, admin_id: str) -> int:
             WHERE admin_id = %s
             """,
             (admin_id,),
+        )
+        removed = cur.rowcount
+        conn.commit()
+        return removed
+
+
+def list_groups_with_linked_admins(db: MySQL) -> List[str]:
+    """Return group_ids that have at least one linked admin."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute("SELECT DISTINCT group_id FROM admins_groups")
+        rows = cur.fetchall()
+        return [str(r[0]) for r in rows if r and r[0]]
+
+
+def unlink_all_admins_from_group(db: MySQL, group_id: str) -> int:
+    """Remove all admin links for a group (e.g. when bot was removed from group). Returns count removed."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            "DELETE FROM admins_groups WHERE group_id = %s",
+            (group_id,),
         )
         removed = cur.rowcount
         conn.commit()

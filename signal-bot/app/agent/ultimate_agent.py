@@ -196,8 +196,9 @@ Synthesize a final answer for the user.
 DECISION PROTOCOL:
 1. **EVALUATE**: Read the answers from Docs, Cases, and Chat.
 2. **CHECK VALIDITY**: 
-   - If the answers are "INSUFFICIENT_INFO", "No relevant cases", "No relevant discussions", or just generic/irrelevant info:
-   - -> Output "[[TAG_ADMIN]]" ONLY. Do not add any text.
+   - Use "[[TAG_ADMIN]]" ONLY when ALL sources have NO relevant information (INSUFFICIENT_INFO, No relevant cases, No relevant discussions).
+   - Do NOT use [[TAG_ADMIN]] if you can provide ANY useful answer from the sources - even a partial answer is better than tagging.
+   - When all sources truly fail -> Output "[[TAG_ADMIN]]" ONLY. Do not add any text.
 3. **SYNTHESIZE**:
    - If valid info exists, write a helpful response.
    - **PRIORITIZE OFFICIAL INFO**: Trust Docs > Cases > Chat.
@@ -207,7 +208,7 @@ DECISION PROTOCOL:
    - **LANGUAGE**: Ukrainian.
 
 CRITICAL:
-- If you cannot answer based *strictly* on the provided sources, output "[[TAG_ADMIN]]" ONLY.
+- Output "[[TAG_ADMIN]]" ONLY when ALL sources failed and you have nothing useful to say. If any source has relevant info, synthesize an answer instead.
 - Do NOT apologize.
 - Do NOT make up info.
 - Do NOT use "Tip..." or "Загальна порада:".

@@ -225,45 +225,65 @@ def _detect_language(text: str) -> str:
 
 def _prune_disconnected_admins() -> None:
     """
-    Keep DB state in sync with current Signal contacts.
+    Keep DB state in sync with current Signal contacts and groups.
 
-    If a user removes the bot from contacts/friends, we must clear:
+    When a user removes the bot from contacts/friends, we clear:
     - admin session (including language/state)
     - pending history jobs
     - admin<->group links
+
+    When the bot is removed from a group, we unlink all admins from that group.
     """
-    if not isinstance(signal, SignalCliAdapter):
-        return
-
-    contacts = signal.list_contacts()
-    if contacts is None:
-        # Do not mutate DB when contact sync fails.
-        return
-
     from app.db.queries_mysql import (
         list_known_admin_ids,
+        list_groups_with_linked_admins,
         delete_admin_session,
         cancel_all_history_jobs_for_admin,
         unlink_admin_from_all_groups,
+        unlink_all_admins_from_group,
     )
 
-    known_admins = list_known_admin_ids(db)
-    for admin_id in known_admins:
-        if admin_id in contacts:
+    # 1. Prune admins no longer in contacts (signal-cli only; Signal Desktop has no contact list)
+    if isinstance(signal, SignalCliAdapter):
+        contacts = signal.list_contacts()
+        if contacts is not None:
+            known_admins = list_known_admin_ids(db)
+            for admin_id in known_admins:
+                if admin_id in contacts:
+                    continue
+                log.info("Admin %s removed bot from contacts. Clearing all state.", admin_id)
+                try:
+                    cancel_all_history_jobs_for_admin(db, admin_id)
+                except Exception:
+                    log.exception("Failed to cancel jobs for disconnected admin %s", admin_id)
+                try:
+                    delete_admin_session(db, admin_id)
+                except Exception:
+                    log.exception("Failed to delete session for disconnected admin %s", admin_id)
+                try:
+                    unlink_admin_from_all_groups(db, admin_id)
+                except Exception:
+                    log.exception("Failed to unlink groups for disconnected admin %s", admin_id)
+
+    # 2. Prune groups where bot was removed (e.g. kicked from group)
+    if isinstance(signal, NoopSignalAdapter):
+        return
+    try:
+        current_groups = {g.group_id for g in signal.list_groups()}
+    except Exception:
+        log.warning("Failed to list groups for prune; skipping group prune")
+        return
+    linked_groups = list_groups_with_linked_admins(db)
+    for group_id in linked_groups:
+        if group_id in current_groups:
             continue
-        log.info("Admin %s is no longer in contacts. Cleaning all state.", admin_id)
+        log.info("Bot no longer in group %s. Unlinking all admins.", group_id)
         try:
-            cancel_all_history_jobs_for_admin(db, admin_id)
+            unlinked = unlink_all_admins_from_group(db, group_id)
+            if unlinked:
+                log.info("Unlinked %d admins from removed group %s", unlinked, group_id)
         except Exception:
-            log.exception("Failed to cancel jobs for disconnected admin %s", admin_id)
-        try:
-            delete_admin_session(db, admin_id)
-        except Exception:
-            log.exception("Failed to delete session for disconnected admin %s", admin_id)
-        try:
-            unlink_admin_from_all_groups(db, admin_id)
-        except Exception:
-            log.exception("Failed to unlink groups for disconnected admin %s", admin_id)
+            log.exception("Failed to unlink admins from group %s", group_id)
 
 
 def _handle_direct_message(m: InboundDirectMessage) -> None:
@@ -296,6 +316,44 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
     
     # Get admin session - None means brand new user
     session = get_admin_session(db, admin_id)
+
+    # --- NEW: Command Handling ---
+    text_lower = text.lower()
+    
+    # Language commands
+    if text_lower in ("/en", "/english"):
+        set_admin_lang(db, admin_id, "en")
+        if session: session = get_admin_session(db, admin_id) # Refresh session
+        msg = "Language set to English. Please enter the group name you want to link."
+        if isinstance(signal, SignalCliAdapter):
+            signal.send_direct_text(recipient=admin_id, text=msg)
+        return
+
+    if text_lower in ("/ua", "/uk", "/ukrainian"):
+        set_admin_lang(db, admin_id, "uk")
+        if session: session = get_admin_session(db, admin_id) # Refresh session
+        msg = "Мову змінено на українську. Введіть назву групи для підключення."
+        if isinstance(signal, SignalCliAdapter):
+            signal.send_direct_text(recipient=admin_id, text=msg)
+        return
+
+    # Reset command (hidden/debug)
+    if text_lower == "/reset":
+        if session:
+            delete_admin_session(db, admin_id)
+            session = None
+        msg = "Session reset. Send any message to start over."
+        if isinstance(signal, SignalCliAdapter):
+            signal.send_direct_text(recipient=admin_id, text=msg)
+        return
+        
+    # Ignore other commands to prevent accidental group searches
+    if text.startswith("/"):
+        msg = "Unknown command. Available: /en, /uk"
+        if isinstance(signal, SignalCliAdapter):
+            signal.send_direct_text(recipient=admin_id, text=msg)
+        return
+    # -----------------------------
 
     # Self-heal stale onboarding sessions: if a user comes back much later,
     # restart from welcome instead of treating random text as a group name.
@@ -919,7 +977,12 @@ def _format_progress_message(key: str, lang: str, **kwargs) -> str:
     elif key == "qr_sent":
         # QR code was sent separately with instructions, no additional message needed
         return ""
-    
+
+    elif key == "already_linked":
+        if lang == "uk":
+            return "Сесія вже активна. Збираю повідомлення без нового QR-коду..."
+        return "Session already active. Collecting messages without new QR code..."
+
     return key
 
 
@@ -945,7 +1008,7 @@ def history_progress(req: HistoryProgressRequest) -> dict:
         total=req.total or 0
     )
     
-    if isinstance(signal, SignalCliAdapter) and progress_text:
+    if not isinstance(signal, NoopSignalAdapter) and progress_text:
         signal.send_direct_text(recipient=admin_id, text=progress_text)
     
     return {"ok": True}
@@ -1001,8 +1064,7 @@ def history_qr_code(req: HistoryQrCodeRequest) -> dict:
                 "Waiting for scan (2 min)..."
             )
         
-        if isinstance(signal, SignalCliAdapter):
-            # Send QR image with instructions as caption (single message)
+        if not isinstance(signal, NoopSignalAdapter):
             signal.send_direct_image(recipient=admin_id, image_path=qr_path, caption=caption)
         
         # Clean up temp file
@@ -1041,7 +1103,7 @@ def history_link_result(req: HistoryLinkResultRequest) -> dict:
     group_id = session.pending_group_id
     lang = session.lang
     
-    if isinstance(signal, SignalCliAdapter):
+    if not isinstance(signal, NoopSignalAdapter):
         if req.success:
             signal.send_success_message(recipient=admin_id, group_name=group_name, lang=lang)
             if group_id:
@@ -1132,8 +1194,9 @@ def history_cases(req: HistoryCasesRequest) -> dict:
         metadata = {
             "group_id": req.group_id,
             "status": case.status,
-            "evidence_ids": case.evidence_ids,
         }
+        if case.evidence_ids:
+            metadata["evidence_ids"] = case.evidence_ids
         if evidence_image_paths:
             metadata["evidence_image_paths"] = evidence_image_paths
 

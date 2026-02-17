@@ -186,7 +186,7 @@ def _notify_progress(*, settings, token: str, progress_key: str, **kwargs) -> No
         log.exception("Failed to notify progress")
 
 
-def _notify_link_result(*, settings, token: str, success: bool, message_count: int = 0, cases_found: int = 0, note: str = "") -> None:
+def _notify_link_result(*, settings, token: str, success: bool, message_count: int = 0, cases_found: int = 0, cases_inserted: int | None = None, note: str = "") -> None:
     """Notify signal-bot of link success/failure."""
     payload = {
         "token": token,
@@ -195,6 +195,8 @@ def _notify_link_result(*, settings, token: str, success: bool, message_count: i
         "cases_found": cases_found,
         "note": note,
     }
+    if cases_inserted is not None:
+        payload["cases_inserted"] = cases_inserted
     url = settings.signal_bot_url.rstrip("/") + "/history/link-result"
     try:
         with httpx.Client(timeout=30) as client:
@@ -224,18 +226,21 @@ def _send_qr_to_user(*, settings, token: str, qr_image: bytes) -> bool:
         return False
 
 
-def _post_cases_to_bot(*, settings, token: str, group_id: str, case_blocks: List[str]) -> None:
-    """Post extracted cases to signal-bot for RAG indexing."""
-    payload = {"token": token, "group_id": group_id, "case_blocks": case_blocks}
+def _post_cases_to_bot(*, settings, token: str, group_id: str, case_blocks: List[str]) -> int:
+    """Post extracted cases to signal-bot for RAG indexing. Returns cases_inserted from response."""
+    payload = {
+        "token": token,
+        "group_id": group_id,
+        "cases": [{"case_block": b} for b in case_blocks]
+    }
     url = settings.signal_bot_url.rstrip("/") + "/history/cases"
-    try:
-        with httpx.Client(timeout=60) as client:
-            r = client.post(url, json=payload)
-            r.raise_for_status()
-            log.info("Posted %d cases to signal-bot", len(case_blocks))
-    except Exception:
-        log.exception("Failed to post cases to signal-bot")
-        raise
+    with httpx.Client(timeout=60) as client:
+        r = client.post(url, json=payload)
+        r.raise_for_status()
+        data = r.json()
+        inserted = int(data.get("cases_inserted", 0))
+        log.info("Posted %d cases to signal-bot (%d inserted)", len(case_blocks), inserted)
+        return inserted
 
 
 # ?????????????????????????????????????????????????????????????????????????????
@@ -265,78 +270,66 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
     try:
         check_cancelled()
 
-        # Check if Signal Desktop is already linked (to avoid unnecessary resets)
-        session_ready = False
-        try:
-            status = _check_desktop_status(settings)
-            if status.get("linked") and status.get("has_user_conversations"):
-                log.info("Signal Desktop is already linked. Reusing existing session.")
-                session_ready = True
-        except Exception as e:
-            log.warning("Failed to check existing session status: %s", e)
+        # Always reset and show QR for every group link (user requirement: ask for QR every time)
+        # ?????????????????????????????????????????????????????????????????
+        # Step 1: Reset Signal Desktop and get QR code
+        # ?????????????????????????????????????????????????????????????????
+        log.info("Resetting Signal Desktop for new user link...")
+        _reset_desktop(settings)
 
-        if not session_ready:
-            # ?????????????????????????????????????????????????????????????????
-            # Step 1: Reset Signal Desktop and get QR code
-            # ?????????????????????????????????????????????????????????????????
-            log.info("Resetting Signal Desktop for new user link...")
-            _reset_desktop(settings)
-            
-            # Wait for Signal Desktop to restart and show QR
-            time.sleep(10)
-            
-            # Get QR code screenshot
-            log.info("Getting QR code screenshot...")
-            qr_image = _get_desktop_screenshot(settings)
-            
-            if len(qr_image) < 1000:
-                log.error("QR screenshot too small (%d bytes), Signal Desktop may not be ready", len(qr_image))
-                _notify_link_result(
-                    settings=settings,
-                    token=token,
-                    success=False,
-                    note="Failed to get QR code. Signal Desktop may not be ready.",
-                )
-                return
-            
-            # Send QR to user
-            if not _send_qr_to_user(settings=settings, token=token, qr_image=qr_image):
-                _notify_link_result(
-                    settings=settings,
-                    token=token,
-                    success=False,
-                    note="Failed to send QR code to user.",
-                )
-                return
-            
-            _notify_progress(settings=settings, token=token, progress_key="qr_sent")
-            
-            # ?????????????????????????????????????????????????????????????????
-            # Step 2: Wait for user to scan QR code
-            # ?????????????????????????????????????????????????????????????????
-            log.info("Waiting for user to scan QR code...")
-            max_wait_seconds = 120  # 2 minutes to scan
-            poll_interval = 3
-            waited = 0
-            
-            while waited < max_wait_seconds:
-                check_cancelled()
-                time.sleep(poll_interval)
-                waited += poll_interval
-                
-                status = _check_desktop_status(settings)
-                if status.get("has_user_conversations"):
-                    log.info("User linked! Found %d conversations", status.get("conversations_count", 0))
-                    break
-            else:
-                log.warning("Timeout waiting for user to scan QR code")
-                _notify_link_result(
-                    settings=settings,
-                    token=token,
-                    success=False,
-                    note="Timeout waiting for QR scan. Please try again.",
-                )
-                return
+        # Wait for Signal Desktop to restart and show QR
+        time.sleep(10)
+
+        # Get QR code screenshot
+        log.info("Getting QR code screenshot...")
+        qr_image = _get_desktop_screenshot(settings)
+
+        if len(qr_image) < 1000:
+            log.error("QR screenshot too small (%d bytes), Signal Desktop may not be ready", len(qr_image))
+            _notify_link_result(
+                settings=settings,
+                token=token,
+                success=False,
+                note="Failed to get QR code. Signal Desktop may not be ready.",
+            )
+            return
+
+        # Send QR to user
+        if not _send_qr_to_user(settings=settings, token=token, qr_image=qr_image):
+            _notify_link_result(
+                settings=settings,
+                token=token,
+                success=False,
+                note="Failed to send QR code to user.",
+            )
+            return
+
+        _notify_progress(settings=settings, token=token, progress_key="qr_sent")
+
+        # Step 2: Wait for user to scan QR code
+        log.info("Waiting for user to scan QR code...")
+        max_wait_seconds = 120  # 2 minutes to scan
+        poll_interval = 3
+        waited = 0
+
+        while waited < max_wait_seconds:
+            check_cancelled()
+            time.sleep(poll_interval)
+            waited += poll_interval
+
+            status = _check_desktop_status(settings)
+            if status.get("has_user_conversations"):
+                log.info("User linked! Found %d conversations", status.get("conversations_count", 0))
+                break
+        else:
+            log.warning("Timeout waiting for user to scan QR code")
+            _notify_link_result(
+                settings=settings,
+                token=token,
+                success=False,
+                note="Timeout waiting for QR scan. Please try again.",
+            )
+            return
 
         log.info("Signal Desktop is linked, fetching messages for group: %s", group_name or group_id)
 
@@ -391,10 +384,10 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
         # ?????????????????????????????????????????????????????????????????
         # Step 4: Post cases to signal-bot
         # ?????????????????????????????????????????????????????????????????
+        cases_inserted = 0
         if deduped:
             _notify_progress(settings=settings, token=token, progress_key="saving_cases", count=len(deduped))
-            _post_cases_to_bot(settings=settings, token=token, group_id=group_id, case_blocks=deduped)
-            log.info("Posted %d cases to knowledge base", len(deduped))
+            cases_inserted = _post_cases_to_bot(settings=settings, token=token, group_id=group_id, case_blocks=deduped)
         else:
             log.info("No solved cases found in messages")
 
@@ -404,6 +397,7 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
             success=True,
             message_count=len(msgs),
             cases_found=len(deduped),
+            cases_inserted=cases_inserted,
         )
 
     except JobCancelled:
