@@ -119,7 +119,7 @@ class UltimateAgent:
         # Fallback to default
         return self.docs_agent
 
-    def answer(self, question, group_id=None, db=None):
+    def answer(self, question, group_id=None, db=None, lang="uk"):
         # Check if we need to refresh agents (e.g. every 10 minutes)
         # This allows updating docs without restarting the container.
         REFRESH_INTERVAL = 600  # 10 minutes
@@ -130,7 +130,11 @@ class UltimateAgent:
             except Exception as e:
                 print(f"Error refreshing agents: {e}", flush=True)
         
-        print(f"\n--- Ultimate Processing: {question} (group={group_id}) ---")
+        # Normalize language
+        if lang not in ("uk", "en"):
+            lang = "uk"
+        
+        print(f"\n--- Ultimate Processing: {question} (group={group_id}, lang={lang}) ---")
         
         # 1. Get Docs Answer (Fastest, Most Trusted)
         docs_agent = self.get_docs_agent(group_id, db)
@@ -173,6 +177,8 @@ class UltimateAgent:
             return "[[TAG_ADMIN]]"
 
         # 5. Synthesize
+        lang_instruction = "Ukrainian (українська)" if lang == "uk" else "English"
+        
         prompt = f"""
 You are a Senior Support Engineer. You have received answers from three sources:
 1. **Documentation** (Official Source - Highest Priority)
@@ -205,7 +211,7 @@ DECISION PROTOCOL:
    - **BE CONCISE**: Write short, direct paragraphs. No fluff. No bold/stars unless critical.
    - **CITATIONS**: You MUST keep the citations.
    - **FORMAT**: For cases, use ONLY the bracketed link: [http://...]. Do NOT add "Source:", "Case:", or IDs.
-   - **LANGUAGE**: Ukrainian.
+   - **LANGUAGE**: {lang_instruction}. Write your response in this language.
 
 CRITICAL:
 - Output "[[TAG_ADMIN]]" ONLY when ALL sources failed and you have nothing useful to say. If any source has relevant info, synthesize an answer instead.

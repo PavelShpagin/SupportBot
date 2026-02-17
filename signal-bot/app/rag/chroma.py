@@ -24,12 +24,14 @@ class ChromaRag:
         col = self._collection()
         col.upsert(ids=[case_id], documents=[document], embeddings=[embedding], metadatas=[metadata])
 
-    def retrieve_cases(self, *, group_id: str, embedding: list[float], k: int) -> List[Dict[str, Any]]:
+    def retrieve_cases(self, *, group_id: str, embedding: list[float], k: int, status: str = "solved") -> List[Dict[str, Any]]:
         col = self._collection()
+        # Filter by group_id AND status (only return solved cases by default)
+        where_filter = {"$and": [{"group_id": group_id}, {"status": status}]}
         out = col.query(
             query_embeddings=[embedding],
             n_results=k,
-            where={"group_id": group_id},
+            where=where_filter,
             include=["documents", "metadatas", "distances"],
         )
         return self._format_results(out)

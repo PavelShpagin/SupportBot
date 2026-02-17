@@ -62,7 +62,12 @@ class CaseSearchAgent:
                 if not problem:
                     problem = lines[1] if len(lines) > 1 else "Unknown"
                 if not solution:
-                    solution = lines[2] if len(lines) > 2 else "See details"
+                    solution = lines[2] if len(lines) > 2 else ""
+
+                # Skip cases without actual solutions
+                if not solution or solution == "See details":
+                    print(f"CaseSearchAgent: Case {r['case_id']} has no solution. Skipping.")
+                    continue
 
                 formatted_results.append({
                     "id": r["case_id"],

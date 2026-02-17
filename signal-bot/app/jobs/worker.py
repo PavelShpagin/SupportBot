@@ -45,7 +45,8 @@ class WorkerDeps:
 def _format_buffer_line(msg: RawMessage, positive_reactions: int = 0) -> str:
     reply = f" reply_to={msg.reply_to_id}" if msg.reply_to_id else ""
     reactions = f" reactions={positive_reactions}" if positive_reactions > 0 else ""
-    return f"{msg.sender_hash} ts={msg.ts}{reply}{reactions}\n{msg.content_text}\n\n"
+    # Include message_id so LLM can extract evidence_ids for case linking
+    return f"{msg.sender_hash} ts={msg.ts} msg_id={msg.message_id}{reply}{reactions}\n{msg.content_text}\n\n"
 
 
 @dataclass(frozen=True)
@@ -54,9 +55,13 @@ class BufferMessageBlock:
     start_line: int
     end_line: int
     raw_text: str
+    message_id: str  # Extracted from msg_id= in header
 
 
-_BUFFER_HEADER_RE = re.compile(r"^[^\n]*\sts=\d+(?:\sreply_to=\S+)?\n", re.MULTILINE)
+# Updated regex to match new format with msg_id
+_BUFFER_HEADER_RE = re.compile(r"^[^\n]*\sts=\d+(?:\s+msg_id=\S+)?(?:\s+reply_to=\S+)?(?:\s+reactions=\d+)?\n", re.MULTILINE)
+# Regex to extract msg_id from header line
+_MSG_ID_RE = re.compile(r"msg_id=(\S+)")
 
 
 def _parse_buffer_blocks(buffer_text: str) -> List[BufferMessageBlock]:
@@ -75,12 +80,19 @@ def _parse_buffer_blocks(buffer_text: str) -> List[BufferMessageBlock]:
         raw = buffer_text[start:end]
         start_line = buffer_text.count("\n", 0, start) + 1
         end_line = start_line + raw.count("\n")
+        
+        # Extract message_id from header
+        header_line = raw.split("\n")[0] if raw else ""
+        msg_id_match = _MSG_ID_RE.search(header_line)
+        message_id = msg_id_match.group(1) if msg_id_match else ""
+        
         blocks.append(
             BufferMessageBlock(
                 idx=i,
                 start_line=start_line,
                 end_line=end_line,
                 raw_text=raw,
+                message_id=message_id,
             )
         )
     return blocks
@@ -400,8 +412,21 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
             log.warning("Rejecting solved case without solution_summary for span %s..%s", span.start_idx, span.end_idx)
             continue
 
+        # Extract evidence_ids directly from blocks (more reliable than LLM extraction)
+        evidence_ids = [
+            blocks[i].message_id 
+            for i in range(span.start_idx, span.end_idx + 1) 
+            if blocks[i].message_id
+        ]
+        
+        # Log if we got evidence_ids
+        log.info(
+            "Case span %s..%s: extracted %d evidence_ids from blocks",
+            span.start_idx, span.end_idx, len(evidence_ids)
+        )
+
         case_id = new_case_id(deps.db)
-        evidence_image_paths = _collect_evidence_image_paths(deps, case.evidence_ids)
+        evidence_image_paths = _collect_evidence_image_paths(deps, evidence_ids)
         insert_case(
             deps.db,
             case_id=case_id,
@@ -411,7 +436,7 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
             problem_summary=case.problem_summary,
             solution_summary=case.solution_summary,
             tags=case.tags,
-            evidence_ids=case.evidence_ids,
+            evidence_ids=evidence_ids,
             evidence_image_paths=evidence_image_paths,
         )
 
@@ -433,7 +458,7 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
             metadata={
                 "group_id": group_id,
                 "status": case.status,
-                "evidence_ids": case.evidence_ids,
+                "evidence_ids": evidence_ids,
                 "evidence_image_paths": evidence_image_paths,
             },
         )
@@ -474,7 +499,8 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         # Check if group has linked admins (is active)
         from app.db.queries_mysql import get_group_admins, upsert_group_docs, get_admin_session
         admins = get_group_admins(deps.db, group_id)
-        active_admins = [aid for aid in admins if get_admin_session(deps.db, aid) is not None]
+        active_admin_sessions = [(aid, get_admin_session(deps.db, aid)) for aid in admins]
+        active_admins = [aid for aid, sess in active_admin_sessions if sess is not None]
         
         # If no admins are linked to this group, we should not respond.
         # This prevents the bot from spamming groups where it was added but not configured,
@@ -482,6 +508,13 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         if not active_admins:
             log.info("Group %s has no active linked admins. Skipping response.", group_id)
             return
+
+        # Get language from first active admin (default to 'uk')
+        group_lang = "uk"
+        for aid, sess in active_admin_sessions:
+            if sess is not None:
+                group_lang = sess.lang or "uk"
+                break
 
         # Check for admin commands
         if msg.content_text.strip().startswith("/setdocs"):
@@ -506,11 +539,11 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         # Check for bot mention to force response (optional, but good for UX)
         force = _mentions_bot(deps.settings, msg.content_text)
         
-        answer = deps.ultimate_agent.answer(msg.content_text, group_id=group_id, db=deps.db)
+        answer = deps.ultimate_agent.answer(msg.content_text, group_id=group_id, db=deps.db, lang=group_lang)
         
         if answer == "SKIP":
             if force:
-                answer = "Вибачте, я не зрозумів запитання або це не стосується моєї компетенції."
+                answer = "Вибачте, я не зрозумів запитання або це не стосується моєї компетенції." if group_lang == "uk" else "Sorry, I didn't understand the question or it's outside my expertise."
             else:
                 return
             
