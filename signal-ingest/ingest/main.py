@@ -266,6 +266,7 @@ def _post_cases_to_bot(*, settings, token: str, group_id: str, case_blocks: List
         if not text:
             continue
         sender = m.get("sender") or m.get("source") or "unknown"
+        sender_name = m.get("sender_name") or None
         ts = m.get("ts") or m.get("timestamp") or 0
         msg_id = m.get("id") or m.get("message_id") or str(ts)
         # Hash the sender for privacy
@@ -274,6 +275,7 @@ def _post_cases_to_bot(*, settings, token: str, group_id: str, case_blocks: List
         formatted_messages.append({
             "message_id": msg_id,
             "sender_hash": sender_hash,
+            "sender_name": sender_name,
             "ts": ts,
             "content_text": text,
         })

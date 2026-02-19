@@ -278,6 +278,7 @@ async def get_group_history(
                     "conversation_id": m.conversation_id,
                     "timestamp": m.timestamp,
                     "sender": m.sender,
+                    "sender_name": m.sender_name,
                     "body": m.body,
                     "type": m.type,
                     "group_id": m.group_id,

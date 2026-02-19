@@ -28,6 +28,7 @@ class SignalMessage:
     group_id: Optional[str] = None
     group_name: Optional[str] = None
     reactions: int = 0  # count of emoji reactions on this message
+    sender_name: Optional[str] = None  # display name from contacts
 
 
 def _get_db_key(signal_data_dir: str) -> str:
@@ -210,10 +211,21 @@ def get_messages(
         else:
             select_parts.append("NULL as group_name")
         
+        # Sender display name from contacts (sc = sender conversation)
+        if sender_col and "profileName" in conv_cols:
+            select_parts.append("COALESCE(sc.name, sc.profileName, sc.profileFullName) as sender_name")
+        else:
+            select_parts.append("NULL as sender_name")
+
+        sender_join = ""
+        if sender_col:
+            sender_join = f"LEFT JOIN conversations sc ON m.{sender_col} = sc.id"
+
         q = f"""
             SELECT {', '.join(select_parts)}
             FROM messages m
             LEFT JOIN conversations c ON m.{conv_id_col} = c.id
+            {sender_join}
             WHERE m.{body_col} IS NOT NULL AND m.{body_col} != ''
         """
         
@@ -299,6 +311,7 @@ def get_messages(
                     group_id=str(row[6]) if row[6] else None,
                     group_name=str(row[7]) if row[7] else None,
                     reactions=reactions_by_ts.get(ts, 0),
+                    sender_name=str(row[8]) if len(row) > 8 and row[8] else None,
                 )
                 if msg.body:  # Skip empty messages
                     result.append(msg)

@@ -15,6 +15,7 @@ interface CaseData {
     message_id: string;
     ts: number;
     sender_hash: string;
+    sender_name: string | null;
     content_text: string;
     images: string[];
   }[];
@@ -462,8 +463,10 @@ export default function CasePage() {
                 });
                 return data.evidence.map((msg) => {
                   const participantNum = senderOrder.indexOf(msg.sender_hash) + 1;
-                  const label = `Учасник ${participantNum}`;
-                  const initials = `У${participantNum}`;
+                  const label = msg.sender_name || `Учасник ${participantNum}`;
+                  const initials = msg.sender_name
+                    ? msg.sender_name.split(' ').map((w: string) => w[0]).join('').substring(0, 2).toUpperCase()
+                    : `У${participantNum}`;
                   return (
                 <div key={msg.message_id} className="message">
                   <div className="message-header">

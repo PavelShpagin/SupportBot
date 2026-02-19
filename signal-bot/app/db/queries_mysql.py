@@ -18,6 +18,7 @@ class RawMessage:
     content_text: str
     image_paths: List[str]
     reply_to_id: str | None
+    sender_name: str | None = None
 
 
 def _parse_json_list(raw: str | None) -> List[str]:
@@ -38,14 +39,15 @@ def insert_raw_message(db: MySQL, msg: RawMessage) -> bool:
         try:
             cur.execute(
                 """
-                INSERT INTO raw_messages(message_id, group_id, ts, sender_hash, content_text, image_paths_json, reply_to_id)
-                VALUES(%s, %s, %s, %s, %s, %s, %s)
+                INSERT INTO raw_messages(message_id, group_id, ts, sender_hash, sender_name, content_text, image_paths_json, reply_to_id)
+                VALUES(%s, %s, %s, %s, %s, %s, %s, %s)
                 """,
                 (
                     msg.message_id,
                     msg.group_id,
                     msg.ts,
                     msg.sender_hash,
+                    msg.sender_name,
                     msg.content_text,
                     json.dumps(msg.image_paths, ensure_ascii=False),
                     msg.reply_to_id,
@@ -80,7 +82,7 @@ def get_raw_message(db: MySQL, message_id: str) -> Optional[RawMessage]:
         cur = conn.cursor()
         cur.execute(
             """
-            SELECT message_id, group_id, ts, sender_hash, content_text, image_paths_json, reply_to_id
+            SELECT message_id, group_id, ts, sender_hash, sender_name, content_text, image_paths_json, reply_to_id
             FROM raw_messages
             WHERE message_id = %s
             """,
@@ -94,9 +96,10 @@ def get_raw_message(db: MySQL, message_id: str) -> Optional[RawMessage]:
             group_id=row[1],
             ts=int(row[2]),
             sender_hash=row[3],
-            content_text=row[4] or "",
-            image_paths=_parse_json_list(row[5]),
-            reply_to_id=row[6],
+            sender_name=row[4],
+            content_text=row[5] or "",
+            image_paths=_parse_json_list(row[6]),
+            reply_to_id=row[7],
         )
 
 
@@ -774,7 +777,7 @@ def get_message_by_ts(db: MySQL, *, group_id: str, ts: int) -> Optional[RawMessa
         cur = conn.cursor()
         cur.execute(
             """
-            SELECT message_id, group_id, ts, sender_hash, content_text, image_paths_json, reply_to_id
+            SELECT message_id, group_id, ts, sender_hash, sender_name, content_text, image_paths_json, reply_to_id
             FROM raw_messages
             WHERE group_id = %s AND ts = %s
             LIMIT 1
@@ -789,9 +792,10 @@ def get_message_by_ts(db: MySQL, *, group_id: str, ts: int) -> Optional[RawMessa
             group_id=row[1],
             ts=int(row[2]),
             sender_hash=row[3],
-            content_text=row[4] or "",
-            image_paths=_parse_json_list(row[5]),
-            reply_to_id=row[6],
+            sender_name=row[4],
+            content_text=row[5] or "",
+            image_paths=_parse_json_list(row[6]),
+            reply_to_id=row[7],
         )
 
 
@@ -829,7 +833,7 @@ def get_case_evidence(db: MySQL, case_id: str) -> List[RawMessage]:
         cur = conn.cursor()
         cur.execute(
             """
-            SELECT rm.message_id, rm.group_id, rm.ts, rm.sender_hash, rm.content_text, rm.image_paths_json, rm.reply_to_id
+            SELECT rm.message_id, rm.group_id, rm.ts, rm.sender_hash, rm.sender_name, rm.content_text, rm.image_paths_json, rm.reply_to_id
             FROM raw_messages rm
             JOIN case_evidence ce ON rm.message_id = ce.message_id
             WHERE ce.case_id = %s
@@ -844,9 +848,10 @@ def get_case_evidence(db: MySQL, case_id: str) -> List[RawMessage]:
                 group_id=r[1],
                 ts=int(r[2]),
                 sender_hash=r[3],
-                content_text=r[4] or "",
-                image_paths=_parse_json_list(r[5]),
-                reply_to_id=r[6],
+                sender_name=r[4],
+                content_text=r[5] or "",
+                image_paths=_parse_json_list(r[6]),
+                reply_to_id=r[7],
             )
             for r in rows
         ]

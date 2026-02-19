@@ -704,6 +704,7 @@ def get_case_endpoint(case_id: str):
             "message_id": msg.message_id,
             "ts": msg.ts,
             "sender_hash": msg.sender_hash,
+            "sender_name": msg.sender_name,
             "content_text": msg.content_text,
             "images": images,
             "reply_to_id": msg.reply_to_id,
@@ -1219,6 +1220,7 @@ def history_link_result(req: HistoryLinkResultRequest) -> dict:
 class HistoryMessage(BaseModel):
     message_id: str
     sender_hash: str
+    sender_name: str | None = None
     ts: int
     content_text: str
 
@@ -1263,6 +1265,7 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
             group_id=req.group_id,
             ts=m.ts,
             sender_hash=m.sender_hash,
+            sender_name=m.sender_name,
             content_text=m.content_text,
             image_paths=[],
             reply_to_id=None,

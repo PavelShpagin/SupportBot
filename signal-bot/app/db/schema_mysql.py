@@ -14,6 +14,7 @@ DDL_STATEMENTS = [
       group_id      VARCHAR(128) NOT NULL,
       ts            BIGINT NOT NULL,
       sender_hash   VARCHAR(64) NOT NULL,
+      sender_name   VARCHAR(256),
       content_text  LONGTEXT,
       image_paths_json LONGTEXT,
       reply_to_id   VARCHAR(128),
@@ -125,6 +126,7 @@ MIGRATIONS = [
     # Add columns that may be missing from older installs
     "ALTER TABLE cases ADD COLUMN IF NOT EXISTS evidence_image_paths_json LONGTEXT",
     "ALTER TABLE raw_messages ADD COLUMN IF NOT EXISTS image_paths_json LONGTEXT",
+    "ALTER TABLE raw_messages ADD COLUMN IF NOT EXISTS sender_name VARCHAR(256)",
 ]
 
 
