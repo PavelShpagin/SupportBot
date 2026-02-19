@@ -455,15 +455,24 @@ export default function CasePage() {
           
           {data.evidence && data.evidence.length > 0 ? (
             <div className="messages">
-              {data.evidence.map((msg) => (
+              {(() => {
+                const senderOrder: string[] = [];
+                data.evidence.forEach((msg) => {
+                  if (!senderOrder.includes(msg.sender_hash)) senderOrder.push(msg.sender_hash);
+                });
+                return data.evidence.map((msg) => {
+                  const participantNum = senderOrder.indexOf(msg.sender_hash) + 1;
+                  const label = `Учасник ${participantNum}`;
+                  const initials = `У${participantNum}`;
+                  return (
                 <div key={msg.message_id} className="message">
                   <div className="message-header">
                     <div className="avatar">
-                      {msg.sender_hash.substring(0, 2).toUpperCase()}
+                      {initials}
                     </div>
                     <div className="sender-info">
                       <span className="sender-name">
-                        Користувач {msg.sender_hash.substring(0, 6)}
+                        {label}
                       </span>
                       <span className="message-time">
                         {' '}&middot; {format(new Date(msg.ts), 'd MMM, HH:mm')}
@@ -483,7 +492,9 @@ export default function CasePage() {
                     </div>
                   )}
                 </div>
-              ))}
+                  );
+                });
+              })()}
             </div>
           ) : (
             <div className="empty-chat">
