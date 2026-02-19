@@ -1140,15 +1140,21 @@ def history_qr_code(req: HistoryQrCodeRequest) -> dict:
             )
         
         if not isinstance(signal, NoopSignalAdapter):
-            signal.send_direct_image(recipient=admin_id, image_path=qr_path, caption=caption)
+            signal.send_direct_image(recipient=admin_id, image_path=qr_path, caption=caption,
+                                     retries=4, retry_delay=8.0)
         
         # Clean up temp file
         os.unlink(qr_path)
-        
+        log.info("QR code sent to %s successfully", admin_id)
         return {"ok": True}
         
     except Exception as e:
-        log.exception("Failed to send QR code to user")
+        log.exception("Failed to send QR code to user after retries")
+        # Try to clean up temp file even on failure
+        try:
+            os.unlink(qr_path)
+        except Exception:
+            pass
         return {"ok": False, "error": str(e)}
 
 

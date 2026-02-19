@@ -301,8 +301,9 @@ class SignalCliAdapter:
             raise RuntimeError(f"signal-cli send failed (exit {proc.returncode})")
         return True
 
-    def send_direct_image(self, *, recipient: str, image_path: str, caption: str = "") -> None:
-        """Send image to a user (1:1 chat) with optional caption."""
+    def send_direct_image(self, *, recipient: str, image_path: str, caption: str = "", retries: int = 3, retry_delay: float = 5.0) -> None:
+        """Send image to a user (1:1 chat) with optional caption. Retries on transient connection failures."""
+        import time
         self.assert_available()
         # Note: recipient must come before -a, otherwise -a consumes it as an attachment path
         cmd = [
@@ -311,14 +312,21 @@ class SignalCliAdapter:
         ]
         if caption:
             cmd.extend(["-m", caption])
-        log.info("signal-cli send image recipient=%s path=%s", recipient, image_path)
-        proc = self._run(cmd)
-        if proc.stdout:
-            log.info("signal-cli stdout: %s", proc.stdout.strip())
-        if proc.stderr:
-            log.info("signal-cli stderr: %s", proc.stderr.strip())
-        if proc.returncode != 0:
-            raise RuntimeError(f"signal-cli send image failed (exit {proc.returncode})")
+        last_err = None
+        for attempt in range(1, retries + 1):
+            log.info("signal-cli send image recipient=%s path=%s (attempt %d/%d)", recipient, image_path, attempt, retries)
+            proc = self._run(cmd)
+            if proc.stdout:
+                log.info("signal-cli stdout: %s", proc.stdout.strip())
+            if proc.stderr:
+                log.info("signal-cli stderr: %s", proc.stderr.strip())
+            if proc.returncode == 0:
+                return
+            last_err = RuntimeError(f"signal-cli send image failed (exit {proc.returncode})")
+            if attempt < retries:
+                log.warning("send_direct_image failed (exit %d), retrying in %.0fs...", proc.returncode, retry_delay)
+                time.sleep(retry_delay)
+        raise last_err
 
     # ─────────────────────────────────────────────────────────────────────────
     # Admin onboarding messages (with language support)
