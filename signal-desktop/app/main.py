@@ -282,6 +282,7 @@ async def get_group_history(
                     "type": m.type,
                     "group_id": m.group_id,
                     "group_name": m.group_name,
+                    "reactions": m.reactions,
                 }
                 for m in msgs
             ],
@@ -483,38 +484,44 @@ async def take_screenshot(crop_qr: bool = Query(True, description="Crop to just 
     Set crop_qr=false to get the full screenshot.
     """
     try:
-        # Use ImageMagick's import command to capture the screen
+        # Take screenshot using xwd + convert
+        result = subprocess.run(
+            ["xwd", "-root", "-display", ":99"],
+            capture_output=True,
+            timeout=10,
+        )
+        if result.returncode != 0:
+            raise HTTPException(status_code=500, detail="Failed to capture screenshot")
+        
         if crop_qr:
-            # Signal Desktop QR code linking screen (1024x768):
-            # The QR code itself is ~255x255 pixels
+            # Crop to QR code area (Signal Desktop QR is roughly in center-left)
             # QR code is at approximately x=[163, 418], y=[270, 525]
             # Center is (290, 397)
-            # Crop a 300x300 area centered on the QR, then add white padding
+            # Crop a 300x300 area centered on the QR
             # Crop: 300x300 starting at (140, 247)
-            result = subprocess.run(
-                ["import", "-window", "root", "-display", ":99", 
-                 "-crop", "300x300+140+247", "+repage",
-                 "-bordercolor", "white", "-border", "25x25",
-                 "png:-"],
+            convert_result = subprocess.run(
+                ["convert", "xwd:-", "-crop", "300x300+140+247", "+repage", "png:-"],
+                input=result.stdout,
                 capture_output=True,
                 timeout=10,
             )
         else:
-            result = subprocess.run(
-                ["import", "-window", "root", "-display", ":99", "png:-"],
+            # Convert XWD to PNG without cropping
+            convert_result = subprocess.run(
+                ["convert", "xwd:-", "png:-"],
+                input=result.stdout,
                 capture_output=True,
                 timeout=10,
             )
         
-        if result.returncode != 0:
-            log.error("Screenshot failed: %s", result.stderr.decode() if result.stderr else "unknown error")
-            raise HTTPException(status_code=500, detail="Failed to capture screenshot")
+        if convert_result.returncode != 0:
+            raise HTTPException(status_code=500, detail="Failed to convert screenshot")
         
-        return Response(content=result.stdout, media_type="image/png")
+        return Response(content=convert_result.stdout, media_type="image/png")
     except subprocess.TimeoutExpired:
         raise HTTPException(status_code=500, detail="Screenshot timed out")
     except FileNotFoundError:
-        raise HTTPException(status_code=500, detail="import (ImageMagick) not installed")
+        raise HTTPException(status_code=500, detail="xwd or convert not installed")
     except Exception as e:
         log.exception("Screenshot failed")
         raise HTTPException(status_code=500, detail=str(e))
