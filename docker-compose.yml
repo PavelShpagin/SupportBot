@@ -32,6 +32,9 @@ services:
         condition: service_healthy
       rag:
         condition: service_started
+    networks:
+      - default
+      - supportbot-network
 
   signal-desktop:
     build:
@@ -80,3 +83,8 @@ services:
 
 volumes:
   mysql_data:
+
+networks:
+  default: {}
+  supportbot-network:
+    external: true
