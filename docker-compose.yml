@@ -33,11 +33,31 @@ services:
       rag:
         condition: service_started
 
+  signal-desktop:
+    build:
+      context: .
+      dockerfile: signal-desktop/Dockerfile
+    container_name: supportbot-desktop
+    env_file: .env
+    environment:
+      - SIGNAL_DATA_DIR=/home/signal/.config/Signal
+      - SIGNAL_BOT_URL=http://signal-bot:8000
+    shm_size: "2gb"
+    volumes:
+      - /var/lib/signal/desktop:/home/signal/.config/Signal
+    ports:
+      - "8001:8001"
+    restart: unless-stopped
+
   signal-ingest:
     build:
       context: .
       dockerfile: signal-ingest/Dockerfile
     env_file: .env
+    environment:
+      - SIGNAL_BOT_URL=http://signal-bot:8000
+      - SIGNAL_DESKTOP_URL=http://signal-desktop:8001
+      - USE_SIGNAL_DESKTOP=true
     volumes:
       - /var/lib/signal/ingest:/var/lib/signal/ingest
       - /var/lib/history:/var/lib/history
@@ -45,6 +65,8 @@ services:
       db:
         condition: service_healthy
       signal-bot:
+        condition: service_started
+      signal-desktop:
         condition: service_started
 
   rag:
@@ -54,8 +76,7 @@ services:
     volumes:
       - /var/lib/chroma:/chroma/chroma
     ports:
-      - "8001:8000"
+      - "8002:8000"
 
 volumes:
   mysql_data:
-

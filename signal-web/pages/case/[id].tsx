@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import Head from 'next/head';
 import { format } from 'date-fns';
-import { MessageSquare, CheckCircle, AlertCircle, Image as ImageIcon } from 'lucide-react';
 
 interface CaseData {
   case_id: string;
@@ -51,114 +51,449 @@ export default function CasePage() {
   }, [id]);
 
   if (loading) return (
-    <div className="min-h-screen bg-white flex items-center justify-center">
-      <div className="flex flex-col items-center gap-4">
-        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-        <p className="text-gray-600 text-sm">Loading case...</p>
-      </div>
-    </div>
+    <>
+      <Head>
+        <title>Loading... | SupportBot</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" type="image/png" href="/supportbot-logo.png" />
+      </Head>
+      <style jsx global>{`
+        @import url("https://rsms.me/inter/inter.css");
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+          font-family: "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+          background: #f6f7f9;
+          min-height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .spinner {
+          width: 32px;
+          height: 32px;
+          border: 3px solid #d8d8d8;
+          border-top-color: #2c6bed;
+          border-radius: 50%;
+          animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+      `}</style>
+      <div className="spinner"></div>
+    </>
   );
-  if (error) return <div className="p-8 text-center text-red-500">Error: {error}</div>;
+
+  if (error) return (
+    <>
+      <Head>
+        <title>Error | SupportBot</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" type="image/png" href="/supportbot-logo.png" />
+      </Head>
+      <style jsx global>{`
+        @import url("https://rsms.me/inter/inter.css");
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+          font-family: "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+          background: #f6f7f9;
+          min-height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 20px;
+        }
+      `}</style>
+      <div style={{ textAlign: 'center', color: '#dc2626' }}>
+        <p style={{ fontWeight: 600, marginBottom: 8 }}>Error loading case</p>
+        <p style={{ fontSize: 14, color: '#5c5c5c' }}>{error}</p>
+      </div>
+    </>
+  );
+
   if (!data) return null;
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto space-y-8">
-        {/* Header */}
-        <div className="bg-white shadow rounded-lg p-6 border-l-4 border-blue-500">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-2xl font-bold text-gray-900">{data.problem_title}</h1>
-            <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-              data.status === 'solved' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-            }`}>
-              {data.status.toUpperCase()}
+    <>
+      <Head>
+        <title>{data.problem_title} | SupportBot</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" type="image/png" href="/supportbot-logo.png" />
+      </Head>
+
+      <style jsx global>{`
+        @import url("https://rsms.me/inter/inter.css");
+
+        :root {
+          --signal-blue: #2c6bed;
+          --page-bg: #f6f7f9;
+          --card-bg: #ffffff;
+          --text: #0d0d0d;
+          --text-sec: #5c5c5c;
+          --border: #d8d8d8;
+          --radius: 12px;
+          --green: #16a34a;
+          --yellow: #ca8a04;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+          font-family: "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+          background: var(--page-bg);
+          color: var(--text);
+          min-height: 100vh;
+          padding: 48px 20px;
+          -webkit-font-smoothing: antialiased;
+        }
+
+        @media (max-width: 520px) {
+          body { padding: 24px 12px; }
+        }
+      `}</style>
+
+      <style jsx>{`
+        .shell { max-width: 640px; margin: 0 auto; }
+
+        .card {
+          background: var(--card-bg);
+          border: 1px solid var(--border);
+          border-radius: var(--radius);
+          overflow: hidden;
+          margin-bottom: 16px;
+        }
+
+        header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 14px 20px;
+          border-bottom: 1px solid var(--border);
+        }
+
+        .header-left { display: flex; align-items: center; gap: 10px; }
+        .logo { width: 28px; height: 28px; }
+        .brand { font-size: 15px; font-weight: 600; letter-spacing: -0.02em; }
+
+        .status-badge {
+          padding: 4px 10px;
+          font-size: 11px;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+          border-radius: 4px;
+        }
+        .status-solved { background: #dcfce7; color: var(--green); }
+        .status-open { background: #fef9c3; color: var(--yellow); }
+
+        main { padding: 24px 20px; }
+
+        h1 { 
+          font-size: 20px; 
+          font-weight: 700; 
+          letter-spacing: -0.025em; 
+          margin-bottom: 12px;
+          line-height: 1.3;
+        }
+
+        .meta {
+          font-size: 12px;
+          color: var(--text-sec);
+          margin-bottom: 16px;
+        }
+
+        .tags {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 6px;
+          margin-bottom: 20px;
+        }
+
+        .tag {
+          background: rgba(44, 107, 237, 0.08);
+          color: var(--signal-blue);
+          padding: 4px 10px;
+          border-radius: 4px;
+          font-size: 12px;
+          font-weight: 500;
+        }
+
+        .section-title {
+          font-size: 11px;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.06em;
+          color: var(--text-sec);
+          margin-bottom: 10px;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+
+        .section-title svg {
+          width: 14px;
+          height: 14px;
+        }
+
+        .section-content {
+          font-size: 15px;
+          line-height: 1.6;
+          color: var(--text);
+          white-space: pre-wrap;
+        }
+
+        .problem-section {
+          padding-bottom: 20px;
+          border-bottom: 1px solid var(--border);
+          margin-bottom: 20px;
+        }
+
+        .solution-section {
+          background: #f0fdf4;
+          margin: -24px -20px -24px -20px;
+          padding: 20px;
+          border-top: 1px solid #bbf7d0;
+        }
+
+        .solution-section .section-title {
+          color: var(--green);
+        }
+
+        /* Chat section */
+        .chat-header {
+          padding: 14px 20px;
+          border-bottom: 1px solid var(--border);
+          background: var(--page-bg);
+        }
+
+        .chat-header h2 {
+          font-size: 14px;
+          font-weight: 600;
+          color: var(--text);
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .chat-header h2 svg {
+          width: 16px;
+          height: 16px;
+          color: var(--signal-blue);
+        }
+
+        .messages {
+          padding: 0;
+        }
+
+        .message {
+          padding: 16px 20px;
+          border-bottom: 1px solid var(--border);
+        }
+
+        .message:last-child {
+          border-bottom: none;
+        }
+
+        .message-header {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          margin-bottom: 8px;
+        }
+
+        .avatar {
+          width: 28px;
+          height: 28px;
+          border-radius: 50%;
+          background: var(--signal-blue);
+          color: white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 11px;
+          font-weight: 600;
+          flex-shrink: 0;
+        }
+
+        .sender-info {
+          flex: 1;
+          min-width: 0;
+        }
+
+        .sender-name {
+          font-size: 13px;
+          font-weight: 600;
+          color: var(--text);
+        }
+
+        .message-time {
+          font-size: 11px;
+          color: var(--text-sec);
+        }
+
+        .message-text {
+          font-size: 15px;
+          line-height: 1.55;
+          color: var(--text);
+          white-space: pre-wrap;
+          margin-left: 38px;
+        }
+
+        .message-images {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          margin-top: 12px;
+          margin-left: 38px;
+        }
+
+        .message-images a {
+          display: block;
+          width: 80px;
+          height: 80px;
+          border-radius: 8px;
+          overflow: hidden;
+          border: 1px solid var(--border);
+        }
+
+        .message-images img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .empty-chat {
+          padding: 32px 20px;
+          text-align: center;
+          color: var(--text-sec);
+          font-size: 14px;
+        }
+
+        footer {
+          padding: 14px 20px;
+          border-top: 1px solid var(--border);
+          color: var(--text-sec);
+          font-size: 12px;
+          text-align: center;
+        }
+
+        @media (max-width: 520px) {
+          main { padding: 20px 16px; }
+          h1 { font-size: 18px; }
+          .solution-section {
+            margin: -20px -16px -20px -16px;
+            padding: 16px;
+          }
+          .message { padding: 14px 16px; }
+          .message-text { margin-left: 0; margin-top: 8px; }
+          .message-images { margin-left: 0; }
+        }
+      `}</style>
+
+      <div className="shell">
+        {/* Header Card */}
+        <div className="card">
+          <header>
+            <a href="/" className="header-left" style={{ textDecoration: 'none', color: 'inherit' }}>
+              <img src="/supportbot-logo.png" alt="SupportBot" className="logo" />
+              <span className="brand">SupportBot</span>
+            </a>
+            <span className={`status-badge ${data.status === 'solved' ? 'status-solved' : 'status-open'}`}>
+              {data.status === 'solved' ? 'Вирішено' : 'Відкрито'}
             </span>
-          </div>
-          <div className="text-sm text-gray-500 mb-4">
-            Case ID: {data.case_id} • {data.created_at ? format(new Date(data.created_at), 'PPP p') : ''}
-          </div>
-          <div className="flex flex-wrap gap-2 mb-4">
-            {data.tags.map(tag => (
-              <span key={tag} className="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs">
-                #{tag}
-              </span>
-            ))}
-          </div>
+          </header>
+
+          <main>
+            <h1>{data.problem_title}</h1>
+            
+            <p className="meta">
+              {data.created_at ? format(new Date(data.created_at), 'd MMM yyyy, HH:mm') : ''}
+            </p>
+
+            {data.tags && data.tags.length > 0 && (
+              <div className="tags">
+                {data.tags.map(tag => (
+                  <span key={tag} className="tag">#{tag}</span>
+                ))}
+              </div>
+            )}
+
+            <div className="problem-section">
+              <h2 className="section-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="12" y1="8" x2="12" y2="12"/>
+                  <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+                Проблема
+              </h2>
+              <p className="section-content">{data.problem_summary}</p>
+            </div>
+
+            <div className="solution-section">
+              <h2 className="section-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                Рішення
+              </h2>
+              <p className="section-content">{data.solution_summary}</p>
+            </div>
+          </main>
         </div>
 
-        {/* Problem & Solution */}
-        <div className="grid gap-6 md:grid-cols-2">
-          <div className="bg-white shadow rounded-lg p-6">
-            <h2 className="flex items-center text-lg font-semibold text-gray-900 mb-3">
-              <AlertCircle className="w-5 h-5 mr-2 text-red-500" />
-              Problem
+        {/* Chat History Card */}
+        <div className="card">
+          <div className="chat-header">
+            <h2>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              </svg>
+              Історія переписки
             </h2>
-            <p className="text-gray-700 whitespace-pre-wrap">{data.problem_summary}</p>
           </div>
           
-          <div className="bg-white shadow rounded-lg p-6">
-            <h2 className="flex items-center text-lg font-semibold text-gray-900 mb-3">
-              <CheckCircle className="w-5 h-5 mr-2 text-green-500" />
-              Solution
-            </h2>
-            <p className="text-gray-700 whitespace-pre-wrap">{data.solution_summary}</p>
-          </div>
-        </div>
-
-        {/* Chat Transcript */}
-        <div className="bg-white shadow rounded-lg overflow-hidden">
-          <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
-            <h2 className="flex items-center text-lg font-semibold text-gray-900">
-              <MessageSquare className="w-5 h-5 mr-2 text-blue-500" />
-              Conversation History
-            </h2>
-          </div>
-          <div className="divide-y divide-gray-200">
-            {data.evidence.map((msg) => (
-              <div key={msg.message_id} id={msg.message_id} className="p-6 hover:bg-gray-50 transition-colors">
-                <div className="flex items-start space-x-3">
-                  <div className="flex-shrink-0">
-                    <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xs font-bold">
-                      {msg.sender_hash.substring(0, 2)}
+          {data.evidence && data.evidence.length > 0 ? (
+            <div className="messages">
+              {data.evidence.map((msg) => (
+                <div key={msg.message_id} className="message">
+                  <div className="message-header">
+                    <div className="avatar">
+                      {msg.sender_hash.substring(0, 2).toUpperCase()}
+                    </div>
+                    <div className="sender-info">
+                      <span className="sender-name">
+                        Користувач {msg.sender_hash.substring(0, 6)}
+                      </span>
+                      <span className="message-time">
+                        {' '}&middot; {format(new Date(msg.ts), 'd MMM, HH:mm')}
+                      </span>
                     </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between mb-1">
-                      <p className="text-sm font-medium text-gray-900 truncate">
-                        User {msg.sender_hash.substring(0, 6)}...
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {format(new Date(msg.ts), 'MMM d, p')}
-                      </p>
+                  <p className="message-text">{msg.content_text}</p>
+                  
+                  {msg.images && msg.images.length > 0 && (
+                    <div className="message-images">
+                      {msg.images.map((img, idx) => (
+                        <a key={idx} href={`${apiUrl}${img}`} target="_blank" rel="noopener noreferrer">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={`${apiUrl}${img}`} alt="Attachment" />
+                        </a>
+                      ))}
                     </div>
-                    <p className="text-gray-800 whitespace-pre-wrap">{msg.content_text}</p>
-                    
-                    {msg.images && msg.images.length > 0 && (
-                      <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
-                        {msg.images.map((img, idx) => (
-                          <a key={idx} href={`${apiUrl}${img}`} target="_blank" rel="noopener noreferrer" className="block relative aspect-square bg-gray-100 rounded-lg overflow-hidden border border-gray-200 hover:opacity-90 transition-opacity">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img 
-                              src={`${apiUrl}${img}`} 
-                              alt="Attachment" 
-                              className="object-cover w-full h-full"
-                            />
-                            <div className="absolute bottom-1 right-1 bg-black/50 text-white p-1 rounded">
-                              <ImageIcon className="w-3 h-3" />
-                            </div>
-                          </a>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                  )}
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="empty-chat">
+              Історія переписки недоступна для цього кейсу
+            </div>
+          )}
+
+          <footer>Academia Tech © 2026</footer>
         </div>
       </div>
-    </div>
+    </>
   );
 }

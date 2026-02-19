@@ -24,6 +24,7 @@ from app.db import (
     mark_history_token_used,
     new_case_id,
     insert_case,
+    insert_raw_message,
     get_raw_message,
     get_case,
     get_case_evidence,
@@ -386,11 +387,27 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
             signal.send_direct_text(recipient=admin_id, text=msg)
         return
 
+    # /wipe — erase ALL bot data (groups, cases, history, sessions). Keeps phone registration.
+    if text_lower == "/wipe":
+        from app.db.queries_mysql import wipe_all_data
+        try:
+            stats = wipe_all_data(db)
+            try:
+                rag.wipe_all_cases()
+            except Exception as e:
+                log.warning("RAG wipe failed: %s", e)
+            summary = ", ".join(f"{k}={v}" for k, v in stats.items())
+            log.info("WIPE executed by admin %s: %s", admin_id, summary)
+            msg = f"✅ Wiped all data.\n{summary}\nBot registration kept. Send group name to start fresh."
+        except Exception as e:
+            msg = f"❌ Wipe failed: {e}"
+        signal.send_direct_text(recipient=admin_id, text=msg)
+        return
+
     # Ignore commands other than language to prevent accidental group searches
     if text.startswith("/"):
-        msg = "Unknown command. Available: /en, /uk"
-        if isinstance(signal, SignalCliAdapter):
-            signal.send_direct_text(recipient=admin_id, text=msg)
+        msg = "Unknown command. Available: /en, /uk, /wipe"
+        signal.send_direct_text(recipient=admin_id, text=msg)
         return
     # -----------------------------
 
@@ -555,11 +572,12 @@ def _handle_contact_removed(phone_number: str) -> None:
     """
     from app.db.queries_mysql import (
         delete_admin_session,
+        delete_admin_history_tokens,
         cancel_all_history_jobs_for_admin,
         unlink_admin_from_all_groups,
     )
     
-    log.info("Contact removed/blocked us: %s - clearing their session", phone_number)
+    log.info("Contact removed/blocked us: %s - clearing ALL their personal data for compliance", phone_number)
     
     # Cancel any pending history jobs for this admin
     try:
@@ -568,6 +586,14 @@ def _handle_contact_removed(phone_number: str) -> None:
             log.info("Cancelled %d pending history jobs for removed contact %s", cancelled, phone_number)
     except Exception:
         log.exception("Failed to cancel history jobs for %s", phone_number)
+    
+    # Delete their history tokens (compliance)
+    try:
+        deleted_tokens = delete_admin_history_tokens(db, phone_number)
+        if deleted_tokens:
+            log.info("Deleted %d history tokens for removed contact %s", deleted_tokens, phone_number)
+    except Exception:
+        log.exception("Failed to delete history tokens for %s", phone_number)
     
     # Delete their admin session
     try:
@@ -1017,6 +1043,16 @@ def _format_progress_message(key: str, lang: str, **kwargs) -> str:
         # QR code was sent separately with instructions, no additional message needed
         return ""
 
+    elif key == "qr_reminder":
+        if lang == "uk":
+            return "Ще 3 хвилини для сканування QR-коду. Не забудьте відсканувати!"
+        return "3 minutes left to scan the QR code. Don't forget to scan it!"
+
+    elif key == "syncing":
+        if lang == "uk":
+            return "Синхронізація Signal... зачекайте до хвилини."
+        return "Syncing Signal... please wait up to a minute."
+
     elif key == "already_linked":
         if lang == "uk":
             return "Сесія вже активна. Збираю повідомлення без нового QR-коду..."
@@ -1100,7 +1136,7 @@ def history_qr_code(req: HistoryQrCodeRequest) -> dict:
                 "1. Open Signal on your phone\n"
                 "2. Settings → Linked Devices → Link New Device\n"
                 "3. Scan the QR code\n\n"
-                "Waiting for scan (2 min)..."
+                "Waiting for scan (5 min)..."
             )
         
         if not isinstance(signal, NoopSignalAdapter):
@@ -1174,6 +1210,13 @@ def history_link_result(req: HistoryLinkResultRequest) -> dict:
     return {"ok": True}
 
 
+class HistoryMessage(BaseModel):
+    message_id: str
+    sender_hash: str
+    ts: int
+    content_text: str
+
+
 class CaseBlock(BaseModel):
     case_block: str
 
@@ -1182,6 +1225,130 @@ class HistoryCasesRequest(BaseModel):
     token: str
     group_id: str
     cases: List[CaseBlock]
+    messages: List[HistoryMessage] = []  # Optional: raw messages for evidence linking
+
+
+def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
+    """Process history cases in background. Returns number of cases inserted."""
+    import re
+    from app.db import RawMessage, delete_all_group_data
+    from app.db.queries_mysql import get_case_ids_for_group
+
+    # Wipe existing data for this group before re-ingesting
+    # This keeps things simple: re-link = fresh start
+    # First get case IDs so we can also remove them from Chroma
+    old_case_ids = get_case_ids_for_group(db, req.group_id)
+    if old_case_ids:
+        try:
+            rag.delete_cases(old_case_ids)
+            log.info("Wiped %d cases from RAG for group %s", len(old_case_ids), req.group_id[:20])
+        except Exception:
+            log.exception("Failed to wipe RAG cases for group %s", req.group_id[:20])
+    stats = delete_all_group_data(db, group_id=req.group_id)
+    if any(stats.values()):
+        log.info("Wiped existing group data before re-ingest: %s", stats)
+
+    # Store raw messages for evidence linking
+    message_lookup: dict = {}
+    messages_stored = 0
+    for m in req.messages:
+        raw_msg = RawMessage(
+            message_id=m.message_id,
+            group_id=req.group_id,
+            ts=m.ts,
+            sender_hash=m.sender_hash,
+            content_text=m.content_text,
+            image_paths=[],
+            reply_to_id=None,
+        )
+        if insert_raw_message(db, raw_msg):
+            messages_stored += 1
+        # Build lookup for evidence matching
+        content_key = m.content_text.strip()[:100] if m.content_text else ""
+        if content_key:
+            message_lookup[content_key] = m.message_id
+        message_lookup[str(m.ts)] = m.message_id
+
+    if messages_stored > 0:
+        log.info("Stored %d raw messages (group=%s)", messages_stored, req.group_id[:20])
+
+    kept = 0
+    for c in req.cases:
+        try:
+            case = llm.make_case(case_block_text=c.case_block)
+            if not case.keep:
+                continue
+            if case.status == "solved" and not case.solution_summary.strip():
+                log.warning("Rejecting solved case without solution_summary (history)")
+                continue
+
+            # Build evidence_ids: prefer LLM-extracted, fallback to content matching
+            evidence_ids = list(case.evidence_ids)
+            if not evidence_ids:
+                for line in c.case_block.split('\n'):
+                    line = line.strip()
+                    if not line:
+                        continue
+                    if 'ts=' in line:
+                        m2 = re.search(r'msg_id=(\S+)', line)
+                        if m2:
+                            evidence_ids.append(m2.group(1))
+                        ts_m = re.search(r'ts=(\d+)', line)
+                        if ts_m and ts_m.group(1) in message_lookup:
+                            mid = message_lookup[ts_m.group(1)]
+                            if mid not in evidence_ids:
+                                evidence_ids.append(mid)
+                    else:
+                        ck = line[:100]
+                        if ck in message_lookup:
+                            mid = message_lookup[ck]
+                            if mid not in evidence_ids:
+                                evidence_ids.append(mid)
+
+            log.info("Case evidence_ids: %d (group=%s)", len(evidence_ids), req.group_id[:20])
+
+            evidence_image_paths: List[str] = []
+            for mid in evidence_ids:
+                msg = get_raw_message(db, message_id=mid)
+                if msg:
+                    evidence_image_paths.extend(p for p in msg.image_paths if p)
+
+            case_id = new_case_id(db)
+            insert_case(
+                db,
+                case_id=case_id,
+                group_id=req.group_id,
+                status=case.status,
+                problem_title=case.problem_title,
+                problem_summary=case.problem_summary,
+                solution_summary=case.solution_summary,
+                tags=case.tags,
+                evidence_ids=evidence_ids,
+                evidence_image_paths=evidence_image_paths,
+            )
+
+            doc_text = "\n".join([
+                case.problem_title.strip(),
+                case.problem_summary.strip(),
+                case.solution_summary.strip(),
+                "tags: " + ", ".join(case.tags),
+            ]).strip()
+            embedding = llm.embed(text=doc_text)
+            metadata: dict = {"group_id": req.group_id, "status": case.status}
+            if evidence_ids:
+                metadata["evidence_ids"] = evidence_ids
+            if evidence_image_paths:
+                metadata["evidence_image_paths"] = evidence_image_paths
+            rag.upsert_case(case_id=case_id, document=doc_text, embedding=embedding, metadata=metadata)
+            kept += 1
+            log.info("Inserted history case %s (group=%s)", case_id, req.group_id[:20])
+        except Exception:
+            log.exception("Failed to process history case block")
+            continue
+
+    mark_history_token_used(db, token=req.token)
+    log.info("History cases done: inserted=%d group=%s", kept, req.group_id[:20])
+    return kept
 
 
 @app.post("/history/cases")
@@ -1189,66 +1356,24 @@ def history_cases(req: HistoryCasesRequest) -> dict:
     if not validate_history_token(db, token=req.token, group_id=req.group_id):
         raise HTTPException(status_code=403, detail="Invalid/expired token")
 
-    kept = 0
-    for c in req.cases:
-        case = llm.make_case(case_block_text=c.case_block)
-        if not case.keep:
-            continue
-        if case.status == "solved" and not case.solution_summary.strip():
-            log.warning("Rejecting solved case without solution_summary (history)")
-            continue
+    # Security: Verify bot is still in the group. No bypass — if we can't verify, we block.
+    try:
+        current_group_ids = {g.group_id for g in signal.list_groups()}
+        if req.group_id not in current_group_ids:
+            log.warning("History ingest BLOCKED: bot not in group %s", req.group_id[:20])
+            raise HTTPException(status_code=403, detail="Bot is not in this group")
+    except HTTPException:
+        raise
+    except Exception as e:
+        log.error("Could not verify group membership (blocking for security): %s", e)
+        raise HTTPException(status_code=503, detail="Cannot verify group membership")
 
-        evidence_image_paths: List[str] = []
-        for mid in case.evidence_ids:
-            msg = get_raw_message(db, message_id=mid)
-            if msg is None:
-                continue
-            for p in msg.image_paths:
-                if p:
-                    evidence_image_paths.append(p)
-
-        case_id = new_case_id(db)
-        insert_case(
-            db,
-            case_id=case_id,
-            group_id=req.group_id,
-            status=case.status,
-            problem_title=case.problem_title,
-            problem_summary=case.problem_summary,
-            solution_summary=case.solution_summary,
-            tags=case.tags,
-            evidence_ids=case.evidence_ids,
-            evidence_image_paths=evidence_image_paths,
-        )
-
-        doc_text = "\n".join(
-            [
-                case.problem_title.strip(),
-                case.problem_summary.strip(),
-                case.solution_summary.strip(),
-                "tags: " + ", ".join(case.tags),
-            ]
-        ).strip()
-        embedding = llm.embed(text=doc_text)
-        metadata = {
-            "group_id": req.group_id,
-            "status": case.status,
-        }
-        if case.evidence_ids:
-            metadata["evidence_ids"] = case.evidence_ids
-        if evidence_image_paths:
-            metadata["evidence_image_paths"] = evidence_image_paths
-
-        rag.upsert_case(
-            case_id=case_id,
-            document=doc_text,
-            embedding=embedding,
-            metadata=metadata,
-        )
-        kept += 1
-
-    mark_history_token_used(db, token=req.token)
-    return {"ok": True, "cases_inserted": kept}
+    # Accept immediately, process in background to avoid HTTP timeout with many LLM calls
+    n_cases = len(req.cases)
+    n_messages = len(req.messages)
+    log.info("History ingest accepted: %d cases, %d messages (group=%s)", n_cases, n_messages, req.group_id[:20])
+    threading.Thread(target=_process_history_cases_bg, args=(req,), daemon=True).start()
+    return {"ok": True, "cases_inserted": n_cases}  # Optimistic count; actual inserted logged in bg
 
 
 class RetrieveRequest(BaseModel):

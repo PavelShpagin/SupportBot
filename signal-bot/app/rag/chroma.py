@@ -71,6 +71,19 @@ class ChromaRag:
         col.delete(ids=case_ids)
         return len(case_ids)
 
+    def wipe_all_cases(self) -> int:
+        """Delete the entire RAG collection (all cases). Returns count deleted."""
+        try:
+            col = self._collection()
+            all_ids = col.get(include=[])["ids"]
+            if all_ids:
+                col.delete(ids=all_ids)
+            log.info("RAG wipe: deleted %d documents", len(all_ids))
+            return len(all_ids)
+        except Exception as e:
+            log.warning("RAG wipe error: %s", e)
+            return 0
+
 
 def create_chroma(settings: Settings) -> ChromaRag:
     u = urlparse(settings.chroma_url)

@@ -9,7 +9,14 @@ import google.generativeai as genai
 # Fix encoding
 sys.stdout.reconfigure(encoding='utf-8')
 
+# Get project root
+SCRIPT_DIR = Path(__file__).parent.resolve()
+PROJECT_ROOT = SCRIPT_DIR.parent if SCRIPT_DIR.name == "test" else SCRIPT_DIR
+
 def load_messages(path, limit=200):
+    # Handle relative paths
+    if not Path(path).is_absolute():
+        path = PROJECT_ROOT / path
     print(f"Loading messages from {path}...")
     with open(path, "r", encoding="utf-8") as f:
         data = json.load(f)
@@ -134,7 +141,7 @@ def main():
     print(f"Average Quality Score: {avg_score:.2f} / 10")
     
     # Save results
-    output_path = "test/ultimate_eval_results.json"
+    output_path = PROJECT_ROOT / "test" / "ultimate_eval_results.json"
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(results, f, ensure_ascii=False, indent=2)
     print(f"Results saved to {output_path}")

@@ -32,7 +32,6 @@ yarn-error.log
 
 # Data
 data/
-signal-bot/data/
 signal-desktop/data/
 signal-ingest/data/
 chroma/

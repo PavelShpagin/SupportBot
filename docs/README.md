@@ -12,6 +12,8 @@
 2. **[CASE_EXAMPLES.md](./CASE_EXAMPLES.md)** - Real evaluation examples with judge outputs
 3. **[FINAL_EVALUATION_REPORT.md](./FINAL_EVALUATION_REPORT.md)** - Production readiness report
 4. **[DEPLOYMENT.md](./DEPLOYMENT.md)** - Oracle Cloud deployment guide
+5. **[SIGNAL_REGISTRATION.md](./SIGNAL_REGISTRATION.md)** - Prevent re-linking + QR linking + readiness checklist
+6. **[PRIVACY_SECURITY.md](./PRIVACY_SECURITY.md)** - Data lifecycle, privacy guarantees, admin commands
 
 ### Legacy Documentation
 - **[legacy/](./legacy/)** - Historical evaluation reports and analysis
@@ -128,6 +130,13 @@ All documentation is based on **real evaluation data**:
    - Real Ukrainian tech support conversations
    - Group: "Техпідтримка Академія СтабХ"
    - Topics: Drone flight controllers, ArduPilot, cameras, etc.
+
+4. **Signal Community Forum Dataset** (Public Benchmark)
+   - **Source**: https://community.signalusers.org (Category: Support)
+   - **Size**: ~50 topics (demonstration), expandable to full history
+   - **Format**: Reproducible public data with "accepted answers" as ground truth
+   - **Scripts**: `paper/scripts/fetch_dataset.py` and `paper/scripts/process_dataset.py`
+   - **Purpose**: Publicly verifiable benchmark for the paper
 
 ---
 

@@ -27,6 +27,7 @@ class SignalMessage:
     type: str  # 'incoming', 'outgoing', etc.
     group_id: Optional[str] = None
     group_name: Optional[str] = None
+    reactions: int = 0  # count of emoji reactions on this message
 
 
 def _get_db_key(signal_data_dir: str) -> str:
@@ -230,19 +231,74 @@ def get_messages(
         params.append(limit)
         
         rows = conn.execute(q, params).fetchall()
-        
+
+        # Build a reactions-per-timestamp map.
+        # Signal Desktop stores reactions either in a separate 'reactions' table
+        # OR embedded in the 'json' column of the messages table.
+        reactions_by_ts: dict[int, int] = {}
+        try:
+            tables = {r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall()}
+            
+            # Method 1: Try the reactions table
+            if "reactions" in tables:
+                rxn_cols = _get_table_columns(conn, "reactions")
+                log.info("Reactions table columns: %s", rxn_cols)
+                if "targetTimestamp" in rxn_cols:
+                    rxn_where = ""
+                    rxn_params: list = []
+                    if conversation_id and "conversationId" in rxn_cols:
+                        rxn_where = "WHERE conversationId = ?"
+                        rxn_params = [conversation_id]
+                    rxn_rows = conn.execute(
+                        f"SELECT targetTimestamp, COUNT(*) FROM reactions {rxn_where} GROUP BY targetTimestamp",
+                        rxn_params,
+                    ).fetchall()
+                    reactions_by_ts = {int(r[0]): int(r[1]) for r in rxn_rows if r[0] is not None}
+                    log.info("Found %d messages with reactions (from reactions table)", len(reactions_by_ts))
+            
+            # Method 2: Try the json column in messages table (newer Signal Desktop versions)
+            if not reactions_by_ts and "json" in msg_cols:
+                log.info("Trying to extract reactions from messages.json column")
+                json_q = f"SELECT {ts_col}, json FROM messages WHERE json LIKE '%reactions%'"
+                if conversation_id:
+                    json_q += f" AND {conv_id_col} = ?"
+                    json_rows = conn.execute(json_q, [conversation_id]).fetchall()
+                else:
+                    json_rows = conn.execute(json_q).fetchall()
+                
+                for row in json_rows:
+                    try:
+                        ts_val = int(row[0]) if row[0] else 0
+                        msg_json = json.loads(row[1]) if row[1] else {}
+                        rxns = msg_json.get("reactions", [])
+                        if rxns and isinstance(rxns, list):
+                            reactions_by_ts[ts_val] = len(rxns)
+                    except (json.JSONDecodeError, TypeError, ValueError):
+                        continue
+                
+                if reactions_by_ts:
+                    log.info("Found %d messages with reactions (from json column)", len(reactions_by_ts))
+            
+            if not reactions_by_ts:
+                log.info("No reactions found in Signal Desktop DB")
+                
+        except Exception as e:
+            log.warning("Could not fetch reactions: %s", e)
+
         result = []
         for row in rows:
             try:
+                ts = int(row[2]) if row[2] else 0
                 msg = SignalMessage(
                     id=str(row[0]),
                     conversation_id=str(row[1]) if row[1] else "",
-                    timestamp=int(row[2]) if row[2] else 0,
+                    timestamp=ts,
                     body=str(row[3] or ""),
                     sender=str(row[4]) if row[4] else None,
                     type=str(row[5]) if row[5] else "unknown",
                     group_id=str(row[6]) if row[6] else None,
                     group_name=str(row[7]) if row[7] else None,
+                    reactions=reactions_by_ts.get(ts, 0),
                 )
                 if msg.body:  # Skip empty messages
                     result.append(msg)

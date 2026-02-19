@@ -1,203 +1,102 @@
 import os
+import re
 import sys
-import json
 import time
 import google.generativeai as genai
-from pathlib import Path
-from .gemini_agent import GeminiAgent, build_context_from_description, build_context_from_urls
-from .chat_search_agent import ChatSearchAgent
+
 from .case_search_agent import CaseSearchAgent
 from app.config import load_settings
-from app.db import get_group_docs, get_case
 from app.rag.chroma import create_chroma
 from app.llm.client import LLMClient
 
-# Fix encoding
 sys.stdout.reconfigure(encoding='utf-8')
 
-# Configuration
 GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY")
-if not GOOGLE_API_KEY:
-    try:
-        from dotenv import load_dotenv
-        load_dotenv()
-        GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY")
-    except ImportError:
-        pass
-
 if GOOGLE_API_KEY:
     genai.configure(api_key=GOOGLE_API_KEY)
 
 MODEL_NAME = "gemini-2.0-flash"
 
+
+def detect_lang(text: str) -> str:
+    """Detect language from message text.
+    Returns 'uk' if Cyrillic characters present, else 'en'.
+    Cyrillic = Ukrainian/Russian; this bot serves Ukrainian users so we default to 'uk'.
+    """
+    if re.search(r'[а-яіїєґА-ЯІЇЄҐ]', text):
+        return "uk"
+    return "en"
+
+
 class UltimateAgent:
     def __init__(self):
         print("Initializing Ultimate Agent...")
-        
         self.settings = load_settings()
         self.public_url = self.settings.public_url.rstrip('/')
-        
-        # Determine data directory relative to this file
-        # This file is in app/agent/ultimate_agent.py
-        # Data is in data/
-        base_dir = Path(__file__).resolve().parent.parent.parent
-        self.data_dir = base_dir / "data"
-        
-        # Initialize agents
-        self.docs_agent = None
-        self.chat_agent = None
-        self.case_agent = None
-        self.synthesizer = None
-        
-        # Cache for group-specific docs agents
-        # group_id -> (agent, load_time)
-        self.group_agents = {}
-        
-        self.load_agents()
-
-    def load_agents(self):
-        """Loads or reloads all sub-agents."""
-        print("Loading agents...", flush=True)
-        
-        # Clear group cache on reload
-        self.group_agents = {}
-        
-        # 1. Docs Agent (Official Rules)
-        description_path = self.data_dir / "description.txt"
-        if description_path.exists():
-            context = build_context_from_description(str(description_path))
-            # Re-create GeminiAgent (this will create a new cache)
-            self.docs_agent = GeminiAgent(context)
-        else:
-            print(f"Warning: Docs not found at {description_path}")
-            self.docs_agent = None
-            
-        # 2. Chat Search Agent (Community Knowledge)
-        index_path = self.data_dir / "chat_index.pkl"
-        if index_path.exists():
-            self.chat_agent = ChatSearchAgent(str(index_path), public_url=self.public_url)
-        else:
-            print(f"Warning: Chat index not found at {index_path}")
-            self.chat_agent = None
-            
-        # 3. Case Search Agent (Structured Past Tickets)
-        # We now use the live Chroma DB instead of static file
         self.rag = create_chroma(self.settings)
         self.llm = LLMClient(self.settings)
         self.case_agent = CaseSearchAgent(rag=self.rag, llm=self.llm, public_url=self.public_url)
-            
-        # 4. Synthesizer Model
         self.synthesizer = genai.GenerativeModel(MODEL_NAME)
-        
         self.last_load_time = time.time()
         print("Agents loaded.", flush=True)
 
-    def get_docs_agent(self, group_id, db):
-        """Get the appropriate DocsAgent for the group."""
-        if not group_id or not db:
-            return self.docs_agent
-            
-        # Check cache
-        if group_id in self.group_agents:
-            agent, load_time = self.group_agents[group_id]
-            # Cache for 10 minutes
-            if time.time() - load_time < 600:
-                return agent
-                
-        # Try to load from DB
-        try:
-            urls = get_group_docs(db, group_id)
-            if urls:
-                print(f"Loading specific docs for group {group_id}: {urls}", flush=True)
-                context = build_context_from_urls(urls)
-                agent = GeminiAgent(context)
-                self.group_agents[group_id] = (agent, time.time())
-                return agent
-        except Exception as e:
-            print(f"Error loading group docs for {group_id}: {e}", flush=True)
-            
-        # Fallback to default
-        return self.docs_agent
+    def load_agents(self):
+        """Reload agents (called on refresh interval)."""
+        self.rag = create_chroma(self.settings)
+        self.llm = LLMClient(self.settings)
+        self.case_agent = CaseSearchAgent(rag=self.rag, llm=self.llm, public_url=self.public_url)
+        self.synthesizer = genai.GenerativeModel(MODEL_NAME)
+        self.last_load_time = time.time()
 
     def answer(self, question, group_id=None, db=None, lang="uk"):
-        # Check if we need to refresh agents (e.g. every 10 minutes)
-        # This allows updating docs without restarting the container.
-        REFRESH_INTERVAL = 600  # 10 minutes
-        if time.time() - self.last_load_time > REFRESH_INTERVAL:
-            print("Refreshing agents due to timeout...", flush=True)
+        # Refresh agents every 10 minutes
+        if time.time() - self.last_load_time > 600:
+            print("Refreshing agents...", flush=True)
             try:
                 self.load_agents()
             except Exception as e:
                 print(f"Error refreshing agents: {e}", flush=True)
-        
-        # Normalize language
-        if lang not in ("uk", "en"):
-            lang = "uk"
-        
-        print(f"\n--- Ultimate Processing: {question} (group={group_id}, lang={lang}) ---")
-        
-        # 1. Get Docs Answer (Fastest, Most Trusted)
-        docs_agent = self.get_docs_agent(group_id, db)
-        docs_ans = "Docs Agent not available."
-        
-        if docs_agent:
-            try:
-                docs_ans = docs_agent.answer(question)
-            except Exception as e:
-                docs_ans = f"Error: {e}"
-        
-        # If Docs said SKIP, we trust it and stop immediately to save latency/cost.
-        if "SKIP" in docs_ans:
-            return "SKIP"
 
-        # 2. Get Case Answer
-        case_ans = "Case Agent not available."
-        if self.case_agent:
-            try:
-                case_ans = self.case_agent.answer(question, group_id=group_id, db=db)
-            except Exception as e:
-                case_ans = f"Error: {e}"
+        # Always detect language from the actual message, not admin session
+        lang = detect_lang(question)
+        lang_instruction = "Ukrainian (українська)" if lang == "uk" else "English"
 
-        # 3. Get Chat Answer
-        chat_ans = "Chat Agent not available."
-        if self.chat_agent:
-            try:
-                chat_ans = self.chat_agent.answer(question)
-            except Exception as e:
-                chat_ans = f"Error: {e}"
-        
-        # 4. Check for SKIP/INSUFFICIENT
-        docs_failed = "INSUFFICIENT_INFO" in docs_ans or "SKIP" in docs_ans
-        case_failed = "No relevant cases" in case_ans or "No relevant" in case_ans
-        chat_failed = "No relevant discussions" in chat_ans or "SKIP" in chat_ans
-        
-        # If all failed, Tag Admin
-        if docs_failed and case_failed and chat_failed:
-            # Instead of returning just "INSUFFICIENT_INFO", we return a tag trigger
+        print(f"\n--- Ultimate: '{question}' (group={group_id}, lang={lang}) ---", flush=True)
+
+        # Search cases for this group
+        case_ans = "No relevant cases found."
+        try:
+            case_ans = self.case_agent.answer(question, group_id=group_id, db=db)
+        except Exception as e:
+            print(f"Case agent error: {e}", flush=True)
+
+        # No matching cases → escalate to admin
+        if "No relevant cases" in case_ans:
             return "[[TAG_ADMIN]]"
 
-        # 5. Synthesize
-        lang_instruction = "Ukrainian (українська)" if lang == "uk" else "English"
-        
+        # Synthesize a direct answer in the message language
         prompt = f"""You are a support bot. Answer the user's question directly and concisely.
 
 Question: "{question}"
 
-Sources:
-DOCS: {docs_ans}
-CASES: {case_ans}
-CHAT: {chat_ans}
+Relevant past cases:
+{case_ans}
 
 RULES:
 1. Give a DIRECT ANSWER in 1-3 sentences. No introductions, no "Based on..." or "According to...".
-2. If a case has the solution, state the solution directly, then add ONE link at the end.
-3. Use {lang_instruction} language.
-4. If ALL sources say "no info" or "not found" → output ONLY "[[TAG_ADMIN]]" (nothing else).
-5. NO bullet points, NO lists, NO multiple links. Just answer + one link if relevant.
+2. State the solution directly, then add ONE case link at the end (if available).
+3. Respond in {lang_instruction}.
+4. If the cases don't actually address the question → output ONLY "[[TAG_ADMIN]]".
+5. NO bullet points, NO lists, NO multiple links. Just the answer + one link.
 
-GOOD example: "Використовуйте термосумку для захисту дрона від замерзання. [https://supportbot.info/case/xxx]"
-BAD example: "Знайдено декілька випадків... Ось посилання: [link1], [link2], [link3]"
+GOOD: "Використовуйте термосумку для захисту дрона від замерзання. https://supportbot.info/case/xxx"
+BAD: "Based on the cases found... Here are some links: [link1], [link2]"
 
 Answer:"""
-        response = self.synthesizer.generate_content(prompt)
-        return response.text.strip()
+
+        try:
+            response = self.synthesizer.generate_content(prompt)
+            return response.text.strip()
+        except Exception as e:
+            print(f"Synthesizer error: {e}", flush=True)
+            return "[[TAG_ADMIN]]"

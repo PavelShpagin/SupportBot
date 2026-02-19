@@ -112,8 +112,9 @@ class ChatSearchTool:
         return "\n".join(formatted)
 
 class ChatSearchAgent:
-    def __init__(self, index_path):
+    def __init__(self, index_path, public_url=None):
         self.tool = ChatSearchTool(index_path)
+        self.public_url = public_url or "http://localhost:3000"  # Default for citations
         self.model = genai.GenerativeModel(MODEL_NAME)
         self.chat = self.model.start_chat(history=[])
         
@@ -153,72 +154,82 @@ Be helpful, concise, and accurate.
         # Given the simplicity, a simple "Search -> Answer" loop might suffice, but "Context" is key.
         # Let's implement a simple 2-step loop.
 
-    def answer(self, question, return_details=False):
-        # Step 1: Ask LLM what to search
-        prompt1 = f"""
-User Question: "{question}"
-
-I need to search the chat history to find an answer.
-What search query should I use? 
-Output ONLY the search query.
-"""
-        response1 = self.model.generate_content(prompt1)
-        query = response1.text.strip()
+    def answer(self, question, return_details=False, html_citations=True):
+        """
+        Answer a question by searching chat history.
         
-        # Step 2: Search
-        results = self.tool.search(query, k=5)
+        Args:
+            question: User question
+            return_details: If True, return dict with answer and context
+            html_citations: If True, format citations as HTML links
+        """
+        import re
         
-        if not results:
+        # Step 1: Search directly with the question (more effective than LLM-generated query)
+        results = self.tool.search(question, k=5)
+        
+        # Filter by relevance score
+        relevant = [r for r in results if r['score'] >= 0.5]
+        
+        if not relevant:
             if return_details:
                 return {"answer": "No relevant discussions found in chat history.", "context": []}
             return "No relevant discussions found in chat history."
-            
-        # Step 3: Format results for LLM to decide if it needs context
-        results_text = "\n".join([
-            f"ID: {r['id']}\nDate: {r['date']}\nSender: {r['sender']}\nText: {r['text']}\n---"
-            for r in results
-        ])
         
-        # Step 4: Ask LLM if it needs context or can answer
-        prompt2 = f"""
-User Question: "{question}"
-Search Query: "{query}"
+        # Step 2: Get context for top result if helpful
+        top_result = relevant[0]
+        context = self.tool.get_context(top_result['id'], radius=3)
+        
+        # Step 3: Build context from all relevant results
+        context_parts = []
+        for r in relevant[:3]:  # Top 3
+            msg_url = f"{self.public_url}/message/{r['id']}"
+            context_parts.append(f"[{r['date']}] {r['sender']}: {r['text']}")
+        
+        context_text = "\n".join(context_parts)
+        
+        # Step 4: Ask LLM to synthesize answer with citations
+        prompt = f"""You are a technical support assistant. Answer the user's question based on relevant chat history.
 
-Search Results:
-{results_text}
-
-Do you have enough info to answer? 
-If YES, provide the answer with citations.
-If NO, and you need to see the conversation context for a specific message, output "CONTEXT: <message_id>".
-"""
-        response2 = self.model.generate_content(prompt2)
-        text2 = response2.text.strip()
-        
-        final_answer = text2
-        final_context = results_text
-        
-        if "CONTEXT:" in text2:
-            # Extract ID
-            match = re.search(r"CONTEXT: (\S+)", text2)
-            if match:
-                msg_id = match.group(1)
-                context = self.tool.get_context(msg_id)
-                final_context = context # Update context to the zoomed-in version
-                
-                # Final Answer
-                prompt3 = f"""
 User Question: "{question}"
-Context for message {msg_id}:
+
+Relevant Messages from Chat History:
+{context_text}
+
+Surrounding Context for Top Match:
 {context}
 
-Based on this discussion, answer the question. Cite the participants.
-"""
-                response3 = self.model.generate_content(prompt3)
-                final_answer = response3.text
+RULES:
+1. Answer directly based on the chat history
+2. Include citations with date and sender: [YYYY-MM-DD, Sender Name]
+3. If chat history contains the answer, provide it
+4. If chat history is inconclusive, say so
+5. Keep the same language as the question
+
+Answer:"""
         
-        if return_details:
-            return {"answer": final_answer, "context": final_context}
-        return final_answer
+        try:
+            response = self.model.generate_content(prompt)
+            answer_text = response.text.strip()
+            
+            # Add HTML citations if requested
+            if html_citations and answer_text:
+                # Append source links
+                citations_html = "\n\n<b>Sources:</b>\n"
+                for r in relevant[:3]:
+                    msg_url = f"{self.public_url}/message/{r['id']}"
+                    citations_html += f'• <a href="{msg_url}">[{r["date"]}] {r["sender"]}</a>\n'
+                answer_text += citations_html
+            
+            if return_details:
+                return {"answer": answer_text, "context": context_text, "results": relevant}
+            return answer_text
+            
+        except Exception as e:
+            error_msg = f"Error generating answer: {e}"
+            if return_details:
+                return {"answer": error_msg, "context": context_text}
+            return error_msg
 
 # Simple runner
 if __name__ == "__main__":

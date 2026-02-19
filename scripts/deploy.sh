@@ -59,8 +59,8 @@ cmd_setup() {
     
     # Create required directories
     log_info "Creating data directories..."
-    sudo mkdir -p /var/lib/signal/bot /var/lib/signal/ingest /var/lib/history
-    sudo chmod 755 /var/lib/signal /var/lib/signal/bot /var/lib/signal/ingest /var/lib/history
+    sudo mkdir -p /var/lib/signal/bot /var/lib/signal/ingest /var/lib/signal/desktop /var/lib/history
+    sudo chmod 755 /var/lib/signal /var/lib/signal/bot /var/lib/signal/ingest /var/lib/signal/desktop /var/lib/history
     
     # Build images
     log_info "Building Docker images..."

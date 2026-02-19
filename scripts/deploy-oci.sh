@@ -1,16 +1,16 @@
 #!/bin/bash
 # ==============================================================================
-# SuppotBot OCI Deployment Scipt
+# SupportBot OCI Deployment Script
 # ==============================================================================
-# Deploys SuppotBot to Oacle Cloud Infastuctue VM
+# Deploys SupportBot to Oracle Cloud Infrastructure VM
 #
 # Usage:
-#   ./scipts/deploy-oci.sh [init|push|ssh|full]
+#   ./scripts/deploy-oci.sh [init|push|ssh|full]
 #
-# Requiements:
-#   - OCI CLI configued
-#   - SSH key fo VM access
-#   - .env file configued with ORACLE_VM_IP and ORACLE_VM_KEY
+# Requirements:
+#   - OCI CLI configured
+#   - SSH key for VM access
+#   - .env file configured with ORACLE_VM_IP and ORACLE_VM_KEY
 # ==============================================================================
 
 set -e
@@ -23,26 +23,26 @@ NC='\033[0m'
 
 log_info() { echo -e "${BLUE}[INFO]${NC} $1"; }
 log_success() { echo -e "${GREEN}[SUCCESS]${NC} $1"; }
-log_wan() { echo -e "${YELLOW}[WARN]${NC} $1"; }
-log_eo() { echo -e "${RED}[ERROR]${NC} $1"; }
+log_warn() { echo -e "${YELLOW}[WARN]${NC} $1"; }
+log_error() { echo -e "${RED}[ERROR]${NC} $1"; }
 
-SCRIPT_DIR="$(cd "$(diname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(diname "$SCRIPT_DIR")"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 cd "$PROJECT_ROOT"
 
-# Load envionment
-souce .env 2>/dev/null || tue
+# Load environment
+source .env 2>/dev/null || true
 
 VM_IP="${ORACLE_VM_IP:-}"
-VM_KEY="${ORACLE_VM_KEY:-~/.ssh/suppotbot_ed25519}"
+VM_KEY="${ORACLE_VM_KEY:-~/.ssh/supportbot_ed25519}"
 VM_USER="opc"
-REMOTE_DIR="/home/opc/suppotbot"
+REMOTE_DIR="/home/opc/supportbot"
 
-# Auto-detect use if opc doesn't wok
-detect_use() {
-    if ssh -i "$VM_KEY" -o StictHostKeyChecking=no -o ConnectTimeout=5 "opc@$VM_IP" "tue" 2>/dev/null; then
+# Auto-detect user if opc doesn't work
+detect_user() {
+    if ssh -i "$VM_KEY" -o StrictHostKeyChecking=no -o ConnectTimeout=5 "opc@$VM_IP" "true" 2>/dev/null; then
         echo "opc"
-    elif ssh -i "$VM_KEY" -o StictHostKeyChecking=no -o ConnectTimeout=5 "ubuntu@$VM_IP" "tue" 2>/dev/null; then
+    elif ssh -i "$VM_KEY" -o StrictHostKeyChecking=no -o ConnectTimeout=5 "ubuntu@$VM_IP" "true" 2>/dev/null; then
         echo "ubuntu"
     else
         echo "opc"
@@ -52,194 +52,201 @@ detect_use() {
 # Expand ~ in VM_KEY
 VM_KEY="${VM_KEY/#\~/$HOME}"
 
-check_peequisites() {
+check_prerequisites() {
     if [ -z "$VM_IP" ]; then
-        log_eo "ORACLE_VM_IP not set in .env"
-        log_info "Set it to you OCI VM's public IP addess"
+        log_error "ORACLE_VM_IP not set in .env"
+        log_info "Set it to your OCI VM's public IP address"
         exit 1
     fi
     
     if [ ! -f "$VM_KEY" ]; then
-        log_eo "SSH key not found: $VM_KEY"
-        log_info "Set ORACLE_VM_KEY in .env to you SSH pivate key path"
+        log_error "SSH key not found: $VM_KEY"
+        log_info "Set ORACLE_VM_KEY in .env to your SSH private key path"
         exit 1
     fi
     
-    log_success "Peequisites OK: VM=$VM_IP, Key=$VM_KEY"
+    log_success "Prerequisites OK: VM=$VM_IP, Key=$VM_KEY"
 }
 
 ssh_cmd() {
-    ssh -i "$VM_KEY" -o StictHostKeyChecking=no "$VM_USER@$VM_IP" "$@"
+    ssh -i "$VM_KEY" -o StrictHostKeyChecking=no -o ConnectTimeout=10 "$VM_USER@$VM_IP" "$@"
 }
 
 scp_cmd() {
-    scp -i "$VM_KEY" -o StictHostKeyChecking=no "$@"
+    scp -i "$VM_KEY" -o StrictHostKeyChecking=no "$@"
 }
 
 sync_cmd() {
-    sync -avz --pogess \
-        -e "ssh -i $VM_KEY -o StictHostKeyChecking=no" \
+    rsync -avz --progress \
+        -e "ssh -i $VM_KEY -o StrictHostKeyChecking=no" \
         --exclude='.git' \
         --exclude='.venv' \
         --exclude='__pycache__' \
         --exclude='*.pyc' \
         --exclude='.pytest_cache' \
         --exclude='test/data' \
-        --exclude='epots' \
+        --exclude='reports' \
         --exclude='legacy' \
         --exclude='*.bak*' \
         --exclude='*.log' \
-        --exclude='pape.*' \
+        --exclude='paper*' \
         "$@"
 }
 
 cmd_init() {
-    log_info "Initializing OCI VM fo SuppotBot..."
-    check_peequisites
+    log_info "Initializing OCI VM for SupportBot..."
+    check_prerequisites
     
-    log_info "Installing Docke and dependencies on VM..."
+    log_info "Installing Docker and dependencies on VM..."
     ssh_cmd << 'ENDSSH'
 set -e
 
-# Update and install Docke
+# Update and install Docker
 sudo apt-get update
-sudo apt-get install -y docke.io docke-compose-plugin cul git
+sudo apt-get install -y docker.io docker-compose-plugin curl git
 
-# Stat Docke
-sudo systemctl enable --now docke
+# Start Docker
+sudo systemctl enable --now docker
 
-# Add ubuntu use to docke goup
-sudo usemod -aG docke ubuntu
+# Add ubuntu user to docker group
+sudo usermod -aG docker ubuntu
 
-# Ceate diectoies
-sudo mkdi -p /va/lib/signal/bot /va/lib/signal/ingest /va/lib/histoy
-sudo chown -R ubuntu:ubuntu /va/lib/signal /va/lib/histoy
-chmod 755 /va/lib/signal /va/lib/signal/bot /va/lib/signal/ingest /va/lib/histoy
+    # Create directories
+    sudo mkdir -p /var/lib/signal/bot /var/lib/signal/ingest /var/lib/signal/desktop /var/lib/history
+    
+    # Set permissions for current user
+    TARGET_USER=$(whoami)
+    sudo chown -R $TARGET_USER:$TARGET_USER /var/lib/signal /var/lib/history
+    chmod 755 /var/lib/signal /var/lib/signal/bot /var/lib/signal/ingest /var/lib/signal/desktop /var/lib/history
 
-echo "Docke installed and configued!"
-docke --vesion
-docke compose vesion
+echo "Docker installed and configured!"
+docker --version
+docker compose version
 ENDSSH
     
-    log_success "VM initialized! You may need to econnect fo docke goup to take effect."
+    log_success "VM initialized! You may need to reconnect for docker group to take effect."
 }
 
 cmd_push() {
     log_info "Pushing code to OCI VM..."
-    check_peequisites
+    check_prerequisites
     
-    # Ceate emote diectoy
-    ssh_cmd "mkdi -p $REMOTE_DIR"
+    # Create remote directory
+    ssh_cmd "mkdir -p $REMOTE_DIR"
     
-    # Sync poject files
-    log_info "Syncing poject files..."
+    # Sync project files
+    log_info "Syncing project files..."
     sync_cmd "$PROJECT_ROOT/" "$VM_USER@$VM_IP:$REMOTE_DIR/"
     
     log_success "Code pushed to $VM_IP:$REMOTE_DIR"
 }
 
-cmd_deploy_emote() {
-    log_info "Building and deploying on emote VM..."
-    check_peequisites
+cmd_deploy_remote() {
+    log_info "Building and deploying on remote VM..."
+    check_prerequisites
     
     ssh_cmd << ENDSSH
 set -e
 cd $REMOTE_DIR
 
-echo "Pulling latest Docke images..."
-docke compose -f docke-compose.pod.yml pull db ag edis || tue
+# Ensure directories exist
+sudo mkdir -p /var/lib/signal/bot /var/lib/signal/ingest /var/lib/signal/desktop /var/lib/history
+sudo chown -R \$(whoami):\$(whoami) /var/lib/signal /var/lib/history
 
-echo "Building and stating sevices..."
-docke compose -f docke-compose.pod.yml up -d --build
+echo "Pulling latest Docker images..."
+docker compose -f docker-compose.prod.yml pull db rag redis || true
 
-echo "Waiting fo sevices..."
+echo "Building and starting services..."
+docker compose -f docker-compose.prod.yml up -d --build
+
+echo "Waiting for services..."
 sleep 15
 
-echo "Sevice status:"
-docke compose -f docke-compose.pod.yml ps
+echo "Service status:"
+docker compose -f docker-compose.prod.yml ps
 
 echo "Health check:"
-cul -sf http://localhost:8000/healthz && echo " - API OK" || echo " - API FAILED"
+curl -sf http://localhost:8000/healthz && echo " - API OK" || echo " - API FAILED"
 ENDSSH
     
     log_success "Deployment complete on $VM_IP"
 }
 
 cmd_ssh() {
-    check_peequisites
+    check_prerequisites
     log_info "Connecting to OCI VM..."
-    ssh -i "$VM_KEY" -o StictHostKeyChecking=no "$VM_USER@$VM_IP"
+    ssh -i "$VM_KEY" -o StrictHostKeyChecking=no "$VM_USER@$VM_IP"
 }
 
 cmd_logs() {
-    check_peequisites
+    check_prerequisites
     SERVICE="${1:-}"
-    ssh_cmd "cd $REMOTE_DIR && docke compose -f docke-compose.pod.yml logs -f $SERVICE"
+    ssh_cmd "cd $REMOTE_DIR && docker compose -f docker-compose.prod.yml logs -f $SERVICE"
 }
 
 cmd_status() {
-    check_peequisites
-    ssh_cmd "cd $REMOTE_DIR && docke compose -f docke-compose.pod.yml ps"
+    check_prerequisites
+    ssh_cmd "cd $REMOTE_DIR && docker compose -f docker-compose.prod.yml ps"
 }
 
 cmd_link_signal() {
-    log_info "Linking Signal on emote VM..."
-    check_peequisites
+    log_info "Linking Signal on remote VM..."
+    check_prerequisites
     
-    souce .env
+    source .env
     
-    log_wan "This will show a QR code link. Scan it with Signal on you phone."
+    log_warn "This will show a QR code link. Scan it with Signal on your phone."
     log_info "Go to: Signal -> Settings -> Linked Devices -> Link New Device"
     echo ""
     
-    ssh_cmd "cd $REMOTE_DIR && docke compose -f docke-compose.pod.yml exec signal-bot signal-cli -a $SIGNAL_BOT_E164 link -n 'SuppotBot Seve'"
+    ssh_cmd "cd $REMOTE_DIR && docker compose -f docker-compose.prod.yml exec signal-bot signal-cli link -n 'SupportBot Server'"
 }
 
-cmd_set_avata_emote() {
-    log_info "Setting bot avata on emote..."
-    check_peequisites
+cmd_set_avatar_remote() {
+    log_info "Setting bot avatar on remote..."
+    check_prerequisites
     
-    souce .env
+    source .env
     
-    # Copy logo to emote
-    scp_cmd "$PROJECT_ROOT/suppotbot-logo.png" "$VM_USER@$VM_IP:$REMOTE_DIR/"
+    # Copy logo to remote
+    scp_cmd "$PROJECT_ROOT/supportbot-logo.png" "$VM_USER@$VM_IP:$REMOTE_DIR/"
     
     ssh_cmd << ENDSSH
 cd $REMOTE_DIR
-docke cp suppotbot-logo.png suppotbot-api:/tmp/avata.png
-docke compose -f docke-compose.pod.yml exec signal-bot signal-cli -a $SIGNAL_BOT_E164 updatePofile --avata /tmp/avata.png --name "SuppotBot"
+docker cp supportbot-logo.png supportbot-api:/tmp/avatar.png
+docker compose -f docker-compose.prod.yml exec signal-bot signal-cli -a $SIGNAL_BOT_E164 updateProfile --avatar /tmp/avatar.png --name "SupportBot"
 ENDSSH
     
-    log_success "Avata set!"
+    log_success "Avatar set!"
 }
 
 cmd_full() {
     log_info "Full deployment to OCI..."
     
     cmd_push
-    cmd_deploy_emote
+    cmd_deploy_remote
     
     echo ""
     log_success "Full deployment complete!"
     echo ""
     log_info "Next steps:"
-    echo "  1. Link Signal: ./scipts/deploy-oci.sh link-signal"
-    echo "  2. Set avata:  ./scipts/deploy-oci.sh set-avata"
-    echo "  3. Check logs:  ./scipts/deploy-oci.sh logs"
+    echo "  1. Link Signal: ./scripts/deploy-oci.sh link-signal"
+    echo "  2. Set avatar:  ./scripts/deploy-oci.sh set-avatar"
+    echo "  3. Check logs:  ./scripts/deploy-oci.sh logs"
     echo ""
     log_info "API endpoint: http://$VM_IP:8000"
 }
 
 cmd_stop() {
-    check_peequisites
-    ssh_cmd "cd $REMOTE_DIR && docke compose -f docke-compose.pod.yml down"
-    log_success "Sevices stopped on emote."
+    check_prerequisites
+    ssh_cmd "cd $REMOTE_DIR && docker compose -f docker-compose.prod.yml down"
+    log_success "Services stopped on remote."
 }
 
-cmd_estat() {
-    check_peequisites
-    ssh_cmd "cd $REMOTE_DIR && docke compose -f docke-compose.pod.yml estat"
-    log_success "Sevices estated on emote."
+cmd_restart() {
+    check_prerequisites
+    ssh_cmd "cd $REMOTE_DIR && docker compose -f docker-compose.prod.yml restart"
+    log_success "Services restarted on remote."
 }
 
 # ==============================================================================
@@ -254,7 +261,7 @@ case "${1:-}" in
         cmd_push
         ;;
     deploy)
-        cmd_deploy_emote
+        cmd_deploy_remote
         ;;
     full)
         cmd_full
@@ -271,34 +278,34 @@ case "${1:-}" in
     stop)
         cmd_stop
         ;;
-    estat)
-        cmd_estat
+    restart)
+        cmd_restart
         ;;
     link-signal)
         cmd_link_signal
         ;;
-    set-avata)
-        cmd_set_avata_emote
+    set-avatar)
+        cmd_set_avatar_remote
         ;;
     *)
-        echo "SuppotBot OCI Deployment"
+        echo "SupportBot OCI Deployment"
         echo ""
         echo "Usage: $0 <command>"
         echo ""
         echo "Commands:"
-        echo "  init        - Initialize VM (install Docke, ceate dis)"
+        echo "  init        - Initialize VM (install Docker, create dirs)"
         echo "  push        - Push code to VM"
-        echo "  deploy      - Build and stat sevices on VM"
+        echo "  deploy      - Build and start services on VM"
         echo "  full        - Push + Deploy (complete deployment)"
         echo "  ssh         - SSH into VM"
         echo "  logs [svc]  - View logs"
-        echo "  status      - Show sevice status"
-        echo "  stop        - Stop sevices"
-        echo "  estat     - Restat sevices"
+        echo "  status      - Show service status"
+        echo "  stop        - Stop services"
+        echo "  restart     - Restart services"
         echo "  link-signal - Link Signal account"
-        echo "  set-avata  - Set bot avata"
+        echo "  set-avatar  - Set bot avatar"
         echo ""
-        echo "Envionment (fom .env):"
+        echo "Environment (from .env):"
         echo "  ORACLE_VM_IP=$VM_IP"
         echo "  ORACLE_VM_KEY=$VM_KEY"
         ;;

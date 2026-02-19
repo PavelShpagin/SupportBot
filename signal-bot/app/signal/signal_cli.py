@@ -508,11 +508,18 @@ class SignalCliAdapter:
             data = json.loads(proc.stdout) if proc.stdout.strip() else []
             if isinstance(data, list):
                 for g in data:
-                    if isinstance(g, dict):
-                        gid = g.get("id") or g.get("groupId") or ""
-                        gname = g.get("name") or g.get("groupName") or ""
-                        if gid:
-                            groups.append(GroupInfo(group_id=str(gid), group_name=str(gname)))
+                    if not isinstance(g, dict):
+                        continue
+                    # CRITICAL: only include groups where bot is an active member.
+                    # listGroups -d returns ALL known groups including removed/banned ones.
+                    # isMember=false means bot was kicked/banned/left — must be excluded.
+                    if g.get("isMember") is not True:
+                        log.debug("Skipping group '%s' (isMember=%s)", g.get("name"), g.get("isMember"))
+                        continue
+                    gid = g.get("id") or g.get("groupId") or ""
+                    gname = g.get("name") or g.get("groupName") or ""
+                    if gid:
+                        groups.append(GroupInfo(group_id=str(gid), group_name=str(gname)))
         except json.JSONDecodeError:
             log.warning("Failed to parse listGroups output")
         return groups

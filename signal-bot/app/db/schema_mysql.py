@@ -121,6 +121,13 @@ DDL_STATEMENTS = [
 ]
 
 
+MIGRATIONS = [
+    # Add columns that may be missing from older installs
+    "ALTER TABLE cases ADD COLUMN IF NOT EXISTS evidence_image_paths_json LONGTEXT",
+    "ALTER TABLE raw_messages ADD COLUMN IF NOT EXISTS image_paths_json LONGTEXT",
+]
+
+
 def ensure_schema(db: MySQL) -> None:
     with db.connection() as conn:
         cur = conn.cursor()
@@ -136,3 +143,11 @@ def ensure_schema(db: MySQL) -> None:
                 conn.rollback()
                 log.exception("Schema DDL failed")
                 raise
+        # Apply migrations (idempotent ALTER TABLE ADD COLUMN IF NOT EXISTS)
+        for migration in MIGRATIONS:
+            try:
+                cur.execute(migration)
+                conn.commit()
+            except Exception as exc:
+                conn.rollback()
+                log.warning("Migration skipped (may already be applied): %s — %s", migration[:60], exc)

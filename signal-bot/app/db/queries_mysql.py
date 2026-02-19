@@ -464,6 +464,21 @@ def delete_admin_session(db: MySQL, admin_id: str) -> bool:
         return deleted
 
 
+def delete_admin_history_tokens(db: MySQL, admin_id: str) -> int:
+    """Delete all history tokens for an admin (for compliance when they remove bot)."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            """
+            DELETE FROM history_tokens WHERE admin_id = %s
+            """,
+            (admin_id,),
+        )
+        deleted = cur.rowcount
+        conn.commit()
+        return deleted
+
+
 def cancel_pending_history_jobs(db: MySQL, token: str) -> int:
     """Cancel any pending or claimed HISTORY_LINK jobs with the given token.
     
@@ -624,8 +639,8 @@ def delete_all_group_data(db: MySQL, group_id: str) -> dict:
         cur.execute("DELETE FROM buffers WHERE group_id = %s", (group_id,))
         stats["buffer"] = cur.rowcount
         
-        # 6. Delete group_docs
-        cur.execute("DELETE FROM group_docs WHERE group_id = %s", (group_id,))
+        # 6. Delete group config (docs URLs)
+        cur.execute("DELETE FROM chat_groups WHERE group_id = %s", (group_id,))
         stats["group_docs"] = cur.rowcount
         
         # 7. Delete reactions for this group
@@ -869,3 +884,36 @@ def get_group_docs(db: MySQL, group_id: str) -> List[str]:
         if not row or not row[0]:
             return []
         return _parse_json_list(row[0])
+
+
+def wipe_all_data(db: MySQL) -> dict:
+    """
+    Wipe ALL persistent bot data for a clean slate.
+    Keeps signal-cli registration (phone number account).
+    Returns counts of deleted rows per table.
+    """
+    tables = [
+        "case_evidence",
+        "cases",
+        "raw_messages",
+        "buffers",
+        "reactions",
+        "admins_groups",
+        "history_tokens",
+        "admin_sessions",
+        "chat_groups",
+        "jobs",
+    ]
+    stats: dict = {}
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute("SET FOREIGN_KEY_CHECKS=0")
+        for table in tables:
+            try:
+                cur.execute(f"DELETE FROM {table}")
+                stats[table] = cur.rowcount
+            except Exception as exc:
+                stats[table] = f"error: {exc}"
+        cur.execute("SET FOREIGN_KEY_CHECKS=1")
+        conn.commit()
+    return stats

@@ -65,6 +65,8 @@ if DB_BACKEND == "mysql":
         get_case_evidence,
         upsert_group_docs,
         get_group_docs,
+        wipe_all_data,
+        delete_all_group_data,
     )
     
     def create_db(settings):

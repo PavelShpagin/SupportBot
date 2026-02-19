@@ -41,11 +41,6 @@ services:
       timeout: 5s
       retries: 3
     restart: unless-stopped
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
     networks:
       - supportbot-net
 
@@ -78,11 +73,6 @@ services:
       timeout: 10s
       retries: 3
     restart: unless-stopped
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
     networks:
       - supportbot-net
 
@@ -105,11 +95,6 @@ services:
     ports:
       - "8001:8001"  # API for querying messages
     restart: unless-stopped
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
     networks:
       - supportbot-net
 
@@ -137,13 +122,48 @@ services:
       signal-desktop:
         condition: service_started
     restart: unless-stopped
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
     networks:
       - supportbot-net
+
+  # ============================================================================
+  # Signal Web (Case viewer and landing page)
+  # ============================================================================
+  signal-web:
+    build:
+      context: ./signal-web
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${PUBLIC_URL:-https://supportbot.info}
+    container_name: supportbot-web
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=${PUBLIC_URL:-https://supportbot.info}
+    depends_on:
+      - signal-bot
+    restart: unless-stopped
+    networks:
+      - supportbot-net
+
+  # ============================================================================
+  # Caddy (Reverse proxy with automatic HTTPS)
+  # ============================================================================
+  caddy:
+    image: caddy:alpine
+    container_name: supportbot-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - supportbot-net
+    depends_on:
+      - signal-web
+      - signal-bot
 
   # ============================================================================
   # Redis (for future scaling - job queue, caching)
@@ -160,11 +180,6 @@ services:
       timeout: 5s
       retries: 3
     restart: unless-stopped
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
     networks:
       - supportbot-net
 
@@ -180,6 +195,10 @@ volumes:
     name: supportbot-chroma
   redis_data:
     name: supportbot-redis
+  caddy_data:
+    name: supportbot-caddy-data
+  caddy_config:
+    name: supportbot-caddy-config
 
 # ============================================================================
 # Network

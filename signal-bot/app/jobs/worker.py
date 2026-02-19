@@ -494,6 +494,11 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         log.warning("MAYBE_RESPOND: message not found: %s", message_id)
         return
 
+    # Skip empty messages (system notifications like "user added bot to group")
+    if not msg.content_text or not msg.content_text.strip():
+        log.info("MAYBE_RESPOND: skipping empty message (likely system notification)")
+        return
+
     # Use Ultimate Agent
     try:
         # Check if group has linked admins (is active)
@@ -546,24 +551,26 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
                 answer = "Вибачте, я не зрозумів запитання або це не стосується моєї компетенції." if group_lang == "uk" else "Sorry, I didn't understand the question or it's outside my expertise."
             else:
                 return
-            
+
         mention_recipients = []
-        # quote_author is handled by --quote-author, so we don't need to add it to mention_recipients
-        # unless we specifically want to mention them in the text body.
-        
-        # Check for admin tag request
-        if "[[TAG_ADMIN]]" in answer or "@admin" in answer:
-            # Replace the tag with our internal placeholder for signal-cli
-            answer = answer.replace("[[TAG_ADMIN]]", "[[MENTION_PLACEHOLDER]]").replace("@admin", "[[MENTION_PLACEHOLDER]]").strip()
-            
-            # If answer became empty or just placeholder, leave it as is (just the mention)
-            pass
-            
-            # Mention only active admins (contacts still connected).
+
+        # [[TAG_ADMIN]]: escalate to admin with a notification message
+        if answer == "[[TAG_ADMIN]]" or answer.strip() == "[[TAG_ADMIN]]":
+            from app.agent.ultimate_agent import detect_lang
+            msg_lang = detect_lang(msg.content_text)
+            tag_msg = "Потребує уваги адміністратора." if msg_lang == "uk" else "Needs admin attention."
+            answer = f"[[MENTION_PLACEHOLDER]] {tag_msg}"
             if active_admins:
                 mention_recipients.extend(active_admins)
             else:
-                # Fallback if no admin found in DB - revert to text tag
+                answer = f"@admin {tag_msg}"
+
+        # [[TAG_ADMIN]] embedded inside a longer answer (e.g. from synthesizer)
+        elif "[[TAG_ADMIN]]" in answer or "@admin" in answer:
+            answer = answer.replace("[[TAG_ADMIN]]", "[[MENTION_PLACEHOLDER]]").replace("@admin", "[[MENTION_PLACEHOLDER]]").strip()
+            if active_admins:
+                mention_recipients.extend(active_admins)
+            else:
                 answer = answer.replace("[[MENTION_PLACEHOLDER]]", "@admin")
 
         # Send response

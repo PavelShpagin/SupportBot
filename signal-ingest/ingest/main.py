@@ -29,16 +29,33 @@ from ingest.db import claim_next_job, complete_job, create_db, fail_job, is_job_
 HISTORY_LINK = "HISTORY_LINK"
 HISTORY_SYNC = "HISTORY_SYNC"
 
-P_BLOCKS_SYSTEM = """? ??????? ????????? ??????? ???? ??????? ???????? ????? ?????????.
-??????? ?????? JSON ? ??????:
-- cases: ????? ??'?????, ????? ?:
-  - case_block: ????? (?????????? ????? ???????????)
-?? ???????? ????????/?????????? ?????.
+P_BLOCKS_SYSTEM = """You analyze a chunk of support chat history and extract FULLY RESOLVED support cases.
 
-???????:
-- ????? case_block ??????? ??????? ? ????????, ? ???????.
-- ??????? ?????????? ?? ???????????? ??????????.
-- ???????? case_block ?? ????? ?????? ? ?????????.
+Each message in the chunk is formatted as:
+  sender_hash ts=TIMESTAMP msg_id=MESSAGE_ID
+  message text
+
+Return ONLY valid JSON with key:
+- cases: array of objects, each with:
+  - case_block: string (the EXACT messages from the chunk that form this case, problem through resolution, preserving all header lines with msg_id)
+
+Rules:
+- Extract ONLY solved cases with a confirmed working solution.
+- Do NOT extract open/unresolved issues, greetings, or off-topic messages.
+- Each case_block must include both the problem and the confirmed solution.
+- Preserve the original message headers (sender_hash ts=... msg_id=...) verbatim inside case_block ? they are needed for evidence linking.
+- Do not paraphrase or summarize; copy the exact message lines.
+- If there are no solved cases, return {"cases": []}.
+
+Resolution signals (from strongest to weakest):
+- reactions=N (N > 0) on a technical answer message -- STRONG signal, treat as confirmed resolved
+- Text confirmation after a technical answer (any language):
+  English: "thanks", "working", "works", "ok", "solved", "it worked", "fixed"
+  Ukrainian: "\u0434\u044f\u043a\u0443\u044e", "\u043f\u0440\u0430\u0446\u044e\u0454", "\u0432\u0438\u0440\u0456\u0448\u0435\u043d\u043e", "\u043e\u043a", "\u0437\u0430\u0440\u0430\u0431\u043e\u0442\u0430\u043b\u043e"
+  Russian: "\u0441\u043f\u0430\u0441\u0438\u0431\u043e", "\u0437\u0430\u0440\u0430\u0431\u043e\u0442\u0430\u043b\u043e", "\u043f\u043e\u043c\u043e\u0433\u043b\u043e"
+- The conversation thread ends after a technical answer (no follow-up questions)
+
+Be generous: if a technical answer has any positive reaction OR brief confirmation, treat as solved.
 """
 
 log = logging.getLogger(__name__)
@@ -109,7 +126,16 @@ def _get_desktop_messages(settings, group_id: str, group_name: str, limit: int =
             r = client.get(url, params=params)
             r.raise_for_status()
             data = r.json()
-            return data.get("messages", [])
+            messages = data.get("messages", [])
+            # Log reaction stats
+            with_reactions = [m for m in messages if m.get("reactions", 0) > 0]
+            if with_reactions:
+                log.info("Messages with reactions: %d/%d", len(with_reactions), len(messages))
+                for m in with_reactions[:3]:
+                    log.info("  reactions=%d: %s", m.get("reactions"), m.get("body", "")[:50])
+            else:
+                log.info("No messages with reactions found (total: %d)", len(messages))
+            return messages
     except httpx.HTTPStatusError as e:
         if e.response.status_code == 404:
             log.warning("Group not found in Signal Desktop: %s (%s)", group_name, group_id)
@@ -130,7 +156,12 @@ def _chunk_messages(*, messages: List[dict], max_chars: int, overlap_messages: i
             continue
         sender = m.get("sender") or m.get("source") or "unknown"
         ts = m.get("ts") or m.get("timestamp") or 0
-        formatted.append(f'{sender} ts={ts}\n{text}\n')
+        msg_id = m.get("id") or m.get("message_id") or str(ts)
+        reactions = int(m.get("reactions") or 0)
+        header = f'{sender} ts={ts} msg_id={msg_id}'
+        if reactions > 0:
+            header += f' reactions={reactions}'
+        formatted.append(f'{header}\n{text}\n')
     
     chunks: List[str] = []
     cur: List[str] = []
@@ -226,20 +257,40 @@ def _send_qr_to_user(*, settings, token: str, qr_image: bytes) -> bool:
         return False
 
 
-def _post_cases_to_bot(*, settings, token: str, group_id: str, case_blocks: List[str]) -> int:
+def _post_cases_to_bot(*, settings, token: str, group_id: str, case_blocks: List[str], messages: List[dict]) -> int:
     """Post extracted cases to signal-bot for RAG indexing. Returns cases_inserted from response."""
+    # Format messages for the API
+    formatted_messages = []
+    for m in messages:
+        text = m.get("text") or m.get("body") or ""
+        if not text:
+            continue
+        sender = m.get("sender") or m.get("source") or "unknown"
+        ts = m.get("ts") or m.get("timestamp") or 0
+        msg_id = m.get("id") or m.get("message_id") or str(ts)
+        # Hash the sender for privacy
+        import hashlib
+        sender_hash = hashlib.sha256(sender.encode()).hexdigest()[:16]
+        formatted_messages.append({
+            "message_id": msg_id,
+            "sender_hash": sender_hash,
+            "ts": ts,
+            "content_text": text,
+        })
+    
     payload = {
         "token": token,
         "group_id": group_id,
-        "cases": [{"case_block": b} for b in case_blocks]
+        "cases": [{"case_block": b} for b in case_blocks],
+        "messages": formatted_messages,  # Include raw messages for evidence linking
     }
     url = settings.signal_bot_url.rstrip("/") + "/history/cases"
-    with httpx.Client(timeout=60) as client:
+    with httpx.Client(timeout=120) as client:  # Longer timeout for larger payloads
         r = client.post(url, json=payload)
         r.raise_for_status()
         data = r.json()
         inserted = int(data.get("cases_inserted", 0))
-        log.info("Posted %d cases to signal-bot (%d inserted)", len(case_blocks), inserted)
+        log.info("Posted %d cases + %d messages to signal-bot (%d inserted)", len(case_blocks), len(formatted_messages), inserted)
         return inserted
 
 
@@ -308,10 +359,11 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
 
         # Step 2: Wait for user to scan QR code
         log.info("Waiting for user to scan QR code...")
-        max_wait_seconds = 120  # 2 minutes to scan
+        max_wait_seconds = 300  # 5 minutes to scan
         poll_interval = 3
         waited = 0
 
+        reminder_sent = False
         while waited < max_wait_seconds:
             check_cancelled()
             time.sleep(poll_interval)
@@ -321,6 +373,11 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
             if status.get("has_user_conversations"):
                 log.info("User linked! Found %d conversations", status.get("conversations_count", 0))
                 break
+
+            # Send a reminder at the 2-minute mark (halfway)
+            if not reminder_sent and waited >= 120:
+                reminder_sent = True
+                _notify_progress(settings=settings, token=token, progress_key="qr_reminder")
         else:
             log.warning("Timeout waiting for user to scan QR code")
             _notify_link_result(
@@ -331,7 +388,84 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
             )
             return
 
-        log.info("Signal Desktop is linked, fetching messages for group: %s", group_name or group_id)
+        log.info("Signal Desktop is linked, waiting for sync then verifying group: %s", group_name or group_id)
+
+        # Security: Verify the linked admin account is in the target group.
+        # This check is independent from the bot-side check in /history/cases.
+        # Defense-in-depth: BOTH the admin and the bot must be in the group.
+        #
+        # After QR scan Signal Desktop needs time to sync conversations from the
+        # server (typically 10-30s). We poll until the group appears or timeout.
+        convs_url = settings.signal_desktop_url.rstrip("/") + "/conversations"
+        group_name_lower = group_name.lower().strip() if group_name else ""
+        sync_timeout = 60  # seconds to wait for group to appear after linking
+        sync_poll = 5
+        sync_waited = 0
+        admin_in_group = False
+
+        def _check_group_in_convs(convs_data: list) -> bool:
+            for conv in convs_data:
+                if conv.get("type") != "group":
+                    continue
+                if conv.get("groupId") == group_id or conv.get("id") == group_id:
+                    return True
+                if group_name_lower and (conv.get("name") or "").lower().strip() == group_name_lower:
+                    return True
+            return False
+
+        try:
+            while sync_waited <= sync_timeout:
+                check_cancelled()
+                with httpx.Client(timeout=30) as client:
+                    resp = client.get(convs_url)
+                    resp.raise_for_status()
+                    convs_data = resp.json().get("conversations", [])
+
+                if _check_group_in_convs(convs_data):
+                    admin_in_group = True
+                    log.info(
+                        "Admin verified in group '%s' after %ds sync (%d conversations)",
+                        group_name, sync_waited, len(convs_data)
+                    )
+                    break
+
+                if sync_waited == 0:
+                    log.info(
+                        "Group '%s' not yet in admin's %d conversations ? waiting for sync...",
+                        group_name, len(convs_data)
+                    )
+                    _notify_progress(settings=settings, token=token, progress_key="syncing")
+                sync_waited += sync_poll
+                if sync_waited <= sync_timeout:
+                    time.sleep(sync_poll)
+
+            if not admin_in_group:
+                log.warning(
+                    "SECURITY BLOCK: Admin is NOT in group '%s' (id=%s...) after %ds sync. "
+                    "Admin has %d conversations.",
+                    group_name, group_id[:20], sync_timeout, len(convs_data)
+                )
+                _notify_link_result(
+                    settings=settings,
+                    token=token,
+                    success=False,
+                    note=(
+                        f"Your Signal account is not in group '{group_name}'. "
+                        "Both you and the bot must be members to import history."
+                    ),
+                )
+                return
+        except JobCancelled:
+            raise
+        except Exception as e:
+            log.error("Could not verify admin group membership ? blocking: %s", e)
+            _notify_link_result(
+                settings=settings,
+                token=token,
+                success=False,
+                note="Could not verify group membership. Please try again.",
+            )
+            return
 
         # ?????????????????????????????????????????????????????????????????
         # Step 3: Fetch messages from Signal Desktop
@@ -387,7 +521,8 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
         cases_inserted = 0
         if deduped:
             _notify_progress(settings=settings, token=token, progress_key="saving_cases", count=len(deduped))
-            cases_inserted = _post_cases_to_bot(settings=settings, token=token, group_id=group_id, case_blocks=deduped)
+            # Pass messages for evidence linking
+            cases_inserted = _post_cases_to_bot(settings=settings, token=token, group_id=group_id, case_blocks=deduped, messages=msgs)
         else:
             log.info("No solved cases found in messages")
 
@@ -399,9 +534,23 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
             cases_found=len(deduped),
             cases_inserted=cases_inserted,
         )
+        
+        # SECURITY: Reset Signal Desktop session after successful ingest
+        # This ensures user's account is unlinked and requires new QR scan next time
+        log.info("Resetting Signal Desktop session for security (unlinking user account)...")
+        try:
+            _reset_desktop(settings)
+            log.info("Signal Desktop session reset successfully")
+        except Exception as e:
+            log.warning("Failed to reset Signal Desktop session: %s", e)
 
     except JobCancelled:
         log.info("Job %d was cancelled", job_id)
+        # Also reset on cancellation for security
+        try:
+            _reset_desktop(settings)
+        except Exception:
+            pass
         raise
 
 

@@ -272,6 +272,7 @@ class LinkDeviceManager:
                     proc.terminate()
                 except Exception:
                     pass
+                elapsed = int(time.time() - (started_at or time.time()))
                 with self._cond:
                     self._snapshot = LinkDeviceSnapshot(
                         status="expired",
@@ -279,7 +280,7 @@ class LinkDeviceManager:
                         ended_at=time.time(),
                         url=self._snapshot.url,
                         exit_code=None,
-                        error="Timed out waiting for scan.",
+                        error=f"QR code scan timed out after {elapsed} seconds. Please try again and scan the QR code more quickly.",
                         output_tail=list(self._snapshot.output_tail),
                     )
                     self._cond.notify_all()
