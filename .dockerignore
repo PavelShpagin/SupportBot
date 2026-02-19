@@ -1,0 +1,65 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.pytest_cache/
+.mypy_cache/
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+.next/
+
+# Data
+data/
+signal-bot/data/
+signal-desktop/data/
+signal-ingest/data/
+chroma/
+mysql_data/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.cursor/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+*.xwd
+*.png
+*.jpg
+*.jpeg
+
+# Documentation
+docs/
+paper/
+instructions/
+
+# Scripts
+legacy/
+test/
