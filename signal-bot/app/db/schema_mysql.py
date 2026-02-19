@@ -124,9 +124,10 @@ DDL_STATEMENTS = [
 
 MIGRATIONS = [
     # Add columns that may be missing from older installs
-    "ALTER TABLE cases ADD COLUMN IF NOT EXISTS evidence_image_paths_json LONGTEXT",
-    "ALTER TABLE raw_messages ADD COLUMN IF NOT EXISTS image_paths_json LONGTEXT",
-    "ALTER TABLE raw_messages ADD COLUMN IF NOT EXISTS sender_name VARCHAR(256)",
+    # Note: IF NOT EXISTS is MySQL 8.0.3+; older versions will fail silently (caught by caller)
+    "ALTER TABLE cases ADD COLUMN evidence_image_paths_json LONGTEXT",
+    "ALTER TABLE raw_messages ADD COLUMN image_paths_json LONGTEXT",
+    "ALTER TABLE raw_messages ADD COLUMN sender_name VARCHAR(256)",
 ]
 
 
