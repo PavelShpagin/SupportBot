@@ -1,4 +1,12 @@
 supportbot.info {
+    # Security headers for case pages — prevent indexing and referrer leaks
+    @case_pages path /case/* /api/case/*
+    header @case_pages {
+        defer
+        X-Robots-Tag "noindex, nofollow"
+        Referrer-Policy "no-referrer"
+    }
+
     # API endpoints
     handle /api/* {
         reverse_proxy signal-bot:8000
