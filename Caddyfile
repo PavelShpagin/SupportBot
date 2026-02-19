@@ -1,0 +1,35 @@
+supportbot.info {
+    # API endpoints
+    handle /api/* {
+        reverse_proxy signal-bot:8000
+    }
+
+    # Static files
+    handle /static/* {
+        reverse_proxy signal-bot:8000
+    }
+
+    # Signal debug endpoints
+    handle /signal/* {
+        reverse_proxy signal-bot:8000
+    }
+
+    # History callbacks
+    handle /history/* {
+        reverse_proxy signal-bot:8000
+    }
+
+    # Health check
+    handle /healthz {
+        reverse_proxy signal-bot:8000
+    }
+
+    # Frontend
+    handle {
+        reverse_proxy signal-web:3000
+    }
+}
+
+www.supportbot.info {
+    redir https://supportbot.info{uri}
+}
