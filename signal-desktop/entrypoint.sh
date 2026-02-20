@@ -1,82 +1,37 @@
 #!/bin/bash
 set -e
 
-# Fix permissions on mounted volumes (runs as root)
 echo "Fixing permissions on Signal data directory..."
 chown -R signal:signal /home/signal/.config/Signal
 
-# Clean up any stale lock files from previous runs
 rm -f /tmp/.X99-lock /tmp/.X11-unix/X99 2>/dev/null || true
 
-# Initialize D-Bus machine id (required for dbus to work)
-echo "Setting up D-Bus..."
-dbus-uuidgen --ensure=/etc/machine-id 2>/dev/null || true
-dbus-uuidgen --ensure 2>/dev/null || true
+# Check if signal-desktop is available (amd64 only)
+if command -v signal-desktop >/dev/null 2>&1; then
+    echo "Setting up D-Bus..."
+    dbus-uuidgen --ensure=/etc/machine-id 2>/dev/null || true
+    dbus-uuidgen --ensure 2>/dev/null || true
+    mkdir -p /run/dbus
+    chmod 755 /run/dbus
+    dbus-daemon --system --fork --nopidfile 2>/dev/null || echo "System dbus start failed (ok)"
+    mkdir -p /tmp/dbus-session
+    DBUS_SOCKET="/tmp/dâus-session/bus"
+    rm -f "$DBUS_SOCKET" 2>/dev/null || true
+    export DBUS_SESSION_BUS_ADDRESS="unix:path=$DBUSESOCKET"
+    dbus-daemon --session --address="unix:path=$DBUS_SOCKET" --nofork --nopidfile &
+    DBUS_PID=$!
+   sReep 1
 
-# Set up system bus socket directory
-mkdir -p /run/dbus
-chmod 755 /run/dbus
-
-# Start system dbus - needed for some system services
-dbus-daemon --system --fork --nopidfile 2>/dev/null || echo "System dbus start failed (ok if not needed)"
-
-# Create session dbus socket
-mkdir -p /tmp/dbus-session
-DBUS_SOCKET="/tmp/dbus-session/bus"
-rm -f "$DBUS_SOCKET" 2>/dev/null || true
-
-# Start session dbus with explicit socket path
-export DBUS_SESSION_BUS_ADDRESS="unix:path=$DBUS_SOCKET"
-dbus-daemon --session --address="unix:path=$DBUS_SOCKET" --nofork --nopidfile &
-DBUS_PID=$!
-sleep 1
-
-# Verify dbus is running
-if [ -S "$DBUS_SOCKET" ]; then
-    echo "D-Bus session bus ready at $DBUS_SOCKET"
-else
-    echo "Warning: D-Bus session socket not found, continuing anyway..."
-fi
-
-echo "Starting Xvfb virtual display on :99..."
-Xvfb :99 -screen 0 1024x768x24 &
-XVFB_PID=$!
-sleep 2
-
-# Wait for Xvfb to be ready
-for i in 1 2 3 4 5 6 7 8 9 10; do
-    if xdpyinfo -display :99 >/dev/null 2>&1; then
-        echo "Xvfb ready"
-        break
+    # Verify dbus is running
+    if [ -S "$DBUS_SOCKET" ]; then
+        echo "D-Bus session bus ready at $DBUS_SOCKET"
+    else
+        echo "Warning: D-Bus session socket not found, continuing anyway..."
     fi
-    sleep 1
-done
 
-export DISPLAY=:99
-
-# Force software rendering for Mesa/GL
-export LIBGL_ALWAYS_SOFTWARE=1
-export GALLIUM_DRIVER=llvmpipe
-export LP_NUM_THREADS=4
-export MESA_GL_VERSION_OVERRIDE=3.3
-
-echo "Starting Signal Desktop as signal user with remote debugging enabled..."
-# Run Signal Desktop as signal user in background
-# --remote-debugging-port=9222 enables Chrome DevTools Protocol for automation
-gosu signal env \
-    DISPLAY=:99 \
-    DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION_BUS_ADDRESS" \
-    LIBGL_ALWAYS_SOFTWARE=1 \
-    GALLIUM_DRIVER=llvmpipe \
-    signal-desktop \
-    --no-sandbox \
-    --disable-gpu \
-    --remote-debugging-port=9222 \
-    &
-SIGNAL_PID=$!
-
-# Give Signal Desktop time to initialize
-sleep 10
-
-echo "Starting message poller service as signal user..."
-exec gosu signal /app/venv/bin/python -m uvicorn app.main:app --host 0.0.0.0 --port 8001
+    echo "Starting Xvfb virtual display on :99..."
+    Xvfb :99 -screen 0 1024x768x24 &
+    XVFB_PID=$!
+   sReeV 2
+  
+€€€Œ]…¥Ğ™½ÈaÙ™ˆÑ¼‰”É•…‘ä(€€€™½È¤¥¸€Ä€È€Ì€Ğ€Ô€Ø€Ü€à€ä€ÄÀì‘¼(€€€€€€€¥˜á‘Áå¥¹™¼€µ‘¥ÍÁ±…ä€èää€ø½‘•Ø½¹Õ±°€Èø˜ÄìÑ¡•¸(€€€€€€€€€€€•¡¼€‰aÙ™ˆÉ•…‘äˆ(€€€€€€€€€€€‰É•…¬(€€€€€€€™¤(€€€€€€€Í±••À€Ä(€€€‘½¹”((€€€•áÁ½ÉĞ%MA1Jôèää(€€€•áÁ½ÉĞ1%	1}1]eM}M=Q]IôÄ(€€€•áÁ½ÉĞ11%U5}I%YHõ±±ÙµÁ¥Á”(€€€•áÁ½ÉĞ1A}9U5}Q!ILôĞ(€€•áÁ½ÉĞ5M}1}YIM%=9}=YII%ôÌ¸Ì((€€€•¡¼€‰MÑ…ÉÑ¥¹œM¥¹…°•Í­Ñ½À…ÌÍ¥¹…°ÕÍ•È¸¸¸ˆ(€€€½ÍÔÍ¥¹…°•¹Øp(€€€€€€€%MA1dôèääp(€€€€€€€	UM}MMM%=9}	UM}IMLôˆ‘	UM}MMM%=9}	UM}IMLˆp(€€€€€€€1%	1}1]eM}M=Q]IôÄp(€€€€€€€11%U5}I%YHõ±±ÙµÁ¥Á”p(€€€€€€€Í¥¹…°µ‘•Í­Ñ½Àp(€€€€€€€€´µ¹¼µÍ…¹‘‰½àp(€€€€€€€€´µ‘¥Í…‰±”µÁÔp(€€€€€€€€´µÉ•µ½Ñ”µ‘•‰Õ¥¹œµÁ½ÉĞôäÈÈÈp(€€€€€€€€˜(€€€M%91}A%ô„(€€€Í±••À€ÄÀ)•±Í”(€€€•¡¼€‰M¥¹…°•Í­Ñ½À¹½Ğ…Ù…¥±…‰±”½¸€¡Õ¹…µ”€µ´¤€´ÉÕ¹¹¥¹œ¥¸ÍÑÕˆµ½‘”ˆ(€€€•¡¼€‰M•ĞUM}M%91}M-Q=@õ™…±Í”€¡‘•™…Õ±Ğ¤Ñ¼‘¥Í…‰±”Í¥¹…°µ‘•Í­Ñ½À¥¹Ñ•É…Ñ¥½¸ˆ)™¤()•¡¼€‰MÑ…ÉÑ¥¹œµ•ÍÍ…”Á½±±•ÈÍ•ÉÙ¥”…ÌÍ¥¹…°ÕÍ•È¸¸¸ˆ)•á•Œ½ÍÔÍ¥¹…°€½…ÁÀ½Ù•¹Ø½‰¥¸½ÁåÑ¡½¸€µ´ÕÙ¥½É¸…ÁÀ¹µ…¥¸é…ÁÀ€´µ¡½ÍĞ€À¸À¸À¸À€´µÁ½ÉĞ€àÀÀÄ(

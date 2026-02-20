@@ -1,5 +1,6 @@
 # Signal Desktop running headlessly with Xvfb
 # This allows real history transfer (45-day sync) when linking devices
+# Note: Signal Desktop is amd64-only; on ARM64 the service runs in stub mode (USE_SIGNAL_DESKTOP=false)
 
 FROM debian:bookworm-slim
 
@@ -20,12 +21,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl jq netcat-openbsd \
     && rm -rf /var/lib/apt/lists/*
 
-# Add Signal's official apt repository
-RUN wget -qO- https://updates.signal.org/desktop/apt/keys.asc | gpg --dearmor > /usr/share/keyrings/signal-desktop-keyring.gpg \
-    && echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/signal-desktop-keyring.gpg] https://updates.signal.org/desktop/apt xenial main' > /etc/apt/sources.list.d/signal-xenial.list \
-    && apt-get update \
-    && apt-get install -y signal-desktop \
-    && rm -rf /var/lib/apt/lists/*
+# Add Signal's official apt repository and install (amd64 only; skip on ARM64)
+RUN ARCH=$(dpkg --print-architecture) \
+    && if [ "$ARCH" = "amd64" ]; then \
+        wget -qO- https://updates.signal.org/desktop/apt/keys.asc \
+            | gpg --dearmor > /usr/share/keyrings/signal-desktop-keyring.gpg \
+        && echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/signal-desktop-keyring.gpg] https://updates.signal.org/desktop/apt xenial main' \
+            > /etc/apt/sources.list.d/signal-xenial.list \
+        && apt-get update \
+        && apt-get install -y signal-desktop \
+        && rm -rf /var/lib/apt/lists/*; \
+    else \
+        echo "Signal Desktop unavailable on $ARCH - running in stub mode (set USE_SIGNAL_DESKTOP=false)"; \
+    fi
 
 # Create app user
 RUN useradd -m -s /bin/bash signal
