@@ -1,0 +1,393 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 283109,
+        "name": "Talya (she/her)",
+        "username": "rassilon1963",
+        "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+        "created_at": "2026-01-20T12:53:30.380Z",
+        "cooked": "<p>i came to the realisation that in certain cases, it’s quite hard to figure out how a message was edited. if the message is long and the difference is a single word or even a single letter, one may need to reread the whole message, possibly multiple time while comparing with the old version, to realise what has changed (and it’s in fact easier for the editor to simply say what’s different than for the reader to figure out on their own).<br>\nthere’s of course cases where a diff view is more harmful than helpful, say if the message was completely reworded. and not always does one actually need to realise what’s changed. but when one does and in single-word changes or in paragraph additions/removals it’s very helpful and lets you know what you need to focus on and what you’ve already read.</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2026-01-20T12:53:30.380Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 3,
+        "reads": 24,
+        "readers_count": 23,
+        "score": 154.8,
+        "yours": false,
+        "topic_id": 74350,
+        "topic_slug": "diff-view-for-message-edits",
+        "display_username": "Talya (she/her)",
+        "primary_group_name": "top_contributors",
+        "flair_name": "top_contributors",
+        "flair_url": "compass",
+        "flair_bg_color": "6058CA",
+        "flair_color": "fff",
+        "flair_group_id": 48,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "Top Contributor",
+        "title_is_group": true,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 7
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 18285,
+        "hidden": false,
+        "trust_level": 4,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/diff-view-for-message-edits/74350/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      283109
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      25
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Combining Android and iOS backups",
+      "id": 71850,
+      "title": "Combining Android and iOS backups",
+      "slug": "combining-android-and-ios-backups",
+      "posts_count": 5,
+      "reply_count": 2,
+      "highest_post_number": 5,
+      "image_url": null,
+      "created_at": "2025-09-25T17:28:59.065Z",
+      "last_posted_at": "2025-09-27T13:07:59.081Z",
+      "bumped": true,
+      "bumped_at": "2025-09-27T13:48:44.082Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 167,
+      "category_id": 10,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": true,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 34256,
+            "username": "fue12",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/f/ed8c4c/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster, Accepted Answer",
+          "user": {
+            "id": 33362,
+            "username": "NeedsChloesure",
+            "name": "Chloe",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/n/9f8e36/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 23991,
+            "username": "ClauZ",
+            "name": "ClauZ",
+            "avatar_template": "/user_avatar/community.signalusers.org/clauz/{size}/53679_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Profile title appears misaligned",
+      "id": 73167,
+      "title": "Profile title appears misaligned",
+      "slug": "profile-title-appears-misaligned",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": "https://community.signalusers.org/uploads/db3609/original/3X/b/7/b7731795a1503aa7622dc8f0a0488474637ffba4.png",
+      "created_at": "2025-11-27T00:53:10.622Z",
+      "last_posted_at": "2025-11-27T00:53:10.713Z",
+      "bumped": true,
+      "bumped_at": "2025-11-27T00:53:10.713Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 2,
+      "views": 46,
+      "category_id": 31,
+      "featured_link": null,
+      "op_like_count": 2,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 34475,
+            "username": "whynot",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/whynot/{size}/54219_2.png",
+            "trust_level": 1
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Native support for FLAC audio playback and preview",
+      "id": 70266,
+      "title": "Native support for FLAC audio playback and preview",
+      "slug": "native-support-for-flac-audio-playback-and-preview",
+      "posts_count": 6,
+      "reply_count": 2,
+      "highest_post_number": 6,
+      "image_url": null,
+      "created_at": "2025-07-06T14:35:48.144Z",
+      "last_posted_at": "2025-07-07T11:07:56.619Z",
+      "bumped": true,
+      "bumped_at": "2025-07-07T11:07:56.619Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 6,
+      "views": 134,
+      "category_id": 19,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 33436,
+            "username": "gotoo77",
+            "name": "gotoo77",
+            "avatar_template": "/user_avatar/community.signalusers.org/gotoo77/{size}/52832_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 33306,
+            "username": "Mher_Hovhannisyan",
+            "name": "Mher Hovhannisyan",
+            "avatar_template": "/user_avatar/community.signalusers.org/mher_hovhannisyan/{size}/52680_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 6659,
+            "username": "Whatnoww",
+            "name": "Whatnoww",
+            "avatar_template": "/user_avatar/community.signalusers.org/whatnoww/{size}/54328_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Diff view for message edits",
+  "id": 74350,
+  "title": "Diff view for message edits",
+  "posts_count": 1,
+  "created_at": "2026-01-20T12:53:30.300Z",
+  "views": 40,
+  "reply_count": 0,
+  "like_count": 7,
+  "last_posted_at": "2026-01-20T12:53:30.380Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "diff-view-for-message-edits",
+  "category_id": 28,
+  "word_count": 152,
+  "deleted_at": null,
+  "user_id": 18285,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_74350",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 18285,
+        "username": "rassilon1963",
+        "name": "Talya (she/her)",
+        "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+        "post_count": 1,
+        "primary_group_name": "top_contributors",
+        "flair_name": "top_contributors",
+        "flair_url": "compass",
+        "flair_color": "fff",
+        "flair_bg_color": "6058CA",
+        "flair_group_id": 48,
+        "trust_level": 4
+      }
+    ],
+    "created_by": {
+      "id": 18285,
+      "username": "rassilon1963",
+      "name": "Talya (she/her)",
+      "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png"
+    },
+    "last_poster": {
+      "id": 18285,
+      "username": "rassilon1963",
+      "name": "Talya (she/her)",
+      "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png"
+    }
+  },
+  "bookmarks": []
+}

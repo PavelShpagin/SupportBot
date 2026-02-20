@@ -1,0 +1,497 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 282794,
+        "name": "Mik",
+        "username": "mime29",
+        "avatar_template": "/user_avatar/community.signalusers.org/mime29/{size}/55465_2.png",
+        "created_at": "2026-01-15T04:33:57.399Z",
+        "cooked": "<p>Would you be interesting to implement this new feature?</p>\n<p>I made a PR on Telegram side <a href=\"https://github.com/TelegramMessenger/Telegram-iOS/pull/1977\" class=\"inline-onebox\" rel=\"noopener nofollow ugc\">[Feature] Implement Recent Chats Bubbles UI by mime29 · Pull Request #1977 · TelegramMessenger/Telegram-iOS · GitHub</a> so you can see what it does.</p>\n<p>tldr; Users can change their chat session to a different one with only 1 tap instead of currently 3.</p>\n<p>Note: Imagine the number of taps saved at a world scale with this feature?</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2026-01-15T04:33:57.399Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 4,
+        "reads": 31,
+        "readers_count": 30,
+        "score": 41.2,
+        "yours": false,
+        "topic_id": 74231,
+        "topic_slug": "fast-context-switch-ui",
+        "display_username": "Mik",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://github.com/TelegramMessenger/Telegram-iOS/pull/1977",
+            "internal": false,
+            "reflection": false,
+            "title": "[Feature] Implement Recent Chats Bubbles UI by mime29 · Pull Request #1977 · TelegramMessenger/Telegram-iOS · GitHub",
+            "clicks": 15
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 1
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 35531,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/fast-context-switch-ui/74231/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      },
+      {
+        "id": 283048,
+        "name": "Mik",
+        "username": "mime29",
+        "avatar_template": "/user_avatar/community.signalusers.org/mime29/{size}/55465_2.png",
+        "created_at": "2026-01-19T00:37:56.199Z",
+        "cooked": "<p>Sorry for the typo: interesting → interested</p>",
+        "post_number": 2,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2026-01-19T00:37:56.199Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 18,
+        "readers_count": 17,
+        "score": 3.6,
+        "yours": false,
+        "topic_id": 74231,
+        "topic_slug": "fast-context-switch-ui",
+        "display_username": "Mik",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 35531,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/fast-context-switch-ui/74231/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      }
+    ],
+    "stream": [
+      282794,
+      283048
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      31
+    ],
+    [
+      2,
+      27
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Add “Duress Alert” – one-tap silent emergency message that auto-hides and tells police “DO NOT reply”",
+      "id": 73124,
+      "title": "Add “Duress Alert” – one-tap silent emergency message that auto-hides and tells police “DO NOT reply”",
+      "slug": "add-duress-alert-one-tap-silent-emergency-message-that-auto-hides-and-tells-police-do-not-reply",
+      "posts_count": 3,
+      "reply_count": 0,
+      "highest_post_number": 3,
+      "image_url": null,
+      "created_at": "2025-11-24T18:27:46.674Z",
+      "last_posted_at": "2025-11-25T04:18:37.622Z",
+      "bumped": true,
+      "bumped_at": "2025-11-25T04:18:37.622Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 133,
+      "category_id": 19,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 34927,
+            "username": "hoofman",
+            "name": "James Welz",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/h/8edcca/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 34949,
+            "username": "uncenter",
+            "name": null,
+            "avatar_template": "/user_avatar/community.signalusers.org/uncenter/{size}/54877_2.png",
+            "trust_level": 1
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Native support for FLAC audio playback and preview",
+      "id": 70266,
+      "title": "Native support for FLAC audio playback and preview",
+      "slug": "native-support-for-flac-audio-playback-and-preview",
+      "posts_count": 6,
+      "reply_count": 2,
+      "highest_post_number": 6,
+      "image_url": null,
+      "created_at": "2025-07-06T14:35:48.144Z",
+      "last_posted_at": "2025-07-07T11:07:56.619Z",
+      "bumped": true,
+      "bumped_at": "2025-07-07T11:07:56.619Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 6,
+      "views": 134,
+      "category_id": 19,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 33436,
+            "username": "gotoo77",
+            "name": "gotoo77",
+            "avatar_template": "/user_avatar/community.signalusers.org/gotoo77/{size}/52832_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 33306,
+            "username": "Mher_Hovhannisyan",
+            "name": "Mher Hovhannisyan",
+            "avatar_template": "/user_avatar/community.signalusers.org/mher_hovhannisyan/{size}/52680_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 6659,
+            "username": "Whatnoww",
+            "name": "Whatnoww",
+            "avatar_template": "/user_avatar/community.signalusers.org/whatnoww/{size}/54328_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Improve signal for VoiceOver users",
+      "id": 68130,
+      "title": "Improve signal for VoiceOver users",
+      "slug": "improve-signal-for-voiceover-users",
+      "posts_count": 4,
+      "reply_count": 0,
+      "highest_post_number": 4,
+      "image_url": null,
+      "created_at": "2025-03-30T16:41:32.250Z",
+      "last_posted_at": "2025-06-18T22:50:53.984Z",
+      "bumped": true,
+      "bumped_at": "2025-06-18T22:50:53.984Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 7,
+      "views": 143,
+      "category_id": 19,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 32384,
+            "username": "Carl_Gmyrek",
+            "name": "Carl Gmyrek",
+            "avatar_template": "/user_avatar/community.signalusers.org/carl_gmyrek/{size}/51519_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 18056,
+            "username": "kinoroy",
+            "name": "Kino Roy",
+            "avatar_template": "/user_avatar/community.signalusers.org/kinoroy/{size}/24972_2.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 17941,
+            "username": "Ropea",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/r/a587f6/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Fast context switch UI",
+  "id": 74231,
+  "title": "Fast context switch UI",
+  "posts_count": 2,
+  "created_at": "2026-01-15T04:33:57.335Z",
+  "views": 76,
+  "reply_count": 0,
+  "like_count": 1,
+  "last_posted_at": "2026-01-19T00:37:56.199Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "fast-context-switch-ui",
+  "category_id": 19,
+  "word_count": 70,
+  "deleted_at": null,
+  "user_id": 35531,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_74231",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 2,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 35531,
+        "username": "mime29",
+        "name": "Mik",
+        "avatar_template": "/user_avatar/community.signalusers.org/mime29/{size}/55465_2.png",
+        "post_count": 2,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 0
+      }
+    ],
+    "created_by": {
+      "id": 35531,
+      "username": "mime29",
+      "name": "Mik",
+      "avatar_template": "/user_avatar/community.signalusers.org/mime29/{size}/55465_2.png"
+    },
+    "last_poster": {
+      "id": 35531,
+      "username": "mime29",
+      "name": "Mik",
+      "avatar_template": "/user_avatar/community.signalusers.org/mime29/{size}/55465_2.png"
+    },
+    "links": [
+      {
+        "url": "https://github.com/TelegramMessenger/Telegram-iOS/pull/1977",
+        "title": "[Feature] Implement Recent Chats Bubbles UI by mime29 · Pull Request #1977 · TelegramMessenger/Telegram-iOS · GitHub",
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 15,
+        "user_id": 35531,
+        "domain": "github.com",
+        "root_domain": "github.com"
+      }
+    ]
+  },
+  "bookmarks": []
+}

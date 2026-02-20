@@ -1,0 +1,364 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 258808,
+        "name": "",
+        "username": "kamstrup",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/k/e95f7d/{size}.png",
+        "created_at": "2025-01-14T00:00:00.722Z",
+        "cooked": "<p>TLDR: I suggest implementing pinch-to-zoom on the gallery view.</p>\n<p>A common problem I run into (my parents and gf report the same struggle) is that it is very hard to make out details in the pictures you select in the gallery view when preparing to send a message.</p>\n<p>Example: I take 5 nearly identical pictures of my dog, and exactly 1 of them capture some small detail I want to share. When I click the “+” button → Gallery → All Media files, in order to attach the photo it is not possible for me to see which of the 5 photos is the one I want.</p>\n<p>Similar problems arise if I take 100 holiday photos (all widely different), and I want to send the top-5 to someone. In the gallery view I simply cannot see enough detail in the pictures to pick the top-5. The thumbnails are too small.</p>\n<p>Many Android apps implement pinch-to-zoom in picture galleries like the Signal gallery. It would feel natural that Signal did the same.</p>\n<p>Existing example: Google Photos</p>\n<p>Alternatively, or additionally: Add a zoom in/out button in the gallery view</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2025-01-14T01:19:37.956Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 29,
+        "readers_count": 28,
+        "score": 10.8,
+        "yours": false,
+        "topic_id": 66051,
+        "topic_slug": "zooming-in-gallery-view-when-selecting-pictures-to-send",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 2,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 31324,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/zooming-in-gallery-view-when-selecting-pictures-to-send/66051/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      258808
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      397
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Add message-specific properties for granular control over individual messages",
+      "id": 70684,
+      "title": "Add message-specific properties for granular control over individual messages",
+      "slug": "add-message-specific-properties-for-granular-control-over-individual-messages",
+      "posts_count": 4,
+      "reply_count": 1,
+      "highest_post_number": 4,
+      "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/3/e/3e3bca8f7f1178a516943d58d32be17c4ccea324_2_1024x865.png",
+      "created_at": "2025-07-27T21:57:44.455Z",
+      "last_posted_at": "2025-07-28T10:14:21.469Z",
+      "bumped": true,
+      "bumped_at": "2025-07-28T10:14:21.469Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 6,
+      "views": 100,
+      "category_id": 17,
+      "featured_link": null,
+      "op_like_count": 2,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 33639,
+            "username": "StupidRepo",
+            "name": "Bradlee Barnes",
+            "avatar_template": "/user_avatar/community.signalusers.org/stupidrepo/{size}/53091_2.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 19563,
+            "username": "makiro",
+            "name": "makiro",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/m/dfb087/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "In Contact&rsquo;s info, show which own phone# and usernames it knows",
+      "id": 68828,
+      "title": "In Contact's info, show which own phone# and usernames it knows",
+      "slug": "in-contacts-info-show-which-own-phone-and-usernames-it-knows",
+      "posts_count": 10,
+      "reply_count": 3,
+      "highest_post_number": 10,
+      "image_url": null,
+      "created_at": "2025-04-28T03:10:27.404Z",
+      "last_posted_at": "2025-04-29T10:16:20.039Z",
+      "bumped": true,
+      "bumped_at": "2025-04-29T10:16:20.039Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 5,
+      "views": 131,
+      "category_id": 17,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 32734,
+            "username": "opoier",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/o/ecccb3/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 1499,
+            "username": "CueHD",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/cuehd/{size}/42510_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 32154,
+            "username": "Delamcode",
+            "name": "Delamcode",
+            "avatar_template": "/user_avatar/community.signalusers.org/delamcode/{size}/51199_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Filter display of historical &ldquo;Shared media&rdquo; by sender",
+      "id": 67873,
+      "title": "Filter display of historical \"Shared media\" by sender",
+      "slug": "filter-display-of-historical-shared-media-by-sender",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2025-03-22T13:10:46.446Z",
+      "last_posted_at": "2025-03-22T13:10:46.490Z",
+      "bumped": true,
+      "bumped_at": "2025-03-22T13:10:46.490Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 3,
+      "views": 26,
+      "category_id": 17,
+      "featured_link": null,
+      "op_like_count": 3,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 32187,
+            "username": "begleysm",
+            "name": "Sean Begley",
+            "avatar_template": "/user_avatar/community.signalusers.org/begleysm/{size}/51223_2.png",
+            "trust_level": 0
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Zooming in gallery view when selecting pictures to send",
+  "id": 66051,
+  "title": "Zooming in gallery view when selecting pictures to send",
+  "posts_count": 1,
+  "created_at": "2025-01-14T00:00:00.676Z",
+  "views": 41,
+  "reply_count": 0,
+  "like_count": 0,
+  "last_posted_at": "2025-01-14T00:00:00.722Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "zooming-in-gallery-view-when-selecting-pictures-to-send",
+  "category_id": 17,
+  "word_count": 191,
+  "deleted_at": null,
+  "user_id": 31324,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_66051",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 31324,
+        "username": "kamstrup",
+        "name": "",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/k/e95f7d/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 0
+      }
+    ],
+    "created_by": {
+      "id": 31324,
+      "username": "kamstrup",
+      "name": "",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/k/e95f7d/{size}.png"
+    },
+    "last_poster": {
+      "id": 31324,
+      "username": "kamstrup",
+      "name": "",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/k/e95f7d/{size}.png"
+    }
+  },
+  "bookmarks": []
+}

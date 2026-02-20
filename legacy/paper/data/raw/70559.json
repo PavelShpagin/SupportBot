@@ -1,0 +1,361 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 272333,
+        "name": "lucasmz",
+        "username": "LucasMZ",
+        "avatar_template": "/user_avatar/community.signalusers.org/lucasmz/{size}/55892_2.png",
+        "created_at": "2025-07-21T06:32:22.191Z",
+        "cooked": "<p><div class=\"lightbox-wrapper\"><a class=\"lightbox\" href=\"https://community.signalusers.org/uploads/db3609/original/3X/0/b/0b4d1ae7054979e48e4f29657f7baeb09a3b757d.png\" data-download-href=\"https://community.signalusers.org/uploads/db3609/0b4d1ae7054979e48e4f29657f7baeb09a3b757d\" title=\"Imagepipe_3\"><img src=\"https://community.signalusers.org/uploads/db3609/original/3X/0/b/0b4d1ae7054979e48e4f29657f7baeb09a3b757d.png\" alt=\"Imagepipe_3\" data-base62-sha1=\"1BYrQcldgHacWMGF3bRD2m7tZUN\" width=\"229\" height=\"390\"><div class=\"meta\"><svg class=\"fa d-icon d-icon-far-image svg-icon\" aria-hidden=\"true\"><use href=\"#far-image\"></use></svg><span class=\"filename\">Imagepipe_3</span><span class=\"informations\">229×390 18.6 KB</span><svg class=\"fa d-icon d-icon-discourse-expand svg-icon\" aria-hidden=\"true\"><use href=\"#discourse-expand\"></use></svg></div></a></div></p>\n<p>Select seems to have been translated to “Marcar” (close to Mark in English) which I guess is kind of right but very very uncommon and it does not feel natural with what other apps do.</p>\n<p>Note: when you go into the selection mode, it will say “selecionada” (so closer to the original select).</p>\n<p><a class=\"mention\" href=\"/u/samdp\">@SamDP</a></p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2025-07-21T06:32:22.191Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 3,
+        "reads": 22,
+        "readers_count": 21,
+        "score": 49.4,
+        "yours": false,
+        "topic_id": 70559,
+        "topic_slug": "pt-br-uncommon-translation-of-select",
+        "display_username": "lucasmz",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 2
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 26051,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/pt-br-uncommon-translation-of-select/70559/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      272333
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      209
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "More languages for Signal",
+      "id": 73714,
+      "title": "More languages for Signal",
+      "slug": "more-languages-for-signal",
+      "posts_count": 4,
+      "reply_count": 1,
+      "highest_post_number": 4,
+      "image_url": null,
+      "created_at": "2025-12-19T15:44:10.147Z",
+      "last_posted_at": "2026-01-10T09:47:56.306Z",
+      "bumped": true,
+      "bumped_at": "2026-01-10T09:47:56.306Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 17,
+      "views": 159,
+      "category_id": 27,
+      "featured_link": null,
+      "op_like_count": 12,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 35259,
+            "username": "Yannick",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/y/b782af/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 34476,
+            "username": "shaded",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/shaded/{size}/54687_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 35482,
+            "username": "TimonEhlers",
+            "name": "Timon Ehlers",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/t/d9b06d/{size}.png",
+            "trust_level": 1
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "pt-BR: inconsistency of the &ldquo;chat&rdquo; word",
+      "id": 70383,
+      "title": "pt-BR: inconsistency of the \"chat\" word",
+      "slug": "pt-br-inconsistency-of-the-chat-word",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": "https://community.signalusers.org/uploads/db3609/original/3X/e/2/e214ac8bb5409325fe463b8a0bf67f7dc005f537.png",
+      "created_at": "2025-07-12T21:16:07.270Z",
+      "last_posted_at": "2025-07-12T21:18:15.787Z",
+      "bumped": true,
+      "bumped_at": "2025-07-12T21:18:15.787Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 2,
+      "views": 36,
+      "category_id": 27,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 26051,
+            "username": "LucasMZ",
+            "name": "lucasmz",
+            "avatar_template": "/user_avatar/community.signalusers.org/lucasmz/{size}/55892_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Severe issues with emoji translation to Hebrew",
+      "id": 70288,
+      "title": "Severe issues with emoji translation to Hebrew",
+      "slug": "severe-issues-with-emoji-translation-to-hebrew",
+      "posts_count": 4,
+      "reply_count": 1,
+      "highest_post_number": 4,
+      "image_url": null,
+      "created_at": "2025-07-07T15:31:18.222Z",
+      "last_posted_at": "2025-07-08T09:26:57.728Z",
+      "bumped": true,
+      "bumped_at": "2025-07-08T09:26:57.728Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 6,
+      "views": 94,
+      "category_id": 27,
+      "featured_link": null,
+      "op_like_count": 4,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "pt-BR: Uncommon translation of &ldquo;Select&rdquo;",
+  "id": 70559,
+  "title": "pt-BR: Uncommon translation of \"Select\"",
+  "posts_count": 1,
+  "created_at": "2025-07-21T06:32:22.127Z",
+  "views": 33,
+  "reply_count": 0,
+  "like_count": 2,
+  "last_posted_at": "2025-07-21T06:32:22.191Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "pt-br-uncommon-translation-of-select",
+  "category_id": 27,
+  "word_count": 59,
+  "deleted_at": null,
+  "user_id": 26051,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": "https://community.signalusers.org/uploads/db3609/original/3X/0/b/0b4d1ae7054979e48e4f29657f7baeb09a3b757d.png",
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_70559",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": [
+    {
+      "max_width": null,
+      "max_height": null,
+      "width": 229,
+      "height": 390,
+      "url": "https://community.signalusers.org/uploads/db3609/original/3X/0/b/0b4d1ae7054979e48e4f29657f7baeb09a3b757d.png"
+    }
+  ],
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 26051,
+        "username": "LucasMZ",
+        "name": "lucasmz",
+        "avatar_template": "/user_avatar/community.signalusers.org/lucasmz/{size}/55892_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      }
+    ],
+    "created_by": {
+      "id": 26051,
+      "username": "LucasMZ",
+      "name": "lucasmz",
+      "avatar_template": "/user_avatar/community.signalusers.org/lucasmz/{size}/55892_2.png"
+    },
+    "last_poster": {
+      "id": 26051,
+      "username": "LucasMZ",
+      "name": "lucasmz",
+      "avatar_template": "/user_avatar/community.signalusers.org/lucasmz/{size}/55892_2.png"
+    }
+  },
+  "bookmarks": []
+}

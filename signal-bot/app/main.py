@@ -1284,16 +1284,13 @@ class HistoryCasesRequest(BaseModel):
 
 
 def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
-    """Process history cases in background. Returns number of cases inserted."""
+    """Process history cases synchronously. Returns number of cases inserted."""
     import re
-    from app.db import RawMessage, delete_all_group_data, mark_case_in_rag
-    from app.db.queries_mysql import get_case_ids_for_group, archive_cases_for_group
+    from app.db import RawMessage, mark_case_in_rag
+    from app.db.queries_mysql import archive_cases_for_group, clear_group_runtime_data
 
-    # Archive existing cases instead of deleting them.
-    # This keeps old case links (already sent in Signal messages) accessible via
-    # the web frontend with an 'archived' banner, while preventing them from
-    # being used as RAG sources for new answers.
-    # Also do a group-level ChromaDB purge to remove them from semantic search.
+    # Archive existing cases (keeps old links alive with an 'archived' banner)
+    # and purge them from ChromaDB so they can't be cited in new answers.
     try:
         archived = archive_cases_for_group(db, req.group_id)
         log.info("Archived %d cases for group %s (re-ingest)", archived, req.group_id[:20])
@@ -1305,17 +1302,12 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
     except Exception:
         log.exception("Failed to wipe RAG cases for group %s", req.group_id[:20])
 
-    # Delete non-case group data so re-ingest starts fresh
-    from app.db.queries_mysql import (
-        delete_all_group_data as _delete_non_case_data,
-    )
-    with db.connection() as _conn:
-        _cur = _conn.cursor()
-        _cur.execute("DELETE FROM raw_messages WHERE group_id = %s", (req.group_id,))
-        _cur.execute("DELETE FROM buffers WHERE group_id = %s", (req.group_id,))
-        _cur.execute("DELETE FROM reactions WHERE group_id = %s", (req.group_id,))
-        _conn.commit()
-    log.info("Cleared messages/buffer/reactions for group %s before re-ingest", req.group_id[:20])
+    # Clear transient data so re-ingest starts from a clean slate.
+    try:
+        clear_group_runtime_data(db, req.group_id)
+        log.info("Cleared messages/buffer/reactions for group %s before re-ingest", req.group_id[:20])
+    except Exception:
+        log.exception("Failed to clear runtime data for group %s", req.group_id[:20])
 
     # Store raw messages for evidence linking
     message_lookup: dict = {}
@@ -1452,12 +1444,12 @@ def history_cases(req: HistoryCasesRequest) -> dict:
     # cannot pass validation and trigger a second parallel ingest for the same session.
     mark_history_token_used(db, token=req.token)
 
-    # Accept immediately, process in background to avoid HTTP timeout with many LLM calls
     n_cases = len(req.cases)
     n_messages = len(req.messages)
-    log.info("History ingest accepted: %d cases, %d messages (group=%s)", n_cases, n_messages, req.group_id[:20])
-    threading.Thread(target=_process_history_cases_bg, args=(req,), daemon=True).start()
-    return {"ok": True, "cases_inserted": n_cases}  # Optimistic count; actual inserted logged in bg
+    log.info("History ingest started: %d cases, %d messages (group=%s)", n_cases, n_messages, req.group_id[:20])
+    inserted = _process_history_cases_bg(req)
+    log.info("History ingest done: %d/%d cases inserted (group=%s)", inserted, n_cases, req.group_id[:20])
+    return {"ok": True, "cases_inserted": inserted}
 
 
 class RetrieveRequest(BaseModel):

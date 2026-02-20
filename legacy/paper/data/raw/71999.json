@@ -1,0 +1,448 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 276580,
+        "name": "realdeal",
+        "username": "Adeel_Ahmad",
+        "avatar_template": "/user_avatar/community.signalusers.org/adeel_ahmad/{size}/54060_2.png",
+        "created_at": "2025-10-02T19:30:16.408Z",
+        "cooked": "<p>Love Signal for secure and private messaging, but sometimes I need to store a file on my phone temporarily (source documents, recordings, etc.) that I want the same level of confidence about.</p>\n<p>Signal doesn’t really do files, except of course with attachments. The new backup stuff is very cool. Are attachments good enough for people? Are there file-focused tools with similar standards? I’m looking for local only, no tracking, encryption, ideally with auto-deletion options… but curious how others feel.</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2025-10-02T20:42:28.389Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 42,
+        "readers_count": 41,
+        "score": 28.4,
+        "yours": false,
+        "topic_id": 71999,
+        "topic_slug": "beyond-messaging-how-do-you-securely-vault-files-that-signal-doesnt-cover",
+        "display_username": "realdeal",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 2,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 1
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 34342,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/beyond-messaging-how-do-you-securely-vault-files-that-signal-doesnt-cover/71999/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      276580
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      135
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Request for documentation or blog post: behavior if blocked",
+      "id": 72847,
+      "title": "Request for documentation or blog post: behavior if blocked",
+      "slug": "request-for-documentation-or-blog-post-behavior-if-blocked",
+      "posts_count": 6,
+      "reply_count": 3,
+      "highest_post_number": 6,
+      "image_url": null,
+      "created_at": "2025-11-11T18:03:55.885Z",
+      "last_posted_at": "2025-11-12T11:54:27.505Z",
+      "bumped": true,
+      "bumped_at": "2025-11-12T11:54:27.505Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 7,
+      "views": 118,
+      "category_id": 8,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 19561,
+            "username": "linjaaho",
+            "name": "Vesa Linja-aho",
+            "avatar_template": "/user_avatar/community.signalusers.org/linjaaho/{size}/27652_2.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 33362,
+            "username": "NeedsChloesure",
+            "name": "Chloe",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/n/9f8e36/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Starting today, Gemini AI will access your WhatsApp and more. Learn how to disable it on Android",
+      "id": 70286,
+      "title": "Starting today, Gemini AI will access your WhatsApp and more. Learn how to disable it on Android",
+      "slug": "starting-today-gemini-ai-will-access-your-whatsapp-and-more-learn-how-to-disable-it-on-android",
+      "posts_count": 14,
+      "reply_count": 10,
+      "highest_post_number": 14,
+      "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/5/b/5ba4f9e5a91134ab13198a566ecfa306ae219a0c_2_1024x576.jpeg",
+      "created_at": "2025-07-07T12:15:53.915Z",
+      "last_posted_at": "2025-07-10T20:48:59.894Z",
+      "bumped": true,
+      "bumped_at": "2025-07-10T20:48:59.894Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 37,
+      "views": 369,
+      "category_id": 8,
+      "featured_link": "https://tuta.com/blog/how-to-disable-gemini-on-android",
+      "featured_link_root_domain": "tuta.com",
+      "op_like_count": 12,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 2170,
+            "username": "TeeJay82",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/teejay82/{size}/1806_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 26763,
+            "username": "zetabeta",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/zetabeta/{size}/54310_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 22679,
+            "username": "Rico70",
+            "name": "Rico",
+            "avatar_template": "/user_avatar/community.signalusers.org/rico70/{size}/41632_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Skype apparently being shut down in May",
+      "id": 67269,
+      "title": "Skype apparently being shut down in May",
+      "slug": "skype-apparently-being-shut-down-in-may",
+      "posts_count": 15,
+      "reply_count": 8,
+      "highest_post_number": 15,
+      "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/9/d/9d9d27041d0d993649d28d74fd4dbf93fe4eb737_2_1024x576.jpeg",
+      "created_at": "2025-02-28T10:02:37.874Z",
+      "last_posted_at": "2025-03-02T14:08:46.320Z",
+      "bumped": true,
+      "bumped_at": "2025-03-02T14:08:46.320Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 40,
+      "views": 271,
+      "category_id": 8,
+      "featured_link": null,
+      "op_like_count": 4,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 21482,
+            "username": "limetree",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/l/4491bb/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 28656,
+            "username": "pickle_umbrella",
+            "name": "Pickle",
+            "avatar_template": "/user_avatar/community.signalusers.org/pickle_umbrella/{size}/48004_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 18089,
+            "username": "Aku-Stable",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/aku-stable/{size}/25198_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 6038,
+            "username": "goodec",
+            "name": "Chris",
+            "avatar_template": "/user_avatar/community.signalusers.org/goodec/{size}/14726_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Beyond messaging - how do you securely vault files that Signal doesn&rsquo;t cover?",
+  "id": 71999,
+  "title": "Beyond messaging - how do you securely vault files that Signal doesn't cover?",
+  "posts_count": 1,
+  "created_at": "2025-10-02T19:30:16.304Z",
+  "views": 88,
+  "reply_count": 0,
+  "like_count": 1,
+  "last_posted_at": "2025-10-02T19:30:16.408Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "beyond-messaging-how-do-you-securely-vault-files-that-signal-doesnt-cover",
+  "category_id": 8,
+  "word_count": 83,
+  "deleted_at": null,
+  "user_id": 34342,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_71999",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 34342,
+        "username": "Adeel_Ahmad",
+        "name": "realdeal",
+        "avatar_template": "/user_avatar/community.signalusers.org/adeel_ahmad/{size}/54060_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 0
+      }
+    ],
+    "created_by": {
+      "id": 34342,
+      "username": "Adeel_Ahmad",
+      "name": "realdeal",
+      "avatar_template": "/user_avatar/community.signalusers.org/adeel_ahmad/{size}/54060_2.png"
+    },
+    "last_poster": {
+      "id": 34342,
+      "username": "Adeel_Ahmad",
+      "name": "realdeal",
+      "avatar_template": "/user_avatar/community.signalusers.org/adeel_ahmad/{size}/54060_2.png"
+    }
+  },
+  "bookmarks": []
+}

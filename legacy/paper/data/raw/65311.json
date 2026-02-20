@@ -1,0 +1,342 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 256760,
+        "name": "Nimesh Neema",
+        "username": "nimeshneema",
+        "avatar_template": "/user_avatar/community.signalusers.org/nimeshneema/{size}/49858_2.png",
+        "created_at": "2024-12-07T00:41:00.692Z",
+        "cooked": "<p>I am trying to build the Signal iOS project. But I keep running into issues.</p>\n<p>My system configuration is as follows:</p>\n<ol>\n<li>\n<p>Trying to build both an Intel and Apple Silicon Mac.</p>\n</li>\n<li>\n<p>Running up-to-date macOS 15 Sequoia 15.1.1.</p>\n</li>\n<li>\n<p>Latest version of Xcode (16.1) and Cocoapods (1.16.2) installed.</p>\n</li>\n<li>\n<p>Latest version of Homebrew and Xcode Command Line Tools setup correctly.</p>\n</li>\n</ol>\n<p>Here’s what I am doing and the errors I am getting:</p>\n<ol>\n<li>\n<p>I followed the instructions in the BUILDING.md document in the repo: <a href=\"https://github.com/signalapp/Signal-iOS/blob/main/BUILDING.md\" class=\"inline-onebox\" rel=\"noopener nofollow ugc\">Signal-iOS/BUILDING.md at main · signalapp/Signal-iOS · GitHub</a></p>\n</li>\n<li>\n<p>I cloned the repo along with submodules by running: <code>git clone --recurse-submodules https://github.com/signalapp/Signal-iOS</code></p>\n</li>\n<li>\n<p>Trying to run <code>make dependencies</code> throws the following error:</p>\n<pre><code class=\"lang-auto\">downloading webrtc-6723a-ios-release.tar.bz2...\nTraceback (most recent call last):\n  File \"/usr/local/Cellar/python@3.13/3.13.0_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/urllib/request.py\", line 1319, in do_open\n    h.request(req.get_method(), req.selector, req.data, headers,\n    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n              encode_chunked=req.has_header('Transfer-encoding'))\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/Cellar/python@3.13/3.13.0_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/http/client.py\", line 1336, in request\n    self._send_request(method, url, body, headers, encode_chunked)\n    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/Cellar/python@3.13/3.13.0_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/http/client.py\", line 1382, in _send_request\n    self.endheaders(body, encode_chunked=encode_chunked)\n    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/Cellar/python@3.13/3.13.0_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/http/client.py\", line 1331, in endheaders\n    self._send_output(message_body, encode_chunked=encode_chunked)\n    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/Cellar/python@3.13/3.13.0_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/http/client.py\", line 1091, in _send_output\n    self.send(msg)\n    ~~~~~~~~~^^^^^\n  File \"/usr/local/Cellar/python@3.13/3.13.0_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/http/client.py\", line 1035, in send\n    self.connect()\n    ~~~~~~~~~~~~^^\n  File \"/usr/local/Cellar/python@3.13/3.13.0_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/http/client.py\", line 1477, in connect\n    self.sock = self._context.wrap_socket(self.sock,\n                ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^\n                                          server_hostname=server_hostname)\n                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/Cellar/python@3.13/3.13.0_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/ssl.py\", line 455, in wrap_socket\n    return self.sslsocket_class._create(\n           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^\n        sock=sock,\n        ^^^^^^^^^^\n    ...&lt;5 lines&gt;...\n        session=session\n        ^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/usr/local/Cellar/python@3.13/3.13.0_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/ssl.py\", line 1076, in _create\n    self.do_handshake()\n    ~~~~~~~~~~~~~~~~~^^\n  File \"/usr/local/Cellar/python@3.13/3.13.0_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/ssl.py\", line 1372, in do_handshake\n    self._sslobj.do_handshake()\n    ~~~~~~~~~~~~~~~~~~~~~~~~~^^\nssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1020)\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/Users/nimeshneema/Developer/Signal-iOS/Pods/SignalRingRTC/bin/fetch-artifact.py\", line 171, in &lt;module&gt;\n    main()\n    ~~~~^^\n  File \"/Users/nimeshneema/Developer/Signal-iOS/Pods/SignalRingRTC/bin/fetch-artifact.py\", line 157, in main\n    open_archive = download_if_needed(archive_file, url, checksum, archive_dir)\n  File \"/Users/nimeshneema/Developer/Signal-iOS/Pods/SignalRingRTC/bin/fetch-artifact.py\", line 116, in download_if_needed\n    with urllib.request.urlopen(url) as response:\n         ~~~~~~~~~~~~~~~~~~~~~~^^^^^\n  File \"/usr/local/Cellar/python@3.13/3.13.0_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/urllib/request.py\", line 189, in urlopen\n    return opener.open(url, data, timeout)\n           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/Cellar/python@3.13/3.13.0_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/urllib/request.py\", line 489, in open\n    response = self._open(req, data)\n  File \"/usr/local/Cellar/python@3.13/3.13.0_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/urllib/request.py\", line 506, in _open\n    result = self._call_chain(self.handle_open, protocol, protocol +\n                              '_open', req)\n  File \"/usr/local/Cellar/python@3.13/3.13.0_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/urllib/request.py\", line 466, in _call_chain\n    result = func(*args)\n  File \"/usr/local/Cellar/python@3.13/3.13.0_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/urllib/request.py\", line 1367, in https_open\n    return self.do_open(http.client.HTTPSConnection, req,\n           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n                        context=self._context)\n                        ^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/Cellar/python@3.13/3.13.0_1/Frameworks/Python.framework/Versions/3.13/lib/python3.13/urllib/request.py\", line 1322, in do_open\n    raise URLError(err)\nurllib.error.URLError: &lt;urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1020)&gt;\nmake: *** [fetch-ringrtc] Error 1\n</code></pre>\n</li>\n<li>\n<p>Trying to run <code>pod install</code> throws the following error:</p>\n<pre><code class=\"lang-auto\">Analyzing dependencies\nDownloading dependencies\nGenerating Pods project\n[!] An error occurred while processing the post-install hook of the Podfile.\n\nNo such file or directory @ rb_check_realpath_internal - /Users/nimeshneema/Developer/Signal-iOS/Pods/SignalRingRTC/out/release/libringrtc/ringrtc.h\n\n/Users/nimeshneema/.gem/ruby/3.3.6/gems/cocoapods-1.16.2/lib/cocoapods/project.rb:326:in `realpath'\n/Users/nimeshneema/.gem/ruby/3.3.6/gems/cocoapods-1.16.2/lib/cocoapods/project.rb:326:in `realpath'\n/Users/nimeshneema/.gem/ruby/3.3.6/gems/cocoapods-1.16.2/lib/cocoapods/project.rb:326:in `reference_for_path'\n/Users/nimeshneema/Developer/Signal-iOS/Podfile:248:in `fix_ringrtc_project_symlink'\n/Users/nimeshneema/Developer/Signal-iOS/Podfile:108:in `block (2 levels) in from_ruby'\n/Users/nimeshneema/.gem/ruby/3.3.6/gems/cocoapods-core-1.16.2/lib/cocoapods-core/podfile.rb:196:in `post_install!'\n/Users/nimeshneema/.gem/ruby/3.3.6/gems/cocoapods-1.16.2/lib/cocoapods/installer.rb:1013:in `run_podfile_post_install_hook'\n/Users/nimeshneema/.gem/ruby/3.3.6/gems/cocoapods-1.16.2/lib/cocoapods/installer.rb:1001:in `block in run_podfile_post_install_hooks'\n/Users/nimeshneema/.gem/ruby/3.3.6/gems/cocoapods-1.16.2/lib/cocoapods/user_interface.rb:149:in `message'\n/Users/nimeshneema/.gem/ruby/3.3.6/gems/cocoapods-1.16.2/lib/cocoapods/installer.rb:1000:in `run_podfile_post_install_hooks'\n/Users/nimeshneema/.gem/ruby/3.3.6/gems/cocoapods-1.16.2/lib/cocoapods/installer.rb:337:in `block (2 levels) in create_and_save_projects'\n/Users/nimeshneema/.gem/ruby/3.3.6/gems/cocoapods-1.16.2/lib/cocoapods/installer/xcode/pods_project_generator/pods_project_writer.rb:61:in `write!'\n/Users/nimeshneema/.gem/ruby/3.3.6/gems/cocoapods-1.16.2/lib/cocoapods/installer.rb:336:in `block in create_and_save_projects'\n/Users/nimeshneema/.gem/ruby/3.3.6/gems/cocoapods-1.16.2/lib/cocoapods/user_interface.rb:64:in `section'\n/Users/nimeshneema/.gem/ruby/3.3.6/gems/cocoapods-1.16.2/lib/cocoapods/installer.rb:315:in `create_and_save_projects'\n/Users/nimeshneema/.gem/ruby/3.3.6/gems/cocoapods-1.16.2/lib/cocoapods/installer.rb:307:in `generate_pods_project'\n/Users/nimeshneema/.gem/ruby/3.3.6/gems/cocoapods-1.16.2/lib/cocoapods/installer.rb:183:in `integrate'\n/Users/nimeshneema/.gem/ruby/3.3.6/gems/cocoapods-1.16.2/lib/cocoapods/installer.rb:170:in `install!'\n/Users/nimeshneema/.gem/ruby/3.3.6/gems/cocoapods-1.16.2/lib/cocoapods/command/install.rb:52:in `run'\n/Users/nimeshneema/.gem/ruby/3.3.6/gems/claide-1.1.0/lib/claide/command.rb:334:in `run'\n/Users/nimeshneema/.gem/ruby/3.3.6/gems/cocoapods-1.16.2/lib/cocoapods/command.rb:52:in `run'\n/Users/nimeshneema/.gem/ruby/3.3.6/gems/cocoapods-1.16.2/bin/pod:55:in `&lt;top (required)&gt;'\n/Users/nimeshneema/.gem/ruby/3.3.6/bin/pod:25:in `load'\n/Users/nimeshneema/.gem/ruby/3.3.6/bin/pod:25:in `&lt;main&gt;'\n</code></pre>\n</li>\n</ol>\n<p>I have looked around on the Web and on this forum but to no avail.</p>\n<p>Seeking guidance from someone who’s able to successfully build. What is it that I am missing here?</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2024-12-07T00:41:00.692Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 6,
+        "reads": 25,
+        "readers_count": 24,
+        "score": 35.0,
+        "yours": false,
+        "topic_id": 65311,
+        "topic_slug": "trouble-building-signal-ios-project",
+        "display_username": "Nimesh Neema",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://github.com/signalapp/Signal-iOS/blob/main/BUILDING.md",
+            "internal": false,
+            "reflection": false,
+            "title": "Signal-iOS/BUILDING.md at main · signalapp/Signal-iOS · GitHub",
+            "clicks": 3
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 30951,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/trouble-building-signal-ios-project/65311/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      256760
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      435
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "CocoaPods will go completely read-only December 2026",
+      "id": 74603,
+      "title": "CocoaPods will go completely read-only December 2026",
+      "slug": "cocoapods-will-go-completely-read-only-december-2026",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2026-02-04T05:33:32.457Z",
+      "last_posted_at": "2026-02-04T05:33:32.570Z",
+      "bumped": true,
+      "bumped_at": "2026-02-04T05:33:32.570Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 2,
+      "views": 69,
+      "category_id": 21,
+      "featured_link": null,
+      "op_like_count": 2,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 35392,
+            "username": "x-sheep",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/x-sheep/{size}/55292_2.png",
+            "trust_level": 1
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Unable to get a call from Signal-Desktop on Signal-iOS",
+      "id": 70344,
+      "title": "Unable to get a call from Signal-Desktop on Signal-iOS",
+      "slug": "unable-to-get-a-call-from-signal-desktop-on-signal-ios",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2025-07-10T04:57:09.651Z",
+      "last_posted_at": "2025-07-10T04:57:09.713Z",
+      "bumped": true,
+      "bumped_at": "2025-07-10T04:57:09.713Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 47,
+      "category_id": 21,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 31092,
+            "username": "Sushmargowda27",
+            "name": "Sushma R",
+            "avatar_template": "/user_avatar/community.signalusers.org/sushmargowda27/{size}/49995_2.png",
+            "trust_level": 1
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Trouble building signal iOS 6.0.0.11 project, pods and concurrency issues",
+      "id": 67436,
+      "title": "Trouble building signal iOS 6.0.0.11 project, pods and concurrency issues",
+      "slug": "trouble-building-signal-ios-6-0-0-11-project-pods-and-concurrency-issues",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/1/a/1a839aed5b97865488e77a84de13d4d650d3d90d_2_1024x768.jpeg",
+      "created_at": "2025-03-05T10:47:29.158Z",
+      "last_posted_at": "2025-04-08T20:28:25.364Z",
+      "bumped": true,
+      "bumped_at": "2025-04-08T20:28:25.364Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 110,
+      "category_id": 21,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 26982,
+            "username": "stark226",
+            "name": "Stefano",
+            "avatar_template": "/user_avatar/community.signalusers.org/stark226/{size}/44780_2.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 1530,
+            "username": "ayavorskiy",
+            "name": "Alex Yavorskiy",
+            "avatar_template": "/user_avatar/community.signalusers.org/ayavorskiy/{size}/1306_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Trouble building Signal iOS project",
+  "id": 65311,
+  "title": "Trouble building Signal iOS project",
+  "posts_count": 1,
+  "created_at": "2024-12-07T00:41:00.630Z",
+  "views": 114,
+  "reply_count": 0,
+  "like_count": 0,
+  "last_posted_at": "2024-12-07T00:41:00.692Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "trouble-building-signal-ios-project",
+  "category_id": 21,
+  "word_count": 1289,
+  "deleted_at": null,
+  "user_id": 30951,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_65311",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 30951,
+        "username": "nimeshneema",
+        "name": "Nimesh Neema",
+        "avatar_template": "/user_avatar/community.signalusers.org/nimeshneema/{size}/49858_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 0
+      }
+    ],
+    "created_by": {
+      "id": 30951,
+      "username": "nimeshneema",
+      "name": "Nimesh Neema",
+      "avatar_template": "/user_avatar/community.signalusers.org/nimeshneema/{size}/49858_2.png"
+    },
+    "last_poster": {
+      "id": 30951,
+      "username": "nimeshneema",
+      "name": "Nimesh Neema",
+      "avatar_template": "/user_avatar/community.signalusers.org/nimeshneema/{size}/49858_2.png"
+    },
+    "links": [
+      {
+        "url": "https://github.com/signalapp/Signal-iOS/blob/main/BUILDING.md",
+        "title": "Signal-iOS/BUILDING.md at main · signalapp/Signal-iOS · GitHub",
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 3,
+        "user_id": 30951,
+        "domain": "github.com",
+        "root_domain": "github.com"
+      }
+    ]
+  },
+  "bookmarks": []
+}

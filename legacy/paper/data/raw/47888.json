@@ -1,0 +1,730 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 192270,
+        "name": "MVP Kryptonite",
+        "username": "MVP_Kryptonite",
+        "avatar_template": "/user_avatar/community.signalusers.org/mvp_kryptonite/{size}/33469_2.png",
+        "created_at": "2022-10-10T19:53:37.117Z",
+        "cooked": "<p>As an Apple iPhone, iPad, Mac and MacBook user, I would like to share and receive via Signal apps high efficiency media types which will enable me to view HDR content, higher bit depth content and also save on storage space as the files have improved compression</p>\n<p>Some info below<br>\nApple have been leading the change some years ago</p><aside class=\"onebox allowlistedgeneric\" data-onebox-src=\"https://support.apple.com/en-gb/116944\">\n  <header class=\"source\">\n      <img src=\"https://community.signalusers.org/uploads/db3609/original/3X/f/6/f635f8d5a1b2b3871fbf472640659f367530c7e5.png\" class=\"site-icon\" alt=\"\" data-dominant-color=\"888888\" width=\"64\" height=\"64\">\n\n      <a href=\"https://support.apple.com/en-gb/116944\" target=\"_blank\" rel=\"noopener nofollow ugc\">Apple Support</a>\n  </header>\n\n  <article class=\"onebox-body\">\n    \n\n<h3><a href=\"https://support.apple.com/en-gb/116944\" target=\"_blank\" rel=\"noopener nofollow ugc\">Using HEIF or HEVC media on Apple devices – Apple Support (UK)</a></h3>\n\n  <p>Upgrade to iOS 11 or later or macOS High Sierra or later to view, edit or duplicate HEIF or HEVC media captured with an iPhone or iPad.</p>\n\n\n  </article>\n\n  <div class=\"onebox-metadata\">\n    \n    \n  </div>\n\n  <div style=\"clear: both\"></div>\n</aside>\n\n<p>I shoot with Canon but other manufactures are available (I couldn’t find HEVC version from Canon but See Wiki links below)<br>\n<a href=\"https://www.canon.co.uk/pro/infobank/image-file-types/\" class=\"onebox\" target=\"_blank\" rel=\"noopener nofollow ugc\">https://www.canon.co.uk/pro/infobank/image-file-types/</a></p>\n<aside class=\"onebox wikipedia\" data-onebox-src=\"https://en.wikipedia.org/wiki/High_Efficiency_Video_Coding\">\n  <header class=\"source\">\n\n      <a href=\"https://en.wikipedia.org/wiki/High_Efficiency_Video_Coding\" target=\"_blank\" rel=\"noopener nofollow ugc\">en.wikipedia.org</a>\n  </header>\n\n  <article class=\"onebox-body\">\n    \n\n<h3><a href=\"https://en.wikipedia.org/wiki/High_Efficiency_Video_Coding\" target=\"_blank\" rel=\"noopener nofollow ugc\">High Efficiency Video Coding</a></h3>\n\n<p>\n High Efficiency Video Coding (HEVC), also known as H.265 and MPEG-H Part 2, is a proprietary video compression standard designed as part of the MPEG-H project as a successor to the widely used Advanced Video Coding (AVC, H.264, or MPEG-4 Part 10). In comparison to AVC, HEVC offers from 25% to 50% better data compression at the same level of video quality, or substantially improved video quality at the same bit rate. It supports resolutions up to 8192×4320, including 8K UHD, and unlike the prima...</p>\n\n  </article>\n\n  <div class=\"onebox-metadata\">\n    \n    \n  </div>\n\n  <div style=\"clear: both\"></div>\n</aside>\n<aside class=\"onebox wikipedia\" data-onebox-src=\"https://en.wikipedia.org/wiki/High_Efficiency_Image_File_Format\">\n  <header class=\"source\">\n\n      <a href=\"https://en.wikipedia.org/wiki/High_Efficiency_Image_File_Format\" target=\"_blank\" rel=\"noopener nofollow ugc\">en.wikipedia.org</a>\n  </header>\n\n  <article class=\"onebox-body\">\n    <div class=\"aspect-image\" style=\"--aspect-ratio:330/79;\"><img src=\"https://community.signalusers.org/uploads/db3609/original/3X/a/4/a437af4cad3077b9a18a7b07e31d651f5860a8ae.png\" class=\"thumbnail\" data-dominant-color=\"705643\" width=\"330\" height=\"79\"></div>\n\n<h3><a href=\"https://en.wikipedia.org/wiki/High_Efficiency_Image_File_Format\" target=\"_blank\" rel=\"noopener nofollow ugc\">High Efficiency Image File Format</a></h3>\n\n<p>High Efficiency Image File Format (HEIF) is a digital container format for storing individual digital images and image sequences. The standard covers multimedia files that can also include other media streams, such as timed text, audio and video.\n HEIF can store images encoded with multiple coding formats, for example both SDR and HDR images.  HEVC is an image and video encoding format and the default image codec used with HEIF. HEIF files containing HEVC-encoded images are also known as HEIC fil...</p>\n\n  </article>\n\n  <div class=\"onebox-metadata\">\n    \n    \n  </div>\n\n  <div style=\"clear: both\"></div>\n</aside>\n",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 4,
+        "updated_at": "2025-10-21T13:30:24.426Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 6,
+        "reads": 97,
+        "readers_count": 96,
+        "score": 334.4,
+        "yours": false,
+        "topic_id": 47888,
+        "topic_slug": "support-heif-hevc-media",
+        "display_username": "MVP Kryptonite",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 2,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://en.wikipedia.org/wiki/High_Efficiency_Image_File_Format",
+            "internal": false,
+            "reflection": false,
+            "title": "High Efficiency Image File Format - Wikipedia",
+            "clicks": 1
+          },
+          {
+            "url": "https://www.canon.co.uk/pro/infobank/image-file-types/",
+            "internal": false,
+            "reflection": false,
+            "clicks": 1
+          },
+          {
+            "url": "https://en.wikipedia.org/wiki/High_Efficiency_Video_Coding",
+            "internal": false,
+            "reflection": false,
+            "title": "High Efficiency Video Coding - Wikipedia",
+            "clicks": 0
+          },
+          {
+            "url": "https://support.apple.com/en-gb/116944",
+            "internal": false,
+            "reflection": false,
+            "title": "Using HEIF or HEVC media on Apple devices – Apple Support (UK)",
+            "clicks": 0
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 19
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 22519,
+        "hidden": false,
+        "trust_level": 1,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/support-heif-hevc-media/47888/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      },
+      {
+        "id": 208439,
+        "name": "",
+        "username": "jesse",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/j/c77e96/{size}.png",
+        "created_at": "2023-02-26T00:57:39.696Z",
+        "cooked": "<p>Some android phones will save in HEIF as well, this would be great there too.</p>",
+        "post_number": 2,
+        "post_type": 1,
+        "posts_count": 4,
+        "updated_at": "2023-02-26T00:57:39.696Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 66,
+        "readers_count": 65,
+        "score": 108.2,
+        "yours": false,
+        "topic_id": 47888,
+        "topic_slug": "support-heif-hevc-media",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 6
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 2576,
+        "hidden": false,
+        "trust_level": 1,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/support-heif-hevc-media/47888/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 277707,
+        "name": "Jeffrey",
+        "username": "chiwaijm",
+        "avatar_template": "/user_avatar/community.signalusers.org/chiwaijm/{size}/54624_2.png",
+        "created_at": "2025-10-21T13:14:06.164Z",
+        "cooked": "<p>.heif files support on iOS too. Same as in Android.</p>\n<p><a class=\"mention\" href=\"/u/rassilon1963\">@rassilon1963</a></p>\n<p>Can you test on Desktop?</p>",
+        "post_number": 3,
+        "post_type": 1,
+        "posts_count": 4,
+        "updated_at": "2025-10-21T13:14:06.164Z",
+        "reply_count": 1,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 34,
+        "readers_count": 33,
+        "score": 26.8,
+        "yours": false,
+        "topic_id": 47888,
+        "topic_slug": "support-heif-hevc-media",
+        "display_username": "Jeffrey",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "",
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 1
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 11128,
+        "hidden": false,
+        "trust_level": 3,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/support-heif-hevc-media/47888/3",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 277711,
+        "name": "Talya (she/her)",
+        "username": "rassilon1963",
+        "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+        "created_at": "2025-10-21T13:29:58.091Z",
+        "cooked": "<p>HEIF extension supported on desktop (converted to jpg just like HEIC extension).<br>\nHEVC does not seem to be supported on Desktop though. when using the bare extension it is sent as file (rather than as media), when sending MP4 with the HEVC encoding of H.265 it initially appears fine, but then sends as file.<br>\n<div class=\"lightbox-wrapper\"><a class=\"lightbox\" href=\"https://community.signalusers.org/uploads/db3609/original/3X/e/3/e3e12ac5971b528b355ad475d064687e9efb81c2.png\" data-download-href=\"https://community.signalusers.org/uploads/db3609/e3e12ac5971b528b355ad475d064687e9efb81c2\" title=\"Screenshot_20251021_152413\"><img src=\"https://community.signalusers.org/uploads/db3609/optimized/3X/e/3/e3e12ac5971b528b355ad475d064687e9efb81c2_2_690x122.png\" alt=\"Screenshot_20251021_152413\" data-base62-sha1=\"wvUNQGZLP588iY3V78HsoIdDMc2\" width=\"690\" height=\"122\" srcset=\"https://community.signalusers.org/uploads/db3609/optimized/3X/e/3/e3e12ac5971b528b355ad475d064687e9efb81c2_2_690x122.png, https://community.signalusers.org/uploads/db3609/optimized/3X/e/3/e3e12ac5971b528b355ad475d064687e9efb81c2_2_1035x183.png 1.5x, https://community.signalusers.org/uploads/db3609/optimized/3X/e/3/e3e12ac5971b528b355ad475d064687e9efb81c2_2_1380x244.png 2x\" data-dominant-color=\"1C1C1C\"><div class=\"meta\"><svg class=\"fa d-icon d-icon-far-image svg-icon\" aria-hidden=\"true\"><use href=\"#far-image\"></use></svg><span class=\"filename\">Screenshot_20251021_152413</span><span class=\"informations\">2187×388 11.8 KB</span><svg class=\"fa d-icon d-icon-discourse-expand svg-icon\" aria-hidden=\"true\"><use href=\"#discourse-expand\"></use></svg></div></a></div><br>\n<div class=\"lightbox-wrapper\"><a class=\"lightbox\" href=\"https://community.signalusers.org/uploads/db3609/original/3X/6/7/676aa3174041ea8d9fbf4d0b8e4386e5cacd061b.png\" data-download-href=\"https://community.signalusers.org/uploads/db3609/676aa3174041ea8d9fbf4d0b8e4386e5cacd061b\" title=\"Screenshot_20251021_152755\"><img src=\"https://community.signalusers.org/uploads/db3609/optimized/3X/6/7/676aa3174041ea8d9fbf4d0b8e4386e5cacd061b_2_690x121.png\" alt=\"Screenshot_20251021_152755\" data-base62-sha1=\"eKREcbOsgedBoqkywBWktyXjkjp\" width=\"690\" height=\"121\" srcset=\"https://community.signalusers.org/uploads/db3609/optimized/3X/6/7/676aa3174041ea8d9fbf4d0b8e4386e5cacd061b_2_690x121.png, https://community.signalusers.org/uploads/db3609/optimized/3X/6/7/676aa3174041ea8d9fbf4d0b8e4386e5cacd061b_2_1035x181.png 1.5x, https://community.signalusers.org/uploads/db3609/optimized/3X/6/7/676aa3174041ea8d9fbf4d0b8e4386e5cacd061b_2_1380x242.png 2x\" data-dominant-color=\"181818\"><div class=\"meta\"><svg class=\"fa d-icon d-icon-far-image svg-icon\" aria-hidden=\"true\"><use href=\"#far-image\"></use></svg><span class=\"filename\">Screenshot_20251021_152755</span><span class=\"informations\">2224×392 4.7 KB</span><svg class=\"fa d-icon d-icon-discourse-expand svg-icon\" aria-hidden=\"true\"><use href=\"#discourse-expand\"></use></svg></div></a></div><br>\n<div class=\"lightbox-wrapper\"><a class=\"lightbox\" href=\"https://community.signalusers.org/uploads/db3609/original/3X/a/1/a1ab0f581b2663df5b6056a4627909d959ce26c6.jpeg\" data-download-href=\"https://community.signalusers.org/uploads/db3609/a1ab0f581b2663df5b6056a4627909d959ce26c6\" title=\"Screenshot_20251021_152759\"><img src=\"https://community.signalusers.org/uploads/db3609/optimized/3X/a/1/a1ab0f581b2663df5b6056a4627909d959ce26c6_2_402x500.jpeg\" alt=\"Screenshot_20251021_152759\" data-base62-sha1=\"n4bmKD6P56zXVi59TQw5KjYVYpM\" width=\"402\" height=\"500\" srcset=\"https://community.signalusers.org/uploads/db3609/optimized/3X/a/1/a1ab0f581b2663df5b6056a4627909d959ce26c6_2_402x500.jpeg, https://community.signalusers.org/uploads/db3609/optimized/3X/a/1/a1ab0f581b2663df5b6056a4627909d959ce26c6_2_603x750.jpeg 1.5x, https://community.signalusers.org/uploads/db3609/original/3X/a/1/a1ab0f581b2663df5b6056a4627909d959ce26c6.jpeg 2x\" data-dominant-color=\"60485D\"><div class=\"meta\"><svg class=\"fa d-icon d-icon-far-image svg-icon\" aria-hidden=\"true\"><use href=\"#far-image\"></use></svg><span class=\"filename\">Screenshot_20251021_152759</span><span class=\"informations\">663×823 63.3 KB</span><svg class=\"fa d-icon d-icon-discourse-expand svg-icon\" aria-hidden=\"true\"><use href=\"#discourse-expand\"></use></svg></div></a></div></p>\n<p>changing the category to Desktop as this is resolved on iOS and Android.</p>",
+        "post_number": 4,
+        "post_type": 1,
+        "posts_count": 4,
+        "updated_at": "2025-10-21T13:30:16.239Z",
+        "reply_count": 0,
+        "reply_to_post_number": 3,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 34,
+        "readers_count": 33,
+        "score": 21.8,
+        "yours": false,
+        "topic_id": 47888,
+        "topic_slug": "support-heif-hevc-media",
+        "display_username": "Talya (she/her)",
+        "primary_group_name": "top_contributors",
+        "flair_name": "top_contributors",
+        "flair_url": "compass",
+        "flair_bg_color": "6058CA",
+        "flair_color": "fff",
+        "flair_group_id": 48,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "Top Contributor",
+        "title_is_group": true,
+        "reply_to_user": {
+          "id": 11128,
+          "username": "chiwaijm",
+          "name": "Jeffrey",
+          "avatar_template": "/user_avatar/community.signalusers.org/chiwaijm/{size}/54624_2.png"
+        },
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 1
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 18285,
+        "hidden": false,
+        "trust_level": 4,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/support-heif-hevc-media/47888/4",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      }
+    ],
+    "stream": [
+      192270,
+      208439,
+      277707,
+      277711
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      1223
+    ],
+    [
+      2,
+      1085
+    ],
+    [
+      3,
+      116
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Blocked contacts should not be able to see my new profile pictures or new names or any other profile update",
+      "id": 69865,
+      "title": "Blocked contacts should not be able to see my new profile pictures or new names or any other profile update",
+      "slug": "blocked-contacts-should-not-be-able-to-see-my-new-profile-pictures-or-new-names-or-any-other-profile-update",
+      "posts_count": 13,
+      "reply_count": 8,
+      "highest_post_number": 13,
+      "image_url": null,
+      "created_at": "2025-06-20T04:08:48.788Z",
+      "last_posted_at": "2025-06-23T22:05:28.601Z",
+      "bumped": true,
+      "bumped_at": "2025-06-23T22:05:28.601Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 14,
+      "views": 225,
+      "category_id": 20,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 33272,
+            "username": "speceh",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/s/f0a364/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 2521,
+            "username": "Herohtar",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+            "primary_group_name": "volunteer_moderators",
+            "flair_name": "volunteer_moderators",
+            "flair_url": "shield-halved",
+            "flair_bg_color": "1d8663",
+            "flair_color": "fff",
+            "flair_group_id": 41,
+            "moderator": true,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 1499,
+            "username": "CueHD",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/cuehd/{size}/42510_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Simplify Desktop install instructions for Linux",
+      "id": 69230,
+      "title": "Simplify Desktop install instructions for Linux",
+      "slug": "simplify-desktop-install-instructions-for-linux",
+      "posts_count": 12,
+      "reply_count": 9,
+      "highest_post_number": 13,
+      "image_url": null,
+      "created_at": "2025-05-18T20:07:26.498Z",
+      "last_posted_at": "2025-06-01T03:10:16.752Z",
+      "bumped": true,
+      "bumped_at": "2025-06-01T03:10:16.752Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 14,
+      "views": 222,
+      "category_id": 20,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 32938,
+            "username": "nanometerHAVEN",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/n/c77e96/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 6918,
+            "username": "anon72041163",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/a/a6a055/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 19883,
+            "username": "rhimbo",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/r/a4c791/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 11073,
+            "username": "erik55",
+            "name": "☠☠☠",
+            "avatar_template": "/user_avatar/community.signalusers.org/erik55/{size}/14534_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Upload multiple photos in desktop stories",
+      "id": 66988,
+      "title": "Upload multiple photos in desktop stories",
+      "slug": "upload-multiple-photos-in-desktop-stories",
+      "posts_count": 4,
+      "reply_count": 2,
+      "highest_post_number": 4,
+      "image_url": null,
+      "created_at": "2025-02-17T21:30:14.332Z",
+      "last_posted_at": "2025-02-18T21:43:23.325Z",
+      "bumped": true,
+      "bumped_at": "2025-02-18T21:43:23.325Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 1,
+      "views": 85,
+      "category_id": 20,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 405,
+            "username": "anarcat",
+            "name": "Anarcat",
+            "avatar_template": "/user_avatar/community.signalusers.org/anarcat/{size}/342_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Support HEIF &amp; HEVC media",
+  "id": 47888,
+  "title": "Support HEIF & HEVC media",
+  "posts_count": 4,
+  "created_at": "2022-10-10T19:53:36.999Z",
+  "views": 460,
+  "reply_count": 1,
+  "like_count": 27,
+  "last_posted_at": "2025-10-21T13:29:58.091Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "support-heif-hevc-media",
+  "category_id": 20,
+  "word_count": 224,
+  "deleted_at": null,
+  "user_id": 22519,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": "https://community.signalusers.org/uploads/db3609/original/3X/a/4/a437af4cad3077b9a18a7b07e31d651f5860a8ae.png",
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_47888",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 4,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 4,
+  "show_read_indicator": false,
+  "thumbnails": [
+    {
+      "max_width": null,
+      "max_height": null,
+      "width": 330,
+      "height": 79,
+      "url": "https://community.signalusers.org/uploads/db3609/original/3X/a/4/a437af4cad3077b9a18a7b07e31d651f5860a8ae.png"
+    }
+  ],
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 2576,
+        "username": "jesse",
+        "name": "",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/j/c77e96/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 1
+      },
+      {
+        "id": 11128,
+        "username": "chiwaijm",
+        "name": "Jeffrey",
+        "avatar_template": "/user_avatar/community.signalusers.org/chiwaijm/{size}/54624_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 3
+      },
+      {
+        "id": 18285,
+        "username": "rassilon1963",
+        "name": "Talya (she/her)",
+        "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+        "post_count": 1,
+        "primary_group_name": "top_contributors",
+        "flair_name": "top_contributors",
+        "flair_url": "compass",
+        "flair_color": "fff",
+        "flair_bg_color": "6058CA",
+        "flair_group_id": 48,
+        "trust_level": 4
+      },
+      {
+        "id": 22519,
+        "username": "MVP_Kryptonite",
+        "name": "MVP Kryptonite",
+        "avatar_template": "/user_avatar/community.signalusers.org/mvp_kryptonite/{size}/33469_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 1
+      }
+    ],
+    "created_by": {
+      "id": 22519,
+      "username": "MVP_Kryptonite",
+      "name": "MVP Kryptonite",
+      "avatar_template": "/user_avatar/community.signalusers.org/mvp_kryptonite/{size}/33469_2.png"
+    },
+    "last_poster": {
+      "id": 18285,
+      "username": "rassilon1963",
+      "name": "Talya (she/her)",
+      "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png"
+    },
+    "links": [
+      {
+        "url": "https://en.wikipedia.org/wiki/High_Efficiency_Image_File_Format",
+        "title": "High Efficiency Image File Format - Wikipedia",
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 1,
+        "user_id": 22519,
+        "domain": "en.wikipedia.org",
+        "root_domain": "wikipedia.org"
+      },
+      {
+        "url": "https://www.canon.co.uk/pro/infobank/image-file-types/",
+        "title": null,
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 1,
+        "user_id": 22519,
+        "domain": "www.canon.co.uk",
+        "root_domain": "canon.co.uk"
+      }
+    ]
+  },
+  "bookmarks": []
+}

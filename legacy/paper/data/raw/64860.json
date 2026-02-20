@@ -1,0 +1,409 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 255444,
+        "name": "SR",
+        "username": "yepeesteve",
+        "avatar_template": "/user_avatar/community.signalusers.org/yepeesteve/{size}/49542_2.png",
+        "created_at": "2024-11-13T05:03:22.883Z",
+        "cooked": "<p>It would be nice to select multiple media items like photos and videos to save to local camera roll. This multiple selection can be either enabled by swiping over the media items instead of selecting one by one and/or select the month grouping to select all media items for a given month to save to camera roll (alternatively to files) - Thanks!</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2024-11-13T05:03:22.883Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 2,
+        "reads": 24,
+        "readers_count": 23,
+        "score": 59.8,
+        "yours": false,
+        "topic_id": 64860,
+        "topic_slug": "select-multiple-media-files-by-swiping-over-or-by-selecting-the-month",
+        "display_username": "SR",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 3
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 30717,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/select-multiple-media-files-by-swiping-over-or-by-selecting-the-month/64860/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      255444
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      459
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Enable &ldquo;Enhanced Security&rdquo; on iOS 26 to help protect against exploits",
+      "id": 71551,
+      "title": "Enable \"Enhanced Security\" on iOS 26 to help protect against exploits",
+      "slug": "enable-enhanced-security-on-ios-26-to-help-protect-against-exploits",
+      "posts_count": 10,
+      "reply_count": 4,
+      "highest_post_number": 11,
+      "image_url": null,
+      "created_at": "2025-09-10T07:29:21.730Z",
+      "last_posted_at": "2026-01-19T21:40:45.113Z",
+      "bumped": true,
+      "bumped_at": "2026-01-19T21:40:45.113Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 53,
+      "views": 653,
+      "category_id": 19,
+      "featured_link": null,
+      "op_like_count": 31,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 16653,
+            "username": "QuickBanana",
+            "name": null,
+            "avatar_template": "/user_avatar/community.signalusers.org/quickbanana/{size}/35290_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 24521,
+            "username": "nuser",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/n/3bc359/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 11128,
+            "username": "chiwaijm",
+            "name": "Jeffrey",
+            "avatar_template": "/user_avatar/community.signalusers.org/chiwaijm/{size}/54624_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 34116,
+            "username": "Rocker",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/r/ac8455/{size}.png",
+            "trust_level": 1
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Block universal links opening in external apps",
+      "id": 69095,
+      "title": "Block universal links opening in external apps",
+      "slug": "block-universal-links-opening-in-external-apps",
+      "posts_count": 7,
+      "reply_count": 4,
+      "highest_post_number": 7,
+      "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/6/e/6e2eae779f48a3e23d8a2118140ee92285bc495a_2_1024x421.jpeg",
+      "created_at": "2025-05-12T12:37:06.865Z",
+      "last_posted_at": "2025-05-13T19:54:44.770Z",
+      "bumped": true,
+      "bumped_at": "2025-05-13T19:54:44.770Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 5,
+      "views": 119,
+      "category_id": 19,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 30749,
+            "username": "rando",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/r/0ea827/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 2521,
+            "username": "Herohtar",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+            "primary_group_name": "volunteer_moderators",
+            "flair_name": "volunteer_moderators",
+            "flair_url": "shield-halved",
+            "flair_bg_color": "1d8663",
+            "flair_color": "fff",
+            "flair_group_id": 41,
+            "moderator": true,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 32407,
+            "username": "unknown2U",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/u/a3d4f5/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 1499,
+            "username": "CueHD",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/cuehd/{size}/42510_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 3709,
+            "username": "aihpcfl",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/aihpcfl/{size}/3917_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Support message translation",
+      "id": 67869,
+      "title": "Support message translation",
+      "slug": "support-message-translation",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2025-03-22T13:10:33.485Z",
+      "last_posted_at": "2025-03-22T13:10:33.536Z",
+      "bumped": true,
+      "bumped_at": "2025-03-22T13:10:33.536Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 6,
+      "views": 69,
+      "category_id": 19,
+      "featured_link": null,
+      "op_like_count": 6,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 32243,
+            "username": "superdecent",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/s/3bc359/{size}.png",
+            "trust_level": 0
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Select multiple media files by swiping over or by selecting the month.",
+  "id": 64860,
+  "title": "Select multiple media files by swiping over or by selecting the month.",
+  "posts_count": 1,
+  "created_at": "2024-11-13T05:03:22.840Z",
+  "views": 46,
+  "reply_count": 0,
+  "like_count": 3,
+  "last_posted_at": "2024-11-13T05:03:22.883Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "select-multiple-media-files-by-swiping-over-or-by-selecting-the-month",
+  "category_id": 19,
+  "word_count": 62,
+  "deleted_at": null,
+  "user_id": 30717,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_64860",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 30717,
+        "username": "yepeesteve",
+        "name": "SR",
+        "avatar_template": "/user_avatar/community.signalusers.org/yepeesteve/{size}/49542_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 0
+      }
+    ],
+    "created_by": {
+      "id": 30717,
+      "username": "yepeesteve",
+      "name": "SR",
+      "avatar_template": "/user_avatar/community.signalusers.org/yepeesteve/{size}/49542_2.png"
+    },
+    "last_poster": {
+      "id": 30717,
+      "username": "yepeesteve",
+      "name": "SR",
+      "avatar_template": "/user_avatar/community.signalusers.org/yepeesteve/{size}/49542_2.png"
+    }
+  },
+  "bookmarks": []
+}

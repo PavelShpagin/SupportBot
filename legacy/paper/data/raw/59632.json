@@ -1,0 +1,2795 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 239694,
+        "name": "",
+        "username": "updates-bot",
+        "avatar_template": "/user_avatar/community.signalusers.org/updates-bot/{size}/31268_2.png",
+        "created_at": "2024-03-14T17:11:54.663Z",
+        "cooked": "<aside class=\"quote group-volunteer_moderators\" data-username=\"awaitlink\" data-post=\"1\" data-topic=\"59559\" data-full=\"true\">\n<div class=\"title\">\n<div class=\"quote-controls\"></div>\n<img loading=\"lazy\" alt=\"\" width=\"24\" height=\"24\" src=\"https://community.signalusers.org/user_avatar/community.signalusers.org/awaitlink/48/48975_2.png\" class=\"avatar\"><a href=\"https://community.signalusers.org/t/server-updates-discussion-old/59559/1\">Server updates &amp; discussion (old)</a></div>\n<blockquote>\n<p><a class=\"mention\" href=\"/u/updates-bot\">@updates-bot</a> will kindly post new <a href=\"https://github.com/signalapp/Signal-Server\" rel=\"noopener nofollow ugc\">signalapp/Signal-Server</a> tags here for us (that only covers the main server at the moment).</p>\n<p>These will be posted to the unofficial <a href=\"https://community.signalusers.org/t/join-the-signal-community-discord-server/58381\">Discord server</a> as well.</p>\n<p>Feel free to talk about the posted changes, but for longer discussions using a separate topic may be better.</p>\n<p>(As an example it will post a recent server change soon™.)</p>\n</blockquote>\n</aside>\n<hr>\n<aside class=\"quote\" data-post=\"5\" data-topic=\"59559\">\n  <div class=\"title\">\n    <div class=\"quote-controls\"></div>\n    <img loading=\"lazy\" alt=\"\" width=\"24\" height=\"24\" src=\"https://community.signalusers.org/user_avatar/community.signalusers.org/awaitlink/48/48975_2.png\" class=\"avatar\">\n    <a href=\"https://community.signalusers.org/t/server-updates-discussion-old/59559/5\">Server updates &amp; discussion (old)</a> <a class=\"badge-category__wrapper \" href=\"/c/general/7\"><span data-category-id=\"7\" style=\"--category-badge-color: #AC41A9; --category-badge-text-color: #FFFFFF;\" data-drop-close=\"true\" class=\"badge-category \" title=\"Anything related to Signal which does not fit into the Support, Feature Requests or Development categories.\"><span class=\"badge-category__name\">General Discussion</span></span></a>\n  </div>\n  <blockquote>\n    I have an idea how this can be solved, but for now this post will have to do… \ncould not post commits to Discourse\n\nCaused by:\n    unexpected response = Object {\"action\": String(\"create_post\"), \"errors\": Array [String(\"No more than 3 consecutive replies are allowed. Please edit your previous reply, or wait for someone to reply to you.\")]}\n  </blockquote>\n</aside>\n\n<p>My owner <a class=\"mention\" href=\"/u/awaitlink\">@awaitlink</a> found out from <a href=\"https://discourse.suttacentral.net/t/limts-regarding-multiple-consecutive-posts-by-same-user/15799/14\" class=\"inline-onebox\" rel=\"noopener nofollow ugc\">Limts regarding multiple consecutive posts by same user - #14 by musiko - Meta - Discuss &amp; Discover</a> that, seemingly, more than 3 consecutive posts are allowed if the poster is the topic OP. So here we are.</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 454,
+        "updated_at": "2024-03-14T17:15:57.011Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 51,
+        "reads": 207,
+        "readers_count": 206,
+        "score": 386.4,
+        "yours": false,
+        "topic_id": 59632,
+        "topic_slug": "server-updates-discussion",
+        "display_username": "",
+        "primary_group_name": "automated_users",
+        "flair_name": "automated_users",
+        "flair_url": "robot",
+        "flair_bg_color": "71717f",
+        "flair_color": "ffffff",
+        "flair_group_id": 44,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://discourse.suttacentral.net/t/limts-regarding-multiple-consecutive-posts-by-same-user/15799/14",
+            "internal": false,
+            "reflection": false,
+            "title": "Limts regarding multiple consecutive posts by same user - #14 by musiko - Meta - Discuss & Discover",
+            "clicks": 6
+          },
+          {
+            "url": "https://community.signalusers.org/t/server-updates-discussion-old/59559/5",
+            "internal": true,
+            "reflection": false,
+            "title": "Server updates & discussion (old)",
+            "clicks": 0
+          },
+          {
+            "url": "https://community.signalusers.org/t/server-updates-discussion-old/59559",
+            "internal": true,
+            "reflection": false,
+            "title": "Server updates & discussion (old)",
+            "clicks": 0
+          },
+          {
+            "url": "https://community.signalusers.org/t/server-updates-discussion-old/59559/7",
+            "internal": true,
+            "reflection": true,
+            "title": "Server updates & discussion (old)",
+            "clicks": 4
+          }
+        ],
+        "read": true,
+        "user_title": "Unofficial Bot",
+        "title_is_group": false,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 4
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 21330,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/server-updates-discussion/59632/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      },
+      {
+        "id": 239450,
+        "name": "",
+        "username": "updates-bot",
+        "avatar_template": "/user_avatar/community.signalusers.org/updates-bot/{size}/31268_2.png",
+        "created_at": "2024-03-11T20:01:55.338Z",
+        "cooked": "<h2><a name=\"p-239450-new-version-1260-1\" class=\"anchor\" href=\"#p-239450-new-version-1260-1\" aria-label=\"Heading link\"></a>New Version: 12.6.0</h2>\n<aside class=\"quote no-group\">\n<blockquote>\n<p>5 new commits since 12.5.0:</p>\n<ul>\n<li>\n<p>Count group auth reqs without pniAsServiceId=true <a href=\"//github.com/signalapp/Signal-Server/commit/7d364ca7ce4251771eba5d331e9cec65a352e95c\" rel=\"noopener nofollow ugc\">[1]</a></p>\n</li>\n<li>\n<p>Address potential NullPointerException when calling Collection#contains <a href=\"//github.com/signalapp/Signal-Server/commit/2dc0ea2b891a344688294c326b9c86ec02b4c81a\" rel=\"noopener nofollow ugc\">[2]</a></p>\n</li>\n<li>\n<p>disable response buffering on the websocket <a href=\"//github.com/signalapp/Signal-Server/commit/9e510a678cc16c5358f80daac9988811ffcacdc4\" rel=\"noopener nofollow ugc\">[3]</a></p>\n<p>Jersey buffers responses (by default up to 8192 bytes) just so it can<br>\nadd a content length to responses. We already buffer our responses to<br>\nserialize them as protos, so we can compute the content length<br>\nourselves. Setting the buffer to zero disables buffering.</p>\n</li>\n<li>\n<p>Migrate DynamicConfigurationManager to use java.util.concurrent <a href=\"//github.com/signalapp/Signal-Server/commit/3dadaf933449ba9b4cbffdd9a9d987c7274a0e7e\" rel=\"noopener nofollow ugc\">[4]</a></p>\n</li>\n<li>\n<p>Update to the latest version of the spam filter <a href=\"//github.com/signalapp/Signal-Server/commit/e2368428880d0b6a2ade9a183cb7047619bd9982\" rel=\"noopener nofollow ugc\">[5]</a></p>\n</li>\n</ul>\n<hr>\n<p>Gathered from <a href=\"//github.com/signalapp/Signal-Server/compare/v12.5.0...v12.6.0\" rel=\"noopener nofollow ugc\">signalapp/Signal-Server v12.5.0…v12.6.0</a></p>\n</blockquote>\n</aside>\n<details>\n<summary>\nLocalization changes</summary>\n<aside class=\"quote no-group\">\n<blockquote>\n<p>Note: after clicking a link, it may take a few seconds before GitHub jumps to the file (try scrolling a bit if it doesn’t).</p>\n<h4>0 languages changed since 12.5.0:</h4>\n<p><em>No localization changes found</em></p>\n<p>Localization changes for the release are the same, as this is the first build of the release.</p>\n</blockquote>\n</aside>\n</details>",
+        "post_number": 2,
+        "post_type": 1,
+        "posts_count": 454,
+        "updated_at": "2024-03-14T17:15:01.172Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 4,
+        "reads": 207,
+        "readers_count": 206,
+        "score": 226.4,
+        "yours": false,
+        "topic_id": 59632,
+        "topic_slug": "server-updates-discussion",
+        "display_username": "",
+        "primary_group_name": "automated_users",
+        "flair_name": "automated_users",
+        "flair_url": "robot",
+        "flair_bg_color": "71717f",
+        "flair_color": "ffffff",
+        "flair_group_id": 44,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://community.signalusers.org/t/server-updates-discussion-old/59559/2",
+            "internal": true,
+            "reflection": true,
+            "title": "Server updates & discussion (old)",
+            "clicks": 0
+          }
+        ],
+        "read": true,
+        "user_title": "Unofficial Bot",
+        "title_is_group": false,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 7
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 21330,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/server-updates-discussion/59632/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 239534,
+        "name": "",
+        "username": "updates-bot",
+        "avatar_template": "/user_avatar/community.signalusers.org/updates-bot/{size}/31268_2.png",
+        "created_at": "2024-03-12T22:30:54.464Z",
+        "cooked": "<h2><a name=\"p-239534-new-version-1270-1\" class=\"anchor\" href=\"#p-239534-new-version-1270-1\" aria-label=\"Heading link\"></a>New Version: 12.7.0</h2>\n<aside class=\"quote no-group\">\n<blockquote>\n<p>2 new commits since 12.6.0:</p>\n<ul>\n<li>\n<p>Actually increment the \"get group credentials\" counter <a href=\"//github.com/signalapp/Signal-Server/commit/85b15fa63b292e95e108b1269301d8ee2149cc9c\" rel=\"noopener nofollow ugc\">[1]</a></p>\n</li>\n<li>\n<p>Adjust metrics in RemoveExpiredUsernameHoldsCommand <a href=\"//github.com/signalapp/Signal-Server/commit/f9533e016fd6b6c74f703021f6ee0bdc801c361d\" rel=\"noopener nofollow ugc\">[2]</a></p>\n</li>\n</ul>\n<hr>\n<p>Gathered from <a href=\"//github.com/signalapp/Signal-Server/compare/v12.6.0...v12.7.0\" rel=\"noopener nofollow ugc\">signalapp/Signal-Server v12.6.0…v12.7.0</a></p>\n</blockquote>\n</aside>\n<details>\n<summary>\nLocalization changes</summary>\n<aside class=\"quote no-group\">\n<blockquote>\n<p>Note: after clicking a link, it may take a few seconds before GitHub jumps to the file (try scrolling a bit if it doesn’t).</p>\n<h4>0 languages changed since 12.6.0:</h4>\n<p><em>No localization changes found</em></p>\n<p>Localization changes for the release are the same, as this is the first build of the release.</p>\n</blockquote>\n</aside>\n</details>",
+        "post_number": 3,
+        "post_type": 1,
+        "posts_count": 454,
+        "updated_at": "2024-03-14T17:15:01.176Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 3,
+        "reads": 161,
+        "readers_count": 160,
+        "score": 137.2,
+        "yours": false,
+        "topic_id": 59632,
+        "topic_slug": "server-updates-discussion",
+        "display_username": "",
+        "primary_group_name": "automated_users",
+        "flair_name": "automated_users",
+        "flair_url": "robot",
+        "flair_bg_color": "71717f",
+        "flair_color": "ffffff",
+        "flair_group_id": 44,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "Unofficial Bot",
+        "title_is_group": false,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 4
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 21330,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/server-updates-discussion/59632/3",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 239535,
+        "name": "",
+        "username": "updates-bot",
+        "avatar_template": "/user_avatar/community.signalusers.org/updates-bot/{size}/31268_2.png",
+        "created_at": "2024-03-12T22:40:54.501Z",
+        "cooked": "<h2><a name=\"p-239535-new-version-1280-1\" class=\"anchor\" href=\"#p-239535-new-version-1280-1\" aria-label=\"Heading link\"></a>New Version: 12.8.0</h2>\n<aside class=\"quote no-group\">\n<blockquote>\n<p>2 new commits since 12.7.0:</p>\n<ul>\n<li>\n<p>Replace extraneous SecureRandom with empty byte array <a href=\"//github.com/signalapp/Signal-Server/commit/fd9eb462ccc581037340dfbf29a52717f5de509b\" rel=\"noopener nofollow ugc\">[1]</a></p>\n</li>\n<li>\n<p>Move WebSocketClient SecureRandom to a static field <a href=\"//github.com/signalapp/Signal-Server/commit/3d32b68bb2a8fed299b7e1f0d4beaf57d271846e\" rel=\"noopener nofollow ugc\">[2]</a></p>\n</li>\n</ul>\n<hr>\n<p>Gathered from <a href=\"//github.com/signalapp/Signal-Server/compare/v12.7.0...v12.8.0\" rel=\"noopener nofollow ugc\">signalapp/Signal-Server v12.7.0…v12.8.0</a></p>\n</blockquote>\n</aside>\n<details>\n<summary>\nLocalization changes</summary>\n<aside class=\"quote no-group\">\n<blockquote>\n<p>Note: after clicking a link, it may take a few seconds before GitHub jumps to the file (try scrolling a bit if it doesn’t).</p>\n<h4>0 languages changed since 12.7.0:</h4>\n<p><em>No localization changes found</em></p>\n<p>Localization changes for the release are the same, as this is the first build of the release.</p>\n</blockquote>\n</aside>\n</details>",
+        "post_number": 4,
+        "post_type": 1,
+        "posts_count": 454,
+        "updated_at": "2024-03-14T17:15:01.179Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 156,
+        "readers_count": 155,
+        "score": 126.2,
+        "yours": false,
+        "topic_id": 59632,
+        "topic_slug": "server-updates-discussion",
+        "display_username": "",
+        "primary_group_name": "automated_users",
+        "flair_name": "automated_users",
+        "flair_url": "robot",
+        "flair_bg_color": "71717f",
+        "flair_color": "ffffff",
+        "flair_group_id": 44,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "Unofficial Bot",
+        "title_is_group": false,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 4
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 21330,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/server-updates-discussion/59632/4",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 239629,
+        "name": "",
+        "username": "updates-bot",
+        "avatar_template": "/user_avatar/community.signalusers.org/updates-bot/{size}/31268_2.png",
+        "created_at": "2024-03-13T23:10:42.339Z",
+        "cooked": "<h2><a name=\"p-239629-new-version-1290-1\" class=\"anchor\" href=\"#p-239629-new-version-1290-1\" aria-label=\"Heading link\"></a>New Version: 12.9.0</h2>\n<aside class=\"quote no-group\">\n<blockquote>\n<p>4 new commits since 12.8.0:</p>\n<ul>\n<li>\n<p>Remove RecaptchaClient <a href=\"//github.com/signalapp/Signal-Server/commit/a4d4a9c686b83a6cda44047175f8c8fea677406b\" rel=\"noopener nofollow ugc\">[1]</a></p>\n</li>\n<li>\n<p>Support \"captcha\" rename in AnswerChallengeRequest.type <a href=\"//github.com/signalapp/Signal-Server/commit/8574494573f42e3c6a1579430bf6b66dad2bb1b4\" rel=\"noopener nofollow ugc\">[2]</a></p>\n</li>\n<li>\n<p>Don't produce zkgroup auth creds with PNI as ACI <a href=\"//github.com/signalapp/Signal-Server/commit/0ab2428d874b883a7d6a558876ff31fef593b661\" rel=\"noopener nofollow ugc\">[3]</a></p>\n</li>\n<li>\n<p>Rename obsolete uses of recaptcha <a href=\"//github.com/signalapp/Signal-Server/commit/2c2b5d555e059fa8bdbe9365df85f1dd0134503f\" rel=\"noopener nofollow ugc\">[4]</a></p>\n</li>\n</ul>\n<hr>\n<p>Gathered from <a href=\"//github.com/signalapp/Signal-Server/compare/v12.8.0...v12.9.0\" rel=\"noopener nofollow ugc\">signalapp/Signal-Server v12.8.0…v12.9.0</a></p>\n</blockquote>\n</aside>\n<details>\n<summary>\nLocalization changes</summary>\n<aside class=\"quote no-group\">\n<blockquote>\n<p>Note: after clicking a link, it may take a few seconds before GitHub jumps to the file (try scrolling a bit if it doesn’t).</p>\n<h4>0 languages changed since 12.8.0:</h4>\n<p><em>No localization changes found</em></p>\n<p>Localization changes for the release are the same, as this is the first build of the release.</p>\n</blockquote>\n</aside>\n</details>",
+        "post_number": 5,
+        "post_type": 1,
+        "posts_count": 454,
+        "updated_at": "2024-03-14T17:15:01.181Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 139,
+        "readers_count": 138,
+        "score": 87.8,
+        "yours": false,
+        "topic_id": 59632,
+        "topic_slug": "server-updates-discussion",
+        "display_username": "",
+        "primary_group_name": "automated_users",
+        "flair_name": "automated_users",
+        "flair_url": "robot",
+        "flair_bg_color": "71717f",
+        "flair_color": "ffffff",
+        "flair_group_id": 44,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "Unofficial Bot",
+        "title_is_group": false,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 2
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 21330,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/server-updates-discussion/59632/5",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 240073,
+        "name": "",
+        "username": "updates-bot",
+        "avatar_template": "/user_avatar/community.signalusers.org/updates-bot/{size}/31268_2.png",
+        "created_at": "2024-03-19T19:10:58.700Z",
+        "cooked": "<h2><a name=\"p-240073-new-version-12100-1\" class=\"anchor\" href=\"#p-240073-new-version-12100-1\" aria-label=\"Heading link\"></a>New Version: 12.10.0</h2>\n<aside class=\"quote no-group\">\n<blockquote>\n<p>3 new commits since 12.9.0:</p>\n<ul>\n<li>\n<p>Add JettyHttpConfigurationCustomizer <a href=\"//github.com/signalapp/Signal-Server/commit/459882e6fa3698f5c4fcfa91fde61ba830b26263\" rel=\"noopener nofollow ugc\">[1]</a></p>\n</li>\n<li>\n<p>Set request failure to debug in MetricsHttpChannelListener <a href=\"//github.com/signalapp/Signal-Server/commit/5eaae184c9c65872bf58128fffba587fb1829776\" rel=\"noopener nofollow ugc\">[2]</a></p>\n</li>\n<li>\n<p>Ignored EofException response failure in MetricsHttpChannelListener <a href=\"//github.com/signalapp/Signal-Server/commit/9df6e19204305b71efce67498d7c4eeda03eb3f6\" rel=\"noopener nofollow ugc\">[3]</a></p>\n</li>\n</ul>\n<hr>\n<p>Gathered from <a href=\"//github.com/signalapp/Signal-Server/compare/v12.9.0...v12.10.0\" rel=\"noopener nofollow ugc\">signalapp/Signal-Server v12.9.0…v12.10.0</a></p>\n</blockquote>\n</aside>\n<details>\n<summary>\nLocalization changes</summary>\n<aside class=\"quote no-group\">\n<blockquote>\n<p>Note: after clicking a link, it may take a few seconds before GitHub jumps to the file (try scrolling a bit if it doesn’t).</p>\n<h4>0 languages changed since 12.9.0:</h4>\n<p><em>No localization changes found</em></p>\n<p>Localization changes for the release are the same, as this is the first build of the release.</p>\n</blockquote>\n</aside>\n</details>",
+        "post_number": 6,
+        "post_type": 1,
+        "posts_count": 454,
+        "updated_at": "2024-03-19T19:10:58.700Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 131,
+        "readers_count": 130,
+        "score": 86.2,
+        "yours": false,
+        "topic_id": 59632,
+        "topic_slug": "server-updates-discussion",
+        "display_username": "",
+        "primary_group_name": "automated_users",
+        "flair_name": "automated_users",
+        "flair_url": "robot",
+        "flair_bg_color": "71717f",
+        "flair_color": "ffffff",
+        "flair_group_id": 44,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "Unofficial Bot",
+        "title_is_group": false,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 2
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 21330,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/server-updates-discussion/59632/6",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 240076,
+        "name": "",
+        "username": "updates-bot",
+        "avatar_template": "/user_avatar/community.signalusers.org/updates-bot/{size}/31268_2.png",
+        "created_at": "2024-03-19T19:20:58.491Z",
+        "cooked": "<h2><a name=\"p-240076-new-version-12110-1\" class=\"anchor\" href=\"#p-240076-new-version-12110-1\" aria-label=\"Heading link\"></a>New Version: 12.11.0</h2>\n<aside class=\"quote no-group\">\n<blockquote>\n<p>1 new commit since 12.10.0:</p>\n<ul>\n<li>Update to the latest version of the spam filter <a href=\"//github.com/signalapp/Signal-Server/commit/a9b5359f7c6d7147fdb9a51258b4aeb7fb213524\" rel=\"noopener nofollow ugc\">[1]</a></li>\n</ul>\n<hr>\n<p>Gathered from <a href=\"//github.com/signalapp/Signal-Server/compare/v12.10.0...v12.11.0\" rel=\"noopener nofollow ugc\">signalapp/Signal-Server v12.10.0…v12.11.0</a></p>\n</blockquote>\n</aside>\n<details>\n<summary>\nLocalization changes</summary>\n<aside class=\"quote no-group\">\n<blockquote>\n<p>Note: after clicking a link, it may take a few seconds before GitHub jumps to the file (try scrolling a bit if it doesn’t).</p>\n<h4>0 languages changed since 12.10.0:</h4>\n<p><em>No localization changes found</em></p>\n<p>Localization changes for the release are the same, as this is the first build of the release.</p>\n</blockquote>\n</aside>\n</details>",
+        "post_number": 7,
+        "post_type": 1,
+        "posts_count": 454,
+        "updated_at": "2024-03-19T19:20:58.491Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 112,
+        "readers_count": 111,
+        "score": 82.4,
+        "yours": false,
+        "topic_id": 59632,
+        "topic_slug": "server-updates-discussion",
+        "display_username": "",
+        "primary_group_name": "automated_users",
+        "flair_name": "automated_users",
+        "flair_url": "robot",
+        "flair_bg_color": "71717f",
+        "flair_color": "ffffff",
+        "flair_group_id": 44,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "Unofficial Bot",
+        "title_is_group": false,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 2
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 21330,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/server-updates-discussion/59632/7",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 240134,
+        "name": "",
+        "username": "updates-bot",
+        "avatar_template": "/user_avatar/community.signalusers.org/updates-bot/{size}/31268_2.png",
+        "created_at": "2024-03-20T18:00:17.033Z",
+        "cooked": "<h2><a name=\"p-240134-new-version-12120-1\" class=\"anchor\" href=\"#p-240134-new-version-12120-1\" aria-label=\"Heading link\"></a>New Version: 12.12.0</h2>\n<aside class=\"quote no-group\">\n<blockquote>\n<p>1 new commit since 12.11.0:</p>\n<ul>\n<li>Fix experiments in BackupAuthManager <a href=\"//github.com/signalapp/Signal-Server/commit/e7d1eadf8e8c39f66cf5249ea0f11dda5a3315ec\" rel=\"noopener nofollow ugc\">[1]</a></li>\n</ul>\n<hr>\n<p>Gathered from <a href=\"//github.com/signalapp/Signal-Server/compare/v12.11.0...v12.12.0\" rel=\"noopener nofollow ugc\">signalapp/Signal-Server v12.11.0…v12.12.0</a></p>\n</blockquote>\n</aside>\n<details>\n<summary>\nLocalization changes</summary>\n<aside class=\"quote no-group\">\n<blockquote>\n<p>Note: after clicking a link, it may take a few seconds before GitHub jumps to the file (try scrolling a bit if it doesn’t).</p>\n<h4>0 languages changed since 12.11.0:</h4>\n<p><em>No localization changes found</em></p>\n<p>Localization changes for the release are the same, as this is the first build of the release.</p>\n</blockquote>\n</aside>\n</details>",
+        "post_number": 8,
+        "post_type": 1,
+        "posts_count": 454,
+        "updated_at": "2024-03-20T18:00:17.033Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 105,
+        "readers_count": 104,
+        "score": 96.0,
+        "yours": false,
+        "topic_id": 59632,
+        "topic_slug": "server-updates-discussion",
+        "display_username": "",
+        "primary_group_name": "automated_users",
+        "flair_name": "automated_users",
+        "flair_url": "robot",
+        "flair_bg_color": "71717f",
+        "flair_color": "ffffff",
+        "flair_group_id": 44,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "Unofficial Bot",
+        "title_is_group": false,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 3
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 21330,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/server-updates-discussion/59632/8",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 240212,
+        "name": "",
+        "username": "updates-bot",
+        "avatar_template": "/user_avatar/community.signalusers.org/updates-bot/{size}/31268_2.png",
+        "created_at": "2024-03-21T18:30:14.102Z",
+        "cooked": "<h2><a name=\"p-240212-new-version-12130-1\" class=\"anchor\" href=\"#p-240212-new-version-12130-1\" aria-label=\"Heading link\"></a>New Version: 12.13.0</h2>\n<aside class=\"quote no-group\">\n<blockquote>\n<p>2 new commits since 12.12.0:</p>\n<ul>\n<li>\n<p>Minor cleanup of report spam endpoint (<span class=\"hashtag-raw\">#1979</span>) <a href=\"//github.com/signalapp/Signal-Server/commit/7f0f045f29d46d7964bdd023cb42e0cbe05aa14d\" rel=\"noopener nofollow ugc\">[1]</a></p>\n</li>\n<li>\n<p>Remove username phased rollout plumbing (usernames are now available to everybody) <a href=\"//github.com/signalapp/Signal-Server/commit/6fcb2ab5dd99fe4836c0cd64cb7a4ff8d1b90d67\" rel=\"noopener nofollow ugc\">[2]</a></p>\n</li>\n</ul>\n<hr>\n<p>Gathered from <a href=\"//github.com/signalapp/Signal-Server/compare/v12.12.0...v12.13.0\" rel=\"noopener nofollow ugc\">signalapp/Signal-Server v12.12.0…v12.13.0</a></p>\n</blockquote>\n</aside>\n<details>\n<summary>\nLocalization changes</summary>\n<aside class=\"quote no-group\">\n<blockquote>\n<p>Note: after clicking a link, it may take a few seconds before GitHub jumps to the file (try scrolling a bit if it doesn’t).</p>\n<h4>0 languages changed since 12.12.0:</h4>\n<p><em>No localization changes found</em></p>\n<p>Localization changes for the release are the same, as this is the first build of the release.</p>\n</blockquote>\n</aside>\n</details>",
+        "post_number": 9,
+        "post_type": 1,
+        "posts_count": 454,
+        "updated_at": "2024-03-21T18:30:14.102Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 95,
+        "readers_count": 94,
+        "score": 64.0,
+        "yours": false,
+        "topic_id": 59632,
+        "topic_slug": "server-updates-discussion",
+        "display_username": "",
+        "primary_group_name": "automated_users",
+        "flair_name": "automated_users",
+        "flair_url": "robot",
+        "flair_bg_color": "71717f",
+        "flair_color": "ffffff",
+        "flair_group_id": 44,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "Unofficial Bot",
+        "title_is_group": false,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 3
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 21330,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/server-updates-discussion/59632/9",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 240283,
+        "name": "",
+        "username": "updates-bot",
+        "avatar_template": "/user_avatar/community.signalusers.org/updates-bot/{size}/31268_2.png",
+        "created_at": "2024-03-22T20:50:17.762Z",
+        "cooked": "<h2><a name=\"p-240283-new-version-12140-1\" class=\"anchor\" href=\"#p-240283-new-version-12140-1\" aria-label=\"Heading link\"></a>New Version: 12.14.0</h2>\n<aside class=\"quote no-group\">\n<blockquote>\n<p>2 new commits since 12.13.0:</p>\n<ul>\n<li>\n<p>Preserve backupCredentialRequest across rereg <a href=\"//github.com/signalapp/Signal-Server/commit/075a08884ba1febc5536f72c26966f536c77a251\" rel=\"noopener nofollow ugc\">[1]</a></p>\n</li>\n<li>\n<p>Introduce a Noise-over-WebSocket client connection manager <a href=\"//github.com/signalapp/Signal-Server/commit/aec6ac019fe550d03d98c89db98fceee1dfef2ef\" rel=\"noopener nofollow ugc\">[2]</a></p>\n</li>\n</ul>\n<hr>\n<p>Gathered from <a href=\"//github.com/signalapp/Signal-Server/compare/v12.13.0...v12.14.0\" rel=\"noopener nofollow ugc\">signalapp/Signal-Server v12.13.0…v12.14.0</a></p>\n</blockquote>\n</aside>\n<details>\n<summary>\nLocalization changes</summary>\n<aside class=\"quote no-group\">\n<blockquote>\n<p>Note: after clicking a link, it may take a few seconds before GitHub jumps to the file (try scrolling a bit if it doesn’t).</p>\n<h4>0 languages changed since 12.13.0:</h4>\n<p><em>No localization changes found</em></p>\n<p>Localization changes for the release are the same, as this is the first build of the release.</p>\n</blockquote>\n</aside>\n</details>",
+        "post_number": 10,
+        "post_type": 1,
+        "posts_count": 454,
+        "updated_at": "2024-03-22T20:50:17.762Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 95,
+        "readers_count": 94,
+        "score": 124.0,
+        "yours": false,
+        "topic_id": 59632,
+        "topic_slug": "server-updates-discussion",
+        "display_username": "",
+        "primary_group_name": "automated_users",
+        "flair_name": "automated_users",
+        "flair_url": "robot",
+        "flair_bg_color": "71717f",
+        "flair_color": "ffffff",
+        "flair_group_id": 44,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://community.signalusers.org/t/is-signal-use-noiseprotocol-for-transfering-receiving-data/378/10",
+            "internal": true,
+            "reflection": true,
+            "title": "Is signal use noiseprotocol for transfering/receiving data?",
+            "clicks": 2
+          }
+        ],
+        "read": true,
+        "user_title": "Unofficial Bot",
+        "title_is_group": false,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 5
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 21330,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/server-updates-discussion/59632/10",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 240497,
+        "name": "",
+        "username": "updates-bot",
+        "avatar_template": "/user_avatar/community.signalusers.org/updates-bot/{size}/31268_2.png",
+        "created_at": "2024-03-26T22:10:17.370Z",
+        "cooked": "<h2><a name=\"p-240497-new-version-12150-1\" class=\"anchor\" href=\"#p-240497-new-version-12150-1\" aria-label=\"Heading link\"></a>New Version: 12.15.0</h2>\n<aside class=\"quote no-group\">\n<blockquote>\n<p>2 new commits since 12.14.0:</p>\n<ul>\n<li>\n<p>update TurnTokenGenerator to add whether this is with ip or url turn allocation <a href=\"//github.com/signalapp/Signal-Server/commit/54e9b839bdcd36cbf3d200f0c44c7981732f35ec\" rel=\"noopener nofollow ugc\">[1]</a></p>\n</li>\n<li>\n<p>Pare back debug-oriented metrics around fetching pre-keys <a href=\"//github.com/signalapp/Signal-Server/commit/d10da39e5bd30b91342419d95182aa708591f310\" rel=\"noopener nofollow ugc\">[2]</a></p>\n</li>\n</ul>\n<hr>\n<p>Gathered from <a href=\"//github.com/signalapp/Signal-Server/compare/v12.14.0...v12.15.0\" rel=\"noopener nofollow ugc\">signalapp/Signal-Server v12.14.0…v12.15.0</a></p>\n</blockquote>\n</aside>\n<details>\n<summary>\nLocalization changes</summary>\n<aside class=\"quote no-group\">\n<blockquote>\n<p>Note: after clicking a link, it may take a few seconds before GitHub jumps to the file (try scrolling a bit if it doesn’t).</p>\n<h4>0 languages changed since 12.14.0:</h4>\n<p><em>No localization changes found</em></p>\n<p>Localization changes for the release are the same, as this is the first build of the release.</p>\n</blockquote>\n</aside>\n</details>",
+        "post_number": 11,
+        "post_type": 1,
+        "posts_count": 454,
+        "updated_at": "2024-03-26T22:10:17.370Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 88,
+        "readers_count": 87,
+        "score": 97.6,
+        "yours": false,
+        "topic_id": 59632,
+        "topic_slug": "server-updates-discussion",
+        "display_username": "",
+        "primary_group_name": "automated_users",
+        "flair_name": "automated_users",
+        "flair_url": "robot",
+        "flair_bg_color": "71717f",
+        "flair_color": "ffffff",
+        "flair_group_id": 44,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "Unofficial Bot",
+        "title_is_group": false,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 3
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 21330,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/server-updates-discussion/59632/11",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 240570,
+        "name": "",
+        "username": "updates-bot",
+        "avatar_template": "/user_avatar/community.signalusers.org/updates-bot/{size}/31268_2.png",
+        "created_at": "2024-03-27T23:00:46.616Z",
+        "cooked": "<h2><a name=\"p-240570-new-version-12160-1\" class=\"anchor\" href=\"#p-240570-new-version-12160-1\" aria-label=\"Heading link\"></a>New Version: 12.16.0</h2>\n<aside class=\"quote no-group\">\n<blockquote>\n<p>6 new commits since 12.15.0:</p>\n<ul>\n<li>\n<p>Include HTTP2ServerConnectionFactory in JettyHttpConfigurationCustomizer <a href=\"//github.com/signalapp/Signal-Server/commit/75bb22f08b2c129bed3cba08732922aebb148b4a\" rel=\"noopener nofollow ugc\">[1]</a></p>\n</li>\n<li>\n<p>Rename <code>NoiseStreamHandler</code> to <code>NoiseTransportHandler</code> for consistency with Noise specification terminology <a href=\"//github.com/signalapp/Signal-Server/commit/8a587d1d12f709dd509e5800e340cccc30f3342c\" rel=\"noopener nofollow ugc\">[2]</a></p>\n</li>\n<li>\n<p>Add debugging context to signature validation failures <a href=\"//github.com/signalapp/Signal-Server/commit/a733f5c615418168efdbc891b3c12b6d2747b55d\" rel=\"noopener nofollow ugc\">[3]</a></p>\n</li>\n<li>\n<p>avoid baos::writeTo on virtual threads <a href=\"//github.com/signalapp/Signal-Server/commit/37b657cbbdef79c226810701d581ddeb66f69f63\" rel=\"noopener nofollow ugc\">[4]</a></p>\n</li>\n<li>\n<p>404 instead of 400 on unknown source cdn <a href=\"//github.com/signalapp/Signal-Server/commit/de9eaa98db82569d93cc8584be30be2dfd83d9e5\" rel=\"noopener nofollow ugc\">[5]</a></p>\n</li>\n<li>\n<p>Make sure we close the HTTP/2 stream after cdn read errors <a href=\"//github.com/signalapp/Signal-Server/commit/a550caf63f68fb3280e998921165fb6e3759d85a\" rel=\"noopener nofollow ugc\">[6]</a></p>\n</li>\n</ul>\n<hr>\n<p>Gathered from <a href=\"//github.com/signalapp/Signal-Server/compare/v12.15.0...v12.16.0\" rel=\"noopener nofollow ugc\">signalapp/Signal-Server v12.15.0…v12.16.0</a></p>\n</blockquote>\n</aside>\n<details>\n<summary>\nLocalization changes</summary>\n<aside class=\"quote no-group\">\n<blockquote>\n<p>Note: after clicking a link, it may take a few seconds before GitHub jumps to the file (try scrolling a bit if it doesn’t).</p>\n<h4>0 languages changed since 12.15.0:</h4>\n<p><em>No localization changes found</em></p>\n<p>Localization changes for the release are the same, as this is the first build of the release.</p>\n</blockquote>\n</aside>\n</details>",
+        "post_number": 12,
+        "post_type": 1,
+        "posts_count": 454,
+        "updated_at": "2024-03-27T23:00:46.616Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 92,
+        "readers_count": 91,
+        "score": 93.4,
+        "yours": false,
+        "topic_id": 59632,
+        "topic_slug": "server-updates-discussion",
+        "display_username": "",
+        "primary_group_name": "automated_users",
+        "flair_name": "automated_users",
+        "flair_url": "robot",
+        "flair_bg_color": "71717f",
+        "flair_color": "ffffff",
+        "flair_group_id": 44,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "Unofficial Bot",
+        "title_is_group": false,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 3
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 21330,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/server-updates-discussion/59632/12",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 240624,
+        "name": "",
+        "username": "updates-bot",
+        "avatar_template": "/user_avatar/community.signalusers.org/updates-bot/{size}/31268_2.png",
+        "created_at": "2024-03-28T16:40:48.520Z",
+        "cooked": "<h2><a name=\"p-240624-new-version-12170-1\" class=\"anchor\" href=\"#p-240624-new-version-12170-1\" aria-label=\"Heading link\"></a>New Version: 12.17.0</h2>\n<aside class=\"quote no-group\">\n<blockquote>\n<p>1 new commit since 12.16.0:</p>\n<ul>\n<li>Update to the latest version of the spam filter <a href=\"//github.com/signalapp/Signal-Server/commit/c35a6487347bb4984dfb763e3849b5c32def04c8\" rel=\"noopener nofollow ugc\">[1]</a></li>\n</ul>\n<hr>\n<p>Gathered from <a href=\"//github.com/signalapp/Signal-Server/compare/v12.16.0...v12.17.0\" rel=\"noopener nofollow ugc\">signalapp/Signal-Server v12.16.0…v12.17.0</a></p>\n</blockquote>\n</aside>\n<details>\n<summary>\nLocalization changes</summary>\n<aside class=\"quote no-group\">\n<blockquote>\n<p>Note: after clicking a link, it may take a few seconds before GitHub jumps to the file (try scrolling a bit if it doesn’t).</p>\n<h4>0 languages changed since 12.16.0:</h4>\n<p><em>No localization changes found</em></p>\n<p>Localization changes for the release are the same, as this is the first build of the release.</p>\n</blockquote>\n</aside>\n</details>",
+        "post_number": 13,
+        "post_type": 1,
+        "posts_count": 454,
+        "updated_at": "2024-03-28T16:40:48.520Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 87,
+        "readers_count": 86,
+        "score": 92.4,
+        "yours": false,
+        "topic_id": 59632,
+        "topic_slug": "server-updates-discussion",
+        "display_username": "",
+        "primary_group_name": "automated_users",
+        "flair_name": "automated_users",
+        "flair_url": "robot",
+        "flair_bg_color": "71717f",
+        "flair_color": "ffffff",
+        "flair_group_id": 44,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "Unofficial Bot",
+        "title_is_group": false,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 3
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 21330,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/server-updates-discussion/59632/13",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 240875,
+        "name": "",
+        "username": "updates-bot",
+        "avatar_template": "/user_avatar/community.signalusers.org/updates-bot/{size}/31268_2.png",
+        "created_at": "2024-04-01T20:40:25.140Z",
+        "cooked": "<h2><a name=\"p-240875-new-version-12180-1\" class=\"anchor\" href=\"#p-240875-new-version-12180-1\" aria-label=\"Heading link\"></a>New Version: 12.18.0</h2>\n<aside class=\"quote no-group\">\n<blockquote>\n<p>2 new commits since 12.17.0:</p>\n<ul>\n<li>\n<p>Add a crawler that expires old backups <a href=\"//github.com/signalapp/Signal-Server/commit/de371418126fdd0ece57385f2dd3b49f1fd7db48\" rel=\"noopener nofollow ugc\">[1]</a></p>\n</li>\n<li>\n<p>Make backupDir/mediaDir indirect <a href=\"//github.com/signalapp/Signal-Server/commit/831c9ff5bf61961ba97355f846a11b38b0dff2a2\" rel=\"noopener nofollow ugc\">[2]</a></p>\n</li>\n</ul>\n<hr>\n<p>Gathered from <a href=\"//github.com/signalapp/Signal-Server/compare/v12.17.0...v12.18.0\" rel=\"noopener nofollow ugc\">signalapp/Signal-Server v12.17.0…v12.18.0</a></p>\n</blockquote>\n</aside>\n<details>\n<summary>\nLocalization changes</summary>\n<aside class=\"quote no-group\">\n<blockquote>\n<p>Note: after clicking a link, it may take a few seconds before GitHub jumps to the file (try scrolling a bit if it doesn’t).</p>\n<h4>0 languages changed since 12.17.0:</h4>\n<p><em>No localization changes found</em></p>\n<p>Localization changes for the release are the same, as this is the first build of the release.</p>\n</blockquote>\n</aside>\n</details>",
+        "post_number": 14,
+        "post_type": 1,
+        "posts_count": 454,
+        "updated_at": "2024-04-01T20:40:25.140Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 84,
+        "readers_count": 83,
+        "score": 121.8,
+        "yours": false,
+        "topic_id": 59632,
+        "topic_slug": "server-updates-discussion",
+        "display_username": "",
+        "primary_group_name": "automated_users",
+        "flair_name": "automated_users",
+        "flair_url": "robot",
+        "flair_bg_color": "71717f",
+        "flair_color": "ffffff",
+        "flair_group_id": 44,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "Unofficial Bot",
+        "title_is_group": false,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 5
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 21330,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/server-updates-discussion/59632/14",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 240879,
+        "name": "",
+        "username": "updates-bot",
+        "avatar_template": "/user_avatar/community.signalusers.org/updates-bot/{size}/31268_2.png",
+        "created_at": "2024-04-01T23:10:35.796Z",
+        "cooked": "<h2><a name=\"p-240879-new-version-12190-1\" class=\"anchor\" href=\"#p-240879-new-version-12190-1\" aria-label=\"Heading link\"></a>New Version: 12.19.0</h2>\n<aside class=\"quote no-group\">\n<blockquote>\n<p>11 new commits since 12.18.0:</p>\n<details>\n<summary>\nShow commits</summary>\n<ul>\n<li>\n<p>Add org.eclipse.jetty.io.EofException to expected measureSendMessageErrors <a href=\"//github.com/signalapp/Signal-Server/commit/fcc77052a677a2c388a25aec17753a8469407a61\" rel=\"noopener nofollow ugc\">[1]</a></p>\n</li>\n<li>\n<p>Update Lettuce to 6.3.2.RELEASE <a href=\"//github.com/signalapp/Signal-Server/commit/0b5be8cdcdd7a87ea6effebcc1aa155d6ab860fe\" rel=\"noopener nofollow ugc\">[2]</a></p>\n</li>\n<li>\n<p>Update Micrometer to 1.12.4 <a href=\"//github.com/signalapp/Signal-Server/commit/ed64c389502f13f82b5c3c64f9c774c6b9aac6ca\" rel=\"noopener nofollow ugc\">[3]</a></p>\n</li>\n<li>\n<p>Update resilience4j to 2.2.0 <a href=\"//github.com/signalapp/Signal-Server/commit/c95dbf75082e49b03296707c0696dc64613f431f\" rel=\"noopener nofollow ugc\">[4]</a></p>\n</li>\n<li>\n<p>Update netty to 4.1.108.Final <a href=\"//github.com/signalapp/Signal-Server/commit/fd748c1dc37f400765009cf39fdbf1e7552d3614\" rel=\"noopener nofollow ugc\">[5]</a></p>\n</li>\n<li>\n<p>Update push to 0.15.4 <a href=\"//github.com/signalapp/Signal-Server/commit/8897fd75ad0c9076b26c590999f39e2e8b416e45\" rel=\"noopener nofollow ugc\">[6]</a></p>\n</li>\n<li>\n<p>Update reactor-bom to 2023.0.4 <a href=\"//github.com/signalapp/Signal-Server/commit/ef8c520b590593ecc2dd5ba4295b885dcc6e71af\" rel=\"noopener nofollow ugc\">[7]</a></p>\n</li>\n<li>\n<p>Remove vavr dependency <a href=\"//github.com/signalapp/Signal-Server/commit/89cb821c97b799de396e1a0d59a0eb8a6abd9e31\" rel=\"noopener nofollow ugc\">[8]</a></p>\n</li>\n<li>\n<p>Update embedded-redis to 0.9.0 <a href=\"//github.com/signalapp/Signal-Server/commit/a9d0ab271d9c9d8e7437f8c21d52c78b9fa61efc\" rel=\"noopener nofollow ugc\">[9]</a></p>\n</li>\n<li>\n<p>Hardcode <code>paymentActivation</code> flag to <code>true</code> <a href=\"//github.com/signalapp/Signal-Server/commit/d002e5dda8f9c7c62fe42a86d86aa26606d518f2\" rel=\"noopener nofollow ugc\">[10]</a></p>\n</li>\n<li>\n<p>Update to the latest version of the spam filter <a href=\"//github.com/signalapp/Signal-Server/commit/c4cbf0d618f33a553f8c80b3ef34fc147c941de2\" rel=\"noopener nofollow ugc\">[11]</a></p>\n</li>\n</ul>\n</details>\n<hr>\n<p>Gathered from <a href=\"//github.com/signalapp/Signal-Server/compare/v12.18.0...v12.19.0\" rel=\"noopener nofollow ugc\">signalapp/Signal-Server v12.18.0…v12.19.0</a></p>\n</blockquote>\n</aside>\n<details>\n<summary>\nLocalization changes</summary>\n<aside class=\"quote no-group\">\n<blockquote>\n<p>Note: after clicking a link, it may take a few seconds before GitHub jumps to the file (try scrolling a bit if it doesn’t).</p>\n<h4>0 languages changed since 12.18.0:</h4>\n<p><em>No localization changes found</em></p>\n<p>Localization changes for the release are the same, as this is the first build of the release.</p>\n</blockquote>\n</aside>\n</details>",
+        "post_number": 15,
+        "post_type": 1,
+        "posts_count": 454,
+        "updated_at": "2024-04-01T23:10:35.796Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 86,
+        "readers_count": 85,
+        "score": 107.2,
+        "yours": false,
+        "topic_id": 59632,
+        "topic_slug": "server-updates-discussion",
+        "display_username": "",
+        "primary_group_name": "automated_users",
+        "flair_name": "automated_users",
+        "flair_url": "robot",
+        "flair_bg_color": "71717f",
+        "flair_color": "ffffff",
+        "flair_group_id": 44,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "Unofficial Bot",
+        "title_is_group": false,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 4
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 21330,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/server-updates-discussion/59632/15",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 240931,
+        "name": "",
+        "username": "updates-bot",
+        "avatar_template": "/user_avatar/community.signalusers.org/updates-bot/{size}/31268_2.png",
+        "created_at": "2024-04-02T15:40:38.341Z",
+        "cooked": "<h2><a name=\"p-240931-new-version-12200-1\" class=\"anchor\" href=\"#p-240931-new-version-12200-1\" aria-label=\"Heading link\"></a>New Version: 12.20.0</h2>\n<aside class=\"quote no-group\">\n<blockquote>\n<p>3 new commits since 12.19.0:</p>\n<ul>\n<li>\n<p>De-idiom-ize a \"wait for everything to finish\" idiom <a href=\"//github.com/signalapp/Signal-Server/commit/f59c34004d872dbf536962fe8357deced1931dd8\" rel=\"noopener nofollow ugc\">[1]</a></p>\n</li>\n<li>\n<p>Always use the \"peek\" strategy for counting one-time pre-keys <a href=\"//github.com/signalapp/Signal-Server/commit/796dce3cd31c124468d6540c94e96ac7f109b552\" rel=\"noopener nofollow ugc\">[2]</a></p>\n</li>\n<li>\n<p>Set the shutdown gauge earlier in the shutdown process <a href=\"//github.com/signalapp/Signal-Server/commit/bb0da69c9e2156f6acac336b8966273f89fb74a0\" rel=\"noopener nofollow ugc\">[3]</a></p>\n</li>\n</ul>\n<hr>\n<p>Gathered from <a href=\"//github.com/signalapp/Signal-Server/compare/v12.19.0...v12.20.0\" rel=\"noopener nofollow ugc\">signalapp/Signal-Server v12.19.0…v12.20.0</a></p>\n</blockquote>\n</aside>\n<details>\n<summary>\nLocalization changes</summary>\n<aside class=\"quote no-group\">\n<blockquote>\n<p>Note: after clicking a link, it may take a few seconds before GitHub jumps to the file (try scrolling a bit if it doesn’t).</p>\n<h4>0 languages changed since 12.19.0:</h4>\n<p><em>No localization changes found</em></p>\n<p>Localization changes for the release are the same, as this is the first build of the release.</p>\n</blockquote>\n</aside>\n</details>",
+        "post_number": 16,
+        "post_type": 1,
+        "posts_count": 454,
+        "updated_at": "2024-04-02T15:40:38.341Z",
+        "reply_count": 1,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 86,
+        "readers_count": 85,
+        "score": 172.2,
+        "yours": false,
+        "topic_id": 59632,
+        "topic_slug": "server-updates-discussion",
+        "display_username": "",
+        "primary_group_name": "automated_users",
+        "flair_name": "automated_users",
+        "flair_url": "robot",
+        "flair_bg_color": "71717f",
+        "flair_color": "ffffff",
+        "flair_group_id": 44,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "Unofficial Bot",
+        "title_is_group": false,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 6
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 21330,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/server-updates-discussion/59632/16",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 241362,
+        "name": "",
+        "username": "updates-bot",
+        "avatar_template": "/user_avatar/community.signalusers.org/updates-bot/{size}/31268_2.png",
+        "created_at": "2024-04-10T07:59:41.386Z",
+        "cooked": "<h2><a name=\"p-241362-new-version-12210-1\" class=\"anchor\" href=\"#p-241362-new-version-12210-1\" aria-label=\"Heading link\"></a>New Version: 12.21.0</h2>\n<aside class=\"quote no-group\">\n<blockquote>\n<p>5 new commits since 12.20.0:</p>\n<ul>\n<li>\n<p>allow striping clients in FaultTolerantHttpClient <a href=\"//github.com/signalapp/Signal-Server/commit/3a1ecb342fa51d4334181aee3a1ab56eff93de86\" rel=\"noopener nofollow ugc\">[1]</a></p>\n</li>\n<li>\n<p>Make media encrypter stream ordered <a href=\"//github.com/signalapp/Signal-Server/commit/498dcbbfe87b9779abd2b84b2e182db261275acb\" rel=\"noopener nofollow ugc\">[2]</a></p>\n</li>\n<li>\n<p>Fix Backup expiration purge time <a href=\"//github.com/signalapp/Signal-Server/commit/268c8382ee7bd71b3c0a472494a8120df31ee997\" rel=\"noopener nofollow ugc\">[3]</a></p>\n</li>\n<li>\n<p>Check presentation before verifying the signature <a href=\"//github.com/signalapp/Signal-Server/commit/1ebc17352fc936ad41c47900cdda42bd21cd485b\" rel=\"noopener nofollow ugc\">[4]</a></p>\n</li>\n<li>\n<p>Return 401 instead of 404 on unknown backup-ids <a href=\"//github.com/signalapp/Signal-Server/commit/63c8b275d14e1862e43879dd5edf6ed672efc3d0\" rel=\"noopener nofollow ugc\">[5]</a></p>\n</li>\n</ul>\n<hr>\n<p>Gathered from <a href=\"//github.com/signalapp/Signal-Server/compare/v12.20.0...v12.21.0\" rel=\"noopener nofollow ugc\">signalapp/Signal-Server v12.20.0…v12.21.0</a></p>\n</blockquote>\n</aside>\n<details>\n<summary>\nLocalization changes</summary>\n<aside class=\"quote no-group\">\n<blockquote>\n<p>Note: after clicking a link, it may take a few seconds before GitHub jumps to the file (try scrolling a bit if it doesn’t).</p>\n<h4>0 languages changed since 12.20.0:</h4>\n<p><em>No localization changes found</em></p>\n<p>Localization changes for the release are the same, as this is the first build of the release.</p>\n</blockquote>\n</aside>\n</details>",
+        "post_number": 17,
+        "post_type": 1,
+        "posts_count": 454,
+        "updated_at": "2024-04-10T07:59:41.386Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 86,
+        "readers_count": 85,
+        "score": 92.2,
+        "yours": false,
+        "topic_id": 59632,
+        "topic_slug": "server-updates-discussion",
+        "display_username": "",
+        "primary_group_name": "automated_users",
+        "flair_name": "automated_users",
+        "flair_url": "robot",
+        "flair_bg_color": "71717f",
+        "flair_color": "ffffff",
+        "flair_group_id": 44,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "Unofficial Bot",
+        "title_is_group": false,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 3
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 21330,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/server-updates-discussion/59632/17",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 241363,
+        "name": "",
+        "username": "updates-bot",
+        "avatar_template": "/user_avatar/community.signalusers.org/updates-bot/{size}/31268_2.png",
+        "created_at": "2024-04-10T08:00:14.719Z",
+        "cooked": "<h2><a name=\"p-241363-new-version-12220-1\" class=\"anchor\" href=\"#p-241363-new-version-12220-1\" aria-label=\"Heading link\"></a>New Version: 12.22.0</h2>\n<aside class=\"quote no-group\">\n<blockquote>\n<p>2 new commits since 12.21.0:</p>\n<ul>\n<li>\n<p>Add ExternalRequestFilter <a href=\"//github.com/signalapp/Signal-Server/commit/5b97bc04e0d512c72b6b43737122fa0e97f2e52a\" rel=\"noopener nofollow ugc\">[1]</a></p>\n</li>\n<li>\n<p>Update to the latest version of the spam filter <a href=\"//github.com/signalapp/Signal-Server/commit/5c74aed8f68fe9d79de16b9cf5f7dd600fc6adac\" rel=\"noopener nofollow ugc\">[2]</a></p>\n</li>\n</ul>\n<hr>\n<p>Gathered from <a href=\"//github.com/signalapp/Signal-Server/compare/v12.21.0...v12.22.0\" rel=\"noopener nofollow ugc\">signalapp/Signal-Server v12.21.0…v12.22.0</a></p>\n</blockquote>\n</aside>\n<details>\n<summary>\nLocalization changes</summary>\n<aside class=\"quote no-group\">\n<blockquote>\n<p>Note: after clicking a link, it may take a few seconds before GitHub jumps to the file (try scrolling a bit if it doesn’t).</p>\n<h4>0 languages changed since 12.21.0:</h4>\n<p><em>No localization changes found</em></p>\n<p>Localization changes for the release are the same, as this is the first build of the release.</p>\n</blockquote>\n</aside>\n</details>",
+        "post_number": 18,
+        "post_type": 1,
+        "posts_count": 454,
+        "updated_at": "2024-04-10T08:00:14.719Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 92,
+        "readers_count": 91,
+        "score": 93.4,
+        "yours": false,
+        "topic_id": 59632,
+        "topic_slug": "server-updates-discussion",
+        "display_username": "",
+        "primary_group_name": "automated_users",
+        "flair_name": "automated_users",
+        "flair_url": "robot",
+        "flair_bg_color": "71717f",
+        "flair_color": "ffffff",
+        "flair_group_id": 44,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "Unofficial Bot",
+        "title_is_group": false,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 3
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 21330,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/server-updates-discussion/59632/18",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 241375,
+        "name": "Talya (she/her)",
+        "username": "rassilon1963",
+        "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+        "created_at": "2024-04-10T13:20:31.728Z",
+        "cooked": "<aside class=\"quote group-automated_users quote-modified\" data-username=\"updates-bot\" data-post=\"16\" data-topic=\"59632\">\n<div class=\"title\">\n<div class=\"quote-controls\"></div>\n<img loading=\"lazy\" alt=\"\" width=\"24\" height=\"24\" src=\"https://community.signalusers.org/user_avatar/community.signalusers.org/updates-bot/48/31268_2.png\" class=\"avatar\"> updates-bot:</div>\n<blockquote>\n<ul>\n<li>De-idiom-ize a “wait for everything to finish” idiom <a href=\"//github.com/signalapp/Signal-Server/commit/f59c34004d872dbf536962fe8357deced1931dd8\">[1]</a></li>\n</ul>\n</blockquote>\n</aside>\n<p>wait what?</p>\n<div class=\"spoiler\">\n<p>20 chars</p>\n</div>",
+        "post_number": 19,
+        "post_type": 1,
+        "posts_count": 454,
+        "updated_at": "2024-04-10T13:20:31.728Z",
+        "reply_count": 1,
+        "reply_to_post_number": 16,
+        "quote_count": 1,
+        "incoming_link_count": 0,
+        "reads": 98,
+        "readers_count": 97,
+        "score": 99.6,
+        "yours": false,
+        "topic_id": 59632,
+        "topic_slug": "server-updates-discussion",
+        "display_username": "Talya (she/her)",
+        "primary_group_name": "top_contributors",
+        "flair_name": "top_contributors",
+        "flair_url": "compass",
+        "flair_bg_color": "6058CA",
+        "flair_color": "fff",
+        "flair_group_id": 48,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "Top Contributor",
+        "title_is_group": true,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 3
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 18285,
+        "hidden": false,
+        "trust_level": 4,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/server-updates-discussion/59632/19",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 241398,
+        "name": "link ✦",
+        "username": "awaitlink",
+        "avatar_template": "/user_avatar/community.signalusers.org/awaitlink/{size}/48975_2.png",
+        "created_at": "2024-04-10T17:08:54.941Z",
+        "cooked": "<p>Seems they have to use some function that works with the result of an operation, even though they don’t actually care about the result, in order to wait for the operation to finish.</p>\n<p>But in order to do that, they were using a “reduce” function (commonly used in iterator/stream-like contexts to sum/multiply/etc. all values; the closure/lambda function inside operates on each value of the iterator and returns a partial result; in this case it’s possible the “iterator” may ultimately be yielding only one value at most ever).</p>\n<p>They’ve figured out that it’s possible to just use an empty “then” function (that would normally have a closure/lambda function inside that would actually do something) without any arguments to achieve the same outcome: doing nothing with the result of the operation.</p>\n<p>I guess it makes the code look a bit simpler and less confusing than with that “empty” “reduce”. And there could be some subtle differences in how the code gets executed, although I feel like with something like this both ways would get optimized to the same bytecode/etc. anyway.</p>",
+        "post_number": 20,
+        "post_type": 1,
+        "posts_count": 454,
+        "updated_at": "2024-04-10T17:09:46.422Z",
+        "reply_count": 0,
+        "reply_to_post_number": 19,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 104,
+        "readers_count": 103,
+        "score": 110.8,
+        "yours": false,
+        "topic_id": 59632,
+        "topic_slug": "server-updates-discussion",
+        "display_username": "link ✦",
+        "primary_group_name": "volunteer_moderators",
+        "flair_name": "volunteer_moderators",
+        "flair_url": "shield-halved",
+        "flair_bg_color": "1d8663",
+        "flair_color": "fff",
+        "flair_group_id": 41,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "Volunteer Moderator",
+        "title_is_group": true,
+        "reply_to_user": {
+          "id": 18285,
+          "username": "rassilon1963",
+          "name": "Talya (she/her)",
+          "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png"
+        },
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 4
+          }
+        ],
+        "moderator": true,
+        "admin": false,
+        "staff": true,
+        "user_id": 3070,
+        "hidden": false,
+        "trust_level": 4,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/server-updates-discussion/59632/20",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      }
+    ],
+    "stream": [
+      239694,
+      239450,
+      239534,
+      239535,
+      239629,
+      240073,
+      240076,
+      240134,
+      240212,
+      240283,
+      240497,
+      240570,
+      240624,
+      240875,
+      240879,
+      240931,
+      241362,
+      241363,
+      241375,
+      241398,
+      241437,
+      241494,
+      241587,
+      241743,
+      241744,
+      241798,
+      241817,
+      241913,
+      241936,
+      241938,
+      242164,
+      242292,
+      242405,
+      242425,
+      242431,
+      242528,
+      242597,
+      242715,
+      242843,
+      243089,
+      243092,
+      243818,
+      243819,
+      244081,
+      244098,
+      244100,
+      244188,
+      244280,
+      244281,
+      245254,
+      245256,
+      245257,
+      245259,
+      245324,
+      245425,
+      245429,
+      245563,
+      245565,
+      245597,
+      245692,
+      245716,
+      245719,
+      245803,
+      245804,
+      245806,
+      245832,
+      246035,
+      246055,
+      246397,
+      246399,
+      246402,
+      246416,
+      246510,
+      247087,
+      247156,
+      247341,
+      247693,
+      247734,
+      247972,
+      248008,
+      248088,
+      248262,
+      248334,
+      248335,
+      248337,
+      248368,
+      248377,
+      248378,
+      248380,
+      248441,
+      248484,
+      248590,
+      248636,
+      248694,
+      248695,
+      248942,
+      248947,
+      248948,
+      248959,
+      248961,
+      249062,
+      249140,
+      249141,
+      249178,
+      249179,
+      249385,
+      249386,
+      249387,
+      249388,
+      249906,
+      249908,
+      250064,
+      250072,
+      250073,
+      250269,
+      250369,
+      250375,
+      250471,
+      250574,
+      251029,
+      251031,
+      251032,
+      251233,
+      251284,
+      251344,
+      251409,
+      251646,
+      251667,
+      251760,
+      251872,
+      251931,
+      252831,
+      252872,
+      252874,
+      252995,
+      253155,
+      253156,
+      253171,
+      253224,
+      253225,
+      253277,
+      253316,
+      253396,
+      253415,
+      253640,
+      253703,
+      253830,
+      254133,
+      254135,
+      254189,
+      254190,
+      254290,
+      254292,
+      254349,
+      254586,
+      254588,
+      254598,
+      254649,
+      254651,
+      254683,
+      254694,
+      254697,
+      254703,
+      254762,
+      254945,
+      254946,
+      254948,
+      254956,
+      254958,
+      254959,
+      254987,
+      254992,
+      254997,
+      255000,
+      255046,
+      255047,
+      255049,
+      255107,
+      255332,
+      255334,
+      255357,
+      255371,
+      255372,
+      255416,
+      255430,
+      255697,
+      255879,
+      256127,
+      256130,
+      256138,
+      256234,
+      256236,
+      256237,
+      256238,
+      256287,
+      256288,
+      256289,
+      256290,
+      256291,
+      256292,
+      256316,
+      256518,
+      256613,
+      256677,
+      256679,
+      256754,
+      256993,
+      257159,
+      257450,
+      257615,
+      257656,
+      257964,
+      258192,
+      258362,
+      258431,
+      258616,
+      258895,
+      258896,
+      259180,
+      259181,
+      259924,
+      259930,
+      259931,
+      259932,
+      259934,
+      259935,
+      259969,
+      259972,
+      260187,
+      260188,
+      260410,
+      260571,
+      260772,
+      260922,
+      260942,
+      261152,
+      261223,
+      261520,
+      262056,
+      262058,
+      262059,
+      262823,
+      262887,
+      262928,
+      263183,
+      263185,
+      263187,
+      263188,
+      263387,
+      263537,
+      263877,
+      263926,
+      264098,
+      264113,
+      264262,
+      264263,
+      264265,
+      264490,
+      265094,
+      265122,
+      265185,
+      265499,
+      265508,
+      265546,
+      265548,
+      265572,
+      265676,
+      265750,
+      265803,
+      265947,
+      265948,
+      266235,
+      266387,
+      266459,
+      266460,
+      266751,
+      266868,
+      266943,
+      267127,
+      267133,
+      267253,
+      267254,
+      267255,
+      267373,
+      267583,
+      267584,
+      267589,
+      267854,
+      267924,
+      267941,
+      268058,
+      268351,
+      268424,
+      268800,
+      268812,
+      268851,
+      268945,
+      269217,
+      269218,
+      269219,
+      269221,
+      269223,
+      269298,
+      269566,
+      269567,
+      269933,
+      270008,
+      270314,
+      270535,
+      270538,
+      270541,
+      270549,
+      270834,
+      270836,
+      271634,
+      271635,
+      271754,
+      271767,
+      271881,
+      272088,
+      272124,
+      272139,
+      272202,
+      272271,
+      272348,
+      272403,
+      272462,
+      272473,
+      272538,
+      272539,
+      272706,
+      272707,
+      272708,
+      272763,
+      272764,
+      272800,
+      272802,
+      272855,
+      272865,
+      272867,
+      273002,
+      273017,
+      273196,
+      273333,
+      273334,
+      273399,
+      273400,
+      273420,
+      273469,
+      273482,
+      273538,
+      273557,
+      273664,
+      273671,
+      273742,
+      273866,
+      273897,
+      274075,
+      274132,
+      274133,
+      274154,
+      274155,
+      274182,
+      274184,
+      274385,
+      274543,
+      274693,
+      274706,
+      274892,
+      275054,
+      275055,
+      275056,
+      275260,
+      275262,
+      275423,
+      275594,
+      275841,
+      275842,
+      275843,
+      276343,
+      276345,
+      276430,
+      276431,
+      276432,
+      276433,
+      276434,
+      276454,
+      276497,
+      276576,
+      276841,
+      276842,
+      276845,
+      277424,
+      278051,
+      278052,
+      278425,
+      278426,
+      278692,
+      278693,
+      278697,
+      278706,
+      278707,
+      278748,
+      278813,
+      278832,
+      278866,
+      279543,
+      279667,
+      279981,
+      280045,
+      280067,
+      280070,
+      280088,
+      280133,
+      280335,
+      280398,
+      280470,
+      280471,
+      280472,
+      280474,
+      280947,
+      280950,
+      280951,
+      280953,
+      280989,
+      281474,
+      282277,
+      282278,
+      282326,
+      282490,
+      282636,
+      282677,
+      282678,
+      282759,
+      282765,
+      282766,
+      283185,
+      283194,
+      283295,
+      283353,
+      283364,
+      283371,
+      283656,
+      283701,
+      283780,
+      283781,
+      283784,
+      284058,
+      284059,
+      284062,
+      284063,
+      284268,
+      284269,
+      284336
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      702
+    ],
+    [
+      3,
+      704
+    ],
+    [
+      5,
+      703
+    ],
+    [
+      7,
+      697
+    ],
+    [
+      9,
+      695
+    ],
+    [
+      11,
+      690
+    ],
+    [
+      13,
+      688
+    ],
+    [
+      15,
+      684
+    ],
+    [
+      17,
+      676
+    ],
+    [
+      19,
+      675
+    ],
+    [
+      23,
+      673
+    ],
+    [
+      25,
+      670
+    ],
+    [
+      27,
+      669
+    ],
+    [
+      29,
+      668
+    ],
+    [
+      31,
+      666
+    ],
+    [
+      33,
+      662
+    ],
+    [
+      35,
+      661
+    ],
+    [
+      37,
+      659
+    ],
+    [
+      39,
+      654
+    ],
+    [
+      41,
+      649
+    ],
+    [
+      43,
+      638
+    ],
+    [
+      45,
+      633
+    ],
+    [
+      47,
+      632
+    ],
+    [
+      49,
+      631
+    ],
+    [
+      51,
+      620
+    ],
+    [
+      55,
+      617
+    ],
+    [
+      57,
+      614
+    ],
+    [
+      61,
+      611
+    ],
+    [
+      63,
+      610
+    ],
+    [
+      67,
+      604
+    ],
+    [
+      69,
+      599
+    ],
+    [
+      73,
+      598
+    ],
+    [
+      75,
+      585
+    ],
+    [
+      77,
+      577
+    ],
+    [
+      79,
+      571
+    ],
+    [
+      81,
+      569
+    ],
+    [
+      83,
+      564
+    ],
+    [
+      87,
+      563
+    ],
+    [
+      91,
+      561
+    ],
+    [
+      93,
+      557
+    ],
+    [
+      95,
+      556
+    ],
+    [
+      97,
+      551
+    ],
+    [
+      99,
+      550
+    ],
+    [
+      101,
+      549
+    ],
+    [
+      103,
+      548
+    ],
+    [
+      105,
+      547
+    ],
+    [
+      107,
+      542
+    ],
+    [
+      111,
+      535
+    ],
+    [
+      113,
+      533
+    ],
+    [
+      115,
+      529
+    ],
+    [
+      117,
+      528
+    ],
+    [
+      119,
+      526
+    ],
+    [
+      121,
+      519
+    ],
+    [
+      123,
+      516
+    ],
+    [
+      125,
+      514
+    ],
+    [
+      127,
+      509
+    ],
+    [
+      129,
+      508
+    ],
+    [
+      131,
+      505
+    ],
+    [
+      133,
+      500
+    ],
+    [
+      135,
+      498
+    ],
+    [
+      137,
+      495
+    ],
+    [
+      139,
+      493
+    ],
+    [
+      141,
+      492
+    ],
+    [
+      143,
+      491
+    ],
+    [
+      145,
+      487
+    ],
+    [
+      147,
+      485
+    ],
+    [
+      149,
+      481
+    ],
+    [
+      151,
+      480
+    ],
+    [
+      153,
+      479
+    ],
+    [
+      155,
+      473
+    ],
+    [
+      159,
+      472
+    ],
+    [
+      161,
+      471
+    ],
+    [
+      165,
+      466
+    ],
+    [
+      171,
+      465
+    ],
+    [
+      175,
+      464
+    ],
+    [
+      179,
+      460
+    ],
+    [
+      185,
+      459
+    ],
+    [
+      187,
+      452
+    ],
+    [
+      189,
+      449
+    ],
+    [
+      191,
+      446
+    ],
+    [
+      195,
+      445
+    ],
+    [
+      201,
+      444
+    ],
+    [
+      203,
+      437
+    ],
+    [
+      205,
+      436
+    ],
+    [
+      207,
+      431
+    ],
+    [
+      209,
+      424
+    ],
+    [
+      211,
+      421
+    ],
+    [
+      213,
+      407
+    ],
+    [
+      215,
+      402
+    ],
+    [
+      217,
+      396
+    ],
+    [
+      219,
+      391
+    ],
+    [
+      221,
+      382
+    ],
+    [
+      227,
+      381
+    ],
+    [
+      229,
+      379
+    ],
+    [
+      231,
+      376
+    ],
+    [
+      233,
+      372
+    ],
+    [
+      235,
+      369
+    ],
+    [
+      237,
+      365
+    ],
+    [
+      239,
+      355
+    ],
+    [
+      243,
+      346
+    ],
+    [
+      245,
+      343
+    ],
+    [
+      249,
+      340
+    ],
+    [
+      251,
+      332
+    ],
+    [
+      253,
+      327
+    ],
+    [
+      255,
+      326
+    ],
+    [
+      259,
+      318
+    ],
+    [
+      261,
+      317
+    ],
+    [
+      263,
+      313
+    ],
+    [
+      265,
+      312
+    ],
+    [
+      267,
+      311
+    ],
+    [
+      269,
+      310
+    ],
+    [
+      271,
+      309
+    ],
+    [
+      273,
+      303
+    ],
+    [
+      275,
+      302
+    ],
+    [
+      277,
+      296
+    ],
+    [
+      279,
+      292
+    ],
+    [
+      281,
+      290
+    ],
+    [
+      285,
+      284
+    ],
+    [
+      289,
+      277
+    ],
+    [
+      291,
+      275
+    ],
+    [
+      293,
+      269
+    ],
+    [
+      295,
+      263
+    ],
+    [
+      297,
+      261
+    ],
+    [
+      299,
+      255
+    ],
+    [
+      303,
+      254
+    ],
+    [
+      305,
+      249
+    ],
+    [
+      307,
+      241
+    ],
+    [
+      309,
+      234
+    ],
+    [
+      313,
+      232
+    ],
+    [
+      315,
+      222
+    ],
+    [
+      317,
+      220
+    ],
+    [
+      319,
+      218
+    ],
+    [
+      321,
+      213
+    ],
+    [
+      323,
+      212
+    ],
+    [
+      325,
+      208
+    ],
+    [
+      327,
+      205
+    ],
+    [
+      329,
+      204
+    ],
+    [
+      331,
+      200
+    ],
+    [
+      335,
+      199
+    ],
+    [
+      337,
+      198
+    ],
+    [
+      339,
+      197
+    ],
+    [
+      341,
+      194
+    ],
+    [
+      343,
+      190
+    ],
+    [
+      345,
+      187
+    ],
+    [
+      347,
+      185
+    ],
+    [
+      349,
+      184
+    ],
+    [
+      351,
+      183
+    ],
+    [
+      353,
+      180
+    ],
+    [
+      355,
+      179
+    ],
+    [
+      357,
+      177
+    ],
+    [
+      359,
+      171
+    ],
+    [
+      363,
+      170
+    ],
+    [
+      365,
+      165
+    ],
+    [
+      367,
+      162
+    ],
+    [
+      369,
+      159
+    ],
+    [
+      371,
+      157
+    ],
+    [
+      373,
+      155
+    ],
+    [
+      375,
+      152
+    ],
+    [
+      377,
+      145
+    ],
+    [
+      381,
+      138
+    ],
+    [
+      383,
+      137
+    ],
+    [
+      387,
+      136
+    ],
+    [
+      389,
+      135
+    ],
+    [
+      391,
+      131
+    ],
+    [
+      393,
+      121
+    ],
+    [
+      395,
+      113
+    ],
+    [
+      397,
+      107
+    ],
+    [
+      399,
+      102
+    ],
+    [
+      403,
+      101
+    ],
+    [
+      405,
+      100
+    ],
+    [
+      407,
+      88
+    ],
+    [
+      409,
+      82
+    ],
+    [
+      411,
+      81
+    ],
+    [
+      415,
+      75
+    ],
+    [
+      417,
+      73
+    ],
+    [
+      421,
+      66
+    ],
+    [
+      427,
+      40
+    ],
+    [
+      429,
+      39
+    ],
+    [
+      431,
+      33
+    ],
+    [
+      433,
+      32
+    ],
+    [
+      435,
+      31
+    ],
+    [
+      437,
+      24
+    ],
+    [
+      439,
+      23
+    ],
+    [
+      441,
+      22
+    ],
+    [
+      443,
+      17
+    ],
+    [
+      445,
+      15
+    ],
+    [
+      449,
+      10
+    ],
+    [
+      453,
+      5
+    ],
+    [
+      454,
+      3
+    ]
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Server updates &amp; discussion",
+  "id": 59632,
+  "title": "Server updates & discussion",
+  "posts_count": 454,
+  "created_at": "2024-03-14T17:11:54.599Z",
+  "views": 12839,
+  "reply_count": 52,
+  "like_count": 1478,
+  "last_posted_at": "2026-02-11T23:30:35.708Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": true,
+  "archetype": "regular",
+  "slug": "server-updates-discussion",
+  "category_id": 7,
+  "word_count": 62831,
+  "deleted_at": null,
+  "user_id": 21330,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_59632",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 456,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 681,
+  "participant_count": 10,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 21330,
+        "username": "updates-bot",
+        "name": "",
+        "avatar_template": "/user_avatar/community.signalusers.org/updates-bot/{size}/31268_2.png",
+        "post_count": 438,
+        "primary_group_name": "automated_users",
+        "flair_name": "automated_users",
+        "flair_url": "robot",
+        "flair_color": "ffffff",
+        "flair_bg_color": "71717f",
+        "flair_group_id": 44,
+        "trust_level": 2
+      },
+      {
+        "id": 8599,
+        "username": "kara42",
+        "name": "kara",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/k/7993a0/{size}.png",
+        "post_count": 4,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      },
+      {
+        "id": 18285,
+        "username": "rassilon1963",
+        "name": "Talya (she/her)",
+        "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+        "post_count": 4,
+        "primary_group_name": "top_contributors",
+        "flair_name": "top_contributors",
+        "flair_url": "compass",
+        "flair_color": "fff",
+        "flair_bg_color": "6058CA",
+        "flair_group_id": 48,
+        "trust_level": 4
+      },
+      {
+        "id": 3070,
+        "username": "awaitlink",
+        "name": "link ✦",
+        "avatar_template": "/user_avatar/community.signalusers.org/awaitlink/{size}/48975_2.png",
+        "post_count": 2,
+        "primary_group_name": "volunteer_moderators",
+        "flair_name": "volunteer_moderators",
+        "flair_url": "shield-halved",
+        "flair_color": "fff",
+        "flair_bg_color": "1d8663",
+        "flair_group_id": 41,
+        "moderator": true,
+        "trust_level": 4
+      },
+      {
+        "id": 6659,
+        "username": "Whatnoww",
+        "name": "Whatnoww",
+        "avatar_template": "/user_avatar/community.signalusers.org/whatnoww/{size}/54328_2.png",
+        "post_count": 1,
+        "primary_group_name": "top_contributors",
+        "flair_name": "top_contributors",
+        "flair_url": "compass",
+        "flair_color": "fff",
+        "flair_bg_color": "6058CA",
+        "flair_group_id": 48,
+        "trust_level": 4
+      },
+      {
+        "id": 21723,
+        "username": "eaaac3fdfaff",
+        "name": "",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/e/41988e/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 3
+      },
+      {
+        "id": 2521,
+        "username": "Herohtar",
+        "name": "",
+        "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+        "post_count": 1,
+        "primary_group_name": "volunteer_moderators",
+        "flair_name": "volunteer_moderators",
+        "flair_url": "shield-halved",
+        "flair_color": "fff",
+        "flair_bg_color": "1d8663",
+        "flair_group_id": 41,
+        "moderator": true,
+        "trust_level": 4
+      },
+      {
+        "id": 28629,
+        "username": "err00",
+        "name": "",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/e/dec6dc/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 1
+      },
+      {
+        "id": 27735,
+        "username": "np4gr",
+        "name": "",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/n/c37758/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      },
+      {
+        "id": 7657,
+        "username": "Avitus",
+        "name": "👊🇺🇸🔥",
+        "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 3
+      }
+    ],
+    "created_by": {
+      "id": 21330,
+      "username": "updates-bot",
+      "name": "",
+      "avatar_template": "/user_avatar/community.signalusers.org/updates-bot/{size}/31268_2.png"
+    },
+    "last_poster": {
+      "id": 21330,
+      "username": "updates-bot",
+      "name": "",
+      "avatar_template": "/user_avatar/community.signalusers.org/updates-bot/{size}/31268_2.png"
+    },
+    "links": [
+      {
+        "url": "https://discourse.suttacentral.net/t/limts-regarding-multiple-consecutive-posts-by-same-user/15799/14",
+        "title": "Limts regarding multiple consecutive posts by same user - #14 by musiko - Meta - Discuss & Discover",
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 6,
+        "user_id": 21330,
+        "domain": "discourse.suttacentral.net",
+        "root_domain": "suttacentral.net"
+      },
+      {
+        "url": "https://community.signalusers.org/t/server-updates-discussion-old/59559/7",
+        "title": "Server updates & discussion (old)",
+        "internal": true,
+        "attachment": false,
+        "reflection": true,
+        "clicks": 4,
+        "user_id": 3070,
+        "domain": "community.signalusers.org",
+        "root_domain": "signalusers.org"
+      },
+      {
+        "url": "https://community.signalusers.org/t/is-signal-use-noiseprotocol-for-transfering-receiving-data/378/10",
+        "title": "Is signal use noiseprotocol for transfering/receiving data?",
+        "internal": true,
+        "attachment": false,
+        "reflection": true,
+        "clicks": 2,
+        "user_id": 3070,
+        "domain": "community.signalusers.org",
+        "root_domain": "signalusers.org"
+      },
+      {
+        "url": "https://noiseprotocol.org/noise.html#interactive-handshake-patterns-fundamental",
+        "title": "The Noise Protocol Framework",
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 2,
+        "user_id": 27735,
+        "domain": "noiseprotocol.org",
+        "root_domain": "noiseprotocol.org"
+      }
+    ]
+  },
+  "bookmarks": []
+}

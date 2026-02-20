@@ -1,0 +1,469 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 277826,
+        "name": "👊🇺🇸🔥",
+        "username": "Avitus",
+        "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+        "created_at": "2025-10-23T02:06:39.629Z",
+        "cooked": "<aside class=\"onebox allowlistedgeneric\" data-onebox-src=\"https://www.forbes.com/sites/the-wiretap/2025/10/21/ice-spies-on-whatsapp/\">\n  <header class=\"source\">\n      <img src=\"https://community.signalusers.org/uploads/db3609/original/3X/2/c/2c570fa76f7e1f2221054c6e63d3d1248862bd63.png\" class=\"site-icon\" alt=\"\" data-dominant-color=\"3F3F3E\" width=\"48\" height=\"48\">\n\n      <a href=\"https://www.forbes.com/sites/the-wiretap/2025/10/21/ice-spies-on-whatsapp/\" target=\"_blank\" rel=\"noopener\">Forbes</a>\n  </header>\n\n  <article class=\"onebox-body\">\n    <div class=\"aspect-image\" style=\"--aspect-ratio:690/459;\"><img src=\"https://community.signalusers.org/uploads/db3609/optimized/3X/4/d/4d091cab02b423cf0cdfd281d45cb6b73e931442_2_690x459.jpeg\" class=\"thumbnail\" alt=\"\" data-dominant-color=\"536283\" width=\"690\" height=\"459\"></div>\n\n<h3><a href=\"https://www.forbes.com/sites/the-wiretap/2025/10/21/ice-spies-on-whatsapp/\" target=\"_blank\" rel=\"noopener\">How ICE Spies On WhatsApp</a></h3>\n\n  <p>ICE’s HSI division gets contacts from the WhatsApp account of a fake ID dealer and has little trouble identifying them, according to warrant.</p>\n\n\n  </article>\n\n  <div class=\"onebox-metadata\">\n    \n    \n  </div>\n\n  <div style=\"clear: both\"></div>\n</aside>\n",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2025-10-23T02:06:39.629Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 5,
+        "reads": 59,
+        "readers_count": 58,
+        "score": 156.8,
+        "yours": false,
+        "topic_id": 72394,
+        "topic_slug": "how-ice-spies-on-whatsapp",
+        "display_username": "👊🇺🇸🔥",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://www.forbes.com/sites/the-wiretap/2025/10/21/ice-spies-on-whatsapp/",
+            "internal": false,
+            "reflection": false,
+            "title": "How ICE Spies On WhatsApp",
+            "clicks": 49
+          }
+        ],
+        "read": true,
+        "user_title": "",
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 6
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 7657,
+        "hidden": false,
+        "trust_level": 3,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/how-ice-spies-on-whatsapp/72394/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      277826
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      115
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Discord will restrict your account next month unless you scan ID or face",
+      "id": 74662,
+      "title": "Discord will restrict your account next month unless you scan ID or face",
+      "slug": "discord-will-restrict-your-account-next-month-unless-you-scan-id-or-face",
+      "posts_count": 6,
+      "reply_count": 3,
+      "highest_post_number": 7,
+      "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/7/f/7f449aa057017a19965fe55e245977eba6527043_2_1024x535.jpeg",
+      "created_at": "2026-02-10T06:28:59.677Z",
+      "last_posted_at": "2026-02-10T23:34:18.207Z",
+      "bumped": true,
+      "bumped_at": "2026-02-10T23:34:18.207Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 10,
+      "views": 136,
+      "category_id": 8,
+      "featured_link": "https://9to5google.com/2026/02/09/discord-age-restrictions-default-face-id-scans/",
+      "featured_link_root_domain": "9to5google.com",
+      "op_like_count": 3,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 32638,
+            "username": "NotWhatsApp",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/n/35a633/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 5448,
+            "username": "DirkPitt1",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/74df32/{size}.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 35180,
+            "username": "UnappealingRelative",
+            "name": "UR",
+            "avatar_template": "/user_avatar/community.signalusers.org/unappealingrelative/{size}/55095_2.png",
+            "trust_level": 0
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Best place to follow stuff now that WhatsApp is introducing ads",
+      "id": 69800,
+      "title": "Best place to follow stuff now that WhatsApp is introducing ads",
+      "slug": "best-place-to-follow-stuff-now-that-whatsapp-is-introducing-ads",
+      "posts_count": 13,
+      "reply_count": 5,
+      "highest_post_number": 13,
+      "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/8/b/8baeb4abdb3d44db26b64f4754d1cfc1394ac735_2_1024x682.jpeg",
+      "created_at": "2025-06-17T15:29:19.661Z",
+      "last_posted_at": "2025-06-18T03:44:31.985Z",
+      "bumped": true,
+      "bumped_at": "2025-06-18T03:44:31.985Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 24,
+      "views": 182,
+      "category_id": 8,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 22679,
+            "username": "Rico70",
+            "name": "Rico",
+            "avatar_template": "/user_avatar/community.signalusers.org/rico70/{size}/41632_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 16653,
+            "username": "QuickBanana",
+            "name": null,
+            "avatar_template": "/user_avatar/community.signalusers.org/quickbanana/{size}/35290_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 6038,
+            "username": "goodec",
+            "name": "Chris",
+            "avatar_template": "/user_avatar/community.signalusers.org/goodec/{size}/14726_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 400,
+            "username": "jaypatelani",
+            "name": "Jay Patel",
+            "avatar_template": "/user_avatar/community.signalusers.org/jaypatelani/{size}/2458_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "[Academic paper] Formal Analysis of Multi-Device Group Messaging in WhatsApp",
+      "id": 69032,
+      "title": "[Academic paper] Formal Analysis of Multi-Device Group Messaging in WhatsApp",
+      "slug": "academic-paper-formal-analysis-of-multi-device-group-messaging-in-whatsapp",
+      "posts_count": 3,
+      "reply_count": 0,
+      "highest_post_number": 3,
+      "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/8/f/8fa7af9c663d5d79399535aedc8cb725e27b8cbe_2_1024x576.jpeg",
+      "created_at": "2025-05-08T02:58:55.622Z",
+      "last_posted_at": "2025-05-08T07:00:50.313Z",
+      "bumped": true,
+      "bumped_at": "2025-05-08T07:00:50.313Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 20,
+      "views": 133,
+      "category_id": 8,
+      "featured_link": "https://eprint.iacr.org/2025/794.pdf",
+      "featured_link_root_domain": "iacr.org",
+      "op_like_count": 9,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 23706,
+            "username": "waltz",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/waltz/{size}/36153_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 16653,
+            "username": "QuickBanana",
+            "name": null,
+            "avatar_template": "/user_avatar/community.signalusers.org/quickbanana/{size}/35290_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "How ICE Spies On WhatsApp",
+  "id": 72394,
+  "title": "How ICE Spies On WhatsApp",
+  "posts_count": 1,
+  "created_at": "2025-10-23T02:06:39.558Z",
+  "views": 169,
+  "reply_count": 0,
+  "like_count": 6,
+  "last_posted_at": "2025-10-23T02:06:39.629Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "how-ice-spies-on-whatsapp",
+  "category_id": 8,
+  "word_count": 14,
+  "deleted_at": null,
+  "user_id": 7657,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/4/d/4d091cab02b423cf0cdfd281d45cb6b73e931442_2_1024x682.jpeg",
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_72394",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": [
+    {
+      "max_width": null,
+      "max_height": null,
+      "width": 1350,
+      "height": 900,
+      "url": "https://community.signalusers.org/uploads/db3609/original/3X/4/d/4d091cab02b423cf0cdfd281d45cb6b73e931442.jpeg"
+    },
+    {
+      "max_width": 1024,
+      "max_height": 1024,
+      "width": 1024,
+      "height": 682,
+      "url": "https://community.signalusers.org/uploads/db3609/optimized/3X/4/d/4d091cab02b423cf0cdfd281d45cb6b73e931442_2_1024x682.jpeg"
+    }
+  ],
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 7657,
+        "username": "Avitus",
+        "name": "👊🇺🇸🔥",
+        "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 3
+      }
+    ],
+    "created_by": {
+      "id": 7657,
+      "username": "Avitus",
+      "name": "👊🇺🇸🔥",
+      "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png"
+    },
+    "last_poster": {
+      "id": 7657,
+      "username": "Avitus",
+      "name": "👊🇺🇸🔥",
+      "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png"
+    },
+    "links": [
+      {
+        "url": "https://www.forbes.com/sites/the-wiretap/2025/10/21/ice-spies-on-whatsapp/",
+        "title": "How ICE Spies On WhatsApp",
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 49,
+        "user_id": 7657,
+        "domain": "www.forbes.com",
+        "root_domain": "forbes.com"
+      }
+    ]
+  },
+  "bookmarks": []
+}

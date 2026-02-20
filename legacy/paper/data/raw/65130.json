@@ -1,0 +1,426 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 256244,
+        "name": "Edwin",
+        "username": "LighthouseFR",
+        "avatar_template": "/user_avatar/community.signalusers.org/lighthousefr/{size}/49740_2.png",
+        "created_at": "2024-11-26T06:06:09.697Z",
+        "cooked": "<p>I have Signal installed on my Windows PC and my Apple iPhone. Recently, one contact is showing one unread message on my Windows PC, even though I’ve read all messages from that contact. However, it displays correctly on my iPhone.</p>\n<p><strong>Question</strong>: Is there a way to resolve this issue?</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2024-11-26T06:06:09.697Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 25,
+        "readers_count": 24,
+        "score": 10.0,
+        "yours": false,
+        "topic_id": 65130,
+        "topic_slug": "read-message-marked-as-unread-display-issue",
+        "display_username": "Edwin",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 30852,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/read-message-marked-as-unread-display-issue/65130/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      256244
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      446
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "I can&rsquo;t install signal",
+      "id": 70485,
+      "title": "I can't install signal",
+      "slug": "i-cant-install-signal",
+      "posts_count": 9,
+      "reply_count": 6,
+      "highest_post_number": 9,
+      "image_url": null,
+      "created_at": "2025-07-17T13:05:58.335Z",
+      "last_posted_at": "2025-07-20T00:15:48.422Z",
+      "bumped": true,
+      "bumped_at": "2025-07-20T00:15:48.422Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 12,
+      "views": 171,
+      "category_id": 12,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 33542,
+            "username": "esharota",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/e/9dc877/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 14796,
+            "username": "MindlessDistance",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/m/a3d4f5/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 3830,
+            "username": "patjolata",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/patjolata/{size}/5785_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 2521,
+            "username": "Herohtar",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+            "primary_group_name": "volunteer_moderators",
+            "flair_name": "volunteer_moderators",
+            "flair_url": "shield-halved",
+            "flair_bg_color": "1d8663",
+            "flair_color": "fff",
+            "flair_group_id": 41,
+            "moderator": true,
+            "trust_level": 4
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Overriding contact picture",
+      "id": 70282,
+      "title": "Overriding contact picture",
+      "slug": "overriding-contact-picture",
+      "posts_count": 6,
+      "reply_count": 2,
+      "highest_post_number": 6,
+      "image_url": null,
+      "created_at": "2025-07-07T06:05:21.911Z",
+      "last_posted_at": "2025-07-25T23:26:01.086Z",
+      "bumped": true,
+      "bumped_at": "2025-07-25T23:26:01.086Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 152,
+      "category_id": 12,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 31532,
+            "username": "sciurius",
+            "name": "Johan Vromans",
+            "avatar_template": "/user_avatar/community.signalusers.org/sciurius/{size}/50487_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 19404,
+            "username": "Dodoheimer",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/dodoheimer/{size}/41939_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 30921,
+            "username": "raxod502",
+            "name": "Radon Rosborough",
+            "avatar_template": "/user_avatar/community.signalusers.org/raxod502/{size}/49816_2.png",
+            "trust_level": 1
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Issues setting up standalone",
+      "id": 68583,
+      "title": "Issues setting up standalone",
+      "slug": "issues-setting-up-standalone",
+      "posts_count": 4,
+      "reply_count": 1,
+      "highest_post_number": 4,
+      "image_url": null,
+      "created_at": "2025-04-17T01:52:42.992Z",
+      "last_posted_at": "2026-01-19T20:44:44.521Z",
+      "bumped": true,
+      "bumped_at": "2026-01-19T20:44:44.521Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 63,
+      "category_id": 12,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 32609,
+            "username": "dbarr1940",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/f19dbf/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 28656,
+            "username": "pickle_umbrella",
+            "name": "Pickle",
+            "avatar_template": "/user_avatar/community.signalusers.org/pickle_umbrella/{size}/48004_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 1499,
+            "username": "CueHD",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/cuehd/{size}/42510_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 7321,
+            "username": "Froiz",
+            "name": "Froiz",
+            "avatar_template": "/user_avatar/community.signalusers.org/froiz/{size}/10694_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Read message = Marked as Unread (display issue)",
+  "id": 65130,
+  "title": "Read message = Marked as Unread (display issue)",
+  "posts_count": 1,
+  "created_at": "2024-11-26T06:06:09.660Z",
+  "views": 52,
+  "reply_count": 0,
+  "like_count": 0,
+  "last_posted_at": "2024-11-26T06:06:09.697Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "read-message-marked-as-unread-display-issue",
+  "category_id": 12,
+  "word_count": 50,
+  "deleted_at": null,
+  "user_id": 30852,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_65130",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 30852,
+        "username": "LighthouseFR",
+        "name": "Edwin",
+        "avatar_template": "/user_avatar/community.signalusers.org/lighthousefr/{size}/49740_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 0
+      }
+    ],
+    "created_by": {
+      "id": 30852,
+      "username": "LighthouseFR",
+      "name": "Edwin",
+      "avatar_template": "/user_avatar/community.signalusers.org/lighthousefr/{size}/49740_2.png"
+    },
+    "last_poster": {
+      "id": 30852,
+      "username": "LighthouseFR",
+      "name": "Edwin",
+      "avatar_template": "/user_avatar/community.signalusers.org/lighthousefr/{size}/49740_2.png"
+    }
+  },
+  "bookmarks": []
+}

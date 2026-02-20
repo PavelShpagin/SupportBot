@@ -1,0 +1,626 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 268381,
+        "name": "Talya (she/her)",
+        "username": "rassilon1963",
+        "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+        "created_at": "2025-05-21T10:10:13.799Z",
+        "cooked": "<aside class=\"onebox allowlistedgeneric\" data-onebox-src=\"https://pivot-to-ai.com/2025/05/20/github-wants-to-spam-open-source-projects-with-ai-slop/\">\n  <header class=\"source\">\n      <img src=\"https://community.signalusers.org/uploads/db3609/original/3X/6/2/6259e3f0252c9684d6e88bde11c85af2dc0a23b8.png\" class=\"site-icon\" data-dominant-color=\"797B7F\" width=\"32\" height=\"32\">\n\n      <a href=\"https://pivot-to-ai.com/2025/05/20/github-wants-to-spam-open-source-projects-with-ai-slop/\" target=\"_blank\" rel=\"noopener\" title=\"07:55PM - 20 May 2025\">Pivot to AI – 20 May 25</a>\n  </header>\n\n  <article class=\"onebox-body\">\n    <div class=\"aspect-image\" style=\"--aspect-ratio:600/449;\"><img src=\"https://community.signalusers.org/uploads/db3609/optimized/3X/1/2/126e8fca0de5d085f3b8dfd2fa9023d6309697f6_2_667x500.webp\" class=\"thumbnail\" data-dominant-color=\"86A49E\" width=\"667\" height=\"500\"></div>\n\n<h3><a href=\"https://pivot-to-ai.com/2025/05/20/github-wants-to-spam-open-source-projects-with-ai-slop/\" target=\"_blank\" rel=\"noopener\">GitHub wants to spam open source projects with AI slop</a></h3>\n\n  <p>We asked a week ago: if AI is such a superior programming method that it’ll produce live quality code for Microsoft and live code for Facebook that actual money relies on — then where are the AI co…</p>\n\n\n  </article>\n\n  <div class=\"onebox-metadata\">\n    \n    \n  </div>\n\n  <div style=\"clear: both\"></div>\n</aside>\n<p>\noh… oh no…</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 3,
+        "updated_at": "2025-05-21T10:10:13.799Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 2,
+        "reads": 37,
+        "readers_count": 36,
+        "score": 32.4,
+        "yours": false,
+        "topic_id": 69282,
+        "topic_slug": "github-wants-to-spam-open-source-projects-with-ai-slop",
+        "display_username": "Talya (she/her)",
+        "primary_group_name": "top_contributors",
+        "flair_name": "top_contributors",
+        "flair_url": "compass",
+        "flair_bg_color": "6058CA",
+        "flair_color": "fff",
+        "flair_group_id": 48,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://pivot-to-ai.com/2025/05/20/github-wants-to-spam-open-source-projects-with-ai-slop/",
+            "internal": false,
+            "reflection": false,
+            "title": "GitHub wants to spam open source projects with AI slop – Pivot to AI",
+            "clicks": 11
+          }
+        ],
+        "read": true,
+        "user_title": "Top Contributor",
+        "title_is_group": true,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 1
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 18285,
+        "hidden": false,
+        "trust_level": 4,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/github-wants-to-spam-open-source-projects-with-ai-slop/69282/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      },
+      {
+        "id": 268383,
+        "name": null,
+        "username": "anon88132",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/a/ba9def/{size}.png",
+        "created_at": "2025-05-21T10:48:38.934Z",
+        "cooked": "<p>yeah, more AI please <img src=\"https://community.signalusers.org/images/emoji/apple/grin.png?v=12\" title=\":grin:\" class=\"emoji\" alt=\":grin:\" loading=\"lazy\" width=\"20\" height=\"20\"></p>\n<p>Daniel Stenberg (cURL Maintainer) posted, ironically on linkedin,  recently this:</p><aside class=\"onebox allowlistedgeneric\" data-onebox-src=\"https://www.linkedin.com/posts/danielstenberg_hackerone-curl-activity-7324820893862363136-glb1\">\n  <header class=\"source\">\n      <img src=\"https://community.signalusers.org/uploads/db3609/original/3X/8/e/8e6709cdb22d9117e7cc1c018636efc6e7d2aac0.png\" class=\"site-icon\" data-dominant-color=\"4E9EC9\" width=\"64\" height=\"64\">\n\n      <a href=\"https://www.linkedin.com/posts/danielstenberg_hackerone-curl-activity-7324820893862363136-glb1\" target=\"_blank\" rel=\"noopener nofollow ugc\">linkedin.com</a>\n  </header>\n\n  <article class=\"onebox-body\">\n    <div class=\"aspect-image\" style=\"--aspect-ratio:690/394;\"><img src=\"https://community.signalusers.org/uploads/db3609/optimized/3X/f/9/f9bf41eead1f747e56b0227ca2e8cae778f6a67f_2_690x394.png\" class=\"thumbnail\" data-dominant-color=\"0890CB\" width=\"690\" height=\"394\"></div>\n\n<h3><a href=\"https://www.linkedin.com/posts/danielstenberg_hackerone-curl-activity-7324820893862363136-glb1\" target=\"_blank\" rel=\"noopener nofollow ugc\">#hackerone #curl | Daniel Stenberg | 256 comments</a></h3>\n\n  <p>That's it. I've had it. I'm putting my foot down on this craziness.\n\n1. Every reporter submitting security reports on #Hackerone for #curl now needs to answer this question:\n\n\"Did you use an AI to find the problem or generate this submission?\"\n\n(and...</p>\n\n\n  </article>\n\n  <div class=\"onebox-metadata\">\n    \n    \n  </div>\n\n  <div style=\"clear: both\"></div>\n</aside>\n\n<p>I’ve postet 3 years ago this here <a href=\"https://community.signalusers.org/t/a-bright-future-for-github-microsoft-is-acquiring-github/3172/9\" class=\"inline-onebox\">\"A bright future for GitHub\": Microsoft is acquiring GitHub - #9 by anon88132</a></p>",
+        "post_number": 2,
+        "post_type": 1,
+        "posts_count": 3,
+        "updated_at": "2025-05-21T10:48:38.934Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 35,
+        "readers_count": 34,
+        "score": 22.0,
+        "yours": false,
+        "topic_id": 69282,
+        "topic_slug": "github-wants-to-spam-open-source-projects-with-ai-slop",
+        "display_username": null,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://www.linkedin.com/posts/danielstenberg_hackerone-curl-activity-7324820893862363136-glb1",
+            "internal": false,
+            "reflection": false,
+            "title": "#hackerone #curl | Daniel Stenberg | 256 comments",
+            "clicks": 5
+          },
+          {
+            "url": "https://community.signalusers.org/t/a-bright-future-for-github-microsoft-is-acquiring-github/3172/9",
+            "internal": true,
+            "reflection": false,
+            "title": "\"A bright future for GitHub\": Microsoft is acquiring GitHub",
+            "clicks": 4
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 1
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 17396,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/github-wants-to-spam-open-source-projects-with-ai-slop/69282/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 268389,
+        "name": "👊🇺🇸🔥",
+        "username": "Avitus",
+        "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+        "created_at": "2025-05-21T13:35:40.214Z",
+        "cooked": "<p>What a mess this is all going to become.</p>",
+        "post_number": 3,
+        "post_type": 1,
+        "posts_count": 3,
+        "updated_at": "2025-05-21T13:35:40.214Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 30,
+        "readers_count": 29,
+        "score": 41.0,
+        "yours": false,
+        "topic_id": 69282,
+        "topic_slug": "github-wants-to-spam-open-source-projects-with-ai-slop",
+        "display_username": "👊🇺🇸🔥",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "",
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 2
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 7657,
+        "hidden": false,
+        "trust_level": 3,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/github-wants-to-spam-open-source-projects-with-ai-slop/69282/3",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      }
+    ],
+    "stream": [
+      268381,
+      268383,
+      268389
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      269
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "WeTransfer messed up with their ToS, appropriating users&rsquo; data to train AI models",
+      "id": 70451,
+      "title": "WeTransfer messed up with their ToS, appropriating users' data to train AI models",
+      "slug": "wetransfer-messed-up-with-their-tos-appropriating-users-data-to-train-ai-models",
+      "posts_count": 17,
+      "reply_count": 8,
+      "highest_post_number": 17,
+      "image_url": null,
+      "created_at": "2025-07-15T15:34:27.259Z",
+      "last_posted_at": "2025-07-24T13:29:53.084Z",
+      "bumped": true,
+      "bumped_at": "2025-07-24T13:29:53.084Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 37,
+      "views": 287,
+      "category_id": 8,
+      "featured_link": null,
+      "op_like_count": 5,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 2170,
+            "username": "TeeJay82",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/teejay82/{size}/1806_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 5448,
+            "username": "DirkPitt1",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/74df32/{size}.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 16653,
+            "username": "QuickBanana",
+            "name": null,
+            "avatar_template": "/user_avatar/community.signalusers.org/quickbanana/{size}/35290_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 1497,
+            "username": "najodleglejszy",
+            "name": "(he/him)",
+            "avatar_template": "/user_avatar/community.signalusers.org/najodleglejszy/{size}/1213_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Question to folks who have a Google Pixel 9",
+      "id": 69994,
+      "title": "Question to folks who have a Google Pixel 9",
+      "slug": "question-to-folks-who-have-a-google-pixel-9",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2025-06-25T23:48:06.713Z",
+      "last_posted_at": "2025-06-25T23:48:06.772Z",
+      "bumped": true,
+      "bumped_at": "2025-06-25T23:48:06.772Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 1,
+      "views": 69,
+      "category_id": 8,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 17159,
+            "username": "tony10",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/t/82dd89/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Microsoft Cuts Off Access to Bing Search Data as It Shifts Focus to Chatbots",
+      "id": 69201,
+      "title": "Microsoft Cuts Off Access to Bing Search Data as It Shifts Focus to Chatbots",
+      "slug": "microsoft-cuts-off-access-to-bing-search-data-as-it-shifts-focus-to-chatbots",
+      "posts_count": 5,
+      "reply_count": 2,
+      "highest_post_number": 5,
+      "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/5/8/58d882066c540a33b5278f7a50f54a0e01990d71_2_1024x536.jpeg",
+      "created_at": "2025-05-16T12:06:20.264Z",
+      "last_posted_at": "2025-05-16T15:41:26.245Z",
+      "bumped": true,
+      "bumped_at": "2025-05-16T15:41:26.245Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 4,
+      "views": 72,
+      "category_id": 8,
+      "featured_link": "https://www.wired.com/story/bing-microsoft-api-support-ending/",
+      "featured_link_root_domain": "wired.com",
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 2170,
+            "username": "TeeJay82",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/teejay82/{size}/1806_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 1499,
+            "username": "CueHD",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/cuehd/{size}/42510_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 1497,
+            "username": "najodleglejszy",
+            "name": "(he/him)",
+            "avatar_template": "/user_avatar/community.signalusers.org/najodleglejszy/{size}/1213_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "GitHub wants to spam open source projects with AI slop",
+  "id": 69282,
+  "title": "GitHub wants to spam open source projects with AI slop",
+  "posts_count": 3,
+  "created_at": "2025-05-21T10:10:13.741Z",
+  "views": 84,
+  "reply_count": 0,
+  "like_count": 4,
+  "last_posted_at": "2025-05-21T13:35:40.214Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "github-wants-to-spam-open-source-projects-with-ai-slop",
+  "category_id": 8,
+  "word_count": 79,
+  "deleted_at": null,
+  "user_id": 18285,
+  "featured_link": "https://pivot-to-ai.com/2025/05/20/github-wants-to-spam-open-source-projects-with-ai-slop/",
+  "featured_link_root_domain": "pivot-to-ai.com",
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": "https://community.signalusers.org/uploads/db3609/original/3X/1/2/126e8fca0de5d085f3b8dfd2fa9023d6309697f6.webp",
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_69282",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 3,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 3,
+  "show_read_indicator": false,
+  "thumbnails": [
+    {
+      "max_width": null,
+      "max_height": null,
+      "width": 768,
+      "height": 575,
+      "url": "https://community.signalusers.org/uploads/db3609/original/3X/1/2/126e8fca0de5d085f3b8dfd2fa9023d6309697f6.webp"
+    }
+  ],
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 7657,
+        "username": "Avitus",
+        "name": "👊🇺🇸🔥",
+        "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 3
+      },
+      {
+        "id": 17396,
+        "username": "anon88132",
+        "name": null,
+        "avatar_template": "/letter_avatar_proxy/v4/letter/a/ba9def/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      },
+      {
+        "id": 18285,
+        "username": "rassilon1963",
+        "name": "Talya (she/her)",
+        "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+        "post_count": 1,
+        "primary_group_name": "top_contributors",
+        "flair_name": "top_contributors",
+        "flair_url": "compass",
+        "flair_color": "fff",
+        "flair_bg_color": "6058CA",
+        "flair_group_id": 48,
+        "trust_level": 4
+      }
+    ],
+    "created_by": {
+      "id": 18285,
+      "username": "rassilon1963",
+      "name": "Talya (she/her)",
+      "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png"
+    },
+    "last_poster": {
+      "id": 7657,
+      "username": "Avitus",
+      "name": "👊🇺🇸🔥",
+      "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png"
+    },
+    "links": [
+      {
+        "url": "https://pivot-to-ai.com/2025/05/20/github-wants-to-spam-open-source-projects-with-ai-slop/",
+        "title": "GitHub wants to spam open source projects with AI slop – Pivot to AI",
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 11,
+        "user_id": 18285,
+        "domain": "pivot-to-ai.com",
+        "root_domain": "pivot-to-ai.com"
+      },
+      {
+        "url": "https://www.linkedin.com/posts/danielstenberg_hackerone-curl-activity-7324820893862363136-glb1",
+        "title": "#hackerone #curl | Daniel Stenberg | 256 comments",
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 5,
+        "user_id": 17396,
+        "domain": "www.linkedin.com",
+        "root_domain": "linkedin.com"
+      },
+      {
+        "url": "https://community.signalusers.org/t/a-bright-future-for-github-microsoft-is-acquiring-github/3172/9",
+        "title": "\"A bright future for GitHub\": Microsoft is acquiring GitHub",
+        "internal": true,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 4,
+        "user_id": 17396,
+        "domain": "community.signalusers.org",
+        "root_domain": "signalusers.org"
+      }
+    ]
+  },
+  "bookmarks": []
+}

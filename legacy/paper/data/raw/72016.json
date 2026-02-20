@@ -1,0 +1,480 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 276670,
+        "name": "",
+        "username": "SGalAGalAGal",
+        "avatar_template": "/user_avatar/community.signalusers.org/sgalagalagal/{size}/52749_2.png",
+        "created_at": "2025-10-03T19:46:04.551Z",
+        "cooked": "<p>My rationale is that some presence is better than no presence.</p>\n<ol>\n<li>Could signal remove media transfers from the apk they distribute in the EU? No video and images means no CSAM distribution.</li>\n<li>Could signal mark the app as 18+ globally in the app stores and leave it up to google/apple? If there are no children on the platform then then there is nobody to groom.</li>\n<li>Since Signal already uses phone numbers could they query EU phone operators to see if the number is controlled by an adult?</li>\n<li>Could signal offer something else in addition to phone number based signups?</li>\n<li>Could Signal have an option to buy an account with crypto for a nominal fee like 10 USD? Children in EU do not have access to crypto and any accounts activated through those measures couldn’t not be children and could not affect anything else.</li>\n<li>Could signal split and create an entity that controls the backbone and an entity that develops the user facing app?</li>\n<li>Could signal leave the backbone open for other apps to use and have separate or even non related parties develop the user facing apps so that it doesn’t cross the monthly 45 million threshold?</li>\n<li>Could signal become data agnostic? Meaning they transfer data and it is up to the user applications how to interpret it.</li>\n<li>Could signal integrate optional Tor routing? I think Tor has been working on an easier to use implementation for years and years now, is it ready?</li>\n<li>Could signal take measures not to inflate active monthly user stats? Meaning use of the app is sending a message or receiving a message and actually reading it.</li>\n<li>Could signal argue that non discoverability of random people prevents the targeting of children because you can not find the children on the service? That would combine with measures of not allowing children on the service.</li>\n<li>Could signal argue that the no screenshots function serves as an anti cyber bullying measure? What children do is screenshot and share conversations to cause grief to each other. No media transfers would also eliminate a lot of the concerns about protecting the children from themselves and others.</li>\n<li>Could Signal implement an optional? p2p infrastructure that is then optionally? Tor routed? This could prevent data collection measures being forced upon Signal.</li>\n<li>Could signal create a web app?</li>\n<li>Could Signal collaborate with GrapheneOS?</li>\n</ol>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2025-10-03T19:46:04.551Z",
+        "reply_count": 1,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 52,
+        "readers_count": 51,
+        "score": 35.4,
+        "yours": false,
+        "topic_id": 72016,
+        "topic_slug": "naive-questions-about-how-signal-could-survive-in-the-eu-with-chat-control",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 1
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 34346,
+        "hidden": false,
+        "trust_level": 1,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/naive-questions-about-how-signal-could-survive-in-the-eu-with-chat-control/72016/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      },
+      {
+        "id": 276678,
+        "name": "Talya (she/her)",
+        "username": "rassilon1963",
+        "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+        "created_at": "2025-10-03T20:23:46.979Z",
+        "cooked": "<aside class=\"quote no-group\" data-username=\"SGalAGalAGal\" data-post=\"1\" data-topic=\"72016\">\n<div class=\"title\">\n<div class=\"quote-controls\"></div>\n<img alt=\"\" width=\"24\" height=\"24\" src=\"https://community.signalusers.org/user_avatar/community.signalusers.org/sgalagalagal/48/52749_2.png\" class=\"avatar\"> SGalAGalAGal:</div>\n<blockquote>\n<p>Could signal remove media transfers from the apk they distribute in the EU? No video and images means no CSAM distribution.</p>\n</blockquote>\n</aside>\n<p>that would require them to know you’re in the EU.</p>\n<aside class=\"quote no-group\" data-username=\"SGalAGalAGal\" data-post=\"1\" data-topic=\"72016\">\n<div class=\"title\">\n<div class=\"quote-controls\"></div>\n<img alt=\"\" width=\"24\" height=\"24\" src=\"https://community.signalusers.org/user_avatar/community.signalusers.org/sgalagalagal/48/52749_2.png\" class=\"avatar\"> SGalAGalAGal:</div>\n<blockquote>\n<ul>\n<li>Could signal mark the app as 18+ globally in the app stores and leave it up to google/apple? If there are no children on the platform then then there is nobody to groom.</li>\n<li>Since Signal already uses phone numbers could they query EU phone operators to see if the number is controlled by an adult?</li>\n</ul>\n</blockquote>\n</aside>\n<aside class=\"quote no-group\" data-username=\"SGalAGalAGal\" data-post=\"1\" data-topic=\"72016\">\n<div class=\"title\">\n<div class=\"quote-controls\"></div>\n<img alt=\"\" width=\"24\" height=\"24\" src=\"https://community.signalusers.org/user_avatar/community.signalusers.org/sgalagalagal/48/52749_2.png\" class=\"avatar\"> SGalAGalAGal:</div>\n<blockquote>\n<p>Could Signal have an option to buy an account with crypto for a nominal fee like 10 USD? Children in EU do not have access to crypto and any accounts activated through those measures couldn’t not be children and could not affect anything else.</p>\n</blockquote>\n</aside>\n<aside class=\"quote no-group\" data-username=\"SGalAGalAGal\" data-post=\"1\" data-topic=\"72016\">\n<div class=\"title\">\n<div class=\"quote-controls\"></div>\n<img alt=\"\" width=\"24\" height=\"24\" src=\"https://community.signalusers.org/user_avatar/community.signalusers.org/sgalagalagal/48/52749_2.png\" class=\"avatar\"> SGalAGalAGal:</div>\n<blockquote>\n<p>Could signal take measures not to inflate active monthly user stats? Meaning use of the app is sending a message or receiving a message and actually reading it.</p>\n</blockquote>\n</aside>\n<aside class=\"quote no-group\" data-username=\"SGalAGalAGal\" data-post=\"1\" data-topic=\"72016\">\n<div class=\"title\">\n<div class=\"quote-controls\"></div>\n<img alt=\"\" width=\"24\" height=\"24\" src=\"https://community.signalusers.org/user_avatar/community.signalusers.org/sgalagalagal/48/52749_2.png\" class=\"avatar\"> SGalAGalAGal:</div>\n<blockquote>\n<ul>\n<li>Could signal argue that non discoverability of random people prevents the targeting of children because you can not find the children on the service? That would combine with measures of not allowing children on the service.</li>\n<li>Could signal argue that the no screenshots function serves as an anti cyber bullying measure? What children do is screenshot and share conversations to cause grief to each other. No media transfers would also eliminate a lot of the concerns about protecting the children from themselves and others.</li>\n</ul>\n</blockquote>\n</aside>\n<p>that doesn’t answer the requirement by the EU. this is not about not having children on the app, it’s about scanning all messages for child abuse material.</p>\n<aside class=\"quote no-group\" data-username=\"SGalAGalAGal\" data-post=\"1\" data-topic=\"72016\">\n<div class=\"title\">\n<div class=\"quote-controls\"></div>\n<img alt=\"\" width=\"24\" height=\"24\" src=\"https://community.signalusers.org/user_avatar/community.signalusers.org/sgalagalagal/48/52749_2.png\" class=\"avatar\"> SGalAGalAGal:</div>\n<blockquote>\n<ul>\n<li>Since Signal already uses phone numbers could they query EU phone operators to see if the number is controlled by an adult?</li>\n<li>Could signal offer something else in addition to phone number based signups?</li>\n</ul>\n</blockquote>\n</aside>\n<aside class=\"quote no-group\" data-username=\"SGalAGalAGal\" data-post=\"1\" data-topic=\"72016\">\n<div class=\"title\">\n<div class=\"quote-controls\"></div>\n<img alt=\"\" width=\"24\" height=\"24\" src=\"https://community.signalusers.org/user_avatar/community.signalusers.org/sgalagalagal/48/52749_2.png\" class=\"avatar\"> SGalAGalAGal:</div>\n<blockquote>\n<p>Could signal split and create an entity that controls the backbone and an entity that develops the user facing app?</p>\n</blockquote>\n</aside>\n<aside class=\"quote no-group\" data-username=\"SGalAGalAGal\" data-post=\"1\" data-topic=\"72016\">\n<div class=\"title\">\n<div class=\"quote-controls\"></div>\n<img alt=\"\" width=\"24\" height=\"24\" src=\"https://community.signalusers.org/user_avatar/community.signalusers.org/sgalagalagal/48/52749_2.png\" class=\"avatar\"> SGalAGalAGal:</div>\n<blockquote>\n<ul>\n<li>Could Signal implement an optional? p2p infrastructure that is then optionally? Tor routed? This could prevent data collection measures being forced upon Signal.</li>\n<li>Could signal create a web app?</li>\n<li>Could Signal collaborate with GrapheneOS?</li>\n</ul>\n</blockquote>\n</aside>\n<p>that wouldn’t solve the issue, the EU would still be after them.</p>\n<aside class=\"quote no-group\" data-username=\"SGalAGalAGal\" data-post=\"1\" data-topic=\"72016\">\n<div class=\"title\">\n<div class=\"quote-controls\"></div>\n<img alt=\"\" width=\"24\" height=\"24\" src=\"https://community.signalusers.org/user_avatar/community.signalusers.org/sgalagalagal/48/52749_2.png\" class=\"avatar\"> SGalAGalAGal:</div>\n<blockquote>\n<p>Could signal leave the backbone open for other apps to use and have separate or even non related parties develop the user facing apps so that it doesn’t cross the monthly 45 million threshold?</p>\n</blockquote>\n</aside>\n<aside class=\"quote no-group\" data-username=\"SGalAGalAGal\" data-post=\"1\" data-topic=\"72016\">\n<div class=\"title\">\n<div class=\"quote-controls\"></div>\n<img alt=\"\" width=\"24\" height=\"24\" src=\"https://community.signalusers.org/user_avatar/community.signalusers.org/sgalagalagal/48/52749_2.png\" class=\"avatar\"> SGalAGalAGal:</div>\n<blockquote>\n<p>Could signal take measures not to inflate active monthly user stats? Meaning use of the app is sending a message or receiving a message and actually reading it.</p>\n</blockquote>\n</aside>\n<p>there isn’t such a threshold. you’re confusing with the DMA.</p>\n<p>Chat Control is the EU asking Signal to scan all messages, or they’re illegal in the EU. Signal’s answer is “make us illegal, we dare you”, which is the correct response.<br>\nsince this is a question of compliance with the law, this isn’t a technical issue. as such there are no technical workarounds. Signal has made it clear that when it comes to being asked to circumvent encryption, they will never comply, to the point of being blocked (something they already deal with in Russia or Iran). because when the options are to comply or become illegal, the correct solution is to become illegal and give people the option to circumvent the law, as they do in the aforementioned countries.</p>",
+        "post_number": 2,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2025-10-03T20:23:46.979Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 1,
+        "incoming_link_count": 1,
+        "reads": 47,
+        "readers_count": 46,
+        "score": 74.4,
+        "yours": false,
+        "topic_id": 72016,
+        "topic_slug": "naive-questions-about-how-signal-could-survive-in-the-eu-with-chat-control",
+        "display_username": "Talya (she/her)",
+        "primary_group_name": "top_contributors",
+        "flair_name": "top_contributors",
+        "flair_url": "compass",
+        "flair_bg_color": "6058CA",
+        "flair_color": "fff",
+        "flair_group_id": 48,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "Top Contributor",
+        "title_is_group": true,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 4
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 18285,
+        "hidden": false,
+        "trust_level": 4,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/naive-questions-about-how-signal-could-survive-in-the-eu-with-chat-control/72016/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      }
+    ],
+    "stream": [
+      276670,
+      276678
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      134
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Any expiration time of Signal keeping last registration or connect timestamp of user info?",
+      "id": 74659,
+      "title": "Any expiration time of Signal keeping last registration or connect timestamp of user info?",
+      "slug": "any-expiration-time-of-signal-keeping-last-registration-or-connect-timestamp-of-user-info",
+      "posts_count": 6,
+      "reply_count": 4,
+      "highest_post_number": 6,
+      "image_url": null,
+      "created_at": "2026-02-09T19:52:55.976Z",
+      "last_posted_at": "2026-02-13T19:23:52.746Z",
+      "bumped": true,
+      "bumped_at": "2026-02-13T19:23:52.746Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 3,
+      "views": 94,
+      "category_id": 7,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 4582,
+            "username": "desmond",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/e495f1/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 6659,
+            "username": "Whatnoww",
+            "name": "Whatnoww",
+            "avatar_template": "/user_avatar/community.signalusers.org/whatnoww/{size}/54328_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "50501 uses signal a lot&hellip;. can we be helpful",
+      "id": 73542,
+      "title": "50501 uses signal a lot.... can we be helpful",
+      "slug": "50501-uses-signal-a-lot-can-we-be-helpful",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": null,
+      "created_at": "2025-12-12T23:25:26.434Z",
+      "last_posted_at": "2025-12-13T01:04:41.812Z",
+      "bumped": true,
+      "bumped_at": "2025-12-13T15:58:08.672Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 7,
+      "views": 171,
+      "category_id": 7,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 35148,
+            "username": "zgoldenbird",
+            "name": "Zack Simmons",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/z/e95f7d/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Why no Privacy settings for Profile Picture &amp; About?",
+      "id": 69663,
+      "title": "Why no Privacy settings for Profile Picture & About?",
+      "slug": "why-no-privacy-settings-for-profile-picture-about",
+      "posts_count": 23,
+      "reply_count": 17,
+      "highest_post_number": 24,
+      "image_url": null,
+      "created_at": "2025-06-10T01:55:01.312Z",
+      "last_posted_at": "2025-09-01T04:26:55.178Z",
+      "bumped": true,
+      "bumped_at": "2025-09-01T04:26:55.178Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 43,
+      "views": 554,
+      "category_id": 7,
+      "featured_link": null,
+      "op_like_count": 8,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 25737,
+            "username": "mortal_engin3",
+            "name": "MORTAL ENGINE",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/m/ee7513/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 1499,
+            "username": "CueHD",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/cuehd/{size}/42510_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Naive questions about how Signal could survive in the EU with Chat Control.",
+  "id": 72016,
+  "title": "Naive questions about how Signal could survive in the EU with Chat Control.",
+  "posts_count": 2,
+  "created_at": "2025-10-03T19:46:04.484Z",
+  "views": 150,
+  "reply_count": 0,
+  "like_count": 5,
+  "last_posted_at": "2025-10-03T20:23:46.979Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "naive-questions-about-how-signal-could-survive-in-the-eu-with-chat-control",
+  "category_id": 7,
+  "word_count": 1051,
+  "deleted_at": null,
+  "user_id": 34346,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_72016",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 2,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 2,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 18285,
+        "username": "rassilon1963",
+        "name": "Talya (she/her)",
+        "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+        "post_count": 1,
+        "primary_group_name": "top_contributors",
+        "flair_name": "top_contributors",
+        "flair_url": "compass",
+        "flair_color": "fff",
+        "flair_bg_color": "6058CA",
+        "flair_group_id": 48,
+        "trust_level": 4
+      },
+      {
+        "id": 34346,
+        "username": "SGalAGalAGal",
+        "name": "",
+        "avatar_template": "/user_avatar/community.signalusers.org/sgalagalagal/{size}/52749_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 1
+      }
+    ],
+    "created_by": {
+      "id": 34346,
+      "username": "SGalAGalAGal",
+      "name": "",
+      "avatar_template": "/user_avatar/community.signalusers.org/sgalagalagal/{size}/52749_2.png"
+    },
+    "last_poster": {
+      "id": 18285,
+      "username": "rassilon1963",
+      "name": "Talya (she/her)",
+      "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png"
+    }
+  },
+  "bookmarks": []
+}

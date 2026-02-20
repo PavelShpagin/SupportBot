@@ -1,0 +1,393 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 282061,
+        "name": "Meteor0id",
+        "username": "Meteor0id",
+        "avatar_template": "/user_avatar/community.signalusers.org/meteor0id/{size}/55420_2.png",
+        "created_at": "2026-01-01T22:16:10.831Z",
+        "cooked": "<p>when rearranging folders, long hold on a folder opens a context menu.</p>\n<p>If you long hold the drag handle it also opens that context menu, but in my experience that is poor design. It’s quite normal to long hold a drag button while thinking about the direction you want to move, and when this context menu opens it block you from moving the item.</p>\n<p><div class=\"lightbox-wrapper\"><a class=\"lightbox\" href=\"https://community.signalusers.org/uploads/db3609/original/3X/1/a/1ac6a879ce2ebaaed97ae3320e967e82d12290cc.png\" data-download-href=\"https://community.signalusers.org/uploads/db3609/1ac6a879ce2ebaaed97ae3320e967e82d12290cc\" title=\"Screenshot_20260101-230800.Signal\"><img src=\"https://community.signalusers.org/uploads/db3609/optimized/3X/1/a/1ac6a879ce2ebaaed97ae3320e967e82d12290cc_2_224x500.png\" alt=\"Screenshot_20260101-230800.Signal\" data-base62-sha1=\"3OS2jfCUUWDGGnwDypDmsohpmlm\" width=\"224\" height=\"500\" srcset=\"https://community.signalusers.org/uploads/db3609/optimized/3X/1/a/1ac6a879ce2ebaaed97ae3320e967e82d12290cc_2_224x500.png, https://community.signalusers.org/uploads/db3609/optimized/3X/1/a/1ac6a879ce2ebaaed97ae3320e967e82d12290cc_2_336x750.png 1.5x, https://community.signalusers.org/uploads/db3609/optimized/3X/1/a/1ac6a879ce2ebaaed97ae3320e967e82d12290cc_2_448x1000.png 2x\" data-dominant-color=\"222124\"><div class=\"meta\"><svg class=\"fa d-icon d-icon-far-image svg-icon\" aria-hidden=\"true\"><use href=\"#far-image\"></use></svg><span class=\"filename\">Screenshot_20260101-230800.Signal</span><span class=\"informations\">1220×2712 178 KB</span><svg class=\"fa d-icon d-icon-discourse-expand svg-icon\" aria-hidden=\"true\"><use href=\"#discourse-expand\"></use></svg></div></a></div></p>\n<p>I propose:</p>\n<p>option A - move the edit and the delere button directly to each list item (not hidden in a context menu). There is no visual cue that a context menu exists, like a 3 dot button. It could be missed, so it should just not be there.</p>\n<p>option B - exampt the drag handle from the long press action. Also add a 3 dot button on each item to hint at the existance of more options / a context menu. a short press on that button should suffice to open the context menu.</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2026-01-01T22:16:10.831Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 15,
+        "readers_count": 14,
+        "score": 23.0,
+        "yours": false,
+        "topic_id": 73944,
+        "topic_slug": "long-hold-on-drag-handle-should-not-open-context-menu",
+        "display_username": "Meteor0id",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "",
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 1
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 1210,
+        "hidden": false,
+        "trust_level": 3,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/long-hold-on-drag-handle-should-not-open-context-menu/73944/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      282061
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      44
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Save button does not save",
+      "id": 73943,
+      "title": "Save button does not save",
+      "slug": "save-button-does-not-save",
+      "posts_count": 3,
+      "reply_count": 0,
+      "highest_post_number": 3,
+      "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/6/b/6b5b1ac0510f334de66521ee22b80d52b706d6af_2_460x1024.png",
+      "created_at": "2026-01-01T21:59:07.341Z",
+      "last_posted_at": "2026-01-05T18:17:46.460Z",
+      "bumped": true,
+      "bumped_at": "2026-01-05T18:17:46.460Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 5,
+      "views": 66,
+      "category_id": 30,
+      "featured_link": null,
+      "op_like_count": 2,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 1210,
+            "username": "Meteor0id",
+            "name": "Meteor0id",
+            "avatar_template": "/user_avatar/community.signalusers.org/meteor0id/{size}/55420_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 2521,
+            "username": "Herohtar",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+            "primary_group_name": "volunteer_moderators",
+            "flair_name": "volunteer_moderators",
+            "flair_url": "shield-halved",
+            "flair_bg_color": "1d8663",
+            "flair_color": "fff",
+            "flair_group_id": 41,
+            "moderator": true,
+            "trust_level": 4
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Implement Material 3 Expressive Design",
+      "id": 69962,
+      "title": "Implement Material 3 Expressive Design",
+      "slug": "implement-material-3-expressive-design",
+      "posts_count": 4,
+      "reply_count": 1,
+      "highest_post_number": 6,
+      "image_url": "https://community.signalusers.org/uploads/db3609/original/3X/2/0/206978a1aff9e64f79a40ace3946e05254fd7c2c.png",
+      "created_at": "2025-06-24T16:22:46.570Z",
+      "last_posted_at": "2026-01-22T17:42:31.343Z",
+      "bumped": true,
+      "bumped_at": "2026-01-22T17:42:31.343Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 40,
+      "views": 482,
+      "category_id": 30,
+      "featured_link": null,
+      "op_like_count": 25,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 5831,
+            "username": "Salt505",
+            "name": "Salt",
+            "avatar_template": "/user_avatar/community.signalusers.org/salt505/{size}/8288_2.png",
+            "primary_group_name": "volunteer_moderators",
+            "flair_name": "volunteer_moderators",
+            "flair_url": "shield-halved",
+            "flair_bg_color": "1d8663",
+            "flair_color": "fff",
+            "flair_group_id": 41,
+            "moderator": true,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 35056,
+            "username": "poopenheimer",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/p/e8c25b/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Disable in-call notifications",
+      "id": 66914,
+      "title": "Disable in-call notifications",
+      "slug": "disable-in-call-notifications",
+      "posts_count": 5,
+      "reply_count": 2,
+      "highest_post_number": 5,
+      "image_url": null,
+      "created_at": "2025-02-14T23:19:47.117Z",
+      "last_posted_at": "2026-02-05T18:18:42.072Z",
+      "bumped": true,
+      "bumped_at": "2026-02-05T18:18:42.072Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 3,
+      "views": 147,
+      "category_id": 30,
+      "featured_link": null,
+      "op_like_count": 2,
+      "has_accepted_answer": true,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster, Accepted Answer",
+          "user": {
+            "id": 2454,
+            "username": "Turgidson",
+            "name": "Turgidson",
+            "avatar_template": "/user_avatar/community.signalusers.org/turgidson/{size}/2116_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 6659,
+            "username": "Whatnoww",
+            "name": "Whatnoww",
+            "avatar_template": "/user_avatar/community.signalusers.org/whatnoww/{size}/54328_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Long hold on drag handle should not open context menu",
+  "id": 73944,
+  "title": "Long hold on drag handle should not open context menu",
+  "posts_count": 1,
+  "created_at": "2026-01-01T22:16:10.703Z",
+  "views": 26,
+  "reply_count": 0,
+  "like_count": 1,
+  "last_posted_at": "2026-01-01T22:16:10.831Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "long-hold-on-drag-handle-should-not-open-context-menu",
+  "category_id": 30,
+  "word_count": 164,
+  "deleted_at": null,
+  "user_id": 1210,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/1/a/1ac6a879ce2ebaaed97ae3320e967e82d12290cc_2_460x1024.png",
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_73944",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": [
+    {
+      "max_width": null,
+      "max_height": null,
+      "width": 1220,
+      "height": 2712,
+      "url": "https://community.signalusers.org/uploads/db3609/original/3X/1/a/1ac6a879ce2ebaaed97ae3320e967e82d12290cc.png"
+    },
+    {
+      "max_width": 1024,
+      "max_height": 1024,
+      "width": 460,
+      "height": 1024,
+      "url": "https://community.signalusers.org/uploads/db3609/optimized/3X/1/a/1ac6a879ce2ebaaed97ae3320e967e82d12290cc_2_460x1024.png"
+    }
+  ],
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 1210,
+        "username": "Meteor0id",
+        "name": "Meteor0id",
+        "avatar_template": "/user_avatar/community.signalusers.org/meteor0id/{size}/55420_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 3
+      }
+    ],
+    "created_by": {
+      "id": 1210,
+      "username": "Meteor0id",
+      "name": "Meteor0id",
+      "avatar_template": "/user_avatar/community.signalusers.org/meteor0id/{size}/55420_2.png"
+    },
+    "last_poster": {
+      "id": 1210,
+      "username": "Meteor0id",
+      "name": "Meteor0id",
+      "avatar_template": "/user_avatar/community.signalusers.org/meteor0id/{size}/55420_2.png"
+    }
+  },
+  "bookmarks": []
+}

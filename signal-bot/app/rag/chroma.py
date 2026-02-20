@@ -106,6 +106,19 @@ class ChromaRag:
             log.warning("delete_cases_by_group failed for group %s: %s", group_id[:20], e)
             return 0
 
+    def list_all_case_ids(self) -> List[str]:
+        """Return every case_id currently stored in ChromaDB (all groups).
+
+        Used by the SYNC_RAG worker to identify stale entries.
+        """
+        try:
+            col = self._collection()
+            result = col.get(include=[])
+            return result.get("ids") or []
+        except Exception as e:
+            log.warning("list_all_case_ids failed: %s", e)
+            return []
+
     def wipe_all_cases(self) -> int:
         """Delete the entire RAG collection (all cases). Returns count deleted."""
         try:

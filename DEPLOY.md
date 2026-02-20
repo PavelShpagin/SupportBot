@@ -248,7 +248,7 @@ If registering a new number (not linking existing):
 
 # Inside VM
 cd supportbot
-docker compose -f docker-compose.prod.yml exec signal-bot bash
+docker compose -f docker-compose.yml exec signal-bot bash
 
 # Get captcha from https://signalcaptchas.org/registration/generate.html
 signal-cli -a +380730017651 register --captcha "YOUR_CAPTCHA"
@@ -261,14 +261,14 @@ signal-cli -a +380730017651 verify "SMS_CODE"
 # Restart RAG service
 ./scripts/deploy-oci.sh ssh
 cd supportbot
-docker compose -f docker-compose.prod.yml restart rag
+docker compose -f docker-compose.yml restart rag
 ```
 
 ### Database issues?
 
 ```bash
 # Check MySQL
-docker compose -f docker-compose.prod.yml exec db mysql -u supportbot -psupportbot supportbot
+docker compose -f docker-compose.yml exec db mysql -u supportbot -psupportbot supportbot
 ```
 
 ---

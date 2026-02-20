@@ -1,0 +1,621 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 256861,
+        "name": "",
+        "username": "signuntu",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/s/b2d939/{size}.png",
+        "created_at": "2024-12-08T19:33:01.024Z",
+        "cooked": "<p>Hello<br>\nDid anybody recently succeed to transfer the data (and configuration) to a new computer with Linux (Ubuntu 24.04 with GNOME)?<br>\nIn the past it was simple, just transfer the .config/Signal-folder with the same Signal Desktop version on the new computer. But I can’t do it, I always get the database-error.<br>\nMaybe this happens because of the use of gnome-libsecret (gnome-libsecret — <a href=\"https://github.com/flathub/org.signal.Signal/pull/756\" class=\"inline-onebox\" rel=\"noopener nofollow ugc\">Build libsecret without gcrypt by bbhtt · Pull Request #756 · flathub/org.signal.Signal · GitHub</a>)?<br>\nSome are discussing something similar here but not as specific: Database Error prevents Signal-Desktop to start · Issue <span class=\"hashtag-raw\">#6970</span> · signalapp/Signal-Desktop — <a href=\"https://github.com/signalapp/Signal-Desktop/issues/6970\" class=\"inline-onebox\" rel=\"noopener nofollow ugc\">Database Error prevents Signal-Desktop to start · Issue #6970 · signalapp/Signal-Desktop · GitHub</a><br>\nThanks for all tips!<br>\n<img src=\"https://community.signalusers.org/uploads/db3609/original/3X/f/9/f987b79d45fdf2aadc7d7acbd9c320a10f4ad224.jpeg\" alt=\"signal-desktop-database-error\" data-base62-sha1=\"zBrF6yigPg6AvWulGwsEEsh8nD6\" width=\"439\" height=\"195\"></p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 3,
+        "updated_at": "2024-12-09T09:08:02.298Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 26,
+        "readers_count": 25,
+        "score": 25.2,
+        "yours": false,
+        "topic_id": 65349,
+        "topic_slug": "transfer-data-history-pictures-to-new-computer-ubuntu-24-04",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 2,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://github.com/signalapp/Signal-Desktop/issues/6970",
+            "internal": false,
+            "reflection": false,
+            "title": "Database Error prevents Signal-Desktop to start · Issue #6970 · signalapp/Signal-Desktop · GitHub",
+            "clicks": 2
+          },
+          {
+            "url": "https://github.com/flathub/org.signal.Signal/pull/756",
+            "internal": false,
+            "reflection": false,
+            "title": "Build libsecret without gcrypt by bbhtt · Pull Request #756 · flathub/org.signal.Signal · GitHub",
+            "clicks": 0
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 1
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 13881,
+        "hidden": false,
+        "trust_level": 1,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/transfer-data-history-pictures-to-new-computer-ubuntu-24-04/65349/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      },
+      {
+        "id": 256907,
+        "name": "",
+        "username": "CueHD",
+        "avatar_template": "/user_avatar/community.signalusers.org/cuehd/{size}/42510_2.png",
+        "created_at": "2024-12-09T16:16:37.895Z",
+        "cooked": "<p>I haven’t followed the discussion to provide exact steps, but the reason it is more difficult is that the encryption key for the Signal database is stored more securely now. See the following two topics to find a way that transfer can be done now. I know that a solution is in the second topic, but there may be developments or simplifications in the first that I haven’t cared to follow.</p>\n<aside class=\"quote\" data-post=\"1\" data-topic=\"54237\">\n  <div class=\"title\">\n    <div class=\"quote-controls\"></div>\n    <img loading=\"lazy\" alt=\"\" width=\"24\" height=\"24\" src=\"https://community.signalusers.org/user_avatar/community.signalusers.org/cweinhofer/48/42032_2.png\" class=\"avatar\">\n    <a href=\"https://community.signalusers.org/t/backup-restore-transfer-desktop-history/54237\">Backup/Restore/Transfer Desktop history</a> <a class=\"badge-category__wrapper \" href=\"/c/support/desktop-support/12\"><span data-category-id=\"12\" style=\"--category-badge-color: #F0690F; --category-badge-text-color: #FFFFFF; --parent-category-badge-color: #F7B91D;\" data-parent-category-id=\"9\" data-drop-close=\"true\" class=\"badge-category --has-parent\" title=\"Unofficial community support for Signal Desktop.\nOfficial support is at https://support.signal.org\"><span class=\"badge-category__name\">Desktop Support</span></span></a>\n  </div>\n  <blockquote>\n    Has anything been done on this? I need to update from Win 10 to Win 11 and I can’t believe I am about to loose 3+ years of message history (which I look at almost daily) because Signal hasn’t bothered to create a feature for this. Seriously making me reconsider my choice of messaging program.\n  </blockquote>\n</aside>\n\n<aside class=\"quote\" data-post=\"1\" data-topic=\"61675\">\n  <div class=\"title\">\n    <div class=\"quote-controls\"></div>\n    <img loading=\"lazy\" alt=\"\" width=\"24\" height=\"24\" src=\"https://community.signalusers.org/user_avatar/community.signalusers.org/extroonie/48/48005_2.png\" class=\"avatar\">\n    <a href=\"https://community.signalusers.org/t/signal-stores-encryption-key-in-plain-text-on-desktop-client-s/61675\">Signal stores encryption key in plain text on desktop client(s)?</a> <a class=\"badge-category__wrapper \" href=\"/c/general/7\"><span data-category-id=\"7\" style=\"--category-badge-color: #AC41A9; --category-badge-text-color: #FFFFFF;\" data-drop-close=\"true\" class=\"badge-category \" title=\"Anything related to Signal which does not fit into the Support, Feature Requests or Development categories.\"><span class=\"badge-category__name\">General Discussion</span></span></a>\n  </div>\n  <blockquote>\n    I just came across <a href=\"https://x.com/mysk_co/status/1809287118235070662?s=46\" class=\"inline-onebox\" rel=\"noopener nofollow ugc\">x.com</a> and <a href=\"https://www.bleepingcomputer.com/news/security/signal-desktop-leaves-message-decryption-key-in-plain-sight/\" class=\"inline-onebox\" rel=\"noopener nofollow ugc\">Signal Desktop Leaves Message Decryption Key in Plain Sight</a>. It seems like Signal stores encryption key in plain text on desktop client(s)? It’s also been known for a long time and I don’t understand why there’s no initiative to refactor it.\n  </blockquote>\n</aside>\n",
+        "post_number": 2,
+        "post_type": 1,
+        "posts_count": 3,
+        "updated_at": "2024-12-09T16:16:37.895Z",
+        "reply_count": 1,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 20,
+        "readers_count": 19,
+        "score": 24.0,
+        "yours": false,
+        "topic_id": 65349,
+        "topic_slug": "transfer-data-history-pictures-to-new-computer-ubuntu-24-04",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://community.signalusers.org/t/backup-restore-transfer-desktop-history/54237",
+            "internal": true,
+            "reflection": false,
+            "title": "Backup/Restore/Transfer Desktop history",
+            "clicks": 0
+          },
+          {
+            "url": "https://community.signalusers.org/t/signal-stores-encryption-key-in-plain-text-on-desktop-client-s/61675",
+            "internal": true,
+            "reflection": false,
+            "title": "Signal stores encryption key in plain text on desktop client(s)?",
+            "clicks": 0
+          },
+          {
+            "url": "https://community.signalusers.org/t/looking-to-transfer-desktop-app-data-to-a-new-computer/67121/6",
+            "internal": true,
+            "reflection": true,
+            "title": "Looking to transfer desktop app data to a new computer",
+            "clicks": 0
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 1
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 1499,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/transfer-data-history-pictures-to-new-computer-ubuntu-24-04/65349/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 256910,
+        "name": "",
+        "username": "signuntu",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/s/b2d939/{size}.png",
+        "created_at": "2024-12-09T18:54:41.505Z",
+        "cooked": "<p>Thank you <a class=\"mention\" href=\"/u/cuehd\">@CueHD</a> for your answer and the links. I found the second one, too, after searching with different terms. I have to try whether this works for me, too, but it sounds promising!</p>\n<p>PS: Hopefully a more user-friendly way will be introduced sooner than later, after working on it since 2018; there seems to be some encouraging signs for it: <a href=\"https://community.signalusers.org/t/encrypted-cloud-backups/2798/327\">Encrypted cloud backups - Feature Requests</a>.</p>",
+        "post_number": 3,
+        "post_type": 1,
+        "posts_count": 3,
+        "updated_at": "2024-12-10T09:17:32.357Z",
+        "reply_count": 0,
+        "reply_to_post_number": 2,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 20,
+        "readers_count": 19,
+        "score": 19.0,
+        "yours": false,
+        "topic_id": 65349,
+        "topic_slug": "transfer-data-history-pictures-to-new-computer-ubuntu-24-04",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 3,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://community.signalusers.org/t/encrypted-cloud-backups/2798/327",
+            "internal": true,
+            "reflection": false,
+            "title": "Encrypted cloud backups",
+            "clicks": 5
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "reply_to_user": {
+          "id": 1499,
+          "username": "CueHD",
+          "name": "",
+          "avatar_template": "/user_avatar/community.signalusers.org/cuehd/{size}/42510_2.png"
+        },
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 1
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 13881,
+        "hidden": false,
+        "trust_level": 1,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/transfer-data-history-pictures-to-new-computer-ubuntu-24-04/65349/3",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      }
+    ],
+    "stream": [
+      256861,
+      256907,
+      256910
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      433
+    ],
+    [
+      2,
+      432
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Force mac app to display qr code",
+      "id": 69593,
+      "title": "Force mac app to display qr code",
+      "slug": "force-mac-app-to-display-qr-code",
+      "posts_count": 9,
+      "reply_count": 3,
+      "highest_post_number": 9,
+      "image_url": null,
+      "created_at": "2025-06-05T18:36:41.413Z",
+      "last_posted_at": "2025-06-09T18:31:19.049Z",
+      "bumped": true,
+      "bumped_at": "2025-06-09T18:37:49.050Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 1,
+      "views": 109,
+      "category_id": 12,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 33124,
+            "username": "Leo_Schouten",
+            "name": "Leo Schouten",
+            "avatar_template": "/user_avatar/community.signalusers.org/leo_schouten/{size}/52475_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 2521,
+            "username": "Herohtar",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+            "primary_group_name": "volunteer_moderators",
+            "flair_name": "volunteer_moderators",
+            "flair_url": "shield-halved",
+            "flair_bg_color": "1d8663",
+            "flair_color": "fff",
+            "flair_group_id": 41,
+            "moderator": true,
+            "trust_level": 4
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "chat remains unread.",
+      "id": 67451,
+      "title": "chat remains unread.",
+      "slug": "chat-remains-unread",
+      "posts_count": 5,
+      "reply_count": 2,
+      "highest_post_number": 5,
+      "image_url": null,
+      "created_at": "2025-03-05T18:48:15.029Z",
+      "last_posted_at": "2025-03-06T06:33:40.465Z",
+      "bumped": true,
+      "bumped_at": "2025-03-06T06:33:40.465Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 62,
+      "category_id": 12,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 32027,
+            "username": "dspolleke",
+            "name": "Puk",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/5f9b8f/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 1499,
+            "username": "CueHD",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/cuehd/{size}/42510_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 11128,
+            "username": "chiwaijm",
+            "name": "Jeffrey",
+            "avatar_template": "/user_avatar/community.signalusers.org/chiwaijm/{size}/54624_2.png",
+            "trust_level": 3
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Out of order messages appear when correcting clock skew",
+      "id": 67135,
+      "title": "Out of order messages appear when correcting clock skew",
+      "slug": "out-of-order-messages-appear-when-correcting-clock-skew",
+      "posts_count": 6,
+      "reply_count": 3,
+      "highest_post_number": 6,
+      "image_url": null,
+      "created_at": "2025-02-23T18:02:20.903Z",
+      "last_posted_at": "2025-02-24T09:13:13.399Z",
+      "bumped": true,
+      "bumped_at": "2025-02-24T09:13:13.399Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 1,
+      "views": 62,
+      "category_id": 12,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 20708,
+            "username": "beluga",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/b/dc4da7/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 31728,
+            "username": "Megan",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/megan/{size}/50954_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Transfer data (history/pictures) to new computer (Ubuntu 24.04)",
+  "id": 65349,
+  "title": "Transfer data (history/pictures) to new computer (Ubuntu 24.04)",
+  "posts_count": 3,
+  "created_at": "2024-12-08T19:33:00.976Z",
+  "views": 102,
+  "reply_count": 1,
+  "like_count": 3,
+  "last_posted_at": "2024-12-09T18:54:41.505Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "transfer-data-history-pictures-to-new-computer-ubuntu-24-04",
+  "category_id": 12,
+  "word_count": 302,
+  "deleted_at": null,
+  "user_id": 13881,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": "https://community.signalusers.org/uploads/db3609/original/3X/f/9/f987b79d45fdf2aadc7d7acbd9c320a10f4ad224.jpeg",
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_65349",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 3,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 2,
+  "show_read_indicator": false,
+  "thumbnails": [
+    {
+      "max_width": null,
+      "max_height": null,
+      "width": 586,
+      "height": 260,
+      "url": "https://community.signalusers.org/uploads/db3609/original/3X/f/9/f987b79d45fdf2aadc7d7acbd9c320a10f4ad224.jpeg"
+    }
+  ],
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 13881,
+        "username": "signuntu",
+        "name": "",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/s/b2d939/{size}.png",
+        "post_count": 2,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 1
+      },
+      {
+        "id": 1499,
+        "username": "CueHD",
+        "name": "",
+        "avatar_template": "/user_avatar/community.signalusers.org/cuehd/{size}/42510_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      }
+    ],
+    "created_by": {
+      "id": 13881,
+      "username": "signuntu",
+      "name": "",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/s/b2d939/{size}.png"
+    },
+    "last_poster": {
+      "id": 13881,
+      "username": "signuntu",
+      "name": "",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/s/b2d939/{size}.png"
+    },
+    "links": [
+      {
+        "url": "https://community.signalusers.org/t/encrypted-cloud-backups/2798/327",
+        "title": "Encrypted cloud backups",
+        "internal": true,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 5,
+        "user_id": 13881,
+        "domain": "community.signalusers.org",
+        "root_domain": "signalusers.org"
+      },
+      {
+        "url": "https://github.com/signalapp/Signal-Desktop/issues/6970",
+        "title": "Database Error prevents Signal-Desktop to start · Issue #6970 · signalapp/Signal-Desktop · GitHub",
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 2,
+        "user_id": 13881,
+        "domain": "github.com",
+        "root_domain": "github.com"
+      }
+    ]
+  },
+  "bookmarks": []
+}

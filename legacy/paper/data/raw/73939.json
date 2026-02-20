@@ -1,0 +1,342 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 282051,
+        "name": null,
+        "username": "NotWhatsApp",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/n/35a633/{size}.png",
+        "created_at": "2026-01-01T18:04:12.329Z",
+        "cooked": "<p>When sharing more than one message or more than one image or media item, from Signal into another app, such as any other messaging up, the only way to do it is to share one item at a time, kindly can you address this please and allow more than one item to be shared</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2026-01-01T18:10:48.381Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 22,
+        "readers_count": 21,
+        "score": 9.4,
+        "yours": false,
+        "topic_id": 73939,
+        "topic_slug": "sharing-ios-needs-improving",
+        "display_username": null,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 2,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 32638,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/sharing-ios-needs-improving/73939/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      282051
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      44
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Bug: &ldquo;Learn more&rdquo; button not working in Transfer Account",
+      "id": 74329,
+      "title": "Bug: \"Learn more\" button not working in Transfer Account",
+      "slug": "bug-learn-more-button-not-working-in-transfer-account",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/c/c/cc508fd79c0539b593bf4906b7de4a5988c2c3fd_2_472x1024.jpeg",
+      "created_at": "2026-01-19T17:03:02.815Z",
+      "last_posted_at": "2026-01-19T17:03:02.909Z",
+      "bumped": true,
+      "bumped_at": "2026-01-19T17:03:02.909Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 23,
+      "category_id": 29,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 34475,
+            "username": "whynot",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/whynot/{size}/54219_2.png",
+            "trust_level": 1
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Bug: Liquid Glass navigation bar disappears",
+      "id": 73425,
+      "title": "Bug: Liquid Glass navigation bar disappears",
+      "slug": "bug-liquid-glass-navigation-bar-disappears",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": null,
+      "created_at": "2025-12-07T22:53:49.020Z",
+      "last_posted_at": "2025-12-18T05:16:07.031Z",
+      "bumped": true,
+      "bumped_at": "2025-12-18T05:16:07.031Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 2,
+      "views": 69,
+      "category_id": 29,
+      "featured_link": null,
+      "op_like_count": 2,
+      "has_accepted_answer": true,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster, Accepted Answer",
+          "user": {
+            "id": 34461,
+            "username": "reg67",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/reg67/{size}/54198_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "UI changes for creating new messages in iOS 26",
+      "id": 71632,
+      "title": "UI changes for creating new messages in iOS 26",
+      "slug": "ui-changes-for-creating-new-messages-in-ios-26",
+      "posts_count": 5,
+      "reply_count": 3,
+      "highest_post_number": 10,
+      "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/9/2/92ce1bed61eb95fee8ac3fc9c6825d973083389d_2_1024x256.png",
+      "created_at": "2025-09-13T20:50:22.162Z",
+      "last_posted_at": "2026-01-18T10:05:45.278Z",
+      "bumped": true,
+      "bumped_at": "2026-01-18T10:05:45.278Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 10,
+      "views": 259,
+      "category_id": 29,
+      "featured_link": null,
+      "op_like_count": 8,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 37,
+            "username": "tehabe",
+            "name": "Thomas Bohn",
+            "avatar_template": "/user_avatar/community.signalusers.org/tehabe/{size}/9333_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 32154,
+            "username": "Delamcode",
+            "name": "Delamcode",
+            "avatar_template": "/user_avatar/community.signalusers.org/delamcode/{size}/51199_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 28451,
+            "username": "rodrigo",
+            "name": "Rodrigo",
+            "avatar_template": "/user_avatar/community.signalusers.org/rodrigo/{size}/47505_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 22235,
+            "username": "helix42",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/h/8baadc/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Sharing iOS needs improving",
+  "id": 73939,
+  "title": "Sharing iOS needs improving",
+  "posts_count": 1,
+  "created_at": "2026-01-01T18:04:12.247Z",
+  "views": 32,
+  "reply_count": 0,
+  "like_count": 0,
+  "last_posted_at": "2026-01-01T18:04:12.329Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "sharing-ios-needs-improving",
+  "category_id": 29,
+  "word_count": 54,
+  "deleted_at": null,
+  "user_id": 32638,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_73939",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 32638,
+        "username": "NotWhatsApp",
+        "name": null,
+        "avatar_template": "/letter_avatar_proxy/v4/letter/n/35a633/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      }
+    ],
+    "created_by": {
+      "id": 32638,
+      "username": "NotWhatsApp",
+      "name": null,
+      "avatar_template": "/letter_avatar_proxy/v4/letter/n/35a633/{size}.png"
+    },
+    "last_poster": {
+      "id": 32638,
+      "username": "NotWhatsApp",
+      "name": null,
+      "avatar_template": "/letter_avatar_proxy/v4/letter/n/35a633/{size}.png"
+    }
+  },
+  "bookmarks": []
+}

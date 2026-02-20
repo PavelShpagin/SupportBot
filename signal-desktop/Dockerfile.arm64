@@ -1,0 +1,66 @@
+# Signal Desktop running headlessly with Xvfb - ARM64 Native
+# Uses Alpine Linux edge which has native ARM64 Signal Desktop packages
+# This allows real history transfer (45-day sync) when linking devices
+
+FROM alpine:edge
+
+# Enable edge/testing repo for signal-desktop
+RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
+
+# Install Signal Desktop and dependencies
+RUN apk update && apk add --no-cache \
+    # Signal Desktop (native ARM64 build)
+    signal-desktop \
+    # Xvfb and X11 tools
+    xvfb xvfb-run xdpyinfo xdotool \
+    # Screenshot tools (xwd for capturing X11 window, imagemagick for conversion)
+    xwd imagemagick \
+    # D-Bus for proper Electron/GTK support
+    dbus dbus-x11 \
+    # Python for our API
+    python3 py3-pip py3-virtualenv \
+    # SQLCipher libs and dev headers for building pysqlcipher3
+    sqlcipher-libs sqlcipher-dev \
+    # Build tools for compiling pysqlcipher3
+    gcc musl-dev python3-dev \
+    # Utilities
+    curl jq netcat-openbsd bash coreutils \
+    # gosu equivalent
+    su-exec \
+    # Fonts
+    font-noto ttf-liberation \
+    # Mesa for software rendering
+    mesa-dri-gallium mesa-gl
+
+# Create app user
+RUN adduser -D -s /bin/bash signal
+
+# Create Python venv and install dependencies
+WORKDIR /app
+COPY signal-desktop/requirements-alpine.txt /app/requirements.txt
+RUN python3 -m venv /app/venv \
+    && /app/venv/bin/pip install --upgrade pip \
+    && /app/venv/bin/pip install --no-cache-dir -r requirements.txt \
+    && /app/venv/bin/pip install --no-cache-dir sqlcipher3
+
+# Copy application code
+COPY signal-desktop/app /app/app
+COPY signal-desktop/entrypoint-alpine.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
+# Signal Desktop data directory
+ENV SIGNAL_DATA_DIR=/home/signal/.config/Signal
+ENV DISPLAY=:99
+ENV PYTHONUNBUFFERED=1
+
+# Create data directories with correct permissions
+RUN mkdir -p /home/signal/.config/Signal \
+    && chown -R signal:signal /home/signal \
+    && chown -R signal:signal /app
+
+WORKDIR /app
+
+EXPOSE 8001
+
+# Run as root initially, entrypoint will fix permissions and drop to signal user
+ENTRYPOINT ["/app/entrypoint.sh"]

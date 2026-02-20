@@ -1,0 +1,725 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 282151,
+        "name": "sjjfcbbdjl",
+        "username": "sjjfcbbdjl",
+        "avatar_template": "/user_avatar/community.signalusers.org/sjjfcbbdjl/{size}/55300_2.png",
+        "created_at": "2026-01-04T00:34:45.035Z",
+        "cooked": "<p>As standards have been set for post quantum cryptography by nist, when is signal going to migrate to pqc? Is there any way I can contribute to this transition? What do i need to do to contribute?</p>\n<p>I’d grateful for any guidance.</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 4,
+        "updated_at": "2026-01-04T00:40:08.946Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 52,
+        "readers_count": 51,
+        "score": 30.4,
+        "yours": false,
+        "topic_id": 73991,
+        "topic_slug": "migrating-signal-to-quantum-safe-cryptography",
+        "display_username": "sjjfcbbdjl",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 2,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 1
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 35397,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/migrating-signal-to-quantum-safe-cryptography/73991/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": true,
+        "can_vote": false
+      },
+      {
+        "id": 282155,
+        "name": "👊🇺🇸🔥",
+        "username": "Avitus",
+        "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+        "created_at": "2026-01-04T00:35:50.386Z",
+        "cooked": "<p>Signal announced beginning to migrate to post-quantum over two years ago: <a href=\"https://signal.org/blog/pqxdh/\" class=\"inline-onebox\">Signal &gt;&gt; Blog &gt;&gt; Quantum Resistance and the Signal Protocol</a>.</p>\n<p>Signal then wrote an updated blog three months ago: <a href=\"https://signal.org/blog/spqr/\" class=\"inline-onebox\">Signal &gt;&gt; Blog &gt;&gt; Signal Protocol and Post-Quantum Ratchets</a>.</p>",
+        "post_number": 2,
+        "post_type": 1,
+        "posts_count": 4,
+        "updated_at": "2026-01-04T00:42:11.801Z",
+        "reply_count": 1,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 51,
+        "readers_count": 50,
+        "score": 120.2,
+        "yours": false,
+        "topic_id": 73991,
+        "topic_slug": "migrating-signal-to-quantum-safe-cryptography",
+        "display_username": "👊🇺🇸🔥",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 2,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://signal.org/blog/spqr/",
+            "internal": false,
+            "reflection": false,
+            "title": "Signal >> Blog >> Signal Protocol and Post-Quantum Ratchets",
+            "clicks": 3
+          },
+          {
+            "url": "https://signal.org/blog/pqxdh/",
+            "internal": false,
+            "reflection": false,
+            "title": "Signal >> Blog >> Quantum Resistance and the Signal Protocol",
+            "clicks": 1
+          }
+        ],
+        "read": true,
+        "user_title": "",
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 7
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 7657,
+        "hidden": false,
+        "trust_level": 3,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/migrating-signal-to-quantum-safe-cryptography/73991/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": true,
+        "topic_accepted_answer": true
+      },
+      {
+        "id": 282178,
+        "name": "makiro",
+        "username": "makiro",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/m/dfb087/{size}.png",
+        "created_at": "2026-01-04T09:35:01.343Z",
+        "cooked": "<p>To summarize: now we have Perfect forward secrecy, and Post-Compromise Recovery all are post-quantum.</p>\n<p>What’s missing is authentication that is not post-quantum against an active attacker. i.e. If someone has a crypto-relevant quantum computer today they could MITM your conversation when it is first created in a way that you wouldn’t be able to detect. For technical reasons this is still a hard problem to solve, but is also not that urgent since it’s very unlikely anyone will have access to a quantum computer powerful enough for this threat model to be relevant until a couple more years.</p>",
+        "post_number": 3,
+        "post_type": 1,
+        "posts_count": 4,
+        "updated_at": "2026-01-04T09:35:01.343Z",
+        "reply_count": 1,
+        "reply_to_post_number": 2,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 44,
+        "readers_count": 43,
+        "score": 13.8,
+        "yours": false,
+        "topic_id": 73991,
+        "topic_slug": "migrating-signal-to-quantum-safe-cryptography",
+        "display_username": "makiro",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "reply_to_user": {
+          "id": 7657,
+          "username": "Avitus",
+          "name": "👊🇺🇸🔥",
+          "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png"
+        },
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 19563,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/migrating-signal-to-quantum-safe-cryptography/73991/3",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": true
+      },
+      {
+        "id": 282188,
+        "name": "Talya (she/her)",
+        "username": "rassilon1963",
+        "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+        "created_at": "2026-01-04T12:55:17.981Z",
+        "cooked": "<p>i do want to emphasise there’s other ways to already do MitM that don’t involve quantum computers, which is why safety numbers exist and are important to verify. <a href=\"https://community.signalusers.org/t/key-transparency-is-coming-to-signal/62283\">key transparency</a> will also help with that once it lands in production.<br>\nstill, even in a post-quantum world with post-quantum MitM protections, out-of-band verification will remain the best way to protect yourself against such attack (though of course i’m still highly in favour of Signal doing their best attempt at thwarting them).</p>",
+        "post_number": 4,
+        "post_type": 1,
+        "posts_count": 4,
+        "updated_at": "2026-01-04T12:55:17.981Z",
+        "reply_count": 0,
+        "reply_to_post_number": 3,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 38,
+        "readers_count": 37,
+        "score": 67.6,
+        "yours": false,
+        "topic_id": 73991,
+        "topic_slug": "migrating-signal-to-quantum-safe-cryptography",
+        "display_username": "Talya (she/her)",
+        "primary_group_name": "top_contributors",
+        "flair_name": "top_contributors",
+        "flair_url": "compass",
+        "flair_bg_color": "6058CA",
+        "flair_color": "fff",
+        "flair_group_id": 48,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://community.signalusers.org/t/key-transparency-is-coming-to-signal/62283",
+            "internal": true,
+            "reflection": false,
+            "title": "Key Transparency is coming to Signal?",
+            "clicks": 3
+          }
+        ],
+        "read": true,
+        "user_title": "Top Contributor",
+        "title_is_group": true,
+        "reply_to_user": {
+          "id": 19563,
+          "username": "makiro",
+          "name": "makiro",
+          "avatar_template": "/letter_avatar_proxy/v4/letter/m/dfb087/{size}.png"
+        },
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 4
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 18285,
+        "hidden": false,
+        "trust_level": 4,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/migrating-signal-to-quantum-safe-cryptography/73991/4",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": true
+      }
+    ],
+    "stream": [
+      282151,
+      282155,
+      282178,
+      282188
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      42
+    ],
+    [
+      3,
+      41
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Just published a book about Signal",
+      "id": 74525,
+      "title": "Just published a book about Signal",
+      "slug": "just-published-a-book-about-signal",
+      "posts_count": 34,
+      "reply_count": 26,
+      "highest_post_number": 35,
+      "image_url": null,
+      "created_at": "2026-01-28T23:52:45.529Z",
+      "last_posted_at": "2026-02-05T17:39:42.592Z",
+      "bumped": true,
+      "bumped_at": "2026-02-05T17:39:42.592Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 51,
+      "views": 529,
+      "category_id": 7,
+      "featured_link": null,
+      "op_like_count": 7,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 35683,
+            "username": "GuyKawasaki",
+            "name": "Guy Kawasaki",
+            "avatar_template": "/user_avatar/community.signalusers.org/guykawasaki/{size}/55652_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 3830,
+            "username": "patjolata",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/patjolata/{size}/5785_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 20248,
+            "username": "rafikinux",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/r/7cd45c/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 33362,
+            "username": "NeedsChloesure",
+            "name": "Chloe",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/n/9f8e36/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 5448,
+            "username": "DirkPitt1",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/74df32/{size}.png",
+            "trust_level": 3
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "What does “report spam” do?",
+      "id": 73531,
+      "title": "What does “report spam” do?",
+      "slug": "what-does-report-spam-do",
+      "posts_count": 4,
+      "reply_count": 0,
+      "highest_post_number": 4,
+      "image_url": null,
+      "created_at": "2025-12-12T08:18:54.800Z",
+      "last_posted_at": "2025-12-12T20:20:02.998Z",
+      "bumped": true,
+      "bumped_at": "2025-12-12T20:20:02.998Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 2,
+      "views": 144,
+      "category_id": 7,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 34113,
+            "username": "Alex7511",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/a/edb3f5/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Which database does signal use in 2025? ",
+      "id": 71400,
+      "title": "Which database does signal use in 2025? ",
+      "slug": "which-database-does-signal-use-in-2025",
+      "posts_count": 5,
+      "reply_count": 2,
+      "highest_post_number": 5,
+      "image_url": null,
+      "created_at": "2025-09-04T04:15:49.222Z",
+      "last_posted_at": "2025-09-04T17:16:17.342Z",
+      "bumped": true,
+      "bumped_at": "2025-09-04T17:16:17.342Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 5,
+      "views": 151,
+      "category_id": 7,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 34017,
+            "username": "Space_Trip",
+            "name": "Space Trip",
+            "avatar_template": "/user_avatar/community.signalusers.org/space_trip/{size}/53505_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 34013,
+            "username": "Iriyanto",
+            "name": "Iriyanto ",
+            "avatar_template": "/user_avatar/community.signalusers.org/iriyanto/{size}/53503_2.png",
+            "trust_level": 1
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Migrating signal to quantum safe cryptography",
+  "id": 73991,
+  "title": "Migrating signal to quantum safe cryptography",
+  "posts_count": 4,
+  "created_at": "2026-01-04T00:34:44.925Z",
+  "views": 117,
+  "reply_count": 2,
+  "like_count": 12,
+  "last_posted_at": "2026-01-04T12:55:17.981Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "migrating-signal-to-quantum-safe-cryptography",
+  "category_id": 7,
+  "word_count": 281,
+  "deleted_at": null,
+  "user_id": 35397,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_73991",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 4,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 4,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "accepted_answer": {
+    "post_number": 2,
+    "username": "Avitus",
+    "name": "👊🇺🇸🔥",
+    "excerpt": "<p>Signal announced beginning to migrate to post-quantum over two years ago: <a href=\"https://signal.org/blog/pqxdh/\" class=\"inline-onebox\">Signal &gt;&gt; Blog &gt;&gt; Quantum Resistance and the Signal Protocol</a>.</p>\n<p>Signal then wrote an updated blog three months ago: <a href=\"https://signal.org/blog/spqr/\" class=\"inline-onebox\">Signal &gt;&gt; Blog &gt;&gt; Signal Protocol and Post-Quantum Ratchets</a>.</p>"
+  },
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 7657,
+        "username": "Avitus",
+        "name": "👊🇺🇸🔥",
+        "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 3
+      },
+      {
+        "id": 18285,
+        "username": "rassilon1963",
+        "name": "Talya (she/her)",
+        "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+        "post_count": 1,
+        "primary_group_name": "top_contributors",
+        "flair_name": "top_contributors",
+        "flair_url": "compass",
+        "flair_color": "fff",
+        "flair_bg_color": "6058CA",
+        "flair_group_id": 48,
+        "trust_level": 4
+      },
+      {
+        "id": 19563,
+        "username": "makiro",
+        "name": "makiro",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/m/dfb087/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      },
+      {
+        "id": 35397,
+        "username": "sjjfcbbdjl",
+        "name": "sjjfcbbdjl",
+        "avatar_template": "/user_avatar/community.signalusers.org/sjjfcbbdjl/{size}/55300_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 0
+      }
+    ],
+    "created_by": {
+      "id": 35397,
+      "username": "sjjfcbbdjl",
+      "name": "sjjfcbbdjl",
+      "avatar_template": "/user_avatar/community.signalusers.org/sjjfcbbdjl/{size}/55300_2.png"
+    },
+    "last_poster": {
+      "id": 18285,
+      "username": "rassilon1963",
+      "name": "Talya (she/her)",
+      "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png"
+    },
+    "links": [
+      {
+        "url": "https://community.signalusers.org/t/key-transparency-is-coming-to-signal/62283",
+        "title": "Key Transparency is coming to Signal?",
+        "internal": true,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 3,
+        "user_id": 18285,
+        "domain": "community.signalusers.org",
+        "root_domain": "signalusers.org"
+      },
+      {
+        "url": "https://signal.org/blog/spqr/",
+        "title": "Signal >> Blog >> Signal Protocol and Post-Quantum Ratchets",
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 3,
+        "user_id": 7657,
+        "domain": "signal.org",
+        "root_domain": "signal.org"
+      },
+      {
+        "url": "https://signal.org/blog/pqxdh/",
+        "title": "Signal >> Blog >> Quantum Resistance and the Signal Protocol",
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 1,
+        "user_id": 7657,
+        "domain": "signal.org",
+        "root_domain": "signal.org"
+      }
+    ]
+  },
+  "bookmarks": []
+}

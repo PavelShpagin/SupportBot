@@ -26,6 +26,7 @@ from app.db import (
     update_case_to_solved,
     mark_case_in_rag,
     expire_old_open_cases,
+    get_all_active_case_ids,
 )
 from app.jobs import types as job_types
 from app.llm.client import LLMClient
@@ -328,16 +329,50 @@ def _append_history_block(text: str, refs: List[Dict[str, str]]) -> str:
     return "\n".join(lines).strip() + "\n"
 
 
-_EXPIRY_INTERVAL_SECONDS = 3600  # run B1 expiry check once per hour
+_EXPIRY_INTERVAL_SECONDS = 3600   # run B1 expiry check once per hour
+_SYNC_RAG_INTERVAL_SECONDS = 3600  # reconcile Chroma vs MySQL once per hour
+
+
+def _run_sync_rag(deps: WorkerDeps) -> None:
+    """Remove ChromaDB entries whose case_id no longer exists in MySQL as active.
+
+    This is the authoritative reconciliation that replaces the per-query
+    _case_exists_in_db() check. Running it periodically means Chroma stays
+    clean even if an individual upsert/delete failed mid-flight.
+    """
+    try:
+        active_ids = set(get_all_active_case_ids(deps.db))
+    except Exception:
+        log.exception("SYNC_RAG: failed to load active case IDs from MySQL")
+        return
+
+    try:
+        chroma_ids = set(deps.rag.list_all_case_ids())
+    except Exception:
+        log.exception("SYNC_RAG: failed to list ChromaDB case IDs")
+        return
+
+    stale = chroma_ids - active_ids
+    if not stale:
+        log.debug("SYNC_RAG: Chroma and MySQL are in sync (%d active cases)", len(active_ids))
+        return
+
+    log.info("SYNC_RAG: removing %d stale Chroma entries: %s", len(stale), list(stale)[:10])
+    try:
+        deps.rag.delete_cases(list(stale))
+    except Exception:
+        log.exception("SYNC_RAG: failed to delete stale Chroma entries")
 
 
 def worker_loop_forever(deps: WorkerDeps) -> None:
     log.info("Worker loop started")
     last_expiry_check = 0.0
+    last_sync_rag = 0.0
 
     while True:
-        # Periodic B1 expiry: delete open cases older than 7 days
         now = time.time()
+
+        # Periodic B1 expiry: delete open cases older than 7 days
         if now - last_expiry_check >= _EXPIRY_INTERVAL_SECONDS:
             try:
                 expired = expire_old_open_cases(deps.db, max_age_days=7)
@@ -346,6 +381,11 @@ def worker_loop_forever(deps: WorkerDeps) -> None:
             except Exception:
                 log.exception("B1 expiry cleanup failed")
             last_expiry_check = now
+
+        # Periodic RAG sync: remove Chroma entries with no matching MySQL case
+        if now - last_sync_rag >= _SYNC_RAG_INTERVAL_SECONDS:
+            _run_sync_rag(deps)
+            last_sync_rag = now
 
         job = claim_next_job(
             deps.db,
@@ -544,9 +584,10 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
     buffer_new = "".join(kept_blocks)
 
     set_buffer(deps.db, group_id=group_id, buffer_text=buffer_new)
+    n_consumed = len(consumed_message_ids)
     log.info(
         "Buffer updated group_id=%s total=%s solved_removed=%s remaining=%s",
-        group_id, len(blocks), len(remove_idx), len(blocks) - len(remove_idx),
+        group_id, len(blocks), n_consumed, len(blocks) - n_consumed,
     )
 
 

@@ -1,0 +1,84 @@
+\begin{thebibliography}{10}
+\providecommand{\natexlab}[1]{#1}
+
+\bibitem[{Borgeaud et~al.(2022)Borgeaud, Mensch, Hoffmann, Cai, Rutherford,
+  Millican, Van Den~Driessche, Lespiau, Damoc, Clark
+  et~al.}]{borgeaud2022retro}
+Sebastian Borgeaud, Arthur Mensch, Jordan Hoffmann, Trevor Cai, Eliza
+  Rutherford, Katie Millican, George Van Den~Driessche, Jean-Baptiste Lespiau,
+  Bogdan Damoc, Aidan Clark, and 1 others. 2022.
+\newblock Improving language models by retrieving from trillions of tokens.
+\newblock \emph{arXiv preprint arXiv:2112.04426}.
+
+\bibitem[{Budzianowski et~al.(2018)Budzianowski, Wen, Tseng, Casanueva, Ultes,
+  Ramadan, and Ga{\v{s}}i{\'c}}]{budzianowski2018multiwoz}
+Pawe{\l} Budzianowski, Tsung-Hsien Wen, Bo-Hsiang Tseng, I{\~n}igo Casanueva,
+  Stefan Ultes, Osman Ramadan, and Milica Ga{\v{s}}i{\'c}. 2018.
+\newblock Multiwoz - a large-scale multi-domain wizard-of-oz dataset for
+  task-oriented dialogue modelling.
+\newblock In \emph{Proceedings of the 2018 Conference on Empirical Methods in
+  Natural Language Processing}, pages 5016--5026.
+
+\bibitem[{Carlson et~al.(2010)Carlson, Betteridge, Kisiel, Settles, Hruschka,
+  and Mitchell}]{carlson2010toward}
+Andrew Carlson, Justin Betteridge, Bryan Kisiel, Burr Settles, Estevam~R.
+  Hruschka, and Tom~M. Mitchell. 2010.
+\newblock Toward an architecture for never-ending language learning.
+\newblock In \emph{Proceedings of the AAAI Conference on Artificial
+  Intelligence}, volume~24, pages 1306--1313.
+
+\bibitem[{Dubois et~al.(2024)Dubois, Li, Taori, Zhang, Gulrajani, Ba, Guestrin,
+  Liang, and Hashimoto}]{dubois2024alpacafarm}
+Yann Dubois, Xuechen Li, Rohan Taori, Tianyi Zhang, Ishaan Gulrajani, Jimmy Ba,
+  Carlos Guestrin, Percy Liang, and Tatsunori~B. Hashimoto. 2024.
+\newblock Alpacafarm: A simulation framework for methods that learn from human
+  feedback.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~36.
+
+\bibitem[{Guu et~al.(2020)Guu, Lee, Tung, Pasupat, and Chang}]{guu2020realm}
+Kelvin Guu, Kenton Lee, Zora Tung, Panupong Pasupat, and Ming-Wei Chang. 2020.
+\newblock Realm: Retrieval-augmented language model pre-training.
+\newblock In \emph{Proceedings of the 37th International Conference on Machine
+  Learning}, pages 3929--3938.
+
+\bibitem[{Lewis et~al.(2020)Lewis, Perez, Piktus, Petroni, Karpukhin, Goyal,
+  K{\"u}ttler, Lewis, Yih, Rockt{\"a}schel et~al.}]{lewis2020rag}
+Patrick Lewis, Ethan Perez, Aleksandra Piktus, Fabio Petroni, Vladimir
+  Karpukhin, Naman Goyal, Heinrich K{\"u}ttler, Mike Lewis, Wen-tau Yih, Tim
+  Rockt{\"a}schel, and 1 others. 2020.
+\newblock Retrieval-augmented generation for knowledge-intensive nlp tasks.
+\newblock \emph{Advances in Neural Information Processing Systems},
+  33:9459--9474.
+
+\bibitem[{Mitchell et~al.(2018)Mitchell, Cohen, Hruschka, Talukdar, Yang,
+  Betteridge, Carlson, Dalvi, Gardner, Kisiel et~al.}]{mitchell2018never}
+Tom Mitchell, William Cohen, Estevam Hruschka, Partha Talukdar, Bishan Yang,
+  Justin Betteridge, Andrew Carlson, Bhavana Dalvi, Matt Gardner, Bryan Kisiel,
+  and 1 others. 2018.
+\newblock Never-ending learning.
+\newblock \emph{Communications of the ACM}, 61(5):103--115.
+
+\bibitem[{Qu et~al.(2019)Qu, Yang, Croft, Zhang, Trippas, and Qiu}]{qu2019user}
+Chen Qu, Liu Yang, W.~Bruce Croft, Yongfeng Zhang, Johanne~R. Trippas, and
+  Minghui Qiu. 2019.
+\newblock User intent prediction in information-seeking conversations.
+\newblock In \emph{Proceedings of the 2019 Conference on Human Information
+  Interaction and Retrieval}, pages 25--33.
+
+\bibitem[{Wu et~al.(2017)Wu, Wu, Xing, Zhou, and Li}]{wu2017sequential}
+Yu~Wu, Wei Wu, Chen Xing, Ming Zhou, and Zhoujun Li. 2017.
+\newblock Sequential matching network: A new architecture for multi-turn
+  response selection in retrieval-based chatbots.
+\newblock In \emph{Proceedings of the 55th Annual Meeting of the Association
+  for Computational Linguistics}, pages 496--505.
+
+\bibitem[{Zheng et~al.(2023)Zheng, Chiang, Sheng, Zhuang, Wu, Zhuang, Lin, Li,
+  Li, Xing et~al.}]{zheng2023judging}
+Lianmin Zheng, Wei-Lin Chiang, Ying Sheng, Siyuan Zhuang, Zhanghao Wu, Yonghao
+  Zhuang, Zi~Lin, Zhuohan Li, Dacheng Li, Eric~P. Xing, and 1 others. 2023.
+\newblock Judging llm-as-a-judge with mt-bench and chatbot arena.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~36.
+
+\end{thebibliography}

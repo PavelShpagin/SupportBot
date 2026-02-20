@@ -1,0 +1,359 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 277382,
+        "name": "",
+        "username": "rafikinux",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/r/7cd45c/{size}.png",
+        "created_at": "2025-10-16T12:17:39.807Z",
+        "cooked": "<p>Hello,</p>\n<p>A strange signal notification issue.</p>\n<p>Signal App Icon Notification Badges (those red numbered notification cirlces) stopped working after latest update latest software update (magic OS 9.0.0.165 (c185e1r2p2)) for my new Honor 400.</p>\n<p>ALSO, it doesn’t show on lock screen. It ONLY shows in notification center when I swipe it down.</p>\n<p>I tried everything, including battery optimization.</p>\n<p>Anyone here can help me with this? Maybe someone with Honor 400 can tell if they’re facing same issue?</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2025-10-16T12:35:51.419Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 16,
+        "readers_count": 15,
+        "score": 8.2,
+        "yours": false,
+        "topic_id": 72246,
+        "topic_slug": "notifications-stopped-working-after-latest-honor400-software-update",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 3,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 20248,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/notifications-stopped-working-after-latest-honor400-software-update/72246/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      277382
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      121
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Merging Messages from two phones? Same account. ",
+      "id": 73214,
+      "title": "Merging Messages from two phones? Same account. ",
+      "slug": "merging-messages-from-two-phones-same-account",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2025-11-29T06:48:43.710Z",
+      "last_posted_at": "2025-11-29T06:48:43.774Z",
+      "bumped": true,
+      "bumped_at": "2025-11-29T06:48:43.774Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 1,
+      "views": 47,
+      "category_id": 11,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 34994,
+            "username": "purpleink",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/p/6f9a4e/{size}.png",
+            "trust_level": 0
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "No notifications on Android",
+      "id": 70920,
+      "title": "No notifications on Android",
+      "slug": "no-notifications-on-android",
+      "posts_count": 14,
+      "reply_count": 6,
+      "highest_post_number": 15,
+      "image_url": null,
+      "created_at": "2025-08-08T15:37:07.776Z",
+      "last_posted_at": "2025-08-31T12:41:12.698Z",
+      "bumped": true,
+      "bumped_at": "2025-08-31T12:41:12.698Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 3,
+      "views": 167,
+      "category_id": 11,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 33752,
+            "username": "klasmeister",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/k/74df32/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 32407,
+            "username": "unknown2U",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/u/a3d4f5/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Signal data and backups are eating up my phone&hellip; ",
+      "id": 69110,
+      "title": "Signal data and backups are eating up my phone... ",
+      "slug": "signal-data-and-backups-are-eating-up-my-phone",
+      "posts_count": 10,
+      "reply_count": 7,
+      "highest_post_number": 10,
+      "image_url": null,
+      "created_at": "2025-05-12T19:38:11.762Z",
+      "last_posted_at": "2025-05-15T18:30:53.192Z",
+      "bumped": true,
+      "bumped_at": "2025-05-15T18:30:53.192Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 7,
+      "views": 133,
+      "category_id": 11,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 32879,
+            "username": "JQAdams",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/j/96bed5/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 1499,
+            "username": "CueHD",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/cuehd/{size}/42510_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Notifications stopped working after latest Honor400 software update",
+  "id": 72246,
+  "title": "Notifications stopped working after latest Honor400 software update",
+  "posts_count": 1,
+  "created_at": "2025-10-16T12:17:39.667Z",
+  "views": 35,
+  "reply_count": 0,
+  "like_count": 0,
+  "last_posted_at": "2025-10-16T12:17:39.807Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "notifications-stopped-working-after-latest-honor400-software-update",
+  "category_id": 11,
+  "word_count": 81,
+  "deleted_at": null,
+  "user_id": 20248,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_72246",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 20248,
+        "username": "rafikinux",
+        "name": "",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/r/7cd45c/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      }
+    ],
+    "created_by": {
+      "id": 20248,
+      "username": "rafikinux",
+      "name": "",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/r/7cd45c/{size}.png"
+    },
+    "last_poster": {
+      "id": 20248,
+      "username": "rafikinux",
+      "name": "",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/r/7cd45c/{size}.png"
+    }
+  },
+  "bookmarks": []
+}

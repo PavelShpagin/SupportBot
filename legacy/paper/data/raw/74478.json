@@ -1,0 +1,406 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 283518,
+        "name": "Raf",
+        "username": "raf_a",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/r/13edae/{size}.png",
+        "created_at": "2026-01-27T00:00:58.931Z",
+        "cooked": "<p>Even if you mute a chat permanently, new messages there will still add to the badge count, both within the app and on the app icon itself. This is a problem for busy groups where I want to be able to view stuff there, but I don’t need to keep up with every post.</p>\n<p>iOS and Desktop both have this feature (called “Count Muted Conversations” in the <a href=\"https://support.signal.org/hc/en-us/articles/360043273491-In-App-Notification-Options#ios_notification_options\" rel=\"noopener nofollow ugc\">support docs</a>, “Include Muted Chats” on current iOS devices, and “Include muted chats in badge count” on Desktop).</p>\n<p>So why can’t Android get this (seemingly) simple but important QoL feature?</p>\n<p>Thanks!</p>\n<p><div class=\"lightbox-wrapper\"><a class=\"lightbox\" href=\"https://community.signalusers.org/uploads/db3609/original/3X/7/5/7550904dae0a5fa21e4065af34dc1999990674e1.jpeg\" data-download-href=\"https://community.signalusers.org/uploads/db3609/7550904dae0a5fa21e4065af34dc1999990674e1\" title=\"signal-2026-01-26-135140\"><img src=\"https://community.signalusers.org/uploads/db3609/optimized/3X/7/5/7550904dae0a5fa21e4065af34dc1999990674e1_2_251x500.jpeg\" alt=\"signal-2026-01-26-135140\" data-base62-sha1=\"gJOtciIMKnc3SzDOEkImPRQYqoF\" width=\"251\" height=\"500\" srcset=\"https://community.signalusers.org/uploads/db3609/optimized/3X/7/5/7550904dae0a5fa21e4065af34dc1999990674e1_2_251x500.jpeg, https://community.signalusers.org/uploads/db3609/optimized/3X/7/5/7550904dae0a5fa21e4065af34dc1999990674e1_2_376x750.jpeg 1.5x, https://community.signalusers.org/uploads/db3609/optimized/3X/7/5/7550904dae0a5fa21e4065af34dc1999990674e1_2_502x1000.jpeg 2x\" data-dominant-color=\"2A2A2C\"><div class=\"meta\"><svg class=\"fa d-icon d-icon-far-image svg-icon\" aria-hidden=\"true\"><use href=\"#far-image\"></use></svg><span class=\"filename\">signal-2026-01-26-135140</span><span class=\"informations\">1029×2048 114 KB</span><svg class=\"fa d-icon d-icon-discourse-expand svg-icon\" aria-hidden=\"true\"><use href=\"#discourse-expand\"></use></svg></div></a></div></p>\n<p><div class=\"lightbox-wrapper\"><a class=\"lightbox\" href=\"https://community.signalusers.org/uploads/db3609/original/3X/c/1/c147f1e39ebd707b3fe91492b04963144f89205a.png\" data-download-href=\"https://community.signalusers.org/uploads/db3609/c147f1e39ebd707b3fe91492b04963144f89205a\" title=\"2026-01-26_14-19-20\"><img src=\"https://community.signalusers.org/uploads/db3609/original/3X/c/1/c147f1e39ebd707b3fe91492b04963144f89205a.png\" alt=\"2026-01-26_14-19-20\" data-base62-sha1=\"rzQiafIRdhzyRBO99rU2HuJ7hmG\" width=\"645\" height=\"304\"><div class=\"meta\"><svg class=\"fa d-icon d-icon-far-image svg-icon\" aria-hidden=\"true\"><use href=\"#far-image\"></use></svg><span class=\"filename\">2026-01-26_14-19-20</span><span class=\"informations\">645×304 16.5 KB</span><svg class=\"fa d-icon d-icon-discourse-expand svg-icon\" aria-hidden=\"true\"><use href=\"#discourse-expand\"></use></svg></div></a></div></p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2026-01-27T00:00:58.931Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 3,
+        "reads": 23,
+        "readers_count": 22,
+        "score": 19.6,
+        "yours": false,
+        "topic_id": 74478,
+        "topic_slug": "option-to-exclude-muted-chats-from-badge-count-in-line-with-existing-ios-desktop-feature",
+        "display_username": "Raf",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://support.signal.org/hc/en-us/articles/360043273491-In-App-Notification-Options#ios_notification_options",
+            "internal": false,
+            "reflection": false,
+            "clicks": 0
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 35673,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/option-to-exclude-muted-chats-from-badge-count-in-line-with-existing-ios-desktop-feature/74478/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      283518
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      19
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Use delta APKs for the self-updater",
+      "id": 74578,
+      "title": "Use delta APKs for the self-updater",
+      "slug": "use-delta-apks-for-the-self-updater",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2026-02-02T21:24:30.505Z",
+      "last_posted_at": "2026-02-02T21:24:30.593Z",
+      "bumped": true,
+      "bumped_at": "2026-02-02T21:24:30.593Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 2,
+      "views": 60,
+      "category_id": 18,
+      "featured_link": null,
+      "op_like_count": 2,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 33805,
+            "username": "Andromxda",
+            "name": "Andromxda 🇺🇦🇵🇸🇹🇼",
+            "avatar_template": "/user_avatar/community.signalusers.org/andromxda/{size}/53301_2.png",
+            "trust_level": 1
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Set Physical PTT Button",
+      "id": 68223,
+      "title": "Set Physical PTT Button",
+      "slug": "set-physical-ptt-button",
+      "posts_count": 9,
+      "reply_count": 6,
+      "highest_post_number": 9,
+      "image_url": null,
+      "created_at": "2025-04-03T01:08:28.467Z",
+      "last_posted_at": "2025-04-17T03:34:13.836Z",
+      "bumped": true,
+      "bumped_at": "2025-04-17T03:34:13.836Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 7,
+      "views": 201,
+      "category_id": 18,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 32427,
+            "username": "krwells",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/k/57b2e6/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 2521,
+            "username": "Herohtar",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+            "primary_group_name": "volunteer_moderators",
+            "flair_name": "volunteer_moderators",
+            "flair_url": "shield-halved",
+            "flair_bg_color": "1d8663",
+            "flair_color": "fff",
+            "flair_group_id": 41,
+            "moderator": true,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 32612,
+            "username": "zebra521",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/z/82dd89/{size}.png",
+            "trust_level": 1
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Redmi 12C Redmi 12C should have notification status bar scrolling feature, just like on iPhone",
+      "id": 67872,
+      "title": "Redmi 12C Redmi 12C should have notification status bar scrolling feature, just like on iPhone",
+      "slug": "redmi-12c-redmi-12c-should-have-notification-status-bar-scrolling-feature-just-like-on-iphone",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": null,
+      "created_at": "2025-03-22T13:10:40.796Z",
+      "last_posted_at": "2025-03-22T14:16:20.003Z",
+      "bumped": true,
+      "bumped_at": "2025-03-22T14:16:20.003Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 1,
+      "views": 56,
+      "category_id": 18,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 32202,
+            "username": "Sefa_Daskiran",
+            "name": "Sefa Daşkıran",
+            "avatar_template": "/user_avatar/community.signalusers.org/sefa_daskiran/{size}/51245_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Option to exclude muted chats from badge count, in line with existing iOS/desktop feature.",
+  "id": 74478,
+  "title": "Option to exclude muted chats from badge count, in line with existing iOS/desktop feature.",
+  "posts_count": 1,
+  "created_at": "2026-01-27T00:00:58.818Z",
+  "views": 36,
+  "reply_count": 0,
+  "like_count": 0,
+  "last_posted_at": "2026-01-27T00:00:58.931Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "option-to-exclude-muted-chats-from-badge-count-in-line-with-existing-ios-desktop-feature",
+  "category_id": 18,
+  "word_count": 132,
+  "deleted_at": null,
+  "user_id": 35673,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/7/5/7550904dae0a5fa21e4065af34dc1999990674e1_2_514x1024.jpeg",
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_74478",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": [
+    {
+      "max_width": null,
+      "max_height": null,
+      "width": 1029,
+      "height": 2048,
+      "url": "https://community.signalusers.org/uploads/db3609/original/3X/7/5/7550904dae0a5fa21e4065af34dc1999990674e1.jpeg"
+    },
+    {
+      "max_width": 1024,
+      "max_height": 1024,
+      "width": 514,
+      "height": 1024,
+      "url": "https://community.signalusers.org/uploads/db3609/optimized/3X/7/5/7550904dae0a5fa21e4065af34dc1999990674e1_2_514x1024.jpeg"
+    }
+  ],
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 35673,
+        "username": "raf_a",
+        "name": "Raf",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/r/13edae/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 0
+      }
+    ],
+    "created_by": {
+      "id": 35673,
+      "username": "raf_a",
+      "name": "Raf",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/r/13edae/{size}.png"
+    },
+    "last_poster": {
+      "id": 35673,
+      "username": "raf_a",
+      "name": "Raf",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/r/13edae/{size}.png"
+    }
+  },
+  "bookmarks": []
+}

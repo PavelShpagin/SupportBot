@@ -1,0 +1,416 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 254909,
+        "name": "",
+        "username": "adominanouwe",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/a/3ec8ea/{size}.png",
+        "created_at": "2024-11-04T21:31:27.447Z",
+        "cooked": "<p>Whenever calling folk that are taking those calls on Desktop, and whenever folk are speaking to me when I’m on Desktop, the output audio echoes and the caller can hear themselves. It’s been a chronic issue for the past few years, and not one that happens when I use FaceTime and WhatsApp as alternatives.</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2024-11-04T22:24:21.349Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 23,
+        "readers_count": 22,
+        "score": 24.6,
+        "yours": false,
+        "topic_id": 64676,
+        "topic_slug": "echo-when-calling-via-desktop",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 2,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "",
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 1
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 15765,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/echo-when-calling-via-desktop/64676/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      254909
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      467
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "SQLCipher (like in Android and iOS) for desktop-version too",
+      "id": 73693,
+      "title": "SQLCipher (like in Android and iOS) for desktop-version too",
+      "slug": "sqlcipher-like-in-android-and-ios-for-desktop-version-too",
+      "posts_count": 7,
+      "reply_count": 3,
+      "highest_post_number": 7,
+      "image_url": null,
+      "created_at": "2025-12-18T21:53:18.550Z",
+      "last_posted_at": "2025-12-22T23:05:00.296Z",
+      "bumped": true,
+      "bumped_at": "2025-12-22T23:05:00.296Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 5,
+      "views": 131,
+      "category_id": 12,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": true,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 34569,
+            "username": "CarstenW",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/carstenw/{size}/52354_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster, Accepted Answer",
+          "user": {
+            "id": 2521,
+            "username": "Herohtar",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+            "primary_group_name": "volunteer_moderators",
+            "flair_name": "volunteer_moderators",
+            "flair_url": "shield-halved",
+            "flair_bg_color": "1d8663",
+            "flair_color": "fff",
+            "flair_group_id": 41,
+            "moderator": true,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 8599,
+            "username": "kara42",
+            "name": "kara",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/k/7993a0/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Overriding contact picture",
+      "id": 70282,
+      "title": "Overriding contact picture",
+      "slug": "overriding-contact-picture",
+      "posts_count": 6,
+      "reply_count": 2,
+      "highest_post_number": 6,
+      "image_url": null,
+      "created_at": "2025-07-07T06:05:21.911Z",
+      "last_posted_at": "2025-07-25T23:26:01.086Z",
+      "bumped": true,
+      "bumped_at": "2025-07-25T23:26:01.086Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 152,
+      "category_id": 12,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 31532,
+            "username": "sciurius",
+            "name": "Johan Vromans",
+            "avatar_template": "/user_avatar/community.signalusers.org/sciurius/{size}/50487_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 19404,
+            "username": "Dodoheimer",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/dodoheimer/{size}/41939_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 30921,
+            "username": "raxod502",
+            "name": "Radon Rosborough",
+            "avatar_template": "/user_avatar/community.signalusers.org/raxod502/{size}/49816_2.png",
+            "trust_level": 1
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Help for a raw beginner coming from other platforms like twitter and bsky.",
+      "id": 67862,
+      "title": "Help for a raw beginner coming from other platforms like twitter and bsky.",
+      "slug": "help-for-a-raw-beginner-coming-from-other-platforms-like-twitter-and-bsky",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": null,
+      "created_at": "2025-03-21T22:28:23.194Z",
+      "last_posted_at": "2025-03-21T22:31:01.058Z",
+      "bumped": true,
+      "bumped_at": "2025-03-21T22:31:01.058Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 3,
+      "views": 63,
+      "category_id": 12,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": true,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 32232,
+            "username": "OldTester",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/o/3be4f8/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster, Accepted Answer",
+          "user": {
+            "id": 2521,
+            "username": "Herohtar",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+            "primary_group_name": "volunteer_moderators",
+            "flair_name": "volunteer_moderators",
+            "flair_url": "shield-halved",
+            "flair_bg_color": "1d8663",
+            "flair_color": "fff",
+            "flair_group_id": 41,
+            "moderator": true,
+            "trust_level": 4
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Echo when calling via Desktop",
+  "id": 64676,
+  "title": "Echo when calling via Desktop",
+  "posts_count": 1,
+  "created_at": "2024-11-04T21:31:27.385Z",
+  "views": 40,
+  "reply_count": 0,
+  "like_count": 1,
+  "last_posted_at": "2024-11-04T21:31:27.447Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "echo-when-calling-via-desktop",
+  "category_id": 12,
+  "word_count": 56,
+  "deleted_at": null,
+  "user_id": 15765,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_64676",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 15765,
+        "username": "adominanouwe",
+        "name": "",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/a/3ec8ea/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      }
+    ],
+    "created_by": {
+      "id": 15765,
+      "username": "adominanouwe",
+      "name": "",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/a/3ec8ea/{size}.png"
+    },
+    "last_poster": {
+      "id": 15765,
+      "username": "adominanouwe",
+      "name": "",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/a/3ec8ea/{size}.png"
+    }
+  },
+  "bookmarks": []
+}

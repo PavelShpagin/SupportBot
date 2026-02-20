@@ -1,0 +1,355 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 270166,
+        "name": "Zkvvoob",
+        "username": "zkvvoob",
+        "avatar_template": "/user_avatar/community.signalusers.org/zkvvoob/{size}/1493_2.png",
+        "created_at": "2025-06-20T13:10:10.184Z",
+        "cooked": "<p>Hello all,</p>\n<p>I’ve got several of my contacts (i.e. people in my address book) with custom names and pictures. In Signal (both in the iOS app and on the macOS desktop client), however, a few weeks ago, out of nowhere, they started appearing with <em>nicknames</em> that are different than their names in the address book. I tried removing the nicknames completely or setting values that match the contact names – nothing helped: a day or so later the nicknames reappeared.</p>\n<p>It’s always the same people. As far as I can see, there is nothing in their contact cards that would make them different than all the other ones. Some of them were verified, some – weren’t.</p>\n<p>Has anyone experienced anything similar or do you know what might be causing this? It’s rather annoying.</p>\n<p>Thanks!</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2025-06-20T13:10:10.184Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 5,
+        "reads": 19,
+        "readers_count": 18,
+        "score": 28.8,
+        "yours": false,
+        "topic_id": 69874,
+        "topic_slug": "certain-contacts-keep-resetting-nicknames",
+        "display_username": "Zkvvoob",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 1846,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/certain-contacts-keep-resetting-nicknames/69874/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      270166
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      239
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Subscription &amp; Backup Issue After Moving from Android to iOS",
+      "id": 73313,
+      "title": "Subscription & Backup Issue After Moving from Android to iOS",
+      "slug": "subscription-backup-issue-after-moving-from-android-to-ios",
+      "posts_count": 3,
+      "reply_count": 0,
+      "highest_post_number": 3,
+      "image_url": null,
+      "created_at": "2025-12-03T13:46:37.096Z",
+      "last_posted_at": "2025-12-03T14:19:42.697Z",
+      "bumped": true,
+      "bumped_at": "2025-12-03T14:19:42.697Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 3,
+      "views": 44,
+      "category_id": 10,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 35045,
+            "username": "Reboot",
+            "name": "Stark",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/r/b38774/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 2521,
+            "username": "Herohtar",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+            "primary_group_name": "volunteer_moderators",
+            "flair_name": "volunteer_moderators",
+            "flair_url": "shield-halved",
+            "flair_bg_color": "1d8663",
+            "flair_color": "fff",
+            "flair_group_id": 41,
+            "moderator": true,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Messages lost during 2025-10-20 outage",
+      "id": 72358,
+      "title": "Messages lost during 2025-10-20 outage",
+      "slug": "messages-lost-during-2025-10-20-outage",
+      "posts_count": 3,
+      "reply_count": 1,
+      "highest_post_number": 3,
+      "image_url": null,
+      "created_at": "2025-10-21T13:15:53.890Z",
+      "last_posted_at": "2025-10-21T13:43:05.778Z",
+      "bumped": true,
+      "bumped_at": "2025-10-21T13:43:05.778Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 4,
+      "views": 118,
+      "category_id": 10,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 34536,
+            "username": "HKYC_KayseR",
+            "name": "HKYC KayseR",
+            "avatar_template": "/user_avatar/community.signalusers.org/hkyc_kayser/{size}/54308_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Anonymise group members",
+      "id": 72024,
+      "title": "Anonymise group members",
+      "slug": "anonymise-group-members",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2025-10-04T09:34:29.059Z",
+      "last_posted_at": "2025-10-04T09:34:29.196Z",
+      "bumped": true,
+      "bumped_at": "2025-10-04T09:34:29.196Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 3,
+      "views": 77,
+      "category_id": 10,
+      "featured_link": null,
+      "op_like_count": 3,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 34302,
+            "username": "dralango",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ecccb3/{size}.png",
+            "trust_level": 1
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Certain contacts keep resetting nicknames",
+  "id": 69874,
+  "title": "Certain contacts keep resetting nicknames",
+  "posts_count": 1,
+  "created_at": "2025-06-20T13:10:10.129Z",
+  "views": 35,
+  "reply_count": 0,
+  "like_count": 0,
+  "last_posted_at": "2025-06-20T13:10:10.184Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "certain-contacts-keep-resetting-nicknames",
+  "category_id": 10,
+  "word_count": 137,
+  "deleted_at": null,
+  "user_id": 1846,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_69874",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 1846,
+        "username": "zkvvoob",
+        "name": "Zkvvoob",
+        "avatar_template": "/user_avatar/community.signalusers.org/zkvvoob/{size}/1493_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 0
+      }
+    ],
+    "created_by": {
+      "id": 1846,
+      "username": "zkvvoob",
+      "name": "Zkvvoob",
+      "avatar_template": "/user_avatar/community.signalusers.org/zkvvoob/{size}/1493_2.png"
+    },
+    "last_poster": {
+      "id": 1846,
+      "username": "zkvvoob",
+      "name": "Zkvvoob",
+      "avatar_template": "/user_avatar/community.signalusers.org/zkvvoob/{size}/1493_2.png"
+    }
+  },
+  "bookmarks": []
+}

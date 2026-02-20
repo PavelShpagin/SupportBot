@@ -1,0 +1,343 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 280819,
+        "name": "",
+        "username": "whynot",
+        "avatar_template": "/user_avatar/community.signalusers.org/whynot/{size}/54219_2.png",
+        "created_at": "2025-12-08T19:17:33.204Z",
+        "cooked": "<p>I noticed that when I copy a GIF from a website and paste it into a conversation, Signal sends it immediately, there’s no way to add a message or cancel before it sends.</p>\n<p>Could we have it work like built-in GIFs, with the option to add a message first?</p>\n<p>I’m on iOS 26.1, Signal 7.87.</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2025-12-08T19:18:14.922Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 20,
+        "readers_count": 19,
+        "score": 39.0,
+        "yours": false,
+        "topic_id": 73458,
+        "topic_slug": "pasting-a-gif-sends-it-instantly-without-confirmation",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 2
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 34475,
+        "hidden": false,
+        "trust_level": 1,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/pasting-a-gif-sends-it-instantly-without-confirmation/73458/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      280819
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      68
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Sharing iOS needs improving",
+      "id": 73939,
+      "title": "Sharing iOS needs improving",
+      "slug": "sharing-ios-needs-improving",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2026-01-01T18:04:12.247Z",
+      "last_posted_at": "2026-01-01T18:04:12.329Z",
+      "bumped": true,
+      "bumped_at": "2026-01-01T18:10:48.482Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 32,
+      "category_id": 29,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 32638,
+            "username": "NotWhatsApp",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/n/35a633/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Undo accidental text delete",
+      "id": 67788,
+      "title": "Undo accidental text delete",
+      "slug": "undo-accidental-text-delete",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": null,
+      "created_at": "2025-03-18T17:27:19.680Z",
+      "last_posted_at": "2025-03-19T05:32:47.940Z",
+      "bumped": true,
+      "bumped_at": "2025-03-19T05:32:47.940Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 2,
+      "views": 77,
+      "category_id": 29,
+      "featured_link": null,
+      "op_like_count": 2,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 26101,
+            "username": "DGrothe-PhD",
+            "name": "Daniela Grothe",
+            "avatar_template": "/user_avatar/community.signalusers.org/dgrothe-phd/{size}/43395_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 21723,
+            "username": "eaaac3fdfaff",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/e/41988e/{size}.png",
+            "trust_level": 3
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Notification sounds setting not working",
+      "id": 67140,
+      "title": "Notification sounds setting not working",
+      "slug": "notification-sounds-setting-not-working",
+      "posts_count": 8,
+      "reply_count": 1,
+      "highest_post_number": 8,
+      "image_url": null,
+      "created_at": "2025-02-23T13:39:53.072Z",
+      "last_posted_at": "2025-02-23T20:25:13.229Z",
+      "bumped": true,
+      "bumped_at": "2025-02-23T20:25:13.229Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 3,
+      "views": 39,
+      "category_id": 12,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 7446,
+            "username": "probably",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/p/cc9497/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 2521,
+            "username": "Herohtar",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+            "primary_group_name": "volunteer_moderators",
+            "flair_name": "volunteer_moderators",
+            "flair_url": "shield-halved",
+            "flair_bg_color": "1d8663",
+            "flair_color": "fff",
+            "flair_group_id": 41,
+            "moderator": true,
+            "trust_level": 4
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Pasting a GIF sends it instantly without confirmation",
+  "id": 73458,
+  "title": "Pasting a GIF sends it instantly without confirmation",
+  "posts_count": 1,
+  "created_at": "2025-12-08T19:17:33.117Z",
+  "views": 29,
+  "reply_count": 0,
+  "like_count": 2,
+  "last_posted_at": "2025-12-08T19:17:33.204Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "pasting-a-gif-sends-it-instantly-without-confirmation",
+  "category_id": 29,
+  "word_count": 60,
+  "deleted_at": null,
+  "user_id": 34475,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_73458",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 34475,
+        "username": "whynot",
+        "name": "",
+        "avatar_template": "/user_avatar/community.signalusers.org/whynot/{size}/54219_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 1
+      }
+    ],
+    "created_by": {
+      "id": 34475,
+      "username": "whynot",
+      "name": "",
+      "avatar_template": "/user_avatar/community.signalusers.org/whynot/{size}/54219_2.png"
+    },
+    "last_poster": {
+      "id": 34475,
+      "username": "whynot",
+      "name": "",
+      "avatar_template": "/user_avatar/community.signalusers.org/whynot/{size}/54219_2.png"
+    }
+  },
+  "bookmarks": []
+}

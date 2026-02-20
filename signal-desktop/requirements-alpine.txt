@@ -1,0 +1,8 @@
+# Signal Desktop helper service (Alpine ARM64 version)
+# Note: sqlcipher3 is installed via Alpine packages, not pip
+httpx==0.28.1
+uvicorn==0.34.0
+fastapi==0.115.6
+pillow==11.0.0
+qrcode==8.0
+websockets==14.1

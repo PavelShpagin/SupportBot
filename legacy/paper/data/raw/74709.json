@@ -1,0 +1,346 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 284491,
+        "name": "Kamilia Barmada",
+        "username": "Kamilia_Barmada",
+        "avatar_template": "/user_avatar/community.signalusers.org/kamilia_barmada/{size}/55972_2.png",
+        "created_at": "2026-02-14T06:56:19.671Z",
+        "cooked": "<p><div class=\"lightbox-wrapper\"><a class=\"lightbox\" href=\"https://community.signalusers.org/uploads/db3609/original/3X/f/4/f45265dea48db88ebdda34eba689788470facfe8.jpeg\" data-download-href=\"https://community.signalusers.org/uploads/db3609/f45265dea48db88ebdda34eba689788470facfe8\" title=\"5061\"><img src=\"https://community.signalusers.org/uploads/db3609/optimized/3X/f/4/f45265dea48db88ebdda34eba689788470facfe8_2_230x500.jpeg\" alt=\"5061\" data-base62-sha1=\"yRn2rYPgBDfIfl8ENdiSF8MhaFq\" width=\"230\" height=\"500\" srcset=\"https://community.signalusers.org/uploads/db3609/optimized/3X/f/4/f45265dea48db88ebdda34eba689788470facfe8_2_230x500.jpeg, https://community.signalusers.org/uploads/db3609/optimized/3X/f/4/f45265dea48db88ebdda34eba689788470facfe8_2_345x750.jpeg 1.5x, https://community.signalusers.org/uploads/db3609/optimized/3X/f/4/f45265dea48db88ebdda34eba689788470facfe8_2_460x1000.jpeg 2x\" data-dominant-color=\"F7F8FB\"><div class=\"meta\"><svg class=\"fa d-icon d-icon-far-image svg-icon\" aria-hidden=\"true\"><use href=\"#far-image\"></use></svg><span class=\"filename\">5061</span><span class=\"informations\">1080\u00d72340 131 KB</span><svg class=\"fa d-icon d-icon-discourse-expand svg-icon\" aria-hidden=\"true\"><use href=\"#discourse-expand\"></use></svg></div></a></div></p>\n<p>Hello Signal Community,</p>\n<p>I am writing to report a persistent issue with receiving the activation code in Syria. I have been unable to register for several months now.</p>\n<p>My Device Technical Details:</p>\n<p>* Model: Samsung Galaxy A56 (SM-A566B)</p>\n<p>* Android Version: 16</p>\n<p>* One UI Version: 8.0</p>\n<p>* Build Number: A566BXXS8BZA1</p>\n<p>* Security Patch Level: January 1, 2026</p>\n<p>* Carrier: MTN Syria</p>\n<p>* Location: Syria</p>\n<p>Problem Description:</p>\n<p>I am not receiving the verification SMS at all, even though I can receive other international SMS and OTPs. The \u201cCall Me\u201d option also does not result in any incoming calls.</p>\n<p>Steps Taken:</p>\n<p>* Verified that all app permissions (SMS, Phone) are active.</p>\n<p>* Tried with and without VPN.</p>\n<p>* Cleared app cache and re-installed Signal.</p>\n<p>* Confirmed the phone number format is correct (+963\u2026).</p>\n<p>I noticed other users in the region (like <span class=\"mention\">@rafiklinux</span>) are experiencing the same. Could this be related to a block on the SMS gateway for MTN Syria? I am happy to provide a debug log if needed.</p>\n<p>Thank you.</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2026-02-14T06:56:19.671Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 8,
+        "readers_count": 7,
+        "score": 6.6,
+        "yours": false,
+        "topic_id": 74709,
+        "topic_slug": "the-verification-process-keeps-circling-or-loading-but-i-never-receive-the-sms-in-syria",
+        "display_username": "Kamilia Barmada",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 35904,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/the-verification-process-keeps-circling-or-loading-but-i-never-receive-the-sms-in-syria/74709/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      284491
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      0
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Signal keeps stopping ",
+      "id": 73821,
+      "title": "Signal keeps stopping ",
+      "slug": "signal-keeps-stopping",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": null,
+      "created_at": "2025-12-24T23:59:23.810Z",
+      "last_posted_at": "2025-12-26T14:52:03.442Z",
+      "bumped": true,
+      "bumped_at": "2025-12-26T14:52:03.442Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 61,
+      "category_id": 11,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 35301,
+            "username": "SqueenK",
+            "name": "#Signal2025!",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/s/9fc348/{size}.png",
+            "trust_level": 1
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Resume audio playback",
+      "id": 70893,
+      "title": "Resume audio playback",
+      "slug": "resume-audio-playback",
+      "posts_count": 6,
+      "reply_count": 2,
+      "highest_post_number": 6,
+      "image_url": null,
+      "created_at": "2025-08-07T12:49:50.494Z",
+      "last_posted_at": "2025-08-08T11:24:31.982Z",
+      "bumped": true,
+      "bumped_at": "2025-08-08T11:24:31.982Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 44,
+      "category_id": 11,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 16519,
+            "username": "orschiro",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/orschiro/{size}/32845_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Issue receiving group chat messages",
+      "id": 68390,
+      "title": "Issue receiving group chat messages",
+      "slug": "issue-receiving-group-chat-messages",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": null,
+      "created_at": "2025-04-09T20:11:13.098Z",
+      "last_posted_at": "2025-04-11T14:42:09.404Z",
+      "bumped": true,
+      "bumped_at": "2025-04-11T14:42:09.404Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 1,
+      "views": 57,
+      "category_id": 11,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 32520,
+            "username": "flask",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/f/91b2a8/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "\u200b&rdquo;The verification process keeps circling or loading, but I never receive the SMS in Syria ",
+  "id": 74709,
+  "title": "\u200b\"The verification process keeps circling or loading, but I never receive the SMS in Syria ",
+  "posts_count": 1,
+  "created_at": "2026-02-14T06:56:19.593Z",
+  "views": 13,
+  "reply_count": 0,
+  "like_count": 0,
+  "last_posted_at": "2026-02-14T06:56:19.671Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "the-verification-process-keeps-circling-or-loading-but-i-never-receive-the-sms-in-syria",
+  "category_id": 11,
+  "word_count": 168,
+  "deleted_at": null,
+  "user_id": 35904,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/f/4/f45265dea48db88ebdda34eba689788470facfe8_2_472x1024.jpeg",
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_74709",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 4,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": [
+    {
+      "max_width": null,
+      "max_height": null,
+      "width": 1080,
+      "height": 2340,
+      "url": "https://community.signalusers.org/uploads/db3609/original/3X/f/4/f45265dea48db88ebdda34eba689788470facfe8.jpeg"
+    },
+    {
+      "max_width": 1024,
+      "max_height": 1024,
+      "width": 472,
+      "height": 1024,
+      "url": "https://community.signalusers.org/uploads/db3609/optimized/3X/f/4/f45265dea48db88ebdda34eba689788470facfe8_2_472x1024.jpeg"
+    }
+  ],
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 35904,
+        "username": "Kamilia_Barmada",
+        "name": "Kamilia Barmada",
+        "avatar_template": "/user_avatar/community.signalusers.org/kamilia_barmada/{size}/55972_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 0
+      }
+    ],
+    "created_by": {
+      "id": 35904,
+      "username": "Kamilia_Barmada",
+      "name": "Kamilia Barmada",
+      "avatar_template": "/user_avatar/community.signalusers.org/kamilia_barmada/{size}/55972_2.png"
+    },
+    "last_poster": {
+      "id": 35904,
+      "username": "Kamilia_Barmada",
+      "name": "Kamilia Barmada",
+      "avatar_template": "/user_avatar/community.signalusers.org/kamilia_barmada/{size}/55972_2.png"
+    }
+  },
+  "bookmarks": []
+}

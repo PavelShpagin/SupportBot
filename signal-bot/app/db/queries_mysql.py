@@ -620,6 +620,21 @@ def archive_cases_for_group(db: MySQL, group_id: str) -> int:
     return count
 
 
+def clear_group_runtime_data(db: MySQL, group_id: str) -> None:
+    """Delete transient per-group data before re-ingest.
+
+    Removes raw messages, the conversation buffer, and reactions so re-ingest
+    starts from a clean slate. Does NOT touch cases (use archive_cases_for_group
+    for that) or admin/group config.
+    """
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute("DELETE FROM raw_messages WHERE group_id = %s", (group_id,))
+        cur.execute("DELETE FROM buffers WHERE group_id = %s", (group_id,))
+        cur.execute("DELETE FROM reactions WHERE group_id = %s", (group_id,))
+        conn.commit()
+
+
 def delete_all_group_data(db: MySQL, group_id: str) -> dict:
     """
     Delete ALL data associated with a group for compliance.
@@ -1026,6 +1041,18 @@ def get_group_docs(db: MySQL, group_id: str) -> List[str]:
         if not row or not row[0]:
             return []
         return _parse_json_list(row[0])
+
+
+def get_all_active_case_ids(db: MySQL) -> List[str]:
+    """Return all non-archived case_ids across all groups.
+
+    Used by the SYNC_RAG job to reconcile ChromaDB against MySQL: any case_id
+    present in Chroma but absent from this list should be deleted from Chroma.
+    """
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute("SELECT case_id FROM cases WHERE status != 'archived'")
+        return [r[0] for r in cur.fetchall()]
 
 
 def wipe_all_data(db: MySQL) -> dict:

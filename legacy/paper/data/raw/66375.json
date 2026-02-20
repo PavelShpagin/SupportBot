@@ -1,0 +1,468 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 259674,
+        "name": "",
+        "username": "anna1",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/a/85f322/{size}.png",
+        "created_at": "2025-01-26T02:01:31.064Z",
+        "cooked": "<p>I have very little free memory left on my phone (Android 7). As Signal consumes 2 GB of data, I would like to free up this memory. In the medium term, I would like to transfer Signal to a new phone.</p>\n<p>I should be able to back up chats now, then delete media content and continue using Signal. If I then have a new Android phone, can I back up the current chats on the old phone and restore both backups on the new phone? Will the messages from the first backup be skipped or saved twice when I restore the second backup?</p>\n<p>Is there a better solution to my storage space problem?</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2025-01-26T02:01:31.064Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 31,
+        "readers_count": 30,
+        "score": 11.2,
+        "yours": false,
+        "topic_id": 66375,
+        "topic_slug": "how-to-temporarily-free-up-storage-with-backup-and-restore",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 31499,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/how-to-temporarily-free-up-storage-with-backup-and-restore/66375/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      },
+      {
+        "id": 259783,
+        "name": "",
+        "username": "CueHD",
+        "avatar_template": "/user_avatar/community.signalusers.org/cuehd/{size}/42510_2.png",
+        "created_at": "2025-01-27T14:25:38.716Z",
+        "cooked": "<p>The restore workflow only officially supports restoring one backup. So, you would either lose your messages/media from after the first backup or lose the ones you deleted prior to your second backup.</p>\n<p>This tool is able to merge multiple backups and would be able to combine the backup before and after you delete your media.</p>\n<aside class=\"onebox githubrepo\" data-onebox-src=\"https://github.com/bepaald/signalbackup-tools\">\n  <header class=\"source\">\n\n      <a href=\"https://github.com/bepaald/signalbackup-tools\" target=\"_blank\" rel=\"noopener\">github.com</a>\n  </header>\n\n  <article class=\"onebox-body\">\n    <div class=\"github-row\" data-github-private-repo=\"false\">\n  <img width=\"690\" height=\"344\" src=\"https://community.signalusers.org/uploads/db3609/optimized/3X/8/6/86576ede31b080e12b2bbacf339db46ff7e1f548_2_690x344.png\" class=\"thumbnail\" data-dominant-color=\"F5F2F2\">\n\n  <h3><a href=\"https://github.com/bepaald/signalbackup-tools\" target=\"_blank\" rel=\"noopener\">GitHub - bepaald/signalbackup-tools: Tool to work with Signal Backup files.</a></h3>\n\n    <p><span class=\"github-repo-description\">Tool to work with Signal Backup files.</span></p>\n</div>\n\n  </article>\n\n  <div class=\"onebox-metadata\">\n    \n    \n  </div>\n\n  <div style=\"clear: both\"></div>\n</aside>\n",
+        "post_number": 2,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2025-01-27T14:25:38.716Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 20,
+        "readers_count": 19,
+        "score": 4.0,
+        "yours": false,
+        "topic_id": 66375,
+        "topic_slug": "how-to-temporarily-free-up-storage-with-backup-and-restore",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://github.com/bepaald/signalbackup-tools",
+            "internal": false,
+            "reflection": false,
+            "title": "GitHub - bepaald/signalbackup-tools: Tool to work with Signal Backup files.",
+            "clicks": 6
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 1499,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/how-to-temporarily-free-up-storage-with-backup-and-restore/66375/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      }
+    ],
+    "stream": [
+      259674,
+      259783
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      385
+    ],
+    [
+      2,
+      383
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Signal contact syn problem",
+      "id": 74632,
+      "title": "Signal contact syn problem",
+      "slug": "signal-contact-syn-problem",
+      "posts_count": 5,
+      "reply_count": 2,
+      "highest_post_number": 5,
+      "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/b/2/b2f5b342dfccb15c478a63069c748414bd63d5a1_2_471x1024.jpeg",
+      "created_at": "2026-02-07T08:36:58.252Z",
+      "last_posted_at": "2026-02-07T13:48:55.398Z",
+      "bumped": true,
+      "bumped_at": "2026-02-07T13:48:55.398Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 1,
+      "views": 33,
+      "category_id": 11,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 30939,
+            "username": "Sunny_ji",
+            "name": "Sunny ji",
+            "avatar_template": "/user_avatar/community.signalusers.org/sunny_ji/{size}/49849_2.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7172,
+            "username": "chrononaut",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/c/ebca7d/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 5448,
+            "username": "DirkPitt1",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/74df32/{size}.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 17982,
+            "username": "tiwosatriatama",
+            "name": "Tiwo Satriatama",
+            "avatar_template": "/user_avatar/community.signalusers.org/tiwosatriatama/{size}/24858_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "SMS-повідомлення з кодом",
+      "id": 72662,
+      "title": "SMS-повідомлення з кодом",
+      "slug": "sms",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": null,
+      "created_at": "2025-11-04T10:07:48.076Z",
+      "last_posted_at": "2025-11-04T10:39:43.660Z",
+      "bumped": true,
+      "bumped_at": "2025-11-04T10:39:43.660Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 52,
+      "category_id": 11,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 34698,
+            "username": "Maksym",
+            "name": "Maksym",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/m/e274bd/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 5448,
+            "username": "DirkPitt1",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/74df32/{size}.png",
+            "trust_level": 3
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Is there anyone from Signal Support on here?",
+      "id": 70500,
+      "title": "Is there anyone from Signal Support on here?",
+      "slug": "is-there-anyone-from-signal-support-on-here",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": null,
+      "created_at": "2025-07-18T02:12:31.488Z",
+      "last_posted_at": "2025-07-18T04:00:19.145Z",
+      "bumped": true,
+      "bumped_at": "2025-07-18T04:00:19.145Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 1,
+      "views": 104,
+      "category_id": 11,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 5007,
+            "username": "Budoka",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/b/dfb087/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 2521,
+            "username": "Herohtar",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+            "primary_group_name": "volunteer_moderators",
+            "flair_name": "volunteer_moderators",
+            "flair_url": "shield-halved",
+            "flair_bg_color": "1d8663",
+            "flair_color": "fff",
+            "flair_group_id": 41,
+            "moderator": true,
+            "trust_level": 4
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "how to temporarily free up storage? with backup and restore?",
+  "id": 66375,
+  "title": "how to temporarily free up storage? with backup and restore?",
+  "posts_count": 2,
+  "created_at": "2025-01-26T02:01:31.025Z",
+  "views": 367,
+  "reply_count": 0,
+  "like_count": 0,
+  "last_posted_at": "2025-01-27T14:25:38.716Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "how-to-temporarily-free-up-storage-with-backup-and-restore",
+  "category_id": 11,
+  "word_count": 175,
+  "deleted_at": null,
+  "user_id": 31499,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_66375",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 2,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 2,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 1499,
+        "username": "CueHD",
+        "name": "",
+        "avatar_template": "/user_avatar/community.signalusers.org/cuehd/{size}/42510_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      },
+      {
+        "id": 31499,
+        "username": "anna1",
+        "name": "",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/a/85f322/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 0
+      }
+    ],
+    "created_by": {
+      "id": 31499,
+      "username": "anna1",
+      "name": "",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/a/85f322/{size}.png"
+    },
+    "last_poster": {
+      "id": 1499,
+      "username": "CueHD",
+      "name": "",
+      "avatar_template": "/user_avatar/community.signalusers.org/cuehd/{size}/42510_2.png"
+    },
+    "links": [
+      {
+        "url": "https://github.com/bepaald/signalbackup-tools",
+        "title": "GitHub - bepaald/signalbackup-tools: Tool to work with Signal Backup files.",
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 6,
+        "user_id": 1499,
+        "domain": "github.com",
+        "root_domain": "github.com"
+      }
+    ]
+  },
+  "bookmarks": []
+}

@@ -1,0 +1,320 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 271776,
+        "name": "Sushma R",
+        "username": "Sushmargowda27",
+        "avatar_template": "/user_avatar/community.signalusers.org/sushmargowda27/{size}/49995_2.png",
+        "created_at": "2025-07-10T04:57:09.713Z",
+        "cooked": "<p>Hi,</p>\n<p>I changed the bundle id in Signal-iOS. While trying to make a call from Signal-Desktop, If the Signal-iOS app is opened, they only getting the call, if it closed not getting call.</p>\n<p>Thanks in advance</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2025-07-10T04:57:09.713Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 3,
+        "reads": 16,
+        "readers_count": 15,
+        "score": 18.2,
+        "yours": false,
+        "topic_id": 70344,
+        "topic_slug": "unable-to-get-a-call-from-signal-desktop-on-signal-ios",
+        "display_username": "Sushma R",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 31092,
+        "hidden": false,
+        "trust_level": 1,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/unable-to-get-a-call-from-signal-desktop-on-signal-ios/70344/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      271776
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      220
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "CocoaPods will go completely read-only December 2026",
+      "id": 74603,
+      "title": "CocoaPods will go completely read-only December 2026",
+      "slug": "cocoapods-will-go-completely-read-only-december-2026",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2026-02-04T05:33:32.457Z",
+      "last_posted_at": "2026-02-04T05:33:32.570Z",
+      "bumped": true,
+      "bumped_at": "2026-02-04T05:33:32.570Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 2,
+      "views": 69,
+      "category_id": 21,
+      "featured_link": null,
+      "op_like_count": 2,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 35392,
+            "username": "x-sheep",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/x-sheep/{size}/55292_2.png",
+            "trust_level": 1
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Signal-iOS download webrtc failed",
+      "id": 70496,
+      "title": "Signal-iOS download webrtc failed",
+      "slug": "signal-ios-download-webrtc-failed",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2025-07-17T17:33:22.802Z",
+      "last_posted_at": "2025-07-17T17:33:22.852Z",
+      "bumped": true,
+      "bumped_at": "2025-07-17T17:33:22.852Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 60,
+      "category_id": 21,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 33544,
+            "username": "Litost_Cheng",
+            "name": "Litost Cheng",
+            "avatar_template": "/user_avatar/community.signalusers.org/litost_cheng/{size}/52988_2.png",
+            "trust_level": 0
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Signal.me is not working",
+      "id": 69447,
+      "title": "Signal.me is not working",
+      "slug": "signal-me-is-not-working",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": null,
+      "created_at": "2025-05-29T07:38:35.866Z",
+      "last_posted_at": "2025-05-30T22:47:03.789Z",
+      "bumped": true,
+      "bumped_at": "2025-05-30T22:47:03.789Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 124,
+      "category_id": 21,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 31092,
+            "username": "Sushmargowda27",
+            "name": "Sushma R",
+            "avatar_template": "/user_avatar/community.signalusers.org/sushmargowda27/{size}/49995_2.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Unable to get a call from Signal-Desktop on Signal-iOS",
+  "id": 70344,
+  "title": "Unable to get a call from Signal-Desktop on Signal-iOS",
+  "posts_count": 1,
+  "created_at": "2025-07-10T04:57:09.651Z",
+  "views": 47,
+  "reply_count": 0,
+  "like_count": 0,
+  "last_posted_at": "2025-07-10T04:57:09.713Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "unable-to-get-a-call-from-signal-desktop-on-signal-ios",
+  "category_id": 21,
+  "word_count": 39,
+  "deleted_at": null,
+  "user_id": 31092,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_70344",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 31092,
+        "username": "Sushmargowda27",
+        "name": "Sushma R",
+        "avatar_template": "/user_avatar/community.signalusers.org/sushmargowda27/{size}/49995_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 1
+      }
+    ],
+    "created_by": {
+      "id": 31092,
+      "username": "Sushmargowda27",
+      "name": "Sushma R",
+      "avatar_template": "/user_avatar/community.signalusers.org/sushmargowda27/{size}/49995_2.png"
+    },
+    "last_poster": {
+      "id": 31092,
+      "username": "Sushmargowda27",
+      "name": "Sushma R",
+      "avatar_template": "/user_avatar/community.signalusers.org/sushmargowda27/{size}/49995_2.png"
+    }
+  },
+  "bookmarks": []
+}

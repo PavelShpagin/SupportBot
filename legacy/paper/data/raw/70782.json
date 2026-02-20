@@ -1,0 +1,407 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 272841,
+        "name": "Cagatay Ozcan",
+        "username": "Cagatay_Ozcan",
+        "avatar_template": "/user_avatar/community.signalusers.org/cagatay_ozcan/{size}/49025_2.png",
+        "created_at": "2025-08-01T08:22:43.028Z",
+        "cooked": "<p>Hi,</p>\n<p>After merging version 7.63.0.830 into my forked Signal iOS project, I noticed that the app started connecting to <a href=\"http://chat.signal.org\" rel=\"noopener nofollow ugc\">chat.signal.org</a> through libsignal (Rust), even though I had previously configured everything to use my own server infrastructure.</p>\n<p>Before this version, all communication was successfully redirected to my custom servers, but now I’m seeing logs like: [rust/bridge/shared/types/src/net.rs:68]: Creating endpoint connections (fallbacks disabled) for <a href=\"http://chat.signal.org\" rel=\"noopener nofollow ugc\">chat.signal.org</a> and others</p>\n<p>I’ve searched the entire Swift codebase and configuration but couldn’t find any reference to <a href=\"http://chat.signal.org\" rel=\"noopener nofollow ugc\">chat.signal.org</a>, which seems to be introduced internally in the Rust code.</p>\n<p>Is there a way to prevent the client from connecting to <a href=\"http://chat.signal.org\" rel=\"noopener nofollow ugc\">chat.signal.org</a>, or configure it to avoid this behavior?</p>\n<p>Thanks!</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2025-08-01T08:22:43.028Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 2,
+        "reads": 18,
+        "readers_count": 17,
+        "score": 13.6,
+        "yours": false,
+        "topic_id": 70782,
+        "topic_slug": "unable-to-prevent-connection-to-chat-signal-org-after-merging-7-63-0-830",
+        "display_username": "Cagatay Ozcan",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "http://chat.signal.org",
+            "internal": false,
+            "reflection": false,
+            "clicks": 1
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 30291,
+        "hidden": false,
+        "trust_level": 1,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/unable-to-prevent-connection-to-chat-signal-org-after-merging-7-63-0-830/70782/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      272841
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      197
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "What happens when the app is deleted?",
+      "id": 74302,
+      "title": "What happens when the app is deleted?",
+      "slug": "what-happens-when-the-app-is-deleted",
+      "posts_count": 6,
+      "reply_count": 4,
+      "highest_post_number": 6,
+      "image_url": null,
+      "created_at": "2026-01-18T04:46:27.746Z",
+      "last_posted_at": "2026-02-14T00:31:31.340Z",
+      "bumped": true,
+      "bumped_at": "2026-02-14T00:31:31.340Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 3,
+      "views": 128,
+      "category_id": 10,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 35573,
+            "username": "langisman",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/l/a587f6/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 3099,
+            "username": "Gunter",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/gunter/{size}/48737_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 32638,
+            "username": "NotWhatsApp",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/n/35a633/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Signal data transfer old iPhone to new iPhone",
+      "id": 72179,
+      "title": "Signal data transfer old iPhone to new iPhone",
+      "slug": "signal-data-transfer-old-iphone-to-new-iphone",
+      "posts_count": 5,
+      "reply_count": 2,
+      "highest_post_number": 5,
+      "image_url": null,
+      "created_at": "2025-10-13T03:48:36.398Z",
+      "last_posted_at": "2025-10-13T22:05:43.321Z",
+      "bumped": true,
+      "bumped_at": "2025-10-13T22:05:43.321Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 2,
+      "views": 96,
+      "category_id": 10,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 34436,
+            "username": "crystalline",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/c/dc4da7/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 33362,
+            "username": "NeedsChloesure",
+            "name": "Chloe",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/n/9f8e36/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Combining Android and iOS backups",
+      "id": 71850,
+      "title": "Combining Android and iOS backups",
+      "slug": "combining-android-and-ios-backups",
+      "posts_count": 5,
+      "reply_count": 2,
+      "highest_post_number": 5,
+      "image_url": null,
+      "created_at": "2025-09-25T17:28:59.065Z",
+      "last_posted_at": "2025-09-27T13:07:59.081Z",
+      "bumped": true,
+      "bumped_at": "2025-09-27T13:48:44.082Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 167,
+      "category_id": 10,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": true,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 34256,
+            "username": "fue12",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/f/ed8c4c/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster, Accepted Answer",
+          "user": {
+            "id": 33362,
+            "username": "NeedsChloesure",
+            "name": "Chloe",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/n/9f8e36/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 23991,
+            "username": "ClauZ",
+            "name": "ClauZ",
+            "avatar_template": "/user_avatar/community.signalusers.org/clauz/{size}/53679_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Unable to prevent connection to chat.signal.org after merging 7.63.0.830",
+  "id": 70782,
+  "title": "Unable to prevent connection to chat.signal.org after merging 7.63.0.830",
+  "posts_count": 1,
+  "created_at": "2025-08-01T08:22:42.957Z",
+  "views": 42,
+  "reply_count": 0,
+  "like_count": 0,
+  "last_posted_at": "2025-08-01T08:22:43.028Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "unable-to-prevent-connection-to-chat-signal-org-after-merging-7-63-0-830",
+  "category_id": 10,
+  "word_count": 130,
+  "deleted_at": null,
+  "user_id": 30291,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_70782",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 30291,
+        "username": "Cagatay_Ozcan",
+        "name": "Cagatay Ozcan",
+        "avatar_template": "/user_avatar/community.signalusers.org/cagatay_ozcan/{size}/49025_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 1
+      }
+    ],
+    "created_by": {
+      "id": 30291,
+      "username": "Cagatay_Ozcan",
+      "name": "Cagatay Ozcan",
+      "avatar_template": "/user_avatar/community.signalusers.org/cagatay_ozcan/{size}/49025_2.png"
+    },
+    "last_poster": {
+      "id": 30291,
+      "username": "Cagatay_Ozcan",
+      "name": "Cagatay Ozcan",
+      "avatar_template": "/user_avatar/community.signalusers.org/cagatay_ozcan/{size}/49025_2.png"
+    },
+    "links": [
+      {
+        "url": "http://chat.signal.org",
+        "title": null,
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 1,
+        "user_id": 30291,
+        "domain": "chat.signal.org",
+        "root_domain": "signal.org"
+      }
+    ]
+  },
+  "bookmarks": []
+}

@@ -1,0 +1,666 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 277070,
+        "name": "MORTAL ENGINE",
+        "username": "mortal_engin3",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/m/ee7513/{size}.png",
+        "created_at": "2025-10-09T14:59:45.483Z",
+        "cooked": "<p>Can Signal protect Signal’s data stored on a phone if the phone is compromised or remotely hacked? How safe is Signal’s data on the phone even if the device gets compromised?<br>\nI read this and it says it’s pretty much immune even if device is compromised</p><aside class=\"onebox allowlistedgeneric\" data-onebox-src=\"https://proxidize.com/blog/what-is-signal-app/\">\n  <header class=\"source\">\n      <img src=\"https://community.signalusers.org/uploads/db3609/original/3X/f/7/f783c55d30220519f9f351ebde4a6b86af8065e1.webp\" class=\"site-icon\" alt=\"\" data-dominant-color=\"31312D\" width=\"32\" height=\"32\">\n\n      <a href=\"https://proxidize.com/blog/what-is-signal-app/\" target=\"_blank\" rel=\"noopener nofollow ugc\" title=\"04:16PM - 21 February 2025\">Proxidize – 21 Feb 25</a>\n  </header>\n\n  <article class=\"onebox-body\">\n    <div class=\"aspect-image\" style=\"--aspect-ratio:690/360;\"><img src=\"https://community.signalusers.org/uploads/db3609/optimized/3X/8/5/85dd1e60da3f48df99bb5b825e621048661496a7_2_690x361.jpeg\" class=\"thumbnail\" alt=\"\" data-dominant-color=\"262763\" width=\"690\" height=\"361\"></div>\n\n<h3><a href=\"https://proxidize.com/blog/what-is-signal-app/\" target=\"_blank\" rel=\"noopener nofollow ugc\">What Is Signal And Why Is It Considered So Secure?</a></h3>\n\n  <p>Encryption, privacy, and the trust of activists and journalists: What is Signal and what makes it so different from other messaging apps?</p>\n\n\n  </article>\n\n  <div class=\"onebox-metadata\">\n    \n    \n  </div>\n\n  <div style=\"clear: both\"></div>\n</aside>\n",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 3,
+        "updated_at": "2025-10-09T15:08:06.434Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 43,
+        "readers_count": 42,
+        "score": 13.6,
+        "yours": false,
+        "topic_id": 72136,
+        "topic_slug": "can-signal-protect-data-stored-on-a-phone-other-device",
+        "display_username": "MORTAL ENGINE",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 2,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://proxidize.com/blog/what-is-signal-app/",
+            "internal": false,
+            "reflection": false,
+            "clicks": 2
+          }
+        ],
+        "read": true,
+        "user_title": "",
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 25737,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/can-signal-protect-data-stored-on-a-phone-other-device/72136/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      },
+      {
+        "id": 277087,
+        "name": "Talya (she/her)",
+        "username": "rassilon1963",
+        "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+        "created_at": "2025-10-09T19:34:33.872Z",
+        "cooked": "<p>There is some protection (see <a href=\"https://community.signalusers.org/t/signal-stores-encryption-key-in-plain-text-on-desktop-client-s/61675/51\">this</a> as one example). However protecting the endpoint can only go so far.<br>\nSee this thread by the president of Signal about the limits of protecting the endpoints:</p><aside class=\"onebox allowlistedgeneric\" data-onebox-src=\"https://mastodon.world/@Mer__edith/109751701529562752\">\n  <header class=\"source\">\n      <img src=\"https://community.signalusers.org/uploads/db3609/original/3X/2/3/237ad025e2232740260bcd28b682dc88a375c403.png\" class=\"site-icon\" alt=\"\" data-dominant-color=\"8076EC\" width=\"16\" height=\"16\">\n\n      <a href=\"https://mastodon.world/@Mer__edith/109751701529562752\" target=\"_blank\" rel=\"noopener\" title=\"08:21PM - 25 January 2023\">Mastodon – 25 Jan 23</a>\n  </header>\n\n  <article class=\"onebox-body\">\n    \n\n<h3><a href=\"https://mastodon.world/@Mer__edith/109751701529562752\" target=\"_blank\" rel=\"noopener\">Meredith Whittaker (@Mer__edith@mastodon.world)</a></h3>\n\n  <p>The report by johnjhacking is confused. What they propose requires a level of access that's only available if the device is already completely compromised: “First and foremost, you need access to the device.” TLDR someone compromising your device is...</p>\n\n\n  </article>\n\n  <div class=\"onebox-metadata\">\n    \n    \n  </div>\n\n  <div style=\"clear: both\"></div>\n</aside>\n\n<p><strong>TD;DR</strong>: Signal provides the best end-to-end-encryption. By definition, E2EE ends at the endpoint and protecting it is beyond scope. Signal goes a bit beyond that, but there’s a limit to what they can do. The rest is the job of the user and the operating system.</p>",
+        "post_number": 2,
+        "post_type": 1,
+        "posts_count": 3,
+        "updated_at": "2025-10-09T19:34:33.872Z",
+        "reply_count": 1,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 37,
+        "readers_count": 36,
+        "score": 12.4,
+        "yours": false,
+        "topic_id": 72136,
+        "topic_slug": "can-signal-protect-data-stored-on-a-phone-other-device",
+        "display_username": "Talya (she/her)",
+        "primary_group_name": "top_contributors",
+        "flair_name": "top_contributors",
+        "flair_url": "compass",
+        "flair_bg_color": "6058CA",
+        "flair_color": "fff",
+        "flair_group_id": 48,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://mastodon.world/@Mer__edith/109751701529562752",
+            "internal": false,
+            "reflection": false,
+            "title": "Meredith Whittaker: \"The report by johnjhacking is confused. What they…\" - Mastodon",
+            "clicks": 3
+          },
+          {
+            "url": "https://community.signalusers.org/t/signal-stores-encryption-key-in-plain-text-on-desktop-client-s/61675/51",
+            "internal": true,
+            "reflection": false,
+            "title": "Signal stores encryption key in plain text on desktop client(s)?",
+            "clicks": 1
+          }
+        ],
+        "read": true,
+        "user_title": "Top Contributor",
+        "title_is_group": true,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 18285,
+        "hidden": false,
+        "trust_level": 4,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/can-signal-protect-data-stored-on-a-phone-other-device/72136/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 277119,
+        "name": null,
+        "username": "QuickBanana",
+        "avatar_template": "/user_avatar/community.signalusers.org/quickbanana/{size}/35290_2.png",
+        "created_at": "2025-10-10T06:50:09.876Z",
+        "cooked": "<aside class=\"quote group-top_contributors\" data-username=\"rassilon1963\" data-post=\"2\" data-topic=\"72136\">\n<div class=\"title\">\n<div class=\"quote-controls\"></div>\n<img alt=\"\" width=\"24\" height=\"24\" src=\"https://community.signalusers.org/user_avatar/community.signalusers.org/rassilon1963/48/31625_2.png\" class=\"avatar\"> rassilon1963:</div>\n<blockquote>\n<p>Signal provides the best end-to-end-encryption. By definition, E2EE ends at the endpoint and protecting it is beyond scope. Signal goes a bit beyond that, but there’s a limit to what they can do. The rest is the job of the user and the operating system.</p>\n</blockquote>\n</aside>\n<p>Unfortunately Meredith Whittaker falls into the popular trap of security nihilism, assuming any compromise or physical access is necessarily fatal and as such, running away from the problem. It’s true that this is not everything up to Signal to solve, but it’s also true that compromise isn’t black or white, and OSes have surfaced means for applications to protect themselves.</p>\n<p>As an example, in 2023 Apple made it so that data of sandboxed apps on macOS is also protected from other compromised apps (usually sandbox works the other way around). Sandbox is a kernel level feature so bypassing it requires a a vulnerability as opposed to just grabbing keys from keychain and reading the app data. Signal doesn’t have OS-level sandbox on any desktop OS.</p>\n<p>As another example, on Android Signal encrypts the database with a key that is always available, not to offer any protection, but to stop third-party backups (understandable). Signal could split keys and set them in a way that only data required to receive new messages is available while locked but not the whole database. Currently, Signal is vulnerable to data extraction when phone is in after-first-unlock state which is almost every time for ordinary users.</p>\n<p>Endpoint protection is out of scope of E2EE, but there’s no reason endpoint protection has to be out of scope of Signal itself, and the protection doesn’t have to be perfect to be useful.</p>",
+        "post_number": 3,
+        "post_type": 1,
+        "posts_count": 3,
+        "updated_at": "2025-10-10T06:50:09.876Z",
+        "reply_count": 0,
+        "reply_to_post_number": 2,
+        "quote_count": 1,
+        "incoming_link_count": 2,
+        "reads": 30,
+        "readers_count": 29,
+        "score": 46.0,
+        "yours": false,
+        "topic_id": 72136,
+        "topic_slug": "can-signal-protect-data-stored-on-a-phone-other-device",
+        "display_username": null,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 2
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 16653,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/can-signal-protect-data-stored-on-a-phone-other-device/72136/3",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      }
+    ],
+    "stream": [
+      277070,
+      277087,
+      277119
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      128
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "New Post Quantum Ratchet On GitHub",
+      "id": 68928,
+      "title": "New Post Quantum Ratchet On GitHub",
+      "slug": "new-post-quantum-ratchet-on-github",
+      "posts_count": 5,
+      "reply_count": 1,
+      "highest_post_number": 5,
+      "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/e/2/e2e4b418120482a244e3d02377591f21f4549ed6_2_1024x512.png",
+      "created_at": "2025-05-02T01:10:17.421Z",
+      "last_posted_at": "2025-06-05T13:59:49.496Z",
+      "bumped": true,
+      "bumped_at": "2025-06-05T13:59:49.496Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 29,
+      "views": 312,
+      "category_id": 7,
+      "featured_link": null,
+      "op_like_count": 12,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 3099,
+            "username": "Gunter",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/gunter/{size}/48737_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 8599,
+            "username": "kara42",
+            "name": "kara",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/k/7993a0/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 5448,
+            "username": "DirkPitt1",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/74df32/{size}.png",
+            "trust_level": 3
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Has there been a recent change relating to &ldquo;Open Signal on your phone&hellip;&rdquo; frequency on Signal Desktop?",
+      "id": 68536,
+      "title": "Has there been a recent change relating to \"Open Signal on your phone...\" frequency on Signal Desktop?",
+      "slug": "has-there-been-a-recent-change-relating-to-open-signal-on-your-phone-frequency-on-signal-desktop",
+      "posts_count": 10,
+      "reply_count": 7,
+      "highest_post_number": 10,
+      "image_url": null,
+      "created_at": "2025-04-15T00:32:42.607Z",
+      "last_posted_at": "2025-04-16T17:32:55.211Z",
+      "bumped": true,
+      "bumped_at": "2025-04-16T17:32:55.211Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 17,
+      "views": 174,
+      "category_id": 7,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 32327,
+            "username": "armani",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/a/ee59a6/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 25087,
+            "username": "Contributor",
+            "name": "Michel",
+            "avatar_template": "/user_avatar/community.signalusers.org/contributor/{size}/41382_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 6659,
+            "username": "Whatnoww",
+            "name": "Whatnoww",
+            "avatar_template": "/user_avatar/community.signalusers.org/whatnoww/{size}/54328_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 2521,
+            "username": "Herohtar",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+            "primary_group_name": "volunteer_moderators",
+            "flair_name": "volunteer_moderators",
+            "flair_url": "shield-halved",
+            "flair_bg_color": "1d8663",
+            "flair_color": "fff",
+            "flair_group_id": 41,
+            "moderator": true,
+            "trust_level": 4
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Signal Backup Keys - Google Password Manager",
+      "id": 72735,
+      "title": "Signal Backup Keys - Google Password Manager",
+      "slug": "signal-backup-keys-google-password-manager",
+      "posts_count": 8,
+      "reply_count": 4,
+      "highest_post_number": 8,
+      "image_url": null,
+      "created_at": "2025-11-06T17:29:19.090Z",
+      "last_posted_at": "2025-11-08T08:46:55.024Z",
+      "bumped": true,
+      "bumped_at": "2025-11-08T08:46:55.024Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 4,
+      "views": 172,
+      "category_id": 13,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 34730,
+            "username": "anon5237680",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/a/6f9a4e/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 27155,
+            "username": "Croissant",
+            "name": "Croissant",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/c/43a26b/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 16653,
+            "username": "QuickBanana",
+            "name": null,
+            "avatar_template": "/user_avatar/community.signalusers.org/quickbanana/{size}/35290_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Can Signal Protect Data Stored on a phone/other device?",
+  "id": 72136,
+  "title": "Can Signal Protect Data Stored on a phone/other device?",
+  "posts_count": 3,
+  "created_at": "2025-10-09T14:59:45.411Z",
+  "views": 129,
+  "reply_count": 1,
+  "like_count": 2,
+  "last_posted_at": "2025-10-10T06:50:09.876Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "can-signal-protect-data-stored-on-a-phone-other-device",
+  "category_id": 7,
+  "word_count": 466,
+  "deleted_at": null,
+  "user_id": 25737,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/8/5/85dd1e60da3f48df99bb5b825e621048661496a7_2_1024x535.jpeg",
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_72136",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 3,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 3,
+  "show_read_indicator": false,
+  "thumbnails": [
+    {
+      "max_width": null,
+      "max_height": null,
+      "width": 1200,
+      "height": 628,
+      "url": "https://community.signalusers.org/uploads/db3609/original/3X/8/5/85dd1e60da3f48df99bb5b825e621048661496a7.jpeg"
+    },
+    {
+      "max_width": 1024,
+      "max_height": 1024,
+      "width": 1024,
+      "height": 535,
+      "url": "https://community.signalusers.org/uploads/db3609/optimized/3X/8/5/85dd1e60da3f48df99bb5b825e621048661496a7_2_1024x535.jpeg"
+    }
+  ],
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 16653,
+        "username": "QuickBanana",
+        "name": null,
+        "avatar_template": "/user_avatar/community.signalusers.org/quickbanana/{size}/35290_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      },
+      {
+        "id": 18285,
+        "username": "rassilon1963",
+        "name": "Talya (she/her)",
+        "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+        "post_count": 1,
+        "primary_group_name": "top_contributors",
+        "flair_name": "top_contributors",
+        "flair_url": "compass",
+        "flair_color": "fff",
+        "flair_bg_color": "6058CA",
+        "flair_group_id": 48,
+        "trust_level": 4
+      },
+      {
+        "id": 25737,
+        "username": "mortal_engin3",
+        "name": "MORTAL ENGINE",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/m/ee7513/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      }
+    ],
+    "created_by": {
+      "id": 25737,
+      "username": "mortal_engin3",
+      "name": "MORTAL ENGINE",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/m/ee7513/{size}.png"
+    },
+    "last_poster": {
+      "id": 16653,
+      "username": "QuickBanana",
+      "name": null,
+      "avatar_template": "/user_avatar/community.signalusers.org/quickbanana/{size}/35290_2.png"
+    },
+    "links": [
+      {
+        "url": "https://mastodon.world/@Mer__edith/109751701529562752",
+        "title": "Meredith Whittaker: \"The report by johnjhacking is confused. What they…\" - Mastodon",
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 3,
+        "user_id": 18285,
+        "domain": "mastodon.world",
+        "root_domain": "mastodon.world"
+      },
+      {
+        "url": "https://proxidize.com/blog/what-is-signal-app/",
+        "title": null,
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 2,
+        "user_id": 25737,
+        "domain": "proxidize.com",
+        "root_domain": "proxidize.com"
+      },
+      {
+        "url": "https://community.signalusers.org/t/signal-stores-encryption-key-in-plain-text-on-desktop-client-s/61675/51",
+        "title": "Signal stores encryption key in plain text on desktop client(s)?",
+        "internal": true,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 1,
+        "user_id": 18285,
+        "domain": "community.signalusers.org",
+        "root_domain": "signalusers.org"
+      }
+    ]
+  },
+  "bookmarks": []
+}

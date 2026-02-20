@@ -1,0 +1,375 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 268840,
+        "name": "Eloy Ruiz",
+        "username": "eloyruiz",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/e/ac91a4/{size}.png",
+        "created_at": "2025-05-28T18:33:53.248Z",
+        "cooked": "<p>Hi everyone.<br>\nI think I managed to compile the libsignal successfully but I would like some feedback if possible:</p>\n<ul>\n<li>clone libsignal from my fork</li>\n<li>checkout the right commit/version</li>\n<li>edit rust/net/src/env.rs file changing the URLs in the different const variables as well as the ipv4 and ipv6 according to my servers’</li>\n<li>used java/make to compile everything</li>\n<li>(yes, I know I’m missing the enclave stuff in rust/attest/src/constants.rs but for the moment it’s enough trying to compile)</li>\n<li>(yes, probably I’m also missing something about the certificates which I’ll probably have to replace with mine)</li>\n</ul>\n<p>Despite the execution gets stopped by lots of test errors from the <em>./gradlew build</em> the <em>.aar</em> files get created.</p>\n<p>Now I’m trying to use my compiled libraries in my Signal-Android project, which is already running.</p>\n<p>In the Makefile we can see a piece of code which publishes the compilation to the Maven repo and then used in the project, but I’m not sure if it’s the right/easiest way to do it as I’ve searched in the Maven repo for libsignal and besides <a href=\"http://signal.org\" rel=\"noopener nofollow ugc\">signal.org</a> I only see other two publishers. Maybe the rest are private? Maybe they are using AWS CodeArtifact? Can I somehow copy the compiled files in my Signal-Android project and use them?</p>\n<p>Thanks in advance!</p>\n<p>Regards,<br>\nEloy</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2025-05-28T18:33:53.248Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 6,
+        "reads": 33,
+        "readers_count": 32,
+        "score": 36.6,
+        "yours": false,
+        "topic_id": 69431,
+        "topic_slug": "libsignal-signal-android",
+        "display_username": "Eloy Ruiz",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "http://signal.org",
+            "internal": false,
+            "reflection": false,
+            "title": "Signal >> Home",
+            "clicks": 1
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 28485,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/libsignal-signal-android/69431/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      268840
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      262
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Signal Server setup guide with new version",
+      "id": 71344,
+      "title": "Signal Server setup guide with new version",
+      "slug": "signal-server-setup-guide-with-new-version",
+      "posts_count": 5,
+      "reply_count": 2,
+      "highest_post_number": 5,
+      "image_url": null,
+      "created_at": "2025-09-01T12:50:37.368Z",
+      "last_posted_at": "2025-11-08T04:44:42.846Z",
+      "bumped": true,
+      "bumped_at": "2025-11-08T04:44:42.846Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 345,
+      "category_id": 24,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 31092,
+            "username": "Sushmargowda27",
+            "name": "Sushma R",
+            "avatar_template": "/user_avatar/community.signalusers.org/sushmargowda27/{size}/49995_2.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 34013,
+            "username": "Iriyanto",
+            "name": "Iriyanto ",
+            "avatar_template": "/user_avatar/community.signalusers.org/iriyanto/{size}/53503_2.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 34742,
+            "username": "jiuye_mi",
+            "name": "jiuye mi",
+            "avatar_template": "/user_avatar/community.signalusers.org/jiuye_mi/{size}/54564_2.png",
+            "trust_level": 1
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Request for contribution to signal server?",
+      "id": 69997,
+      "title": "Request for contribution to signal server?",
+      "slug": "request-for-contribution-to-signal-server",
+      "posts_count": 5,
+      "reply_count": 2,
+      "highest_post_number": 5,
+      "image_url": null,
+      "created_at": "2025-06-26T00:07:03.976Z",
+      "last_posted_at": "2025-07-02T17:08:35.538Z",
+      "bumped": true,
+      "bumped_at": "2025-07-02T17:08:35.538Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 133,
+      "category_id": 24,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 33316,
+            "username": "techrajdeep",
+            "name": "Rajdeep S",
+            "avatar_template": "/user_avatar/community.signalusers.org/techrajdeep/{size}/52695_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 28485,
+            "username": "eloyruiz",
+            "name": "Eloy Ruiz",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/e/ac91a4/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Barebones Server v6.45.0",
+      "id": 69866,
+      "title": "Barebones Server v6.45.0",
+      "slug": "barebones-server-v6-45-0",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2025-06-20T04:10:06.657Z",
+      "last_posted_at": "2025-06-20T04:10:06.724Z",
+      "bumped": true,
+      "bumped_at": "2025-06-20T04:10:06.724Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 88,
+      "category_id": 24,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 33249,
+            "username": "xRomir",
+            "name": "xRomir",
+            "avatar_template": "/user_avatar/community.signalusers.org/xromir/{size}/52609_2.png",
+            "trust_level": 1
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Libsignal + Signal-Android",
+  "id": 69431,
+  "title": "Libsignal + Signal-Android",
+  "posts_count": 1,
+  "created_at": "2025-05-28T18:33:53.186Z",
+  "views": 88,
+  "reply_count": 0,
+  "like_count": 0,
+  "last_posted_at": "2025-05-28T18:33:53.248Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "libsignal-signal-android",
+  "category_id": 24,
+  "word_count": 232,
+  "deleted_at": null,
+  "user_id": 28485,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_69431",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 28485,
+        "username": "eloyruiz",
+        "name": "Eloy Ruiz",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/e/ac91a4/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      }
+    ],
+    "created_by": {
+      "id": 28485,
+      "username": "eloyruiz",
+      "name": "Eloy Ruiz",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/e/ac91a4/{size}.png"
+    },
+    "last_poster": {
+      "id": 28485,
+      "username": "eloyruiz",
+      "name": "Eloy Ruiz",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/e/ac91a4/{size}.png"
+    },
+    "links": [
+      {
+        "url": "http://signal.org",
+        "title": "Signal >> Home",
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 1,
+        "user_id": 28485,
+        "domain": "signal.org",
+        "root_domain": "signal.org"
+      }
+    ]
+  },
+  "bookmarks": []
+}

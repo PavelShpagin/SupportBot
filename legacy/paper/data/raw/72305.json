@@ -1,0 +1,456 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 277549,
+        "name": "Julio Nahum",
+        "username": "JulioNahum",
+        "avatar_template": "/user_avatar/community.signalusers.org/julionahum/{size}/20267_2.png",
+        "created_at": "2025-10-19T23:34:59.604Z",
+        "cooked": "<p><div class=\"lightbox-wrapper\"><a class=\"lightbox\" href=\"https://community.signalusers.org/uploads/db3609/original/3X/3/4/3438ecb56e9fca86b95552a4219758e51a16bdd0.webp\" data-download-href=\"https://community.signalusers.org/uploads/db3609/3438ecb56e9fca86b95552a4219758e51a16bdd0\" title=\"upload-status-concept-for-desktop-and-mobile-v0-hr941fhtu2wf1\"><img src=\"https://community.signalusers.org/uploads/db3609/original/3X/3/4/3438ecb56e9fca86b95552a4219758e51a16bdd0.webp\" alt=\"upload-status-concept-for-desktop-and-mobile-v0-hr941fhtu2wf1\" data-base62-sha1=\"7rYMUIJUPy35SscSpN0OX6qUvmw\" width=\"690\" height=\"358\" data-dominant-color=\"435581\"><div class=\"meta\"><svg class=\"fa d-icon d-icon-far-image svg-icon\" aria-hidden=\"true\"><use href=\"#far-image\"></use></svg><span class=\"filename\">upload-status-concept-for-desktop-and-mobile-v0-hr941fhtu2wf1</span><span class=\"informations\">1080×561 20.7 KB</span><svg class=\"fa d-icon d-icon-discourse-expand svg-icon\" aria-hidden=\"true\"><use href=\"#discourse-expand\"></use></svg></div></a></div></p>\n<p><div class=\"lightbox-wrapper\"><a class=\"lightbox\" href=\"https://community.signalusers.org/uploads/db3609/original/3X/b/c/bcb549e89bdde27f581fce090689b284976be5a0.webp\" data-download-href=\"https://community.signalusers.org/uploads/db3609/bcb549e89bdde27f581fce090689b284976be5a0\" title=\"upload-status-concept-for-desktop-and-mobile-v0-zvxo0lq8u2wf1\"><img src=\"https://community.signalusers.org/uploads/db3609/original/3X/b/c/bcb549e89bdde27f581fce090689b284976be5a0.webp\" alt=\"upload-status-concept-for-desktop-and-mobile-v0-zvxo0lq8u2wf1\" data-base62-sha1=\"qVoaLIIvPCeQWflSuGeRa4Wb3IA\" width=\"690\" height=\"460\" data-dominant-color=\"1A3264\"><div class=\"meta\"><svg class=\"fa d-icon d-icon-far-image svg-icon\" aria-hidden=\"true\"><use href=\"#far-image\"></use></svg><span class=\"filename\">upload-status-concept-for-desktop-and-mobile-v0-zvxo0lq8u2wf1</span><span class=\"informations\">1080×721 16.2 KB</span><svg class=\"fa d-icon d-icon-discourse-expand svg-icon\" aria-hidden=\"true\"><use href=\"#discourse-expand\"></use></svg></div></a></div></p>\n<p>I just uploaded a large, important file over a slow internet connection, and I had to wait several minutes for it to finish.</p>\n<p>I realized there was no way to tell how much of the file had been uploaded, how much was left, or what the current upload speed was. I started to worry that Signal had frozen and wondered if I needed to cancel the upload and resubmit. This concern stemmed from the fact that the upload process sometimes fails, not only in Signal, but also in other apps in general.</p>\n<p>So I immediately realized how useful such a feature would be, so I designed a small visualization to show what it might look like on Signal Desktop, iOS, and Android.</p>\n<p>Images and videos at least have an upload icon indicating progress, but file uploads just show a constantly spinning icon with no clear progress display.</p>\n<p>This feature could solve that problem.</p>\n<p>If any Signal developers are reading this, such a feature would be invaluable, not just for Signal Desktop, but for all devices.</p>\n<p>Requested by a Reddit user</p>\n<p><a href=\"https://www.reddit.com/r/signal/comments/1oaqukx/upload_status_concept_for_desktop_and_mobile/\" class=\"onebox\" target=\"_blank\" rel=\"noopener nofollow ugc\">https://www.reddit.com/r/signal/comments/1oaqukx/upload_status_concept_for_desktop_and_mobile/</a></p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2025-10-20T03:53:13.605Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 3,
+        "reads": 34,
+        "readers_count": 33,
+        "score": 141.8,
+        "yours": false,
+        "topic_id": 72305,
+        "topic_slug": "file-sending-status-concept-for-desktop-and-mobile",
+        "display_username": "Julio Nahum",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 3,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://www.reddit.com/r/signal/comments/1oaqukx/upload_status_concept_for_desktop_and_mobile/",
+            "internal": false,
+            "reflection": false,
+            "clicks": 3
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 8
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 15335,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/file-sending-status-concept-for-desktop-and-mobile/72305/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      },
+      {
+        "id": 277561,
+        "name": "",
+        "username": "Herohtar",
+        "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+        "created_at": "2025-10-20T03:56:27.845Z",
+        "cooked": "<p>FWIW, the Android app already shows the upload progress for media, but oddly does not for generic files. It does have a media upload <em>notification</em> that has a progress bar, but it doesn’t seem to show any numeric values.</p>",
+        "post_number": 2,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2025-10-20T03:56:27.845Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 31,
+        "readers_count": 30,
+        "score": 21.2,
+        "yours": false,
+        "topic_id": 72305,
+        "topic_slug": "file-sending-status-concept-for-desktop-and-mobile",
+        "display_username": "",
+        "primary_group_name": "volunteer_moderators",
+        "flair_name": "volunteer_moderators",
+        "flair_url": "shield-halved",
+        "flair_bg_color": "1d8663",
+        "flair_color": "fff",
+        "flair_group_id": 41,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "Volunteer Moderator",
+        "title_is_group": true,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 1
+          }
+        ],
+        "moderator": true,
+        "admin": false,
+        "staff": true,
+        "user_id": 2521,
+        "hidden": false,
+        "trust_level": 4,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/file-sending-status-concept-for-desktop-and-mobile/72305/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      }
+    ],
+    "stream": [
+      277549,
+      277561
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      118
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Redesign qr-code view for group links, add chat details to make it self explanatory to the people you share it with",
+      "id": 73920,
+      "title": "Redesign qr-code view for group links, add chat details to make it self explanatory to the people you share it with",
+      "slug": "redesign-qr-code-view-for-group-links-add-chat-details-to-make-it-self-explanatory-to-the-people-you-share-it-with",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2025-12-30T21:57:21.756Z",
+      "last_posted_at": "2025-12-30T21:57:22.014Z",
+      "bumped": true,
+      "bumped_at": "2026-01-02T04:06:32.735Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 1,
+      "views": 66,
+      "category_id": 28,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 1210,
+            "username": "Meteor0id",
+            "name": "Meteor0id",
+            "avatar_template": "/user_avatar/community.signalusers.org/meteor0id/{size}/55420_2.png",
+            "trust_level": 3
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Signal With email UX",
+      "id": 71479,
+      "title": "Signal With email UX",
+      "slug": "signal-with-email-ux",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": null,
+      "created_at": "2025-09-07T02:15:00.085Z",
+      "last_posted_at": "2025-09-08T00:17:27.500Z",
+      "bumped": true,
+      "bumped_at": "2025-09-08T00:17:27.500Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 125,
+      "category_id": 28,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 34038,
+            "username": "Velocifyer",
+            "name": "𝕍𝕖𝕝𝕠𝕔𝕚𝕗𝕪𝕖𝕣",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/v/f1d935/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "all chats show SAME profil picture",
+      "id": 71250,
+      "title": "all chats show SAME profil picture",
+      "slug": "all-chats-show-same-profil-picture",
+      "posts_count": 3,
+      "reply_count": 1,
+      "highest_post_number": 3,
+      "image_url": null,
+      "created_at": "2025-08-27T03:07:45.897Z",
+      "last_posted_at": "2025-08-28T17:01:37.840Z",
+      "bumped": true,
+      "bumped_at": "2025-08-28T17:01:37.840Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 77,
+      "category_id": 12,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 33942,
+            "username": "RO_Smart",
+            "name": "RO Smart",
+            "avatar_template": "/user_avatar/community.signalusers.org/ro_smart/{size}/53432_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 5245,
+            "username": "AlertSubject",
+            "name": "AlertSubject",
+            "avatar_template": "/user_avatar/community.signalusers.org/alertsubject/{size}/45616_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "File sending status concept for desktop and mobile",
+  "id": 72305,
+  "title": "File sending status concept for desktop and mobile",
+  "posts_count": 2,
+  "created_at": "2025-10-19T23:34:59.478Z",
+  "views": 81,
+  "reply_count": 0,
+  "like_count": 9,
+  "last_posted_at": "2025-10-20T03:56:27.845Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "file-sending-status-concept-for-desktop-and-mobile",
+  "category_id": 28,
+  "word_count": 255,
+  "deleted_at": null,
+  "user_id": 15335,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/3/4/3438ecb56e9fca86b95552a4219758e51a16bdd0_2_1024x531.webp",
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_72305",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 2,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 2,
+  "show_read_indicator": false,
+  "thumbnails": [
+    {
+      "max_width": null,
+      "max_height": null,
+      "width": 1080,
+      "height": 561,
+      "url": "https://community.signalusers.org/uploads/db3609/original/3X/3/4/3438ecb56e9fca86b95552a4219758e51a16bdd0.webp"
+    },
+    {
+      "max_width": 1024,
+      "max_height": 1024,
+      "width": 1024,
+      "height": 531,
+      "url": "https://community.signalusers.org/uploads/db3609/optimized/3X/3/4/3438ecb56e9fca86b95552a4219758e51a16bdd0_2_1024x531.webp"
+    }
+  ],
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 2521,
+        "username": "Herohtar",
+        "name": "",
+        "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+        "post_count": 1,
+        "primary_group_name": "volunteer_moderators",
+        "flair_name": "volunteer_moderators",
+        "flair_url": "shield-halved",
+        "flair_color": "fff",
+        "flair_bg_color": "1d8663",
+        "flair_group_id": 41,
+        "moderator": true,
+        "trust_level": 4
+      },
+      {
+        "id": 15335,
+        "username": "JulioNahum",
+        "name": "Julio Nahum",
+        "avatar_template": "/user_avatar/community.signalusers.org/julionahum/{size}/20267_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      }
+    ],
+    "created_by": {
+      "id": 15335,
+      "username": "JulioNahum",
+      "name": "Julio Nahum",
+      "avatar_template": "/user_avatar/community.signalusers.org/julionahum/{size}/20267_2.png"
+    },
+    "last_poster": {
+      "id": 2521,
+      "username": "Herohtar",
+      "name": "",
+      "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png"
+    },
+    "links": [
+      {
+        "url": "https://www.reddit.com/r/signal/comments/1oaqukx/upload_status_concept_for_desktop_and_mobile/",
+        "title": null,
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 3,
+        "user_id": 15335,
+        "domain": "www.reddit.com",
+        "root_domain": "reddit.com"
+      }
+    ]
+  },
+  "bookmarks": []
+}

@@ -1,0 +1,717 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 283698,
+        "name": "👊🇺🇸🔥",
+        "username": "Avitus",
+        "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+        "created_at": "2026-01-29T17:11:34.851Z",
+        "cooked": "<aside class=\"onebox allowlistedgeneric\" data-onebox-src=\"https://signal.org/blog/pinned-messages/\">\n  <header class=\"source\">\n      <img src=\"https://community.signalusers.org/uploads/db3609/original/3X/a/0/a070fdcafbe5753b5b412f3e5b5c640cff8d0c48.svg\" class=\"site-icon\" alt=\"\" data-dominant-color=\"\" width=\"16\" height=\"16\">\n\n      <a href=\"https://signal.org/blog/pinned-messages/\" target=\"_blank\" rel=\"noopener\">Signal Messenger</a>\n  </header>\n\n  <article class=\"onebox-body\">\n    <div class=\"aspect-image\" style=\"--aspect-ratio:690/361;\"><img src=\"https://community.signalusers.org/uploads/db3609/optimized/3X/1/d/1d7ae402634211ef51b0338153ad166530bf2433_2_690x362.png\" class=\"thumbnail\" alt=\"\" data-dominant-color=\"E7E7E1\" width=\"690\" height=\"362\"></div>\n\n<h3><a href=\"https://signal.org/blog/pinned-messages/\" target=\"_blank\" rel=\"noopener\">Put a pin in it</a></h3>\n\n  <p>Your most frequently asked questions, dinner reservations, and vacation itineraries are already top of mind. Now they can be top of chat as well. In the latest version of Signal rolling out now, you can pin your most important messages to the top of...</p>\n\n\n  </article>\n\n  <div class=\"onebox-metadata\">\n    \n    \n  </div>\n\n  <div style=\"clear: both\"></div>\n</aside>\n",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 4,
+        "updated_at": "2026-01-29T17:34:36.921Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 7,
+        "reads": 108,
+        "readers_count": 107,
+        "score": 461.4,
+        "yours": false,
+        "topic_id": 74541,
+        "topic_slug": "signal-blog-put-a-pin-in-it",
+        "display_username": "👊🇺🇸🔥",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 3,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://signal.org/blog/pinned-messages/",
+            "internal": false,
+            "reflection": false,
+            "title": "Signal >> Blog >> Put a pin in it",
+            "clicks": 104
+          }
+        ],
+        "read": true,
+        "user_title": "",
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 23
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 7657,
+        "hidden": false,
+        "trust_level": 3,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/signal-blog-put-a-pin-in-it/74541/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      },
+      {
+        "id": 283699,
+        "name": "Salt",
+        "username": "Salt505",
+        "avatar_template": "/user_avatar/community.signalusers.org/salt505/{size}/8288_2.png",
+        "created_at": "2026-01-29T17:34:26.560Z",
+        "cooked": "",
+        "post_number": 2,
+        "post_type": 3,
+        "posts_count": 4,
+        "updated_at": "2026-01-29T17:34:26.560Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 107,
+        "readers_count": 106,
+        "score": 26.2,
+        "yours": false,
+        "topic_id": 74541,
+        "topic_slug": "signal-blog-put-a-pin-in-it",
+        "display_username": "Salt",
+        "primary_group_name": "volunteer_moderators",
+        "flair_name": "volunteer_moderators",
+        "flair_url": "shield-halved",
+        "flair_bg_color": "1d8663",
+        "flair_color": "fff",
+        "flair_group_id": 41,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "Volunteer Moderator",
+        "title_is_group": true,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": true,
+        "admin": false,
+        "staff": true,
+        "user_id": 5831,
+        "hidden": false,
+        "trust_level": 4,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "action_code": "pinned.enabled",
+        "post_url": "/t/signal-blog-put-a-pin-in-it/74541/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 283864,
+        "name": "",
+        "username": "SerpentineSlime",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/s/c4cdca/{size}.png",
+        "created_at": "2026-02-01T19:20:09.061Z",
+        "cooked": "<p>Excellent feature that, unfortunately, I don’t think I’m likely to use often in the current implementation for two reasons:</p>\n<ol>\n<li>Most importantly, having a whole line of screen space in the application taken up by the pin information bar makes it unwieldy and distracting for me, instead of ensuring I can find the things I don’t want to forget easily so that I can take it off my mental plate it causes it to exert the pressure of keeping it in mind the whole time I’m in that chat.<br>\nI think that there’s a use case for that presentation for some people so a toggle or ability to collapse and expand it from the horizontal ellipsis (meatballs menu) button (vertical ellipsis/kebab menu) in mobile might make the most sense.</li>\n<li>Three pins, with it being easy to auto-replace oldest when adding new, is far too few for my use cases and far too easy to mess up an important pin on accident, it’s not completely without purpose as it currently is but my most immediate use case for it would need at least double that at six pins in order to be a functional replacement for my current system.<br>\nA method to flag pins for protection from auto-delete would also remove some manual management steps when dealing with a mixture of ‘running update’ and ‘standard reference information’ style pins at the same time.</li>\n</ol>\n<p>I hope that this feature receives further attention in the future as it’s quite handy and could conveniently replace keyword search based tagging I currently use for some purposes.<br>\nThanks to everyone involved for all their hard work on Signal!</p>",
+        "post_number": 4,
+        "post_type": 1,
+        "posts_count": 4,
+        "updated_at": "2026-02-01T19:20:09.061Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 79,
+        "readers_count": 78,
+        "score": 30.6,
+        "yours": false,
+        "topic_id": 74541,
+        "topic_slug": "signal-blog-put-a-pin-in-it",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 1
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 35737,
+        "hidden": false,
+        "trust_level": 1,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/signal-blog-put-a-pin-in-it/74541/4",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 284159,
+        "name": "mls",
+        "username": "mlsxlist",
+        "avatar_template": "/user_avatar/community.signalusers.org/mlsxlist/{size}/729_2.png",
+        "created_at": "2026-02-07T07:00:03.169Z",
+        "cooked": "<p>I am wondering why this is not announced via the official Signal chat inside the Signal messenger.</p>",
+        "post_number": 7,
+        "post_type": 1,
+        "posts_count": 4,
+        "updated_at": "2026-02-07T07:00:03.169Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 43,
+        "readers_count": 42,
+        "score": 38.4,
+        "yours": false,
+        "topic_id": 74541,
+        "topic_slug": "signal-blog-put-a-pin-in-it",
+        "display_username": "mls",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 2
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 452,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/signal-blog-put-a-pin-in-it/74541/7",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      }
+    ],
+    "stream": [
+      283698,
+      283699,
+      283864,
+      284159
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      16
+    ],
+    [
+      3,
+      13
+    ],
+    [
+      4,
+      8
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Signal Blog: Signal Polls: Yes, no, maybe (yes!)",
+      "id": 72998,
+      "title": "Signal Blog: Signal Polls: Yes, no, maybe (yes!)",
+      "slug": "signal-blog-signal-polls-yes-no-maybe-yes",
+      "posts_count": 6,
+      "reply_count": 2,
+      "highest_post_number": 6,
+      "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/d/4/d4dde6f7e4242ac36f2634f4133d487d1d019dfd_2_1024x537.png",
+      "created_at": "2025-11-20T00:41:11.173Z",
+      "last_posted_at": "2025-12-05T15:51:07.855Z",
+      "bumped": true,
+      "bumped_at": "2025-12-03T16:21:08.807Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 42,
+      "views": 836,
+      "category_id": 95,
+      "featured_link": null,
+      "op_like_count": 28,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 5831,
+            "username": "Salt505",
+            "name": "Salt",
+            "avatar_template": "/user_avatar/community.signalusers.org/salt505/{size}/8288_2.png",
+            "primary_group_name": "volunteer_moderators",
+            "flair_name": "volunteer_moderators",
+            "flair_url": "shield-halved",
+            "flair_bg_color": "1d8663",
+            "flair_color": "fff",
+            "flair_group_id": 41,
+            "moderator": true,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 6659,
+            "username": "Whatnoww",
+            "name": "Whatnoww",
+            "avatar_template": "/user_avatar/community.signalusers.org/whatnoww/{size}/54328_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 577,
+            "username": "shellSignal",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/shellsignal/{size}/927_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Signal Blog: Signal Protocol and Post-Quantum Ratchets",
+      "id": 71991,
+      "title": "Signal Blog: Signal Protocol and Post-Quantum Ratchets",
+      "slug": "signal-blog-signal-protocol-and-post-quantum-ratchets",
+      "posts_count": 12,
+      "reply_count": 4,
+      "highest_post_number": 12,
+      "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/9/e/9e8c4a20705f4fb3137122db0d080f2ac054c734_2_1024x537.png",
+      "created_at": "2025-10-02T16:15:25.747Z",
+      "last_posted_at": "2026-02-08T18:46:58.946Z",
+      "bumped": true,
+      "bumped_at": "2026-02-08T18:46:58.946Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 46,
+      "views": 935,
+      "category_id": 95,
+      "featured_link": "https://signal.org/blog/spqr/",
+      "featured_link_root_domain": "signal.org",
+      "op_like_count": 18,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 16653,
+            "username": "QuickBanana",
+            "name": null,
+            "avatar_template": "/user_avatar/community.signalusers.org/quickbanana/{size}/35290_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 34730,
+            "username": "anon5237680",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/a/6f9a4e/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 26051,
+            "username": "LucasMZ",
+            "name": "lucasmz",
+            "avatar_template": "/user_avatar/community.signalusers.org/lucasmz/{size}/55892_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 31735,
+            "username": "marcos-morar",
+            "name": "Marcos Morar",
+            "avatar_template": "/user_avatar/community.signalusers.org/marcos-morar/{size}/51027_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Anonymity of user phone numbers",
+      "id": 70263,
+      "title": "Anonymity of user phone numbers",
+      "slug": "anonymity-of-user-phone-numbers",
+      "posts_count": 10,
+      "reply_count": 6,
+      "highest_post_number": 10,
+      "image_url": null,
+      "created_at": "2025-07-06T11:00:23.426Z",
+      "last_posted_at": "2025-07-07T21:58:04.530Z",
+      "bumped": true,
+      "bumped_at": "2025-07-07T21:58:04.530Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 2,
+      "views": 236,
+      "category_id": 22,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 33345,
+            "username": "AKN_01",
+            "name": null,
+            "avatar_template": "/user_avatar/community.signalusers.org/akn_01/{size}/52842_2.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 26763,
+            "username": "zetabeta",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/zetabeta/{size}/54310_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 24690,
+            "username": "ElPink",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/elpink/{size}/52764_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Signal Blog: Put a pin in it",
+  "id": 74541,
+  "title": "Signal Blog: Put a pin in it",
+  "posts_count": 4,
+  "created_at": "2026-01-29T17:11:34.734Z",
+  "views": 449,
+  "reply_count": 0,
+  "like_count": 26,
+  "last_posted_at": "2026-02-07T07:00:03.169Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "signal-blog-put-a-pin-in-it",
+  "category_id": 95,
+  "word_count": 306,
+  "deleted_at": null,
+  "user_id": 7657,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/1/d/1d7ae402634211ef51b0338153ad166530bf2433_2_1024x537.png",
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_74541",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 7,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 100,
+  "participant_count": 3,
+  "show_read_indicator": false,
+  "thumbnails": [
+    {
+      "max_width": null,
+      "max_height": null,
+      "width": 2400,
+      "height": 1260,
+      "url": "https://community.signalusers.org/uploads/db3609/original/3X/1/d/1d7ae402634211ef51b0338153ad166530bf2433.png"
+    },
+    {
+      "max_width": 1024,
+      "max_height": 1024,
+      "width": 1024,
+      "height": 537,
+      "url": "https://community.signalusers.org/uploads/db3609/optimized/3X/1/d/1d7ae402634211ef51b0338153ad166530bf2433_2_1024x537.png"
+    }
+  ],
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 452,
+        "username": "mlsxlist",
+        "name": "mls",
+        "avatar_template": "/user_avatar/community.signalusers.org/mlsxlist/{size}/729_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      },
+      {
+        "id": 7657,
+        "username": "Avitus",
+        "name": "👊🇺🇸🔥",
+        "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 3
+      },
+      {
+        "id": 35737,
+        "username": "SerpentineSlime",
+        "name": "",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/s/c4cdca/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 1
+      }
+    ],
+    "created_by": {
+      "id": 7657,
+      "username": "Avitus",
+      "name": "👊🇺🇸🔥",
+      "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png"
+    },
+    "last_poster": {
+      "id": 452,
+      "username": "mlsxlist",
+      "name": "mls",
+      "avatar_template": "/user_avatar/community.signalusers.org/mlsxlist/{size}/729_2.png"
+    },
+    "links": [
+      {
+        "url": "https://signal.org/blog/pinned-messages/",
+        "title": "Signal >> Blog >> Put a pin in it",
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 104,
+        "user_id": 7657,
+        "domain": "signal.org",
+        "root_domain": "signal.org"
+      }
+    ]
+  },
+  "bookmarks": []
+}

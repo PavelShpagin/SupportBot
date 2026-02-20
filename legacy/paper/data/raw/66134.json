@@ -1,0 +1,435 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 259052,
+        "name": "",
+        "username": "mjmas",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/m/dfb087/{size}.png",
+        "created_at": "2025-01-17T15:08:08.323Z",
+        "cooked": "<p>Is there any way of having message notifications (on the same device) for note to self (at least for scheduled messages)?</p>\n<p>My use case is just having once off reminders and so doing a scheduled message from someone else works but it would be nice if I could schedule a message to self and have it notify me rather than just sending it silently.</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2025-01-17T15:08:08.323Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 2,
+        "reads": 29,
+        "readers_count": 28,
+        "score": 15.8,
+        "yours": false,
+        "topic_id": 66134,
+        "topic_slug": "message-notifications-for-scheduled-note-to-self",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 31367,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/message-notifications-for-scheduled-note-to-self/66134/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": true,
+        "can_vote": false
+      },
+      {
+        "id": 259069,
+        "name": "",
+        "username": "Herohtar",
+        "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+        "created_at": "2025-01-17T18:54:22.775Z",
+        "cooked": "<p>There is not. Existing feature request here:</p><aside class=\"quote\" data-post=\"1\" data-topic=\"12825\">\n  <div class=\"title\">\n    <div class=\"quote-controls\"></div>\n    <img loading=\"lazy\" alt=\"\" width=\"24\" height=\"24\" src=\"https://community.signalusers.org/letter_avatar_proxy/v4/letter/t/b4bc9f/48.png\" class=\"avatar\">\n    <a href=\"https://community.signalusers.org/t/ability-to-configure-notifications-for-note-to-self/12825\">Ability to configure notifications for \"Note to Self\"</a> <a class=\"badge-category__wrapper \" href=\"/c/feature-requests/17\"><span data-category-id=\"17\" style=\"--category-badge-color: #83B72A; --category-badge-text-color: #FFFFFF;\" data-drop-close=\"true\" class=\"badge-category \" title=\"Post your ideas here for new features and functionality for the Signal app.\"><span class=\"badge-category__name\">Feature Requests</span></span></a>\n  </div>\n  <blockquote>\n    I use “Note to Self” with signal-cli to send myself notifications from my homelab servers. It would be nice if Signal notified me of new “Notes to Self” \nWould be even better if you could toggle them per-linked devices so my Desktop client won’t notify me but something from a linked server would.\n  </blockquote>\n</aside>\n",
+        "post_number": 2,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2025-01-17T18:54:22.775Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 25,
+        "readers_count": 24,
+        "score": 20.0,
+        "yours": false,
+        "topic_id": 66134,
+        "topic_slug": "message-notifications-for-scheduled-note-to-self",
+        "display_username": "",
+        "primary_group_name": "volunteer_moderators",
+        "flair_name": "volunteer_moderators",
+        "flair_url": "shield-halved",
+        "flair_bg_color": "1d8663",
+        "flair_color": "fff",
+        "flair_group_id": 41,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://community.signalusers.org/t/ability-to-configure-notifications-for-note-to-self/12825",
+            "internal": true,
+            "reflection": false,
+            "title": "Ability to configure notifications for \"Note to Self\"",
+            "clicks": 0
+          }
+        ],
+        "read": true,
+        "user_title": "Volunteer Moderator",
+        "title_is_group": true,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 1
+          }
+        ],
+        "moderator": true,
+        "admin": false,
+        "staff": true,
+        "user_id": 2521,
+        "hidden": false,
+        "trust_level": 4,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/message-notifications-for-scheduled-note-to-self/66134/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": true,
+        "topic_accepted_answer": true
+      }
+    ],
+    "stream": [
+      259052,
+      259069
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      393
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "SMS-повідомлення з кодом",
+      "id": 72662,
+      "title": "SMS-повідомлення з кодом",
+      "slug": "sms",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": null,
+      "created_at": "2025-11-04T10:07:48.076Z",
+      "last_posted_at": "2025-11-04T10:39:43.660Z",
+      "bumped": true,
+      "bumped_at": "2025-11-04T10:39:43.660Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 52,
+      "category_id": 11,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 34698,
+            "username": "Maksym",
+            "name": "Maksym",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/m/e274bd/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 5448,
+            "username": "DirkPitt1",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/74df32/{size}.png",
+            "trust_level": 3
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Signal keeps closing after I tried to post a story!",
+      "id": 69650,
+      "title": "Signal keeps closing after I tried to post a story!",
+      "slug": "signal-keeps-closing-after-i-tried-to-post-a-story",
+      "posts_count": 11,
+      "reply_count": 6,
+      "highest_post_number": 11,
+      "image_url": null,
+      "created_at": "2025-06-08T20:39:49.455Z",
+      "last_posted_at": "2025-07-09T08:25:57.639Z",
+      "bumped": true,
+      "bumped_at": "2025-07-09T08:25:57.639Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 8,
+      "views": 243,
+      "category_id": 11,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": true,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster, Accepted Answer",
+          "user": {
+            "id": 18089,
+            "username": "Aku-Stable",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/aku-stable/{size}/25198_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 2292,
+            "username": "sivaraam",
+            "name": "Kaartic Sivaraam",
+            "avatar_template": "/user_avatar/community.signalusers.org/sivaraam/{size}/1913_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 296,
+            "username": "PiCob",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/picob/{size}/589_2.png",
+            "trust_level": 3
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Sudden issue with gifs",
+      "id": 69049,
+      "title": "Sudden issue with gifs",
+      "slug": "sudden-issue-with-gifs",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": null,
+      "created_at": "2025-05-09T00:06:20.810Z",
+      "last_posted_at": "2025-05-14T16:18:35.358Z",
+      "bumped": true,
+      "bumped_at": "2025-05-14T16:18:35.358Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 58,
+      "category_id": 11,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 16025,
+            "username": "csando",
+            "name": "Csando",
+            "avatar_template": "/user_avatar/community.signalusers.org/csando/{size}/21583_2.png",
+            "trust_level": 1
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Message notifications for scheduled note to self",
+  "id": 66134,
+  "title": "Message notifications for scheduled note to self",
+  "posts_count": 2,
+  "created_at": "2025-01-17T15:08:08.280Z",
+  "views": 57,
+  "reply_count": 0,
+  "like_count": 1,
+  "last_posted_at": "2025-01-17T18:54:22.775Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "message-notifications-for-scheduled-note-to-self",
+  "category_id": 11,
+  "word_count": 87,
+  "deleted_at": null,
+  "user_id": 31367,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_66134",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 2,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 2,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "accepted_answer": {
+    "post_number": 2,
+    "username": "Herohtar",
+    "name": "",
+    "excerpt": "<p>There is not. Existing feature request here:</p><aside class=\"quote\" data-post=\"1\" data-topic=\"12825\">\n  <div class=\"title\">\n    <div class=\"quote-controls\"></div>\n    <img loading=\"lazy\" alt=\"\" width=\"24\" height=\"24\" src=\"https://community.signalusers.org/letter_avatar_proxy/v4/letter/t/b4bc9f/48.png\" class=\"avatar\">\n    <a href=\"https://community.signalusers.org/t/ability-to-configure-notifications-for-note-to-self/12825\">Ability to configure notifications for \"Note to Self\"</a> <a class=\"badge-category__wrapper \" href=\"/c/feature-requests/17\"><span data-category-id=\"17\" style=\"--category-badge-color: #83B72A; --category-badge-text-color: #FFFFFF;\" data-drop-close=\"true\" class=\"badge-category \" title=\"Post your ideas here for new features and functionality for the Signal app.\"><span class=\"badge-category__name\">Feature Requests</span></span></a>\n  </div>\n  <blockquote>\n    I use “Note to Self” with signal-cli to send myself notifications from my homelab servers. It would be nice if Signal notified me of new “Notes to Self” \nWould be even better if you could toggle them per-linked devices so my Desktop client won’t notify me but something from a linked server would.\n  </blockquote>\n</aside>\n"
+  },
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 2521,
+        "username": "Herohtar",
+        "name": "",
+        "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+        "post_count": 1,
+        "primary_group_name": "volunteer_moderators",
+        "flair_name": "volunteer_moderators",
+        "flair_url": "shield-halved",
+        "flair_color": "fff",
+        "flair_bg_color": "1d8663",
+        "flair_group_id": 41,
+        "moderator": true,
+        "trust_level": 4
+      },
+      {
+        "id": 31367,
+        "username": "mjmas",
+        "name": "",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/m/dfb087/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 0
+      }
+    ],
+    "created_by": {
+      "id": 31367,
+      "username": "mjmas",
+      "name": "",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/m/dfb087/{size}.png"
+    },
+    "last_poster": {
+      "id": 2521,
+      "username": "Herohtar",
+      "name": "",
+      "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png"
+    }
+  },
+  "bookmarks": []
+}

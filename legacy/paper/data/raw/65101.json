@@ -1,0 +1,383 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 256163,
+        "name": "Andreas Franz",
+        "username": "AndyFx12",
+        "avatar_template": "/user_avatar/community.signalusers.org/andyfx12/{size}/49714_2.png",
+        "created_at": "2024-11-24T04:08:44.146Z",
+        "cooked": "<p>Much discussed at “issues”:</p><aside class=\"onebox githubissue\" data-onebox-src=\"https://github.com/signalapp/Signal-Desktop/issues/4668\">\n  <header class=\"source\">\n\n      <a href=\"https://github.com/signalapp/Signal-Desktop/issues/4668\" target=\"_blank\" rel=\"noopener nofollow ugc\">github.com/signalapp/Signal-Desktop</a>\n  </header>\n\n  <article class=\"onebox-body\">\n    <div class=\"github-row\">\n  <div class=\"github-icon-container\" title=\"Issue\" data-github-private-repo=\"false\">\n\t  <svg width=\"60\" height=\"60\" class=\"github-icon\" viewBox=\"0 0 14 16\" aria-hidden=\"true\"><path fill-rule=\"evenodd\" d=\"M7 2.3c3.14 0 5.7 2.56 5.7 5.7s-2.56 5.7-5.7 5.7A5.71 5.71 0 0 1 1.3 8c0-3.14 2.56-5.7 5.7-5.7zM7 1C3.14 1 0 4.14 0 8s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7zm1 3H6v5h2V4zm0 6H6v2h2v-2z\"></path></svg>\n  </div>\n\n  <div class=\"github-info-container\">\n    <h4>\n      <a href=\"https://github.com/signalapp/Signal-Desktop/issues/4668\" target=\"_blank\" rel=\"noopener nofollow ugc\">Monochrome Tray Icon</a>\n    </h4>\n\n    <div class=\"github-info\">\n      <div class=\"date\">\n        opened <span class=\"discourse-local-date\" data-format=\"ll\" data-date=\"2020-11-23\" data-time=\"17:58:59\" data-timezone=\"UTC\">05:58PM - 23 Nov 20 UTC</span>\n      </div>\n\n\n      <div class=\"user\">\n        <a href=\"https://github.com/ceiphr\" target=\"_blank\" rel=\"noopener nofollow ugc\">\n          <img alt=\"ceiphr\" src=\"https://community.signalusers.org/uploads/db3609/original/3X/c/7/c722e35d0afead844e0a4a33d1a5f0e9b37e195f.jpeg\" class=\"onebox-avatar-inline\" width=\"20\" height=\"20\" data-dominant-color=\"5E626C\">\n          ceiphr\n        </a>\n      </div>\n    </div>\n\n    <div class=\"labels\">\n        <span style=\"display:inline-block;margin-top:2px;background-color: #B8B8B8;padding: 2px;border-radius: 4px;color: #fff;margin-left: 3px;\">\n          Feature Request\n        </span>\n    </div>\n  </div>\n</div>\n\n  <div class=\"github-row\">\n    <p class=\"github-body-container\">&lt;!--\nPlease fill out this template with all the information you have. We can't <span class=\"show-more-container\"><a href=\"\" rel=\"noopener\" class=\"show-more\">…</a></span><span class=\"excerpt hidden\">do much without\nboth the logs and a detailed description of what you've encountered. Please do your best!\n\nPlease note that this tracker is only for bugs and feature requests. Please try these\nlocations if you have a question or comment:\n\n  https://community.signalusers.org/\n  http://support.signal.org/\n  support@signal.org\n\nLastly, be sure to preview your issue before saving. Thanks!\n--&gt;\n\n- [X] I have searched open and closed issues for duplicates\n  &lt;!--\n    You can search all issues here:\n      https://github.com/signalapp/Signal-Desktop/issues?utf8=%E2%9C%93&amp;q=is%3Aissue\n    Replace [ ] with [X] once you've searched\n  --&gt;\n\n---\n\nThe current tray icon has a blue outline, just like the application icon. Other messaging services such as Discord and Slack use monochrome tray icons by default with a drop shadow for improved contrast on light-mode tray backgrounds. Windows and Linux DEs such as GNOME seem to also use monochrome icons by default for their trays. \n\nCan we see Signal Desktop use a monochrome icon for consistency with these other services?\n\nThat would be great, thank you!\n\n### Platform Info\n\nSignal Version:\n\n\nv1.38.1-beta.3\n\nOperating System:\n\n\nUbuntu 20.10</span></p>\n  </div>\n\n  </article>\n\n  <div class=\"onebox-metadata\">\n    \n    \n  </div>\n\n  <div style=\"clear: both\"></div>\n</aside>\n<aside class=\"onebox githubissue\" data-onebox-src=\"https://github.com/signalapp/Signal-Desktop/issues/7095\">\n  <header class=\"source\">\n\n      <a href=\"https://github.com/signalapp/Signal-Desktop/issues/7095\" target=\"_blank\" rel=\"noopener nofollow ugc\">github.com/signalapp/Signal-Desktop</a>\n  </header>\n\n  <article class=\"onebox-body\">\n    <div class=\"github-row\">\n  <div class=\"github-icon-container\" title=\"Issue\" data-github-private-repo=\"false\">\n\t  <svg width=\"60\" height=\"60\" class=\"github-icon\" viewBox=\"0 0 14 16\" aria-hidden=\"true\"><path fill-rule=\"evenodd\" d=\"M7 2.3c3.14 0 5.7 2.56 5.7 5.7s-2.56 5.7-5.7 5.7A5.71 5.71 0 0 1 1.3 8c0-3.14 2.56-5.7 5.7-5.7zM7 1C3.14 1 0 4.14 0 8s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7zm1 3H6v5h2V4zm0 6H6v2h2v-2z\"></path></svg>\n  </div>\n\n  <div class=\"github-info-container\">\n    <h4>\n      <a href=\"https://github.com/signalapp/Signal-Desktop/issues/7095\" target=\"_blank\" rel=\"noopener nofollow ugc\">Tray icon is no longer monochromatic/white or black</a>\n    </h4>\n\n    <div class=\"github-info\">\n      <div class=\"date\">\n        opened <span class=\"discourse-local-date\" data-format=\"ll\" data-date=\"2024-11-21\" data-time=\"02:02:47\" data-timezone=\"UTC\">02:02AM - 21 Nov 24 UTC</span>\n      </div>\n\n        <div class=\"date\">\n          closed <span class=\"discourse-local-date\" data-format=\"ll\" data-date=\"2024-11-22\" data-time=\"22:26:41\" data-timezone=\"UTC\">10:26PM - 22 Nov 24 UTC</span>\n        </div>\n\n      <div class=\"user\">\n        <a href=\"https://github.com/synthfusion\" target=\"_blank\" rel=\"noopener nofollow ugc\">\n          <img alt=\"synthfusion\" src=\"https://community.signalusers.org/uploads/db3609/original/3X/5/3/533f9140c0cc686e448316be4e97db362aefb9d8.jpeg\" class=\"onebox-avatar-inline\" width=\"20\" height=\"20\" data-dominant-color=\"7F5E52\">\n          synthfusion\n        </a>\n      </div>\n    </div>\n\n    <div class=\"labels\">\n    </div>\n  </div>\n</div>\n\n  <div class=\"github-row\">\n    <p class=\"github-body-container\">### Using a supported version?\n\n- [X] I have searched searched open and closed i<span class=\"show-more-container\"><a href=\"\" rel=\"noopener\" class=\"show-more\">…</a></span><span class=\"excerpt hidden\">ssues for duplicates.\n- [X] I am using Signal-Desktop as provided by the Signal team, not a 3rd-party package.\n\n### Overall summary\n\nLast update seemed to undo the change (improvement) related to the tray icon. It used to be a nice, monochromatic cholor scheme icon, which fits perfectly into Windows' app tray.\n\nNow it's back to the old, un-fitting blue icon. Seriously, who's running UI design lately? Can anybody just do whatever they want with Signal's look and feel? If so, I'd be glad to be involved.\n\n\n\n### Steps to reproduce\n\n1. Go to settings\n2. Enable minimize to tray\n3. See the blueish icon. With no option to choose between a monochromatic one or the most recent one\n\n### Expected result\n\nIt should be monochromatic! As it actually started to be a couple updates ago.\n\n### Actual result\n\nIt's a very non-fitting blueish icon.\n\n### Screenshots\n\n![image](https://github.com/user-attachments/assets/e7cc425a-cbdc-4fe9-9002-1219369346c7)\n\n\n### Signal version\n\n7.34.0\n\n### Operating system\n\nWindows 11\n\n### Version of Signal on your phone\n\n_No response_\n\n### Link to debug log\n\n_No response_</span></p>\n  </div>\n\n  </article>\n\n  <div class=\"onebox-metadata\">\n    \n    \n  </div>\n\n  <div style=\"clear: both\"></div>\n</aside>\n<aside class=\"onebox githubissue\" data-onebox-src=\"https://github.com/signalapp/Signal-Desktop/issues/7082\">\n  <header class=\"source\">\n\n      <a href=\"https://github.com/signalapp/Signal-Desktop/issues/7082\" target=\"_blank\" rel=\"noopener nofollow ugc\">github.com/signalapp/Signal-Desktop</a>\n  </header>\n\n  <article class=\"onebox-body\">\n    <div class=\"github-row\">\n  <div class=\"github-icon-container\" title=\"Issue\" data-github-private-repo=\"false\">\n\t  <svg width=\"60\" height=\"60\" class=\"github-icon\" viewBox=\"0 0 14 16\" aria-hidden=\"true\"><path fill-rule=\"evenodd\" d=\"M7 2.3c3.14 0 5.7 2.56 5.7 5.7s-2.56 5.7-5.7 5.7A5.71 5.71 0 0 1 1.3 8c0-3.14 2.56-5.7 5.7-5.7zM7 1C3.14 1 0 4.14 0 8s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7zm1 3H6v5h2V4zm0 6H6v2h2v-2z\"></path></svg>\n  </div>\n\n  <div class=\"github-info-container\">\n    <h4>\n      <a href=\"https://github.com/signalapp/Signal-Desktop/issues/7082\" target=\"_blank\" rel=\"noopener nofollow ugc\">Barely visible tray icon in 7.33</a>\n    </h4>\n\n    <div class=\"github-info\">\n      <div class=\"date\">\n        opened <span class=\"discourse-local-date\" data-format=\"ll\" data-date=\"2024-11-13\" data-time=\"20:29:31\" data-timezone=\"UTC\">08:29PM - 13 Nov 24 UTC</span>\n      </div>\n\n        <div class=\"date\">\n          closed <span class=\"discourse-local-date\" data-format=\"ll\" data-date=\"2024-11-19\" data-time=\"01:03:11\" data-timezone=\"UTC\">01:03AM - 19 Nov 24 UTC</span>\n        </div>\n\n      <div class=\"user\">\n        <a href=\"https://github.com/ygoe\" target=\"_blank\" rel=\"noopener nofollow ugc\">\n          <img alt=\"ygoe\" src=\"https://community.signalusers.org/uploads/db3609/original/3X/f/b/fb321f439c16fc2fa58afd0b36e507beb8d6b479.png\" class=\"onebox-avatar-inline\" width=\"20\" height=\"20\" data-dominant-color=\"433E61\">\n          ygoe\n        </a>\n      </div>\n    </div>\n\n    <div class=\"labels\">\n    </div>\n  </div>\n</div>\n\n  <div class=\"github-row\">\n    <p class=\"github-body-container\">### Using a supported version?\n\n- [X] I have searched searched open and closed<span class=\"show-more-container\"><a href=\"\" rel=\"noopener\" class=\"show-more\">…</a></span><span class=\"excerpt hidden\"> issues for duplicates.\n- [X] I am using Signal-Desktop as provided by the Signal team, not a 3rd-party package.\n\n### Overall summary\n\nThe tray icon (shell notification icon in the taskbar) used to be the mid-blue shape with the white bubble &lt;s&gt;outline&lt;/s&gt; shape. Now it's just a dark-blue shape that is barely visible on a dark taskbar.\n\n### Steps to reproduce\n\nNothing, just start the app (maybe enable the tray icon, not sure, it's just there)\n\n### Expected result\n\nI found this older screenshot from 2023-11-29:\n![grafik](https://github.com/user-attachments/assets/b4912481-6e84-4489-8d12-81861963cd0b)\n\nA clearly visible and recognisable tray icon\n\n### Actual result\n\n![grafik](https://github.com/user-attachments/assets/8256ae44-469c-4220-bded-4754d510a38c)\n\nThat dark blue spot between the expander arrow and the green KeePassXC icon.\n\n### Screenshots\n\n_No response_\n\n### Signal version\n\n7.33.0\n\n### Operating system\n\nWindows 11\n\n### Version of Signal on your phone\n\n_No response_\n\n### Link to debug log\n\n_No response_</span></p>\n  </div>\n\n  </article>\n\n  <div class=\"onebox-metadata\">\n    \n    \n  </div>\n\n  <div style=\"clear: both\"></div>\n</aside>\n\n<p>and as written at 7095 - this is a feature request, now ;-)</p>\n<p>Andy</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2024-11-24T04:08:44.146Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 2,
+        "reads": 39,
+        "readers_count": 38,
+        "score": 77.8,
+        "yours": false,
+        "topic_id": 65101,
+        "topic_slug": "give-us-selectable-tray-icon-monochrome-colored-size",
+        "display_username": "Andreas Franz",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://github.com/signalapp/Signal-Desktop/issues/4668",
+            "internal": false,
+            "reflection": false,
+            "title": "Monochrome Tray Icon · Issue #4668 · signalapp/Signal-Desktop · GitHub",
+            "clicks": 9
+          },
+          {
+            "url": "https://github.com/signalapp/Signal-Desktop/issues/7095",
+            "internal": false,
+            "reflection": false,
+            "title": "Tray icon is no longer monochromatic/white or black · Issue #7095 · signalapp/Signal-Desktop · GitHub",
+            "clicks": 5
+          },
+          {
+            "url": "https://github.com/signalapp/Signal-Desktop/issues/7082",
+            "internal": false,
+            "reflection": false,
+            "title": "Barely visible tray icon in 7.33 · Issue #7082 · signalapp/Signal-Desktop · GitHub",
+            "clicks": 4
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 4
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 30829,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/give-us-selectable-tray-icon-monochrome-colored-size/65101/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      256163
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      448
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Chat name in window title bar",
+      "id": 73941,
+      "title": "Chat name in window title bar",
+      "slug": "chat-name-in-window-title-bar",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": null,
+      "created_at": "2026-01-01T19:05:46.567Z",
+      "last_posted_at": "2026-01-02T06:34:59.068Z",
+      "bumped": true,
+      "bumped_at": "2026-01-02T06:34:59.068Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 3,
+      "views": 69,
+      "category_id": 20,
+      "featured_link": null,
+      "op_like_count": 3,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 34476,
+            "username": "shaded",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/shaded/{size}/54687_2.png",
+            "trust_level": 3
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Low-Bandwidth Voice Options (Adaptive Mode or Voice↔Text Bridge)",
+      "id": 72524,
+      "title": "Low-Bandwidth Voice Options (Adaptive Mode or Voice↔Text Bridge)",
+      "slug": "low-bandwidth-voice-options-adaptive-mode-or-voice-text-bridge",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": null,
+      "created_at": "2025-10-28T17:34:30.788Z",
+      "last_posted_at": "2025-10-28T21:08:28.944Z",
+      "bumped": true,
+      "bumped_at": "2025-10-28T21:08:28.944Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 1,
+      "views": 64,
+      "category_id": 20,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 34620,
+            "username": "David_Bolt",
+            "name": "David Bolt",
+            "avatar_template": "/user_avatar/community.signalusers.org/david_bolt/{size}/54424_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "MacOS 26 dark/transparent logo support",
+      "id": 71990,
+      "title": "MacOS 26 dark/transparent logo support",
+      "slug": "macos-26-dark-transparent-logo-support",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2025-10-02T16:12:32.210Z",
+      "last_posted_at": "2025-10-02T16:12:32.294Z",
+      "bumped": true,
+      "bumped_at": "2025-10-02T16:12:32.294Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 7,
+      "views": 104,
+      "category_id": 20,
+      "featured_link": null,
+      "op_like_count": 7,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 34333,
+            "username": "timinigi",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/timinigi/{size}/54042_2.png",
+            "trust_level": 1
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Give us selectable tray-icon (monochrome, colored, size)",
+  "id": 65101,
+  "title": "Give us selectable tray-icon (monochrome, colored, size)",
+  "posts_count": 1,
+  "created_at": "2024-11-24T04:08:44.101Z",
+  "views": 126,
+  "reply_count": 0,
+  "like_count": 4,
+  "last_posted_at": "2024-11-24T04:08:44.146Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "give-us-selectable-tray-icon-monochrome-colored-size",
+  "category_id": 20,
+  "word_count": 40,
+  "deleted_at": null,
+  "user_id": 30829,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_65101",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 30829,
+        "username": "AndyFx12",
+        "name": "Andreas Franz",
+        "avatar_template": "/user_avatar/community.signalusers.org/andyfx12/{size}/49714_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 0
+      }
+    ],
+    "created_by": {
+      "id": 30829,
+      "username": "AndyFx12",
+      "name": "Andreas Franz",
+      "avatar_template": "/user_avatar/community.signalusers.org/andyfx12/{size}/49714_2.png"
+    },
+    "last_poster": {
+      "id": 30829,
+      "username": "AndyFx12",
+      "name": "Andreas Franz",
+      "avatar_template": "/user_avatar/community.signalusers.org/andyfx12/{size}/49714_2.png"
+    },
+    "links": [
+      {
+        "url": "https://github.com/signalapp/Signal-Desktop/issues/4668",
+        "title": "Monochrome Tray Icon · Issue #4668 · signalapp/Signal-Desktop · GitHub",
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 9,
+        "user_id": 30829,
+        "domain": "github.com",
+        "root_domain": "github.com"
+      },
+      {
+        "url": "https://github.com/signalapp/Signal-Desktop/issues/7095",
+        "title": "Tray icon is no longer monochromatic/white or black · Issue #7095 · signalapp/Signal-Desktop · GitHub",
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 5,
+        "user_id": 30829,
+        "domain": "github.com",
+        "root_domain": "github.com"
+      },
+      {
+        "url": "https://github.com/signalapp/Signal-Desktop/issues/7082",
+        "title": "Barely visible tray icon in 7.33 · Issue #7082 · signalapp/Signal-Desktop · GitHub",
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 4,
+        "user_id": 30829,
+        "domain": "github.com",
+        "root_domain": "github.com"
+      }
+    ]
+  },
+  "bookmarks": []
+}

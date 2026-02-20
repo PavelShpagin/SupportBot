@@ -158,23 +158,6 @@ class CaseSearchAgent:
         )
         return {"scrag": scrag, "b3": b3, "b1": b1}
 
-    def _case_exists_in_db(self, case_id: str, db) -> bool:
-        """Check that a case_id still exists in MySQL as a non-archived case.
-
-        Returns False for archived cases so the bot never cites them in new answers
-        (archived cases stay in MySQL for old-link preservation but leave ChromaDB).
-        """
-        if db is None:
-            return True  # Can't validate without DB — assume OK
-        try:
-            from app.db import get_case
-            case = get_case(db, case_id)
-            if case is None:
-                return False
-            return case.get("status") != "archived"
-        except Exception:
-            return True  # On error, be permissive
-
     def answer(self, question: str, group_id: Optional[str] = None, db=None) -> str:
         """Return a formatted context string for the synthesizer, or signal tags.
 
@@ -189,25 +172,15 @@ class CaseSearchAgent:
         b1 = ctx["b1"]
 
         # Build response text from solved context (SCRAG + B3 merged, deduplicated).
-        # Validate each case_id against MySQL to filter out stale ChromaDB entries
-        # that were not cleaned up during a previous re-ingest.
+        # Chroma is kept in sync with MySQL by the periodic SYNC_RAG worker job,
+        # so no per-query MySQL round-trip is needed here.
         solved: List[Dict[str, Any]] = []
         seen_ids: set = set()
         for item in scrag:
             cid = item.get("case_id", "")
-            if cid in seen_ids:
-                continue
-            if not self._case_exists_in_db(cid, db):
-                log.warning("SCRAG case %s not found in MySQL — skipping stale entry", cid[:16])
-                # Best-effort cleanup so this won't pollute future results
-                if self.rag:
-                    try:
-                        self.rag.delete_cases([cid])
-                    except Exception:
-                        pass
-                continue
-            seen_ids.add(cid)
-            solved.append(item)
+            if cid not in seen_ids:
+                seen_ids.add(cid)
+                solved.append(item)
         for item in b3:
             cid = item.get("case_id", "")
             if cid not in seen_ids:

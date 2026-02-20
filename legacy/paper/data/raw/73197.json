@@ -1,0 +1,451 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 280198,
+        "name": "John",
+        "username": "theking2",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/t/ecb155/{size}.png",
+        "created_at": "2025-11-28T14:48:43.121Z",
+        "cooked": "<p>can I and if yes where can I change the backup to once weekly?</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2025-11-28T14:50:56.502Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 31,
+        "readers_count": 30,
+        "score": 11.2,
+        "yours": false,
+        "topic_id": 73197,
+        "topic_slug": "backup-frequncy",
+        "display_username": "John",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 2,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 34954,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/backup-frequncy/73197/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      },
+      {
+        "id": 280199,
+        "name": "👊🇺🇸🔥",
+        "username": "Avitus",
+        "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+        "created_at": "2025-11-28T14:53:01.750Z",
+        "cooked": "<p>It’s only daily for now. They said they might add a way to choose other options later.</p>",
+        "post_number": 2,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2025-11-28T14:53:01.750Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 30,
+        "readers_count": 29,
+        "score": 21.0,
+        "yours": false,
+        "topic_id": 73197,
+        "topic_slug": "backup-frequncy",
+        "display_username": "👊🇺🇸🔥",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "",
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 1
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 7657,
+        "hidden": false,
+        "trust_level": 3,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/backup-frequncy/73197/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      }
+    ],
+    "stream": [
+      280198,
+      280199
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      78
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Signal for desktop on Chromebook latest update",
+      "id": 72228,
+      "title": "Signal for desktop on Chromebook latest update",
+      "slug": "signal-for-desktop-on-chromebook-latest-update",
+      "posts_count": 7,
+      "reply_count": 4,
+      "highest_post_number": 7,
+      "image_url": null,
+      "created_at": "2025-10-15T17:46:06.823Z",
+      "last_posted_at": "2025-11-18T07:49:58.985Z",
+      "bumped": true,
+      "bumped_at": "2025-11-18T07:49:58.985Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 8,
+      "views": 251,
+      "category_id": 12,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 34470,
+            "username": "Matthew_Galeano",
+            "name": "Matthew Galeano",
+            "avatar_template": "/user_avatar/community.signalusers.org/matthew_galeano/{size}/52192_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 34461,
+            "username": "reg67",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/reg67/{size}/54198_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 15964,
+            "username": "ExTechOp",
+            "name": "Otto Mäkelä",
+            "avatar_template": "/user_avatar/community.signalusers.org/extechop/{size}/21534_2.png",
+            "trust_level": 1
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Signal just updated and broke itself on mac",
+      "id": 71849,
+      "title": "Signal just updated and broke itself on mac",
+      "slug": "signal-just-updated-and-broke-itself-on-mac",
+      "posts_count": 6,
+      "reply_count": 3,
+      "highest_post_number": 6,
+      "image_url": null,
+      "created_at": "2025-09-25T17:25:34.171Z",
+      "last_posted_at": "2025-09-26T14:21:09.580Z",
+      "bumped": true,
+      "bumped_at": "2025-09-26T14:21:09.580Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 1,
+      "views": 123,
+      "category_id": 12,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": true,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 34255,
+            "username": "blabeob",
+            "name": "Billybob",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/b/ac8455/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster, Accepted Answer",
+          "user": {
+            "id": 25087,
+            "username": "Contributor",
+            "name": "Michel",
+            "avatar_template": "/user_avatar/community.signalusers.org/contributor/{size}/41382_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 3709,
+            "username": "aihpcfl",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/aihpcfl/{size}/3917_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Voice note preview?",
+      "id": 68192,
+      "title": "Voice note preview?",
+      "slug": "voice-note-preview",
+      "posts_count": 4,
+      "reply_count": 0,
+      "highest_post_number": 4,
+      "image_url": null,
+      "created_at": "2025-04-01T17:13:42.124Z",
+      "last_posted_at": "2025-04-06T06:11:28.107Z",
+      "bumped": true,
+      "bumped_at": "2025-04-06T06:11:28.107Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 7,
+      "views": 98,
+      "category_id": 10,
+      "featured_link": null,
+      "op_like_count": 2,
+      "has_accepted_answer": true,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 32407,
+            "username": "unknown2U",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/u/a3d4f5/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster, Accepted Answer",
+          "user": {
+            "id": 21482,
+            "username": "limetree",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/l/4491bb/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31728,
+            "username": "Megan",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/megan/{size}/50954_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Backup frequncy",
+  "id": 73197,
+  "title": "Backup frequncy",
+  "posts_count": 2,
+  "created_at": "2025-11-28T14:48:43.050Z",
+  "views": 49,
+  "reply_count": 0,
+  "like_count": 1,
+  "last_posted_at": "2025-11-28T14:53:01.750Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "backup-frequncy",
+  "category_id": 9,
+  "word_count": 32,
+  "deleted_at": null,
+  "user_id": 34954,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_73197",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 2,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 2,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 7657,
+        "username": "Avitus",
+        "name": "👊🇺🇸🔥",
+        "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 3
+      },
+      {
+        "id": 34954,
+        "username": "theking2",
+        "name": "John",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/t/ecb155/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 0
+      }
+    ],
+    "created_by": {
+      "id": 34954,
+      "username": "theking2",
+      "name": "John",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/t/ecb155/{size}.png"
+    },
+    "last_poster": {
+      "id": 7657,
+      "username": "Avitus",
+      "name": "👊🇺🇸🔥",
+      "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png"
+    }
+  },
+  "bookmarks": []
+}

@@ -1,0 +1,442 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 250004,
+        "name": "",
+        "username": "Lion1969",
+        "avatar_template": "/user_avatar/community.signalusers.org/lion1969/{size}/6977_2.png",
+        "created_at": "2024-08-30T09:43:55.555Z",
+        "cooked": "<p>Since v7.14 Signal on Android has a new and nice looking unlock screen with it’s animation.</p>\n<p>On a Pixel phone with on-screen fingerprint reader, this new animation starts after the regular android/pixel unlock animation completes making the complete unlock process annoyingly longer than it used to be.</p>\n<p>A few days ago I saw <a href=\"https://community.signalusers.org/t/disabling-the-new-unlock-animation/62432\">this request</a> for an option to disable the new animation, but maybe a better approach could be detecting how long the Android animation takes to complete and speed up Signal’s own unlock animation accordingly to reach a less intrusive total length of the unlock process.</p>\n<p>Is anyone else here feeling this delay in opening the app annoying?<br>\nAny ideas?</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2024-08-30T09:43:55.555Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 5,
+        "reads": 48,
+        "readers_count": 47,
+        "score": 94.6,
+        "yours": false,
+        "topic_id": 62640,
+        "topic_slug": "new-annoying-unlock-animation",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://community.signalusers.org/t/disabling-the-new-unlock-animation/62432",
+            "internal": true,
+            "reflection": false,
+            "title": "Disabling the new unlock animation",
+            "clicks": 11
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 4
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 1729,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/new-annoying-unlock-animation/62640/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      },
+      {
+        "id": 256452,
+        "name": "",
+        "username": "anacletus",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/a/858c86/{size}.png",
+        "created_at": "2024-12-01T16:50:52.146Z",
+        "cooked": "<p>The animation is very annoying. I really don’t see why it’s necessary in the first place: Android’s unlock already has a built-in animation, so Signal’s unlock currently shows two animations. Signal is literally the only app I know that does this. Also, <strong>the iOS Signal app does not have this animation</strong>, so it feels even more arbitrary.</p>\n<p>Moreover, I believe Android provides two ways to implement (face) unlock: one that requires the user to manually tap the lock icon the face has been recognized, and one that doesn’t. The former is obviously faster and creates less friction. For some reason, Signal uses the latter, while most apps I use (including WhatsApp) use the former.</p>\n<p>Overall, Signal is probably the slowest app I know to unlock with biometrics.</p>\n<p>This issue adds to the fact that (unlike WhatsApp), Signal does not <a href=\"https://community.signalusers.org/t/show-message-content-in-notification-while-having-app-lock-enabled/21156\">show message content in notification while having app lock enabled</a>. This means that I have to continuously unlock Signal throughout the day just to read notifications (which feels even more annoying since I have a smartwatch, whose main purpose is precisely to avoid reaching out to the phone to read incoming messages). WhatsApp has an option to show/hide notifications when locked.</p>\n<p>Taken together this means that: (1) I need to manually unlock Signal much more often than other apps; and (2) every time I do it there is significant friction.</p>\n<p>Please just disable the notification!</p>",
+        "post_number": 2,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2024-12-01T16:50:52.146Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 32,
+        "readers_count": 31,
+        "score": 41.4,
+        "yours": false,
+        "topic_id": 62640,
+        "topic_slug": "new-annoying-unlock-animation",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://community.signalusers.org/t/show-message-content-in-notification-while-having-app-lock-enabled/21156",
+            "internal": true,
+            "reflection": false,
+            "title": "Show message content in notification while having app lock enabled",
+            "clicks": 4
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 2
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 27958,
+        "hidden": false,
+        "trust_level": 1,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/new-annoying-unlock-animation/62640/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      }
+    ],
+    "stream": [
+      250004,
+      256452
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      533
+    ],
+    [
+      2,
+      440
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Long hold on drag handle should not open context menu",
+      "id": 73944,
+      "title": "Long hold on drag handle should not open context menu",
+      "slug": "long-hold-on-drag-handle-should-not-open-context-menu",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/1/a/1ac6a879ce2ebaaed97ae3320e967e82d12290cc_2_460x1024.png",
+      "created_at": "2026-01-01T22:16:10.703Z",
+      "last_posted_at": "2026-01-01T22:16:10.831Z",
+      "bumped": true,
+      "bumped_at": "2026-01-01T22:16:10.831Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 1,
+      "views": 26,
+      "category_id": 30,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 1210,
+            "username": "Meteor0id",
+            "name": "Meteor0id",
+            "avatar_template": "/user_avatar/community.signalusers.org/meteor0id/{size}/55420_2.png",
+            "trust_level": 3
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "UI issue in selected image with text",
+      "id": 73040,
+      "title": "UI issue in selected image with text",
+      "slug": "ui-issue-in-selected-image-with-text",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/f/9/f98dcf1325ca68fa11d9dad043e036ec008497ae_2_438x1024.png",
+      "created_at": "2025-11-21T10:54:02.517Z",
+      "last_posted_at": "2025-11-21T10:54:02.596Z",
+      "bumped": true,
+      "bumped_at": "2025-11-21T10:54:02.596Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 23,
+      "category_id": 30,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "&ldquo;person updated their name&rdquo; notice misaligned on RTL",
+      "id": 70586,
+      "title": "\"person updated their name\" notice misaligned on RTL",
+      "slug": "person-updated-their-name-notice-misaligned-on-rtl",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": "https://community.signalusers.org/uploads/db3609/original/3X/b/7/b701e5ad156c5bf92b3184bd5439bf1b3acd0054.jpeg",
+      "created_at": "2025-07-23T14:00:48.284Z",
+      "last_posted_at": "2025-07-23T14:00:48.351Z",
+      "bumped": true,
+      "bumped_at": "2025-07-23T14:00:48.351Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 53,
+      "category_id": 30,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "New annoying unlock animation",
+  "id": 62640,
+  "title": "New annoying unlock animation",
+  "posts_count": 2,
+  "created_at": "2024-08-30T09:43:55.502Z",
+  "views": 164,
+  "reply_count": 0,
+  "like_count": 6,
+  "last_posted_at": "2024-12-01T16:50:52.146Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "new-annoying-unlock-animation",
+  "category_id": 30,
+  "word_count": 385,
+  "deleted_at": null,
+  "user_id": 1729,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_62640",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 2,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 2,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 1729,
+        "username": "Lion1969",
+        "name": "",
+        "avatar_template": "/user_avatar/community.signalusers.org/lion1969/{size}/6977_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      },
+      {
+        "id": 27958,
+        "username": "anacletus",
+        "name": "",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/a/858c86/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 1
+      }
+    ],
+    "created_by": {
+      "id": 1729,
+      "username": "Lion1969",
+      "name": "",
+      "avatar_template": "/user_avatar/community.signalusers.org/lion1969/{size}/6977_2.png"
+    },
+    "last_poster": {
+      "id": 27958,
+      "username": "anacletus",
+      "name": "",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/a/858c86/{size}.png"
+    },
+    "links": [
+      {
+        "url": "https://community.signalusers.org/t/disabling-the-new-unlock-animation/62432",
+        "title": "Disabling the new unlock animation",
+        "internal": true,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 11,
+        "user_id": 1729,
+        "domain": "community.signalusers.org",
+        "root_domain": "signalusers.org"
+      },
+      {
+        "url": "https://community.signalusers.org/t/show-message-content-in-notification-while-having-app-lock-enabled/21156",
+        "title": "Show message content in notification while having app lock enabled",
+        "internal": true,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 4,
+        "user_id": 27958,
+        "domain": "community.signalusers.org",
+        "root_domain": "signalusers.org"
+      }
+    ]
+  },
+  "bookmarks": []
+}

@@ -1,0 +1,432 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 271339,
+        "name": "Philippe Flamant",
+        "username": "Philippe_Flamant",
+        "avatar_template": "/user_avatar/community.signalusers.org/philippe_flamant/{size}/52810_2.png",
+        "created_at": "2025-07-03T17:29:40.883Z",
+        "cooked": "<p>Today I went in and changed storage settings for how long messages are stored in signal. I changed the setting from forever to one year and then I changed chat length setting to a maximum of 5,000. Since then I cannot delete old chats and new chats are not being marked as read. Any help?</p>\n<p>I have rebooted.<br>\nI have shit down and waited 5 minutes.<br>\nI have cleared app cache</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2025-07-03T17:29:40.883Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 4,
+        "reads": 22,
+        "readers_count": 21,
+        "score": 24.4,
+        "yours": false,
+        "topic_id": 70199,
+        "topic_slug": "delete-and-read-problems",
+        "display_username": "Philippe Flamant",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 33411,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/delete-and-read-problems/70199/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      },
+      {
+        "id": 271352,
+        "name": "",
+        "username": "desert_nip",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+        "created_at": "2025-07-03T20:01:56.123Z",
+        "cooked": "<p>Have you tried changing the settings back and seeing if that resolves it? Depending on what exactly is the issue and how long ago the initial changes happened, there might still be something in the debug logs.</p>\n<p>You should follow the instructions here</p>\n<aside class=\"onebox allowlistedgeneric\" data-onebox-src=\"https://support.signal.org/hc/en-us/articles/360007318591-Debug-Logs-and-Crash-Reports\">\n  <header class=\"source\">\n      \n\n      <a href=\"https://support.signal.org/hc/en-us/articles/360007318591-Debug-Logs-and-Crash-Reports\" target=\"_blank\" rel=\"noopener nofollow ugc\">Signal Support</a>\n  </header>\n\n  <article class=\"onebox-body\">\n    \n\n<h3><a href=\"https://support.signal.org/hc/en-us/articles/360007318591-Debug-Logs-and-Crash-Reports\" target=\"_blank\" rel=\"noopener nofollow ugc\">Debug Logs and Crash Reports</a></h3>\n\n  <p>We want our messaging and calling features to work seamlessly at all times. Thanks for reaching out to us about the issues you’re experiencing and being willing to provide information that will hel...</p>\n\n\n  </article>\n\n  <div class=\"onebox-metadata\">\n    \n    \n  </div>\n\n  <div style=\"clear: both\"></div>\n</aside>\n\n<p>to submit a bug report to the support team.</p>",
+        "post_number": 2,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2025-07-03T20:01:56.123Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 18,
+        "readers_count": 17,
+        "score": 3.6,
+        "yours": false,
+        "topic_id": 70199,
+        "topic_slug": "delete-and-read-problems",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://support.signal.org/hc/en-us/articles/360007318591-Debug-Logs-and-Crash-Reports",
+            "internal": false,
+            "reflection": false,
+            "clicks": 0
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 31811,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/delete-and-read-problems/70199/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      }
+    ],
+    "stream": [
+      271339,
+      271352
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      226
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "even with proxy otp not recived!",
+      "id": 73713,
+      "title": "even with proxy otp not recived!",
+      "slug": "even-with-proxy-otp-not-recived",
+      "posts_count": 4,
+      "reply_count": 1,
+      "highest_post_number": 4,
+      "image_url": null,
+      "created_at": "2025-12-19T15:44:07.056Z",
+      "last_posted_at": "2025-12-20T11:59:11.370Z",
+      "bumped": true,
+      "bumped_at": "2025-12-20T11:59:11.370Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 62,
+      "category_id": 11,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 35262,
+            "username": "sa230",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/s/eb9ed0/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Open and import Problem",
+      "id": 73684,
+      "title": "Open and import Problem",
+      "slug": "open-and-import-problem",
+      "posts_count": 4,
+      "reply_count": 1,
+      "highest_post_number": 4,
+      "image_url": null,
+      "created_at": "2025-12-18T18:03:49.170Z",
+      "last_posted_at": "2026-01-06T13:56:08.629Z",
+      "bumped": true,
+      "bumped_at": "2026-01-06T13:56:08.629Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 47,
+      "category_id": 11,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 35241,
+            "username": "jack99",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/j/ac91a4/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Crashing when restoring from online backup. Can I download it? ",
+      "id": 72125,
+      "title": "Crashing when restoring from online backup. Can I download it? ",
+      "slug": "crashing-when-restoring-from-online-backup-can-i-download-it",
+      "posts_count": 5,
+      "reply_count": 2,
+      "highest_post_number": 5,
+      "image_url": null,
+      "created_at": "2025-10-09T02:48:47.372Z",
+      "last_posted_at": "2025-10-10T00:41:47.094Z",
+      "bumped": true,
+      "bumped_at": "2025-10-10T00:41:47.094Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 1,
+      "views": 100,
+      "category_id": 11,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 34407,
+            "username": "juancommander",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/juancommander/{size}/54148_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 33391,
+            "username": "Mrbrighra",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/m/4da419/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Delete and read problems",
+  "id": 70199,
+  "title": "Delete and read problems",
+  "posts_count": 2,
+  "created_at": "2025-07-03T17:29:40.828Z",
+  "views": 42,
+  "reply_count": 0,
+  "like_count": 0,
+  "last_posted_at": "2025-07-03T20:01:56.123Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "delete-and-read-problems",
+  "category_id": 11,
+  "word_count": 138,
+  "deleted_at": null,
+  "user_id": 33411,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_70199",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 2,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 2,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 31811,
+        "username": "desert_nip",
+        "name": "",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      },
+      {
+        "id": 33411,
+        "username": "Philippe_Flamant",
+        "name": "Philippe Flamant",
+        "avatar_template": "/user_avatar/community.signalusers.org/philippe_flamant/{size}/52810_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 0
+      }
+    ],
+    "created_by": {
+      "id": 33411,
+      "username": "Philippe_Flamant",
+      "name": "Philippe Flamant",
+      "avatar_template": "/user_avatar/community.signalusers.org/philippe_flamant/{size}/52810_2.png"
+    },
+    "last_poster": {
+      "id": 31811,
+      "username": "desert_nip",
+      "name": "",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png"
+    }
+  },
+  "bookmarks": []
+}

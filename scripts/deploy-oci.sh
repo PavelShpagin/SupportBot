@@ -154,16 +154,16 @@ sudo mkdir -p /var/lib/signal/bot /var/lib/signal/ingest /var/lib/signal/desktop
 sudo chown -R \$(whoami):\$(whoami) /var/lib/signal /var/lib/history
 
 echo "Pulling latest Docker images..."
-docker compose -f docker-compose.prod.yml pull db rag redis || true
+docker compose -f docker-compose.yml pull db rag redis || true
 
 echo "Building and starting services..."
-docker compose -f docker-compose.prod.yml up -d --build
+docker compose -f docker-compose.yml up -d --build
 
 echo "Waiting for services..."
 sleep 15
 
 echo "Service status:"
-docker compose -f docker-compose.prod.yml ps
+docker compose -f docker-compose.yml ps
 
 echo "Health check:"
 curl -sf http://localhost:8000/healthz && echo " - API OK" || echo " - API FAILED"
@@ -181,12 +181,12 @@ cmd_ssh() {
 cmd_logs() {
     check_prerequisites
     SERVICE="${1:-}"
-    ssh_cmd "cd $REMOTE_DIR && docker compose -f docker-compose.prod.yml logs -f $SERVICE"
+    ssh_cmd "cd $REMOTE_DIR && docker compose -f docker-compose.yml logs -f $SERVICE"
 }
 
 cmd_status() {
     check_prerequisites
-    ssh_cmd "cd $REMOTE_DIR && docker compose -f docker-compose.prod.yml ps"
+    ssh_cmd "cd $REMOTE_DIR && docker compose -f docker-compose.yml ps"
 }
 
 cmd_link_signal() {
@@ -199,7 +199,7 @@ cmd_link_signal() {
     log_info "Go to: Signal -> Settings -> Linked Devices -> Link New Device"
     echo ""
     
-    ssh_cmd "cd $REMOTE_DIR && docker compose -f docker-compose.prod.yml exec signal-bot signal-cli link -n 'SupportBot Server'"
+    ssh_cmd "cd $REMOTE_DIR && docker compose -f docker-compose.yml exec signal-bot signal-cli link -n 'SupportBot Server'"
 }
 
 cmd_set_avatar_remote() {
@@ -214,7 +214,7 @@ cmd_set_avatar_remote() {
     ssh_cmd << ENDSSH
 cd $REMOTE_DIR
 docker cp supportbot-logo.png supportbot-api:/tmp/avatar.png
-docker compose -f docker-compose.prod.yml exec signal-bot signal-cli -a $SIGNAL_BOT_E164 updateProfile --avatar /tmp/avatar.png --name "SupportBot"
+docker compose -f docker-compose.yml exec signal-bot signal-cli -a $SIGNAL_BOT_E164 updateProfile --avatar /tmp/avatar.png --name "SupportBot"
 ENDSSH
     
     log_success "Avatar set!"
@@ -239,13 +239,13 @@ cmd_full() {
 
 cmd_stop() {
     check_prerequisites
-    ssh_cmd "cd $REMOTE_DIR && docker compose -f docker-compose.prod.yml down"
+    ssh_cmd "cd $REMOTE_DIR && docker compose -f docker-compose.yml down"
     log_success "Services stopped on remote."
 }
 
 cmd_restart() {
     check_prerequisites
-    ssh_cmd "cd $REMOTE_DIR && docker compose -f docker-compose.prod.yml restart"
+    ssh_cmd "cd $REMOTE_DIR && docker compose -f docker-compose.yml restart"
     log_success "Services restarted on remote."
 }
 

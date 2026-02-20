@@ -1,0 +1,114 @@
+[
+  {
+    "id": "thread_001",
+    "status": "solved",
+    "domain": "drone_hardware",
+    "summary": "FC Connection Timeout",
+    "messages": [
+      {
+        "id": "msg_001",
+        "sender_id": "user_A",
+        "timestamp": "2024-02-10T10:00:00Z",
+        "content": "Guys, I can't connect to my SpeedyBee F405 V3. Configurator says 'Serial port successfully opened' but then 'No configuration received within 10 seconds'. Drivers are installed.",
+        "reply_to_id": null,
+        "reactions": []
+      },
+      {
+        "id": "msg_002",
+        "sender_id": "user_B",
+        "timestamp": "2024-02-10T10:05:00Z",
+        "content": "Are you using the original cable? Some USB cables are power-only.",
+        "reply_to_id": "msg_001",
+        "reactions": []
+      },
+      {
+        "id": "msg_003",
+        "sender_id": "user_A",
+        "timestamp": "2024-02-10T10:07:00Z",
+        "content": "Yeah, tried 3 different cables. Same result. Windows detects it as COM4 though.",
+        "reply_to_id": "msg_002",
+        "reactions": []
+      },
+      {
+        "id": "msg_004",
+        "sender_id": "user_C",
+        "timestamp": "2024-02-10T10:15:00Z",
+        "content": "Check if you have the ImpulseRC Driver Fixer tool. Run it while the FC is plugged in. It usually fixes the DFU/VCP driver mess.",
+        "reply_to_id": "msg_003",
+        "reactions": ["👍", "🔥"]
+      },
+      {
+        "id": "msg_005",
+        "sender_id": "user_A",
+        "timestamp": "2024-02-10T10:25:00Z",
+        "content": "That worked! ImpulseRC found it and fixed the driver. Connected instantly now. Thanks!",
+        "reply_to_id": "msg_004",
+        "reactions": ["❤️"]
+      }
+    ]
+  },
+  {
+    "id": "thread_002",
+    "status": "ongoing",
+    "domain": "drone_specs",
+    "summary": "Propeller Choice for 5-inch",
+    "messages": [
+      {
+        "id": "msg_006",
+        "sender_id": "user_D",
+        "timestamp": "2024-02-11T14:00:00Z",
+        "content": "What props are you running on 2306 1750kv motors? I'm torn between Gemfan 51433 and HQProp J37.",
+        "reply_to_id": null,
+        "reactions": []
+      },
+      {
+        "id": "msg_007",
+        "sender_id": "user_E",
+        "timestamp": "2024-02-11T14:10:00Z",
+        "content": "51433 are super smooth but lack top end punch. If you freestyle, they are great.",
+        "reply_to_id": "msg_006",
+        "reactions": []
+      },
+      {
+        "id": "msg_008",
+        "sender_id": "user_D",
+        "timestamp": "2024-02-11T14:12:00Z",
+        "content": "I mostly do cinematic chasing. Need something efficient.",
+        "reply_to_id": "msg_007",
+        "reactions": []
+      },
+      {
+        "id": "msg_009",
+        "sender_id": "user_F",
+        "timestamp": "2024-02-11T14:20:00Z",
+        "content": "Try the Ethix S5. They are low pitch, very efficient for cinematic.",
+        "reply_to_id": "msg_008",
+        "reactions": []
+      }
+    ]
+  },
+  {
+    "id": "thread_003",
+    "status": "noise",
+    "domain": "social",
+    "summary": "Build Showcase",
+    "messages": [
+      {
+        "id": "msg_010",
+        "sender_id": "user_G",
+        "timestamp": "2024-02-12T09:00:00Z",
+        "content": "Finally finished the Apex build! [Image Attachment]",
+        "reply_to_id": null,
+        "reactions": ["🔥", "🚀", "😍"]
+      },
+      {
+        "id": "msg_011",
+        "sender_id": "user_H",
+        "timestamp": "2024-02-12T09:05:00Z",
+        "content": "Clean wiring man! That stack looks tight.",
+        "reply_to_id": "msg_010",
+        "reactions": []
+      }
+    ]
+  }
+]

@@ -1,0 +1,392 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 270584,
+        "name": "Mher Hovhannisyan",
+        "username": "Mher_Hovhannisyan",
+        "avatar_template": "/user_avatar/community.signalusers.org/mher_hovhannisyan/{size}/52680_2.png",
+        "created_at": "2025-06-26T00:07:22.853Z",
+        "cooked": "<p>Currently, Signal for iOS has limitations in playing certain common and important media formats directly within the application. This hinders the seamless sharing and viewing of content for users who frequently use these formats. Specifically, the lack of support for High Efficiency Video Coding (HEVC/H.265) videos, Matroska (MKV) containers, Opus audio, WebM, FLAC, and uncompressed WAV files significantly impacts the user experience.</p>\n<p>These formats are widely supported across other major operating systems, including Linux, Windows, and Android, enabling users on those platforms to seamlessly view and share such media. It raises the question of why iOS users are unable to enjoy the same level of media compatibility within Signal, creating an inconsistent and less capable experience for a significant portion of its user base.</p>\n<p>Adding support for these formats would greatly enhance Signal’s utility as a primary communication tool, allowing users to share and consume a wider variety of media without needing to switch to external applications or convert files. This improvement would align Signal with modern media standards and user expectations for a comprehensive messaging platform.</p>\n<p><strong>Requested Formats:</strong></p>\n<p><strong>HEVC (H.265):</strong> Increasingly common video codec, especially on newer devices, offering better compression efficiency and quality.<br>\n<strong>MKV (Matroska):</strong> A flexible and widely used multimedia container format that can hold a variety of video, audio, and subtitle tracks.<br>\n<strong>Opus:</strong> A highly efficient and versatile audio codec, excellent for both voice and music, and often used in various applications for its quality and low latency.<br>\n<strong>WebM:</strong> An open, royalty-free media file format designed for the web, commonly used for high-quality video and audio.<br>\n<strong>FLAC (Free Lossless Audio Codec):</strong> A popular lossless audio compression format that maintains original audio quality.<br>\n<strong>WAV (Waveform Audio File Format):</strong> An uncompressed audio format widely used for high-quality audio recordings.</p>\n<p>Implementing support for these formats would significantly improve user convenience and the overall media sharing experience within Signal on iOS. Signal already uses FFmpeg for this, so I wonder what’s the problem to make it.</p>\n<p>Thank you!</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2025-07-06T14:37:32.903Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 5,
+        "reads": 44,
+        "readers_count": 43,
+        "score": 153.8,
+        "yours": false,
+        "topic_id": 69999,
+        "topic_slug": "feature-request-expanded-media-format-support",
+        "display_username": "Mher Hovhannisyan",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 2,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://community.signalusers.org/t/feature-request-native-support-for-flac-audio-playback-and-preview/70266/2",
+            "internal": true,
+            "reflection": true,
+            "title": "Native support for FLAC audio playback and preview",
+            "clicks": 0
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 8
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 33306,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/feature-request-expanded-media-format-support/69999/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      270584
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      234
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Show notification badge count per Chat, not per message",
+      "id": 71352,
+      "title": "Show notification badge count per Chat, not per message",
+      "slug": "show-notification-badge-count-per-chat-not-per-message",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2025-09-01T20:38:22.720Z",
+      "last_posted_at": "2025-09-01T20:38:22.813Z",
+      "bumped": true,
+      "bumped_at": "2025-09-01T20:38:22.813Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 2,
+      "views": 43,
+      "category_id": 17,
+      "featured_link": null,
+      "op_like_count": 2,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 33992,
+            "username": "magnus852",
+            "name": "Magnus",
+            "avatar_template": "/user_avatar/community.signalusers.org/magnus852/{size}/53490_2.png",
+            "trust_level": 0
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Use of strongbox on supported devices",
+      "id": 70343,
+      "title": "Use of strongbox on supported devices",
+      "slug": "use-of-strongbox-on-supported-devices",
+      "posts_count": 5,
+      "reply_count": 2,
+      "highest_post_number": 5,
+      "image_url": null,
+      "created_at": "2025-07-10T04:48:32.555Z",
+      "last_posted_at": "2025-07-10T17:16:55.051Z",
+      "bumped": true,
+      "bumped_at": "2025-07-10T17:16:55.051Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 11,
+      "views": 214,
+      "category_id": 17,
+      "featured_link": null,
+      "op_like_count": 2,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 33477,
+            "username": "arianwen27",
+            "name": "arianwen27",
+            "avatar_template": "/user_avatar/community.signalusers.org/arianwen27/{size}/52886_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 2521,
+            "username": "Herohtar",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+            "primary_group_name": "volunteer_moderators",
+            "flair_name": "volunteer_moderators",
+            "flair_url": "shield-halved",
+            "flair_bg_color": "1d8663",
+            "flair_color": "fff",
+            "flair_group_id": 41,
+            "moderator": true,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 16653,
+            "username": "QuickBanana",
+            "name": null,
+            "avatar_template": "/user_avatar/community.signalusers.org/quickbanana/{size}/35290_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Manual backup option with a single decryption key",
+      "id": 67388,
+      "title": "Manual backup option with a single decryption key",
+      "slug": "manual-backup-option-with-a-single-decryption-key",
+      "posts_count": 4,
+      "reply_count": 2,
+      "highest_post_number": 4,
+      "image_url": null,
+      "created_at": "2025-03-03T20:11:05.930Z",
+      "last_posted_at": "2025-03-04T03:01:06.830Z",
+      "bumped": true,
+      "bumped_at": "2025-03-04T03:01:06.830Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 4,
+      "views": 96,
+      "category_id": 17,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 31932,
+            "username": "angelovivi5",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/a/dc4da7/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 2521,
+            "username": "Herohtar",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+            "primary_group_name": "volunteer_moderators",
+            "flair_name": "volunteer_moderators",
+            "flair_url": "shield-halved",
+            "flair_bg_color": "1d8663",
+            "flair_color": "fff",
+            "flair_group_id": 41,
+            "moderator": true,
+            "trust_level": 4
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Feature Request: Expanded Media Format Support",
+  "id": 69999,
+  "title": "Feature Request: Expanded Media Format Support",
+  "posts_count": 1,
+  "created_at": "2025-06-26T00:07:22.803Z",
+  "views": 92,
+  "reply_count": 0,
+  "like_count": 8,
+  "last_posted_at": "2025-06-26T00:07:22.853Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "feature-request-expanded-media-format-support",
+  "category_id": 17,
+  "word_count": 336,
+  "deleted_at": null,
+  "user_id": 33306,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_69999",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 33306,
+        "username": "Mher_Hovhannisyan",
+        "name": "Mher Hovhannisyan",
+        "avatar_template": "/user_avatar/community.signalusers.org/mher_hovhannisyan/{size}/52680_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      }
+    ],
+    "created_by": {
+      "id": 33306,
+      "username": "Mher_Hovhannisyan",
+      "name": "Mher Hovhannisyan",
+      "avatar_template": "/user_avatar/community.signalusers.org/mher_hovhannisyan/{size}/52680_2.png"
+    },
+    "last_poster": {
+      "id": 33306,
+      "username": "Mher_Hovhannisyan",
+      "name": "Mher Hovhannisyan",
+      "avatar_template": "/user_avatar/community.signalusers.org/mher_hovhannisyan/{size}/52680_2.png"
+    }
+  },
+  "bookmarks": []
+}

@@ -1,0 +1,492 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 266081,
+        "name": "Arthurreming",
+        "username": "arthurreming",
+        "avatar_template": "/user_avatar/community.signalusers.org/arthurreming/{size}/51787_2.png",
+        "created_at": "2025-04-14T00:17:52.952Z",
+        "cooked": "<p>When receiving calls or video calls, add an option to light the rear or front flash.</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2025-04-14T00:29:50.395Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 29,
+        "readers_count": 28,
+        "score": 10.8,
+        "yours": false,
+        "topic_id": 68510,
+        "topic_slug": "light-flash-when-receiving-calls",
+        "display_username": "Arthurreming",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 2,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 32567,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/light-flash-when-receiving-calls/68510/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      },
+      {
+        "id": 266351,
+        "name": null,
+        "username": "zebra521",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/z/82dd89/{size}.png",
+        "created_at": "2025-04-17T04:00:17.029Z",
+        "cooked": "<p>I’d be cool if, instead of the usual staccato-type strobing flash, it looked more like a “breathing” waxing/waning light notification. I find that more calming and less anxiety-inducing.</p>",
+        "post_number": 2,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2025-04-17T04:00:17.029Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 16,
+        "readers_count": 15,
+        "score": 3.2,
+        "yours": false,
+        "topic_id": 68510,
+        "topic_slug": "light-flash-when-receiving-calls",
+        "display_username": null,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 32612,
+        "hidden": false,
+        "trust_level": 1,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/light-flash-when-receiving-calls/68510/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      }
+    ],
+    "stream": [
+      266081,
+      266351
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      307
+    ],
+    [
+      2,
+      304
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Authorized Signal users should be allowed to send messages to groups from outside.",
+      "id": 74164,
+      "title": "Authorized Signal users should be allowed to send messages to groups from outside.",
+      "slug": "authorized-signal-users-should-be-allowed-to-send-messages-to-groups-from-outside",
+      "posts_count": 5,
+      "reply_count": 1,
+      "highest_post_number": 5,
+      "image_url": null,
+      "created_at": "2026-01-11T22:07:00.785Z",
+      "last_posted_at": "2026-01-12T13:49:46.341Z",
+      "bumped": true,
+      "bumped_at": "2026-01-12T13:49:46.341Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 16,
+      "views": 87,
+      "category_id": 17,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 35502,
+            "username": "Adlatus",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/a/c6cbf5/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 296,
+            "username": "PiCob",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/picob/{size}/589_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 5448,
+            "username": "DirkPitt1",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/74df32/{size}.png",
+            "trust_level": 3
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "send multiple images separately (ungroup)",
+      "id": 72042,
+      "title": "send multiple images separately (ungroup)",
+      "slug": "send-multiple-images-separately-ungroup",
+      "posts_count": 5,
+      "reply_count": 2,
+      "highest_post_number": 5,
+      "image_url": null,
+      "created_at": "2025-10-04T22:38:12.121Z",
+      "last_posted_at": "2025-10-05T00:42:19.774Z",
+      "bumped": true,
+      "bumped_at": "2025-10-05T00:42:19.774Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 6,
+      "views": 76,
+      "category_id": 17,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 34357,
+            "username": "hs_h1",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/hs_h1/{size}/54080_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 2521,
+            "username": "Herohtar",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+            "primary_group_name": "volunteer_moderators",
+            "flair_name": "volunteer_moderators",
+            "flair_url": "shield-halved",
+            "flair_bg_color": "1d8663",
+            "flair_color": "fff",
+            "flair_group_id": 41,
+            "moderator": true,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "What is the &ldquo;signal has an update&rdquo; button in the app?",
+      "id": 68241,
+      "title": "What is the \"signal has an update\" button in the app?",
+      "slug": "what-is-the-signal-has-an-update-button-in-the-app",
+      "posts_count": 6,
+      "reply_count": 3,
+      "highest_post_number": 6,
+      "image_url": "https://community.signalusers.org/uploads/db3609/original/3X/f/5/f5126e78896bd6880619a788b32e2ee31ef6fa6f.png",
+      "created_at": "2025-04-03T22:49:48.045Z",
+      "last_posted_at": "2025-04-06T08:35:52.252Z",
+      "bumped": true,
+      "bumped_at": "2025-04-06T08:35:52.252Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 97,
+      "category_id": 12,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": true,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 2548,
+            "username": "LocherInReifen",
+            "name": "BBou",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/l/3be4f8/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster, Accepted Answer",
+          "user": {
+            "id": 2521,
+            "username": "Herohtar",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+            "primary_group_name": "volunteer_moderators",
+            "flair_name": "volunteer_moderators",
+            "flair_url": "shield-halved",
+            "flair_bg_color": "1d8663",
+            "flair_color": "fff",
+            "flair_group_id": 41,
+            "moderator": true,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Light flash when receiving calls",
+  "id": 68510,
+  "title": "Light flash when receiving calls",
+  "posts_count": 2,
+  "created_at": "2025-04-14T00:17:52.911Z",
+  "views": 53,
+  "reply_count": 0,
+  "like_count": 0,
+  "last_posted_at": "2025-04-17T04:00:17.029Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "light-flash-when-receiving-calls",
+  "category_id": 17,
+  "word_count": 48,
+  "deleted_at": null,
+  "user_id": 32567,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_68510",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 2,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 2,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 32567,
+        "username": "arthurreming",
+        "name": "Arthurreming",
+        "avatar_template": "/user_avatar/community.signalusers.org/arthurreming/{size}/51787_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 0
+      },
+      {
+        "id": 32612,
+        "username": "zebra521",
+        "name": null,
+        "avatar_template": "/letter_avatar_proxy/v4/letter/z/82dd89/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 1
+      }
+    ],
+    "created_by": {
+      "id": 32567,
+      "username": "arthurreming",
+      "name": "Arthurreming",
+      "avatar_template": "/user_avatar/community.signalusers.org/arthurreming/{size}/51787_2.png"
+    },
+    "last_poster": {
+      "id": 32612,
+      "username": "zebra521",
+      "name": null,
+      "avatar_template": "/letter_avatar_proxy/v4/letter/z/82dd89/{size}.png"
+    }
+  },
+  "bookmarks": []
+}

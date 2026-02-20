@@ -1,0 +1,695 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 83412,
+        "name": "",
+        "username": "Merlin",
+        "avatar_template": "/user_avatar/community.signalusers.org/merlin/{size}/6873_2.png",
+        "created_at": "2020-11-14T12:10:13.037Z",
+        "cooked": "<p>Are there any infos about Signal’s infrastructure? Are the servers powered by sustainable energy? I don’t want to vote for privacy while supporting fossil fuels in the background at the same time.</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 4,
+        "updated_at": "2025-03-20T18:32:45.731Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 3,
+        "reads": 84,
+        "readers_count": 83,
+        "score": 91.8,
+        "yours": false,
+        "topic_id": 18348,
+        "topic_slug": "environmental-impact-of-signal-infrastructure",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 2,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "",
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 3
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 5304,
+        "hidden": false,
+        "trust_level": 1,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/environmental-impact-of-signal-infrastructure/18348/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      },
+      {
+        "id": 83417,
+        "name": null,
+        "username": "anon57865533",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/a/dec6dc/{size}.png",
+        "created_at": "2020-11-14T13:03:01.809Z",
+        "cooked": "<p>Afaik most of it is still on Amazon‘s servers. They run on 50% dirty coal:</p>\n<aside class=\"onebox allowlistedgeneric\" data-onebox-src=\"https://sustainability.aboutamazon.com/environment/renewable-energy\">\n  <header class=\"source\">\n      <img src=\"https://community.signalusers.org/uploads/db3609/original/2X/1/1450880f468590beb988100f88208f8e65361c71.png\" class=\"site-icon\" width=\"32\" height=\"32\">\n\n      <a href=\"https://sustainability.aboutamazon.com/environment/renewable-energy\" target=\"_blank\" rel=\"noopener nofollow ugc\">Sustainability (US)</a>\n  </header>\n\n  <article class=\"onebox-body\">\n    <div class=\"aspect-image\" style=\"--aspect-ratio:690/388;\"><img src=\"https://community.signalusers.org/uploads/db3609/optimized/3X/b/e/bed8f6b584cb952f00c17e4272281ef93e6d15f3_2_690x388.jpeg\" class=\"thumbnail\" width=\"690\" height=\"388\" srcset=\"https://community.signalusers.org/uploads/db3609/optimized/3X/b/e/bed8f6b584cb952f00c17e4272281ef93e6d15f3_2_690x388.jpeg, https://community.signalusers.org/uploads/db3609/optimized/3X/b/e/bed8f6b584cb952f00c17e4272281ef93e6d15f3_2_1035x582.jpeg 1.5x, https://community.signalusers.org/uploads/db3609/optimized/3X/b/e/bed8f6b584cb952f00c17e4272281ef93e6d15f3_2_1380x776.jpeg 2x\" data-dominant-color=\"FE9D1F\"></div>\n\n<h3><a href=\"https://sustainability.aboutamazon.com/environment/renewable-energy\" target=\"_blank\" rel=\"noopener nofollow ugc\">Renewable Energy</a></h3>\n\n  <p>Transitioning to renewable energy is one of the highest-impact ways to immediately lower emissions. Amazon is the world’s largest corporate purchaser of renewable energy and is on a path to powering our operations with 100% renewable energy by...</p>\n\n\n  </article>\n\n  <div class=\"onebox-metadata\">\n    \n    \n  </div>\n\n  <div style=\"clear: both\"></div>\n</aside>\n\n<p>However, they say in 2025 they will be 100% renewable.</p>\n<p>But be careful to trust Bezos that he really puts his money where his mouth is:</p>\n<aside class=\"onebox allowlistedgeneric\" data-onebox-src=\"https://heated.world/p/bezos-breaks-his-climate-pledge\">\n  <header class=\"source\">\n      <img src=\"https://community.signalusers.org/uploads/db3609/original/3X/1/b/1b67fbec32a877d943ff6971f60254a3c407281d.png\" class=\"site-icon\" width=\"64\" height=\"64\">\n\n      <a href=\"https://heated.world/p/bezos-breaks-his-climate-pledge\" target=\"_blank\" rel=\"noopener nofollow ugc\">heated.world</a>\n  </header>\n\n  <article class=\"onebox-body\">\n    <div class=\"aspect-image\" style=\"--aspect-ratio:690/460;\"><img src=\"https://community.signalusers.org/uploads/db3609/optimized/3X/c/a/ca5a9aa12bda95cd551bcde9be2d1df3e80a8b58_2_690x460.jpeg\" class=\"thumbnail\" width=\"690\" height=\"460\" srcset=\"https://community.signalusers.org/uploads/db3609/optimized/3X/c/a/ca5a9aa12bda95cd551bcde9be2d1df3e80a8b58_2_690x460.jpeg, https://community.signalusers.org/uploads/db3609/original/3X/c/a/ca5a9aa12bda95cd551bcde9be2d1df3e80a8b58.jpeg 1.5x, https://community.signalusers.org/uploads/db3609/original/3X/c/a/ca5a9aa12bda95cd551bcde9be2d1df3e80a8b58.jpeg 2x\" data-dominant-color=\"838383\"></div>\n\n<h3><a href=\"https://heated.world/p/bezos-breaks-his-climate-pledge\" target=\"_blank\" rel=\"noopener nofollow ugc\">Bezos breaks his climate pledge</a></h3>\n\n  <p>The richest man in the world hasn't issued a single grant for the $10 billion climate fund he announced seven months ago.</p>\n\n\n  </article>\n\n  <div class=\"onebox-metadata\">\n    \n    \n  </div>\n\n  <div style=\"clear: both\"></div>\n</aside>\n",
+        "post_number": 2,
+        "post_type": 1,
+        "posts_count": 4,
+        "updated_at": "2020-11-14T13:03:01.809Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 2,
+        "reads": 81,
+        "readers_count": 80,
+        "score": 41.2,
+        "yours": false,
+        "topic_id": 18348,
+        "topic_slug": "environmental-impact-of-signal-infrastructure",
+        "display_username": null,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://heated.world/p/bezos-breaks-his-climate-pledge",
+            "internal": false,
+            "reflection": false,
+            "title": "Bezos breaks his climate pledge - HEATED",
+            "clicks": 1
+          },
+          {
+            "url": "https://sustainability.aboutamazon.com/environment/renewable-energy",
+            "internal": false,
+            "reflection": false,
+            "title": "Renewable Energy - Amazon Sustainability",
+            "clicks": 0
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 1
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 1103,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/environmental-impact-of-signal-infrastructure/18348/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 83677,
+        "name": null,
+        "username": "anon57865533",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/a/dec6dc/{size}.png",
+        "created_at": "2020-11-18T08:07:29.057Z",
+        "cooked": "<p>Bezos finally started to donate:</p>\n<aside class=\"onebox allowlistedgeneric\" data-onebox-src=\"https://heated.world/p/bezos-et-cetera\">\n  <header class=\"source\">\n      <img src=\"https://community.signalusers.org/uploads/db3609/original/3X/1/b/1b67fbec32a877d943ff6971f60254a3c407281d.png\" class=\"site-icon\" width=\"64\" height=\"64\">\n\n      <a href=\"https://heated.world/p/bezos-et-cetera\" target=\"_blank\" rel=\"noopener nofollow ugc\">heated.world</a>\n  </header>\n\n  <article class=\"onebox-body\">\n    <div class=\"aspect-image\" style=\"--aspect-ratio:690/460;\"><img src=\"https://community.signalusers.org/uploads/db3609/optimized/2X/0/022b1023331abec53fe5a058b190ad10c4a27337_2_690x460.jpeg\" class=\"thumbnail\" width=\"690\" height=\"460\" srcset=\"https://community.signalusers.org/uploads/db3609/optimized/2X/0/022b1023331abec53fe5a058b190ad10c4a27337_2_690x460.jpeg, https://community.signalusers.org/uploads/db3609/original/2X/0/022b1023331abec53fe5a058b190ad10c4a27337.jpeg 1.5x, https://community.signalusers.org/uploads/db3609/original/2X/0/022b1023331abec53fe5a058b190ad10c4a27337.jpeg 2x\" data-dominant-color=\"191518\"></div>\n\n<h3><a href=\"https://heated.world/p/bezos-et-cetera\" target=\"_blank\" rel=\"noopener nofollow ugc\">Bezos, et cetera</a></h3>\n\n  <p>A round-up of recent climate news, plus Week 7 book club information.</p>\n\n\n  </article>\n\n  <div class=\"onebox-metadata\">\n    \n    \n  </div>\n\n  <div style=\"clear: both\"></div>\n</aside>\n",
+        "post_number": 3,
+        "post_type": 1,
+        "posts_count": 4,
+        "updated_at": "2020-11-18T08:07:29.057Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 61,
+        "readers_count": 60,
+        "score": 32.2,
+        "yours": false,
+        "topic_id": 18348,
+        "topic_slug": "environmental-impact-of-signal-infrastructure",
+        "display_username": null,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://heated.world/p/bezos-et-cetera",
+            "internal": false,
+            "reflection": false,
+            "title": "Bezos, et cetera - HEATED",
+            "clicks": 8
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 1
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 1103,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/environmental-impact-of-signal-infrastructure/18348/3",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 263900,
+        "name": null,
+        "username": "Malcmus",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/m/f4b2a3/{size}.png",
+        "created_at": "2025-03-20T08:58:00.256Z",
+        "cooked": "<p>It’s 2025.<br>\nIs there now any recent info or published data on Signal’s overall energy consumption, whether they have a strategy to decarbonise with their host cloud provider, or similar?<br>\nThere’s community comments from 2021 and before, which identified that Signal was then hosted on AWS Virginia, and that Virginia had a coal-heavy power mix.<br>\nGiven the sizeable growth in Signal users since then, AWS’s own initiatives (and retreats), and the general philosophy that often goes with a not-for-profit ethos, I’m wondering if the Signal Foundation has published anything more on this topic in the intervening 4 years. (Search engines not finding anything for me at the moment).<br>\nThanks!</p>",
+        "post_number": 4,
+        "post_type": 1,
+        "posts_count": 4,
+        "updated_at": "2025-03-20T08:58:00.256Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 25,
+        "readers_count": 24,
+        "score": 50.0,
+        "yours": false,
+        "topic_id": 18348,
+        "topic_slug": "environmental-impact-of-signal-infrastructure",
+        "display_username": null,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 3
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 32216,
+        "hidden": false,
+        "trust_level": 1,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/environmental-impact-of-signal-infrastructure/18348/4",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      }
+    ],
+    "stream": [
+      83412,
+      83417,
+      83677,
+      263900
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      1918
+    ],
+    [
+      3,
+      1915
+    ],
+    [
+      4,
+      331
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Just published a book about Signal",
+      "id": 74525,
+      "title": "Just published a book about Signal",
+      "slug": "just-published-a-book-about-signal",
+      "posts_count": 34,
+      "reply_count": 26,
+      "highest_post_number": 35,
+      "image_url": null,
+      "created_at": "2026-01-28T23:52:45.529Z",
+      "last_posted_at": "2026-02-05T17:39:42.592Z",
+      "bumped": true,
+      "bumped_at": "2026-02-05T17:39:42.592Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 51,
+      "views": 529,
+      "category_id": 7,
+      "featured_link": null,
+      "op_like_count": 7,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 35683,
+            "username": "GuyKawasaki",
+            "name": "Guy Kawasaki",
+            "avatar_template": "/user_avatar/community.signalusers.org/guykawasaki/{size}/55652_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 3830,
+            "username": "patjolata",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/patjolata/{size}/5785_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 20248,
+            "username": "rafikinux",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/r/7cd45c/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 33362,
+            "username": "NeedsChloesure",
+            "name": "Chloe",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/n/9f8e36/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 5448,
+            "username": "DirkPitt1",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/74df32/{size}.png",
+            "trust_level": 3
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Which database does signal use in 2025? ",
+      "id": 71400,
+      "title": "Which database does signal use in 2025? ",
+      "slug": "which-database-does-signal-use-in-2025",
+      "posts_count": 5,
+      "reply_count": 2,
+      "highest_post_number": 5,
+      "image_url": null,
+      "created_at": "2025-09-04T04:15:49.222Z",
+      "last_posted_at": "2025-09-04T17:16:17.342Z",
+      "bumped": true,
+      "bumped_at": "2025-09-04T17:16:17.342Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 5,
+      "views": 151,
+      "category_id": 7,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 34017,
+            "username": "Space_Trip",
+            "name": "Space Trip",
+            "avatar_template": "/user_avatar/community.signalusers.org/space_trip/{size}/53505_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 34013,
+            "username": "Iriyanto",
+            "name": "Iriyanto ",
+            "avatar_template": "/user_avatar/community.signalusers.org/iriyanto/{size}/53503_2.png",
+            "trust_level": 1
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Recent events with Signal",
+      "id": 68051,
+      "title": "Recent events with Signal",
+      "slug": "recent-events-with-signal",
+      "posts_count": 5,
+      "reply_count": 1,
+      "highest_post_number": 5,
+      "image_url": null,
+      "created_at": "2025-03-27T23:08:40.778Z",
+      "last_posted_at": "2025-03-28T14:17:24.721Z",
+      "bumped": true,
+      "bumped_at": "2025-03-28T14:17:24.721Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 13,
+      "views": 177,
+      "category_id": 7,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 32323,
+            "username": "fotingo",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/f/e9a140/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 6038,
+            "username": "goodec",
+            "name": "Chris",
+            "avatar_template": "/user_avatar/community.signalusers.org/goodec/{size}/14726_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 1255,
+            "username": "mrandr01d",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/m/f08c70/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 1499,
+            "username": "CueHD",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/cuehd/{size}/42510_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Environmental impact of Signal infrastructure",
+  "id": 18348,
+  "title": "Environmental impact of Signal infrastructure",
+  "posts_count": 4,
+  "created_at": "2020-11-14T12:10:12.945Z",
+  "views": 357,
+  "reply_count": 0,
+  "like_count": 8,
+  "last_posted_at": "2025-03-20T08:58:00.256Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "environmental-impact-of-signal-infrastructure",
+  "category_id": 7,
+  "word_count": 223,
+  "deleted_at": null,
+  "user_id": 5304,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_18348",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 4,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 3,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 1103,
+        "username": "anon57865533",
+        "name": null,
+        "avatar_template": "/letter_avatar_proxy/v4/letter/a/dec6dc/{size}.png",
+        "post_count": 2,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      },
+      {
+        "id": 5304,
+        "username": "Merlin",
+        "name": "",
+        "avatar_template": "/user_avatar/community.signalusers.org/merlin/{size}/6873_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 1
+      },
+      {
+        "id": 32216,
+        "username": "Malcmus",
+        "name": null,
+        "avatar_template": "/letter_avatar_proxy/v4/letter/m/f4b2a3/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 1
+      }
+    ],
+    "created_by": {
+      "id": 5304,
+      "username": "Merlin",
+      "name": "",
+      "avatar_template": "/user_avatar/community.signalusers.org/merlin/{size}/6873_2.png"
+    },
+    "last_poster": {
+      "id": 32216,
+      "username": "Malcmus",
+      "name": null,
+      "avatar_template": "/letter_avatar_proxy/v4/letter/m/f4b2a3/{size}.png"
+    },
+    "links": [
+      {
+        "url": "https://heated.world/p/bezos-et-cetera",
+        "title": "Bezos, et cetera - HEATED",
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 8,
+        "user_id": 1103,
+        "domain": "heated.world",
+        "root_domain": "heated.world"
+      },
+      {
+        "url": "https://heated.world/p/bezos-breaks-his-climate-pledge",
+        "title": "Bezos breaks his climate pledge - HEATED",
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 1,
+        "user_id": 1103,
+        "domain": "heated.world",
+        "root_domain": "heated.world"
+      }
+    ]
+  },
+  "bookmarks": []
+}

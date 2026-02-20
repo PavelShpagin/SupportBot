@@ -1,0 +1,375 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 278084,
+        "name": "Rahi",
+        "username": "Ali_Akbar_Rahi",
+        "avatar_template": "/user_avatar/community.signalusers.org/ali_akbar_rahi/{size}/54378_2.png",
+        "created_at": "2025-10-25T14:01:33.887Z",
+        "cooked": "<p>I live in Bangladesh.</p>\n<p>I uninstalled and reinstalled the app, but when I try to log in with my number, the OTP code doesn’t arrive.</p>\n<p>It says: “Signal couldn’t send an SMS code because of issues with the SMS provider. Try again in several hours.”</p>\n<p>Many others are also facing the same problem — the code doesn’t come.</p>\n<p>Please find a solution for this.</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2025-10-25T15:21:50.469Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 39,
+        "readers_count": 38,
+        "score": 57.8,
+        "yours": false,
+        "topic_id": 72455,
+        "topic_slug": "otp-not-arriving-in-bangladesh",
+        "display_username": "Rahi",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://community.signalusers.org/t/beta-feedback-for-the-upcoming-android-7-62-release/72388/19",
+            "internal": true,
+            "reflection": true,
+            "title": "Beta feedback for the upcoming Android 7.62 release",
+            "clicks": 1
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 1
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 34580,
+        "hidden": false,
+        "trust_level": 1,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/otp-not-arriving-in-bangladesh/72455/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      278084
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      112
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "mic not working in debian desktop (pipewire)",
+      "id": 70380,
+      "title": "mic not working in debian desktop (pipewire)",
+      "slug": "mic-not-working-in-debian-desktop-pipewire",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": null,
+      "created_at": "2025-07-12T18:43:59.156Z",
+      "last_posted_at": "2025-07-13T09:31:52.897Z",
+      "bumped": true,
+      "bumped_at": "2025-07-13T09:31:52.897Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 51,
+      "category_id": 12,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 29161,
+            "username": "akb428",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/a/8baadc/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 2850,
+            "username": "Leibi",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/leibi/{size}/3756_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "microphone not picking up my sound",
+      "id": 69251,
+      "title": "microphone not picking up my sound",
+      "slug": "microphone-not-picking-up-my-sound",
+      "posts_count": 4,
+      "reply_count": 2,
+      "highest_post_number": 4,
+      "image_url": null,
+      "created_at": "2025-05-19T19:44:54.572Z",
+      "last_posted_at": "2025-05-20T06:00:02.194Z",
+      "bumped": true,
+      "bumped_at": "2025-05-20T06:00:02.194Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 42,
+      "category_id": 12,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 32945,
+            "username": "R11111",
+            "name": "R",
+            "avatar_template": "/user_avatar/community.signalusers.org/r11111/{size}/52277_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Signal server with minio",
+      "id": 69396,
+      "title": "Signal server with minio",
+      "slug": "signal-server-with-minio",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": null,
+      "created_at": "2025-05-26T12:41:17.882Z",
+      "last_posted_at": "2025-06-02T09:40:29.028Z",
+      "bumped": true,
+      "bumped_at": "2025-06-02T09:40:29.028Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 91,
+      "category_id": 24,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 33030,
+            "username": "tovak99008",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/t/b5a626/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 33027,
+            "username": "alexsunday",
+            "name": "cc",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/a/df705f/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "OTP not arriving in Bangladesh",
+  "id": 72455,
+  "title": "OTP not arriving in Bangladesh",
+  "posts_count": 1,
+  "created_at": "2025-10-25T14:01:33.887Z",
+  "views": 64,
+  "reply_count": 0,
+  "like_count": 1,
+  "last_posted_at": "2025-10-25T14:01:33.887Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "otp-not-arriving-in-bangladesh",
+  "category_id": 9,
+  "word_count": 66,
+  "deleted_at": null,
+  "user_id": 34580,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_72455",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 34580,
+        "username": "Ali_Akbar_Rahi",
+        "name": "Rahi",
+        "avatar_template": "/user_avatar/community.signalusers.org/ali_akbar_rahi/{size}/54378_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 1
+      }
+    ],
+    "created_by": {
+      "id": 34580,
+      "username": "Ali_Akbar_Rahi",
+      "name": "Rahi",
+      "avatar_template": "/user_avatar/community.signalusers.org/ali_akbar_rahi/{size}/54378_2.png"
+    },
+    "last_poster": {
+      "id": 34580,
+      "username": "Ali_Akbar_Rahi",
+      "name": "Rahi",
+      "avatar_template": "/user_avatar/community.signalusers.org/ali_akbar_rahi/{size}/54378_2.png"
+    },
+    "links": [
+      {
+        "url": "https://community.signalusers.org/t/beta-feedback-for-the-upcoming-android-7-62-release/72388/19",
+        "title": "Beta feedback for the upcoming Android 7.62 release",
+        "internal": true,
+        "attachment": false,
+        "reflection": true,
+        "clicks": 1,
+        "user_id": 18285,
+        "domain": "community.signalusers.org",
+        "root_domain": "signalusers.org"
+      }
+    ]
+  },
+  "bookmarks": []
+}

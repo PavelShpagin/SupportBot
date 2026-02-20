@@ -1,0 +1,463 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 284303,
+        "name": "Meteor0id",
+        "username": "Meteor0id",
+        "avatar_template": "/user_avatar/community.signalusers.org/meteor0id/{size}/55420_2.png",
+        "created_at": "2026-02-10T20:48:43.432Z",
+        "cooked": "<div class=\"poll\" data-poll-charttype=\"bar\" data-poll-name=\"poll\" data-poll-public=\"true\" data-poll-results=\"always\" data-poll-status=\"open\" data-poll-type=\"regular\">\n<div class=\"poll-container\">\n<div class=\"poll-title\">Do you ever remove inactive members?</div>\n<ul>\n<li data-poll-option-id=\"6f3a8d300ee5ee4e2182cc166dd31bb7\">No because I have no easy way of doing it</li>\n<li data-poll-option-id=\"a096a392fedf2af8ed308bb3ed130209\">yes, but I need an easier way</li>\n<li data-poll-option-id=\"33b46643710223ee23e14fdde7fac8f1\">yes, and I’m fine</li>\n<li data-poll-option-id=\"ccfddf3e42da3aa5f12513c8cd45eedf\">No, I see no reason to</li>\n<li data-poll-option-id=\"e72301eeb501d2d3f677129c7e2bf1e0\">No, I don’t admin any group</li>\n</ul>\n</div>\n<div class=\"poll-info\">\n<div class=\"poll-info_counts\">\n<div class=\"poll-info_counts-count\">\n<span class=\"info-number\">0</span>\n<span class=\"info-label\">voters</span>\n</div>\n</div>\n</div>\n</div>\n<p>Could you elaborate how you do it or why you don’t? If you need more, what do you need?</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2026-02-10T20:48:43.432Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 33,
+        "readers_count": 32,
+        "score": 11.6,
+        "yours": false,
+        "topic_id": 74670,
+        "topic_slug": "group-owners-how-are-you-dealing-with-inactie-members",
+        "display_username": "Meteor0id",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "",
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 1210,
+        "hidden": false,
+        "trust_level": 3,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/group-owners-how-are-you-dealing-with-inactie-members/74670/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false,
+        "polls": [
+          {
+            "id": 408,
+            "name": "poll",
+            "type": "regular",
+            "status": "open",
+            "public": true,
+            "dynamic": false,
+            "results": "always",
+            "options": [
+              {
+                "id": "6f3a8d300ee5ee4e2182cc166dd31bb7",
+                "html": "No because I have no easy way of doing it",
+                "votes": 1
+              },
+              {
+                "id": "a096a392fedf2af8ed308bb3ed130209",
+                "html": "yes, but I need an easier way",
+                "votes": 0
+              },
+              {
+                "id": "33b46643710223ee23e14fdde7fac8f1",
+                "html": "yes, and I’m fine",
+                "votes": 1
+              },
+              {
+                "id": "ccfddf3e42da3aa5f12513c8cd45eedf",
+                "html": "No, I see no reason to",
+                "votes": 2
+              },
+              {
+                "id": "e72301eeb501d2d3f677129c7e2bf1e0",
+                "html": "No, I don’t admin any group",
+                "votes": 0
+              }
+            ],
+            "voters": 4,
+            "preloaded_voters": {
+              "33b46643710223ee23e14fdde7fac8f1": [
+                {
+                  "id": 7654,
+                  "username": "ponytail",
+                  "name": "Ponytail",
+                  "avatar_template": "/user_avatar/community.signalusers.org/ponytail/{size}/11217_2.png",
+                  "title": ""
+                }
+              ],
+              "6f3a8d300ee5ee4e2182cc166dd31bb7": [
+                {
+                  "id": 1210,
+                  "username": "Meteor0id",
+                  "name": "Meteor0id",
+                  "avatar_template": "/user_avatar/community.signalusers.org/meteor0id/{size}/55420_2.png",
+                  "title": ""
+                }
+              ],
+              "ccfddf3e42da3aa5f12513c8cd45eedf": [
+                {
+                  "id": 2851,
+                  "username": "kaktusztea",
+                  "name": "",
+                  "avatar_template": "/user_avatar/community.signalusers.org/kaktusztea/{size}/2576_2.png",
+                  "title": ""
+                },
+                {
+                  "id": 18285,
+                  "username": "rassilon1963",
+                  "name": "Talya (she/her)",
+                  "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+                  "title": "Top Contributor"
+                }
+              ]
+            },
+            "chart_type": "bar",
+            "title": "Do you ever remove inactive members?"
+          }
+        ]
+      }
+    ],
+    "stream": [
+      284303
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      4
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "How cloud backups handle long-text attachments?",
+      "id": 72553,
+      "title": "How cloud backups handle long-text attachments?",
+      "slug": "how-cloud-backups-handle-long-text-attachments",
+      "posts_count": 4,
+      "reply_count": 2,
+      "highest_post_number": 4,
+      "image_url": null,
+      "created_at": "2025-10-29T21:01:38.392Z",
+      "last_posted_at": "2025-10-30T18:57:37.566Z",
+      "bumped": true,
+      "bumped_at": "2025-10-30T18:57:37.566Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 5,
+      "views": 91,
+      "category_id": 7,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": true,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 8599,
+            "username": "kara42",
+            "name": "kara",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/k/7993a0/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster, Accepted Answer",
+          "user": {
+            "id": 32154,
+            "username": "Delamcode",
+            "name": "Delamcode",
+            "avatar_template": "/user_avatar/community.signalusers.org/delamcode/{size}/51199_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Is Mobilecoin integration still useful?",
+      "id": 71750,
+      "title": "Is Mobilecoin integration still useful?",
+      "slug": "is-mobilecoin-integration-still-useful",
+      "posts_count": 96,
+      "reply_count": 71,
+      "highest_post_number": 96,
+      "image_url": null,
+      "created_at": "2025-09-19T23:32:01.488Z",
+      "last_posted_at": "2025-11-27T00:36:19.087Z",
+      "bumped": true,
+      "bumped_at": "2025-11-27T00:36:19.087Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 134,
+      "views": 1519,
+      "category_id": 7,
+      "featured_link": null,
+      "op_like_count": 10,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 34188,
+            "username": "david.graziani",
+            "name": "Davide",
+            "avatar_template": "/user_avatar/community.signalusers.org/david.graziani/{size}/53828_2.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 2170,
+            "username": "TeeJay82",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/teejay82/{size}/1806_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 3099,
+            "username": "Gunter",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/gunter/{size}/48737_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 5156,
+            "username": "ckrypto",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/ckrypto/{size}/6600_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 21694,
+            "username": "Throwaway123456",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/t/b19c9b/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Show reaction emoji names somehow",
+      "id": 73301,
+      "title": "Show reaction emoji names somehow",
+      "slug": "show-reaction-emoji-names-somehow",
+      "posts_count": 9,
+      "reply_count": 5,
+      "highest_post_number": 9,
+      "image_url": null,
+      "created_at": "2025-12-02T19:03:04.541Z",
+      "last_posted_at": "2025-12-03T17:37:58.399Z",
+      "bumped": true,
+      "bumped_at": "2025-12-03T17:37:58.399Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 5,
+      "views": 96,
+      "category_id": 35,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 35041,
+            "username": "pgcd1",
+            "name": "Paolo Dente",
+            "avatar_template": "/user_avatar/community.signalusers.org/pgcd1/{size}/54957_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 21723,
+            "username": "eaaac3fdfaff",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/e/41988e/{size}.png",
+            "trust_level": 3
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Group owners: how are you dealing with inactie members?",
+  "id": 74670,
+  "title": "Group owners: how are you dealing with inactie members?",
+  "posts_count": 1,
+  "created_at": "2026-02-10T20:48:43.322Z",
+  "views": 54,
+  "reply_count": 0,
+  "like_count": 0,
+  "last_posted_at": "2026-02-10T20:48:43.432Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "group-owners-how-are-you-dealing-with-inactie-members",
+  "category_id": 7,
+  "word_count": 71,
+  "deleted_at": null,
+  "user_id": 1210,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_74670",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 7,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 1210,
+        "username": "Meteor0id",
+        "name": "Meteor0id",
+        "avatar_template": "/user_avatar/community.signalusers.org/meteor0id/{size}/55420_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 3
+      }
+    ],
+    "created_by": {
+      "id": 1210,
+      "username": "Meteor0id",
+      "name": "Meteor0id",
+      "avatar_template": "/user_avatar/community.signalusers.org/meteor0id/{size}/55420_2.png"
+    },
+    "last_poster": {
+      "id": 1210,
+      "username": "Meteor0id",
+      "name": "Meteor0id",
+      "avatar_template": "/user_avatar/community.signalusers.org/meteor0id/{size}/55420_2.png"
+    }
+  },
+  "bookmarks": []
+}

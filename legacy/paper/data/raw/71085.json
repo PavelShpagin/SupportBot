@@ -1,0 +1,454 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 273621,
+        "name": "Oleg",
+        "username": "Berkut-25",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/b/3e96dc/{size}.png",
+        "created_at": "2025-08-17T19:35:30.076Z",
+        "cooked": "<p>В России не приходит код подтвердения при регистрации в сигнале, говорить ошбка подключения к серверу.<br>\nХотя включён прокси и amnezia vpn.<br>\nПожалуйста помогите.</p>\n<blockquote>\n<p>In Russia, the confirmation code does not come when registering in the signal, saying an error connecting to the server.<br>\nAlthough the proxy and amnezia vpn are enabled.<br>\nPlease help.</p>\n</blockquote>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2025-08-17T19:35:30.076Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 3,
+        "reads": 27,
+        "readers_count": 26,
+        "score": 20.4,
+        "yours": false,
+        "topic_id": 71085,
+        "topic_slug": "confirmation-code-when-installing-signal",
+        "display_username": "Oleg",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 33838,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/confirmation-code-when-installing-signal/71085/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      },
+      {
+        "id": 273695,
+        "name": "",
+        "username": "desert_nip",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+        "created_at": "2025-08-19T13:13:48.188Z",
+        "cooked": "<p>It is possible that your phone provider blocks signal registration SMS. This is a known issue and there are two workarounds you could try. The first would be to get a different phone number from a different provider/country, but this can be difficult.</p>\n<p>This could help too:</p>\n<aside class=\"quote no-group\" data-username=\"mmrabbani\" data-post=\"1\" data-topic=\"68271\">\n<div class=\"title\">\n<div class=\"quote-controls\"></div>\n<img alt=\"\" width=\"24\" height=\"24\" src=\"https://community.signalusers.org/letter_avatar_proxy/v4/letter/m/6bbea6/48.png\" class=\"avatar\"><a href=\"https://community.signalusers.org/t/preventing-sms-verification-blocking-by-governments-some-observations-and-suggestions/68271/1\">Preventing SMS Verification Blocking by Governments – Some Observations and Suggestions</a></div>\n<blockquote>\n<p>When using a <strong>Malaysia IP</strong>, the sender appears as <strong>“Verify”</strong>, and the message says something like: “Register with ******”<br>\n→ These messages <strong>do get delivered</strong> successfully.</p>\n</blockquote>\n</aside>\n<p>It might help to set your VPN to Malaysia or some other country with less conspicuous verification messages.</p>",
+        "post_number": 2,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2025-08-19T13:13:48.188Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 14,
+        "readers_count": 13,
+        "score": 2.8,
+        "yours": false,
+        "topic_id": 71085,
+        "topic_slug": "confirmation-code-when-installing-signal",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://community.signalusers.org/t/preventing-sms-verification-blocking-by-governments-some-observations-and-suggestions/68271",
+            "internal": true,
+            "reflection": false,
+            "title": "Preventing SMS Verification Blocking by Governments – Some Observations and Suggestions",
+            "clicks": 0
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 31811,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/confirmation-code-when-installing-signal/71085/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      }
+    ],
+    "stream": [
+      273621,
+      273695
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      181
+    ],
+    [
+      2,
+      179
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Chat partner missing after re-installing Signal",
+      "id": 73444,
+      "title": "Chat partner missing after re-installing Signal",
+      "slug": "chat-partner-missing-after-re-installing-signal",
+      "posts_count": 6,
+      "reply_count": 1,
+      "highest_post_number": 6,
+      "image_url": null,
+      "created_at": "2025-12-08T13:07:29.681Z",
+      "last_posted_at": "2025-12-10T21:06:15.809Z",
+      "bumped": true,
+      "bumped_at": "2025-12-10T21:06:15.809Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 75,
+      "category_id": 11,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 35113,
+            "username": "helmutobermeier",
+            "name": "HO",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/h/41988e/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Synchronizing from laptop to new phone without old phone?",
+      "id": 70670,
+      "title": "Synchronizing from laptop to new phone without old phone?",
+      "slug": "synchronizing-from-laptop-to-new-phone-without-old-phone",
+      "posts_count": 3,
+      "reply_count": 0,
+      "highest_post_number": 3,
+      "image_url": null,
+      "created_at": "2025-07-26T16:16:43.044Z",
+      "last_posted_at": "2025-07-27T13:14:15.073Z",
+      "bumped": true,
+      "bumped_at": "2025-07-27T13:14:15.073Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 1,
+      "views": 87,
+      "category_id": 11,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": true,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 33630,
+            "username": "anbohh20",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/a/8797f3/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster, Accepted Answer",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 33355,
+            "username": "LeslieFH",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/l/a4c791/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Verification Code not Working",
+      "id": 70332,
+      "title": "Verification Code not Working",
+      "slug": "verification-code-not-working",
+      "posts_count": 3,
+      "reply_count": 0,
+      "highest_post_number": 3,
+      "image_url": null,
+      "created_at": "2025-07-09T12:22:36.213Z",
+      "last_posted_at": "2025-07-15T16:20:20.140Z",
+      "bumped": true,
+      "bumped_at": "2025-07-15T16:20:20.140Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 91,
+      "category_id": 11,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 33465,
+            "username": "Haya-kun_XI",
+            "name": "Haya-kun XI",
+            "avatar_template": "/user_avatar/community.signalusers.org/haya-kun_xi/{size}/52881_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 1499,
+            "username": "CueHD",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/cuehd/{size}/42510_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Confirmation code when installing signal",
+  "id": 71085,
+  "title": "Confirmation code when installing signal",
+  "posts_count": 2,
+  "created_at": "2025-08-17T19:35:29.979Z",
+  "views": 74,
+  "reply_count": 0,
+  "like_count": 0,
+  "last_posted_at": "2025-08-19T13:13:48.188Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "confirmation-code-when-installing-signal",
+  "category_id": 11,
+  "word_count": 150,
+  "deleted_at": null,
+  "user_id": 33838,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_71085",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 2,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 2,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 31811,
+        "username": "desert_nip",
+        "name": "",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      },
+      {
+        "id": 33838,
+        "username": "Berkut-25",
+        "name": "Oleg",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/b/3e96dc/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 0
+      }
+    ],
+    "created_by": {
+      "id": 33838,
+      "username": "Berkut-25",
+      "name": "Oleg",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/b/3e96dc/{size}.png"
+    },
+    "last_poster": {
+      "id": 31811,
+      "username": "desert_nip",
+      "name": "",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png"
+    }
+  },
+  "bookmarks": []
+}

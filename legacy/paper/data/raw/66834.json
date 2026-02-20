@@ -1,0 +1,561 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 261004,
+        "name": "",
+        "username": "MMachado05",
+        "avatar_template": "/user_avatar/community.signalusers.org/mmachado05/{size}/49230_2.png",
+        "created_at": "2025-02-11T20:20:32.840Z",
+        "cooked": "<p>A message popped up on my Signal out of the blue telling me I had to verify myself to continue using Signal, and it pulled up an hCaptcha that I had to complete. I’ve never seen this before; how long has this been implemented? Is there any reason it might have shown up (i.e. using a VPN or something)? I had just texted someone for the first time, but we both have one another’s contact information. Just figured I’d ask here since it kind of caught me by surprise, and because I’d always heard (admittedly unverified) rumors about captchas being a bit privacy invasive!</p>\n<p>Relevant screenshots:<br>\n<div class=\"lightbox-wrapper\"><a class=\"lightbox\" href=\"https://community.signalusers.org/uploads/db3609/original/3X/3/3/33e7dbde8f752c776cc53f239a2283abf36749f2.png\" data-download-href=\"https://community.signalusers.org/uploads/db3609/33e7dbde8f752c776cc53f239a2283abf36749f2\" title=\"image\"><img src=\"https://community.signalusers.org/uploads/db3609/optimized/3X/3/3/33e7dbde8f752c776cc53f239a2283abf36749f2_2_230x500.png\" alt=\"image\" data-base62-sha1=\"7pb6AGWs7IRy5tEiIRKvp4KpVIe\" width=\"230\" height=\"500\" srcset=\"https://community.signalusers.org/uploads/db3609/optimized/3X/3/3/33e7dbde8f752c776cc53f239a2283abf36749f2_2_230x500.png, https://community.signalusers.org/uploads/db3609/optimized/3X/3/3/33e7dbde8f752c776cc53f239a2283abf36749f2_2_345x750.png 1.5x, https://community.signalusers.org/uploads/db3609/optimized/3X/3/3/33e7dbde8f752c776cc53f239a2283abf36749f2_2_460x1000.png 2x\" data-dominant-color=\"161616\"><div class=\"meta\"><svg class=\"fa d-icon d-icon-far-image svg-icon\" aria-hidden=\"true\"><use href=\"#far-image\"></use></svg><span class=\"filename\">image</span><span class=\"informations\">1179×2556 81.5 KB</span><svg class=\"fa d-icon d-icon-discourse-expand svg-icon\" aria-hidden=\"true\"><use href=\"#discourse-expand\"></use></svg></div></a></div><br>\n<div class=\"lightbox-wrapper\"><a class=\"lightbox\" href=\"https://community.signalusers.org/uploads/db3609/original/3X/a/f/afbeabe5d232ce0fc5ad4f77d14ebb5a1346e942.jpeg\" data-download-href=\"https://community.signalusers.org/uploads/db3609/afbeabe5d232ce0fc5ad4f77d14ebb5a1346e942\" title=\"image\"><img src=\"https://community.signalusers.org/uploads/db3609/optimized/3X/a/f/afbeabe5d232ce0fc5ad4f77d14ebb5a1346e942_2_230x500.jpeg\" alt=\"image\" data-base62-sha1=\"p4I4hxUwPegysCd8XVTJuVpQNrA\" width=\"230\" height=\"500\" srcset=\"https://community.signalusers.org/uploads/db3609/optimized/3X/a/f/afbeabe5d232ce0fc5ad4f77d14ebb5a1346e942_2_230x500.jpeg, https://community.signalusers.org/uploads/db3609/optimized/3X/a/f/afbeabe5d232ce0fc5ad4f77d14ebb5a1346e942_2_345x750.jpeg 1.5x, https://community.signalusers.org/uploads/db3609/optimized/3X/a/f/afbeabe5d232ce0fc5ad4f77d14ebb5a1346e942_2_460x1000.jpeg 2x\" data-dominant-color=\"888A8B\"><div class=\"meta\"><svg class=\"fa d-icon d-icon-far-image svg-icon\" aria-hidden=\"true\"><use href=\"#far-image\"></use></svg><span class=\"filename\">image</span><span class=\"informations\">1179×2556 91.4 KB</span><svg class=\"fa d-icon d-icon-discourse-expand svg-icon\" aria-hidden=\"true\"><use href=\"#discourse-expand\"></use></svg></div></a></div></p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 3,
+        "updated_at": "2025-02-11T20:20:32.840Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 33,
+        "readers_count": 32,
+        "score": 26.6,
+        "yours": false,
+        "topic_id": 66834,
+        "topic_slug": "requested-to-complete-an-hcaptcha-to-continue-using-signal",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 1
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 30455,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/requested-to-complete-an-hcaptcha-to-continue-using-signal/66834/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": true,
+        "can_vote": false
+      },
+      {
+        "id": 261028,
+        "name": "Croissant",
+        "username": "Croissant",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/c/43a26b/{size}.png",
+        "created_at": "2025-02-12T10:49:33.748Z",
+        "cooked": "<p>That’s totally normal and have been implemented a while ago, VPNs and other network/device related details can trigger it, but hCaptcha is privacy-first, they won’t fingerprint you etc. - not all captchas are inherently bad, they are just required to keep bots out.</p>",
+        "post_number": 2,
+        "post_type": 1,
+        "posts_count": 3,
+        "updated_at": "2025-02-12T10:49:33.748Z",
+        "reply_count": 1,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 22,
+        "readers_count": 21,
+        "score": 9.4,
+        "yours": false,
+        "topic_id": 66834,
+        "topic_slug": "requested-to-complete-an-hcaptcha-to-continue-using-signal",
+        "display_username": "Croissant",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 27155,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/requested-to-complete-an-hcaptcha-to-continue-using-signal/66834/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": true,
+        "topic_accepted_answer": true
+      },
+      {
+        "id": 261076,
+        "name": "",
+        "username": "MMachado05",
+        "avatar_template": "/user_avatar/community.signalusers.org/mmachado05/{size}/49230_2.png",
+        "created_at": "2025-02-12T19:57:33.322Z",
+        "cooked": "<p>This makes sense! The reason I was so weirded out was primarily because I’ve used Signal and ProtonVPN a lot in the past, so suddenly being requested for a captcha didn’t seem to have a single definable source. Alas, random spot checks are to be expected!</p>\n<p>Thanks for the response. <img src=\"https://community.signalusers.org/images/emoji/apple/+1.png?v=12\" title=\":+1:\" class=\"emoji\" alt=\":+1:\" loading=\"lazy\" width=\"20\" height=\"20\"></p>",
+        "post_number": 3,
+        "post_type": 1,
+        "posts_count": 3,
+        "updated_at": "2025-02-12T19:57:33.322Z",
+        "reply_count": 0,
+        "reply_to_post_number": 2,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 20,
+        "readers_count": 19,
+        "score": 19.0,
+        "yours": false,
+        "topic_id": 66834,
+        "topic_slug": "requested-to-complete-an-hcaptcha-to-continue-using-signal",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "reply_to_user": {
+          "id": 27155,
+          "username": "Croissant",
+          "name": "Croissant",
+          "avatar_template": "/letter_avatar_proxy/v4/letter/c/43a26b/{size}.png"
+        },
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 1
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 30455,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/requested-to-complete-an-hcaptcha-to-continue-using-signal/66834/3",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": true
+      }
+    ],
+    "stream": [
+      261004,
+      261028,
+      261076
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      368
+    ],
+    [
+      2,
+      367
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "accidentally removed chats",
+      "id": 73767,
+      "title": "accidentally removed chats",
+      "slug": "accidentally-removed-chats",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": null,
+      "created_at": "2025-12-22T16:12:38.530Z",
+      "last_posted_at": "2025-12-22T20:32:57.287Z",
+      "bumped": true,
+      "bumped_at": "2025-12-22T20:32:57.287Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 35,
+      "category_id": 10,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 35277,
+            "username": "Ritsjerd",
+            "name": "Richard van der Kamp",
+            "avatar_template": "/user_avatar/community.signalusers.org/ritsjerd/{size}/55175_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 25432,
+            "username": "modemrunner",
+            "name": "Stefano",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/m/7ea924/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Old Messages Deleted?",
+      "id": 70599,
+      "title": "Old Messages Deleted?",
+      "slug": "old-messages-deleted",
+      "posts_count": 5,
+      "reply_count": 1,
+      "highest_post_number": 6,
+      "image_url": null,
+      "created_at": "2025-07-23T22:51:36.942Z",
+      "last_posted_at": "2025-07-30T19:52:41.816Z",
+      "bumped": true,
+      "bumped_at": "2025-07-30T19:52:41.816Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 88,
+      "category_id": 10,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 33603,
+            "username": "stephf",
+            "name": "steph",
+            "avatar_template": "/user_avatar/community.signalusers.org/stephf/{size}/53048_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 24690,
+            "username": "ElPink",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/elpink/{size}/52764_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Switch on an eSIM: will Signal work?",
+      "id": 68711,
+      "title": "Switch on an eSIM: will Signal work?",
+      "slug": "switch-on-an-esim-will-signal-work",
+      "posts_count": 9,
+      "reply_count": 6,
+      "highest_post_number": 9,
+      "image_url": null,
+      "created_at": "2025-04-22T18:16:03.163Z",
+      "last_posted_at": "2025-04-23T19:51:29.467Z",
+      "bumped": true,
+      "bumped_at": "2025-04-23T19:51:29.467Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 19,
+      "views": 124,
+      "category_id": 10,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": true,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 5687,
+            "username": "Alias_duel_zone",
+            "name": "Daniel Azuelos",
+            "avatar_template": "/user_avatar/community.signalusers.org/alias_duel_zone/{size}/7470_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster, Accepted Answer",
+          "user": {
+            "id": 21703,
+            "username": "TomatoPlant",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/tomatoplant/{size}/31888_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31728,
+            "username": "Megan",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/megan/{size}/50954_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 5448,
+            "username": "DirkPitt1",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/74df32/{size}.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 1499,
+            "username": "CueHD",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/cuehd/{size}/42510_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Requested to complete an hCaptcha to continue using Signal",
+  "id": 66834,
+  "title": "Requested to complete an hCaptcha to continue using Signal",
+  "posts_count": 3,
+  "created_at": "2025-02-11T20:20:32.793Z",
+  "views": 96,
+  "reply_count": 1,
+  "like_count": 2,
+  "last_posted_at": "2025-02-12T19:57:33.322Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "requested-to-complete-an-hcaptcha-to-continue-using-signal",
+  "category_id": 10,
+  "word_count": 219,
+  "deleted_at": null,
+  "user_id": 30455,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/3/3/33e7dbde8f752c776cc53f239a2283abf36749f2_2_472x1024.png",
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_66834",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 3,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 2,
+  "show_read_indicator": false,
+  "thumbnails": [
+    {
+      "max_width": null,
+      "max_height": null,
+      "width": 1179,
+      "height": 2556,
+      "url": "https://community.signalusers.org/uploads/db3609/original/3X/3/3/33e7dbde8f752c776cc53f239a2283abf36749f2.png"
+    },
+    {
+      "max_width": 1024,
+      "max_height": 1024,
+      "width": 472,
+      "height": 1024,
+      "url": "https://community.signalusers.org/uploads/db3609/optimized/3X/3/3/33e7dbde8f752c776cc53f239a2283abf36749f2_2_472x1024.png"
+    }
+  ],
+  "slow_mode_enabled_until": null,
+  "accepted_answer": {
+    "post_number": 2,
+    "username": "Croissant",
+    "name": "Croissant",
+    "excerpt": "<p>That’s totally normal and have been implemented a while ago, VPNs and other network/device related details can trigger it, but hCaptcha is privacy-first, they won’t fingerprint you etc. - not all captchas are inherently bad, they are just required to keep bots out.</p>"
+  },
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 30455,
+        "username": "MMachado05",
+        "name": "",
+        "avatar_template": "/user_avatar/community.signalusers.org/mmachado05/{size}/49230_2.png",
+        "post_count": 2,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      },
+      {
+        "id": 27155,
+        "username": "Croissant",
+        "name": "Croissant",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/c/43a26b/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      }
+    ],
+    "created_by": {
+      "id": 30455,
+      "username": "MMachado05",
+      "name": "",
+      "avatar_template": "/user_avatar/community.signalusers.org/mmachado05/{size}/49230_2.png"
+    },
+    "last_poster": {
+      "id": 30455,
+      "username": "MMachado05",
+      "name": "",
+      "avatar_template": "/user_avatar/community.signalusers.org/mmachado05/{size}/49230_2.png"
+    }
+  },
+  "bookmarks": []
+}

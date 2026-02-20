@@ -1,0 +1,361 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 274697,
+        "name": "",
+        "username": "unique",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/u/f4b2a3/{size}.png",
+        "created_at": "2025-09-05T19:44:09.942Z",
+        "cooked": "<p>Unread messages badge looks the same for muted and unmuted chats. For me, this is confusing and very hard to keep an overview over the “important” unread messages. I often miss unread personal messages because they are not visibly outstanding.</p>\n<p>Proposal: make the background of unread messages badge for muted chats grey, keep the others with blue background.</p>\n<p>Here is an example how it is now and how it could look like:</p>\n<p><img src=\"https://community.signalusers.org/uploads/db3609/original/3X/a/6/a6d6858dcdb349ad38a3f9d72036730999e25c3a.png\" alt=\"image\" data-base62-sha1=\"nNURYZI0DiRg12obe4XVKG35JQC\" width=\"78\" height=\"437\">     <img src=\"https://community.signalusers.org/uploads/db3609/original/3X/b/6/b6e559a0c1b83e97f3f6c2291a30dc57295f3213.png\" alt=\"Unbenannt\" data-base62-sha1=\"q5Yhmbn7px9yyPj0aFlSPKLq9fJ\" width=\"78\" height=\"437\"></p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2025-09-05T19:44:09.942Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 22,
+        "readers_count": 21,
+        "score": 159.4,
+        "yours": false,
+        "topic_id": 71453,
+        "topic_slug": "distinguish-color-of-unread-messages-badge-for-muted-and-unmuted-chats",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 8
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 1349,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/distinguish-color-of-unread-messages-badge-for-muted-and-unmuted-chats/71453/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      274697
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      162
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Don&rsquo;t show blocked users first in group member list",
+      "id": 74354,
+      "title": "Don't show blocked users first in group member list",
+      "slug": "dont-show-blocked-users-first-in-group-member-list",
+      "posts_count": 3,
+      "reply_count": 1,
+      "highest_post_number": 3,
+      "image_url": null,
+      "created_at": "2026-01-20T19:27:20.207Z",
+      "last_posted_at": "2026-01-21T09:00:48.179Z",
+      "bumped": true,
+      "bumped_at": "2026-01-21T09:00:48.179Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 2,
+      "views": 58,
+      "category_id": 28,
+      "featured_link": null,
+      "op_like_count": 2,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 19563,
+            "username": "makiro",
+            "name": "makiro",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/m/dfb087/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Please modify the media function",
+      "id": 66917,
+      "title": "Please modify the media function",
+      "slug": "please-modify-the-media-function",
+      "posts_count": 4,
+      "reply_count": 2,
+      "highest_post_number": 4,
+      "image_url": null,
+      "created_at": "2025-02-15T00:42:13.340Z",
+      "last_posted_at": "2025-02-15T09:15:02.710Z",
+      "bumped": true,
+      "bumped_at": "2025-02-15T09:15:02.710Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 5,
+      "views": 154,
+      "category_id": 19,
+      "featured_link": null,
+      "op_like_count": 2,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 30868,
+            "username": "Elena",
+            "name": "Elena",
+            "avatar_template": "/user_avatar/community.signalusers.org/elena/{size}/49796_2.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 31728,
+            "username": "Megan",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/megan/{size}/50954_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Do not mention chat types, only total chat count, in folders view",
+      "id": 73945,
+      "title": "Do not mention chat types, only total chat count, in folders view",
+      "slug": "do-not-mention-chat-types-only-total-chat-count-in-folders-view",
+      "posts_count": 3,
+      "reply_count": 1,
+      "highest_post_number": 3,
+      "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/3/4/34e14695b42b3488da0544b1c19438d998bf74a2_2_460x1024.png",
+      "created_at": "2026-01-01T22:23:25.266Z",
+      "last_posted_at": "2026-01-02T10:25:07.531Z",
+      "bumped": true,
+      "bumped_at": "2026-01-02T10:25:07.531Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 2,
+      "views": 45,
+      "category_id": 30,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 1210,
+            "username": "Meteor0id",
+            "name": "Meteor0id",
+            "avatar_template": "/user_avatar/community.signalusers.org/meteor0id/{size}/55420_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Distinguish color of unread messages badge for muted and unmuted chats",
+  "id": 71453,
+  "title": "Distinguish color of unread messages badge for muted and unmuted chats",
+  "posts_count": 1,
+  "created_at": "2025-09-05T19:44:09.865Z",
+  "views": 35,
+  "reply_count": 0,
+  "like_count": 8,
+  "last_posted_at": "2025-09-05T19:44:09.942Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "distinguish-color-of-unread-messages-badge-for-muted-and-unmuted-chats",
+  "category_id": 28,
+  "word_count": 82,
+  "deleted_at": null,
+  "user_id": 1349,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": "https://community.signalusers.org/uploads/db3609/original/3X/a/6/a6d6858dcdb349ad38a3f9d72036730999e25c3a.png",
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_71453",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": [
+    {
+      "max_width": null,
+      "max_height": null,
+      "width": 78,
+      "height": 437,
+      "url": "https://community.signalusers.org/uploads/db3609/original/3X/a/6/a6d6858dcdb349ad38a3f9d72036730999e25c3a.png"
+    }
+  ],
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 1349,
+        "username": "unique",
+        "name": "",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/u/f4b2a3/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      }
+    ],
+    "created_by": {
+      "id": 1349,
+      "username": "unique",
+      "name": "",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/u/f4b2a3/{size}.png"
+    },
+    "last_poster": {
+      "id": 1349,
+      "username": "unique",
+      "name": "",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/u/f4b2a3/{size}.png"
+    }
+  },
+  "bookmarks": []
+}

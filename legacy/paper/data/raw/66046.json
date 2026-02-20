@@ -1,0 +1,418 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 258801,
+        "name": "tubby",
+        "username": "tubby-gilled",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/t/e9a140/{size}.png",
+        "created_at": "2025-01-13T23:54:14.742Z",
+        "cooked": "<p><div class=\"lightbox-wrapper\"><a class=\"lightbox\" href=\"https://community.signalusers.org/uploads/db3609/original/3X/d/9/d990ce91a746125c8ab4fb7f26ebfb36f6c8b97c.jpeg\" data-download-href=\"https://community.signalusers.org/uploads/db3609/d990ce91a746125c8ab4fb7f26ebfb36f6c8b97c\" title=\"image\"><img src=\"https://community.signalusers.org/uploads/db3609/optimized/3X/d/9/d990ce91a746125c8ab4fb7f26ebfb36f6c8b97c_2_569x500.jpeg\" alt=\"image\" data-base62-sha1=\"v2FRdVm3F06VA6EJVt8tEZCyYKU\" width=\"569\" height=\"500\" srcset=\"https://community.signalusers.org/uploads/db3609/optimized/3X/d/9/d990ce91a746125c8ab4fb7f26ebfb36f6c8b97c_2_569x500.jpeg, https://community.signalusers.org/uploads/db3609/optimized/3X/d/9/d990ce91a746125c8ab4fb7f26ebfb36f6c8b97c_2_853x750.jpeg 1.5x, https://community.signalusers.org/uploads/db3609/optimized/3X/d/9/d990ce91a746125c8ab4fb7f26ebfb36f6c8b97c_2_1138x1000.jpeg 2x\" data-dominant-color=\"191919\"><div class=\"meta\"><svg class=\"fa d-icon d-icon-far-image svg-icon\" aria-hidden=\"true\"><use href=\"#far-image\"></use></svg><span class=\"filename\">image</span><span class=\"informations\">1162×1020 41.2 KB</span><svg class=\"fa d-icon d-icon-discourse-expand svg-icon\" aria-hidden=\"true\"><use href=\"#discourse-expand\"></use></svg></div></a></div></p>\n<p>This is how my signal looks when I click to share the link while my app is resized to a smaller than normal size</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2025-01-13T23:54:14.742Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 2,
+        "reads": 33,
+        "readers_count": 32,
+        "score": 31.6,
+        "yours": false,
+        "topic_id": 66046,
+        "topic_slug": "i-encountered-a-ui-issue-bug-in-the-desktop-version",
+        "display_username": "tubby",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 1
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 31265,
+        "hidden": false,
+        "trust_level": 1,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/i-encountered-a-ui-issue-bug-in-the-desktop-version/66046/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      },
+      {
+        "id": 258802,
+        "name": "",
+        "username": "Herohtar",
+        "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+        "created_at": "2025-01-13T23:54:55.982Z",
+        "cooked": "<p>Bugs need to be reported on GitHub, as issues aren’t tracked here.</p>",
+        "post_number": 2,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2025-01-13T23:54:55.982Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 33,
+        "readers_count": 32,
+        "score": 36.6,
+        "yours": false,
+        "topic_id": 66046,
+        "topic_slug": "i-encountered-a-ui-issue-bug-in-the-desktop-version",
+        "display_username": "",
+        "primary_group_name": "volunteer_moderators",
+        "flair_name": "volunteer_moderators",
+        "flair_url": "shield-halved",
+        "flair_bg_color": "1d8663",
+        "flair_color": "fff",
+        "flair_group_id": 41,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "Volunteer Moderator",
+        "title_is_group": true,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 2
+          }
+        ],
+        "moderator": true,
+        "admin": false,
+        "staff": true,
+        "user_id": 2521,
+        "hidden": false,
+        "trust_level": 4,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/i-encountered-a-ui-issue-bug-in-the-desktop-version/66046/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      }
+    ],
+    "stream": [
+      258801,
+      258802
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      397
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "MacOS 26 Liquid Glass design support",
+      "id": 73653,
+      "title": "MacOS 26 Liquid Glass design support",
+      "slug": "macos-26-liquid-glass-design-support",
+      "posts_count": 2,
+      "reply_count": 1,
+      "highest_post_number": 2,
+      "image_url": null,
+      "created_at": "2025-12-17T12:06:05.301Z",
+      "last_posted_at": "2025-12-17T17:46:25.392Z",
+      "bumped": true,
+      "bumped_at": "2025-12-17T17:46:25.392Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 12,
+      "views": 117,
+      "category_id": 31,
+      "featured_link": null,
+      "op_like_count": 4,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 34333,
+            "username": "timinigi",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/timinigi/{size}/54042_2.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 24521,
+            "username": "nuser",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/n/3bc359/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Make desktop reply design consistent with mobile",
+      "id": 72804,
+      "title": "Make desktop reply design consistent with mobile",
+      "slug": "make-desktop-reply-design-consistent-with-mobile",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": "https://community.signalusers.org/uploads/db3609/original/3X/a/5/a50e4fae24ab88928690cd3f245bc03b511fe5ab.png",
+      "created_at": "2025-11-09T23:15:40.179Z",
+      "last_posted_at": "2026-01-14T07:35:38.259Z",
+      "bumped": true,
+      "bumped_at": "2026-01-14T07:35:38.259Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 1,
+      "views": 88,
+      "category_id": 31,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 34476,
+            "username": "shaded",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/shaded/{size}/54687_2.png",
+            "trust_level": 3
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Text font is extremely ugly on non-cleartype settings",
+      "id": 69024,
+      "title": "Text font is extremely ugly on non-cleartype settings",
+      "slug": "text-font-is-extremely-ugly-on-non-cleartype-settings",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": "https://community.signalusers.org/uploads/db3609/original/3X/5/3/53e79bfbff8b29e93f8cf7530a5c556aa0e1c706.jpeg",
+      "created_at": "2025-05-07T17:46:06.905Z",
+      "last_posted_at": "2025-05-07T17:46:06.984Z",
+      "bumped": true,
+      "bumped_at": "2025-05-07T17:46:06.984Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 2,
+      "views": 69,
+      "category_id": 31,
+      "featured_link": null,
+      "op_like_count": 2,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 32848,
+            "username": "intro",
+            "name": "intro",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/i/8c91f0/{size}.png",
+            "trust_level": 1
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "I encountered a UI issue/bug in the desktop version",
+  "id": 66046,
+  "title": "I encountered a UI issue/bug in the desktop version",
+  "posts_count": 2,
+  "created_at": "2025-01-13T23:54:14.695Z",
+  "views": 87,
+  "reply_count": 0,
+  "like_count": 3,
+  "last_posted_at": "2025-01-13T23:54:55.982Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "i-encountered-a-ui-issue-bug-in-the-desktop-version",
+  "category_id": 31,
+  "word_count": 42,
+  "deleted_at": null,
+  "user_id": 31265,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/d/9/d990ce91a746125c8ab4fb7f26ebfb36f6c8b97c_2_1024x898.jpeg",
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_66046",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 2,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 2,
+  "show_read_indicator": false,
+  "thumbnails": [
+    {
+      "max_width": null,
+      "max_height": null,
+      "width": 1162,
+      "height": 1020,
+      "url": "https://community.signalusers.org/uploads/db3609/original/3X/d/9/d990ce91a746125c8ab4fb7f26ebfb36f6c8b97c.jpeg"
+    },
+    {
+      "max_width": 1024,
+      "max_height": 1024,
+      "width": 1024,
+      "height": 898,
+      "url": "https://community.signalusers.org/uploads/db3609/optimized/3X/d/9/d990ce91a746125c8ab4fb7f26ebfb36f6c8b97c_2_1024x898.jpeg"
+    }
+  ],
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 2521,
+        "username": "Herohtar",
+        "name": "",
+        "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+        "post_count": 1,
+        "primary_group_name": "volunteer_moderators",
+        "flair_name": "volunteer_moderators",
+        "flair_url": "shield-halved",
+        "flair_color": "fff",
+        "flair_bg_color": "1d8663",
+        "flair_group_id": 41,
+        "moderator": true,
+        "trust_level": 4
+      },
+      {
+        "id": 31265,
+        "username": "tubby-gilled",
+        "name": "tubby",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/t/e9a140/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 1
+      }
+    ],
+    "created_by": {
+      "id": 31265,
+      "username": "tubby-gilled",
+      "name": "tubby",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/t/e9a140/{size}.png"
+    },
+    "last_poster": {
+      "id": 2521,
+      "username": "Herohtar",
+      "name": "",
+      "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png"
+    }
+  },
+  "bookmarks": []
+}

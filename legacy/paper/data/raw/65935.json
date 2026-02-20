@@ -1,0 +1,353 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 258474,
+        "name": "",
+        "username": "simtig",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/s/d07c76/{size}.png",
+        "created_at": "2025-01-09T14:43:43.379Z",
+        "cooked": "<p>I am in the UK and chat with a friend in the USA, my local time is 5 hours ahead of them. When I send a message it shows my local time, if they reply right away the time on the message I receive from them it shows 2 hours ahead of my local time?</p>\n<p>At their end the message they received from me shows 2 hours behind their local time. The message they send shows their local time.</p>\n<p>This makes no sense to me, could someone explain? I am on IOS &amp; Mac desktop, they are on Android &amp; Windows desktop. The time stamps are consistent on all my devices &amp; and on all their devices.</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2025-01-09T15:18:26.601Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 3,
+        "reads": 22,
+        "readers_count": 21,
+        "score": 19.4,
+        "yours": false,
+        "topic_id": 65935,
+        "topic_slug": "message-time-received",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 2,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "",
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 31279,
+        "hidden": false,
+        "trust_level": 1,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/message-time-received/65935/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      258474
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      401
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Backup frequncy",
+      "id": 73197,
+      "title": "Backup frequncy",
+      "slug": "backup-frequncy",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": null,
+      "created_at": "2025-11-28T14:48:43.050Z",
+      "last_posted_at": "2025-11-28T14:53:01.750Z",
+      "bumped": true,
+      "bumped_at": "2025-11-28T14:53:01.750Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 1,
+      "views": 49,
+      "category_id": 9,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 34954,
+            "username": "theking2",
+            "name": "John",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/t/ecb155/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Desktop version gives a blank screen",
+      "id": 68598,
+      "title": "Desktop version gives a blank screen",
+      "slug": "desktop-version-gives-a-blank-screen",
+      "posts_count": 6,
+      "reply_count": 3,
+      "highest_post_number": 6,
+      "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/f/4/f429f36ce3199c06f5164625d947033c6ed29551_2_1024x658.png",
+      "created_at": "2025-04-17T12:33:37.292Z",
+      "last_posted_at": "2025-06-11T17:18:16.219Z",
+      "bumped": true,
+      "bumped_at": "2025-06-11T17:18:16.219Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 2,
+      "views": 103,
+      "category_id": 12,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": true,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 32616,
+            "username": "QT-Pro",
+            "name": "Adrian",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/q/ea5d25/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster, Accepted Answer",
+          "user": {
+            "id": 31728,
+            "username": "Megan",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/megan/{size}/50954_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31878,
+            "username": "Ambiguous192",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/a/ea5d25/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "How can I use the Electron debugger effectively when working on Signal?",
+      "id": 69698,
+      "title": "How can I use the Electron debugger effectively when working on Signal?",
+      "slug": "how-can-i-use-the-electron-debugger-effectively-when-working-on-signal",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": null,
+      "created_at": "2025-06-11T23:25:14.072Z",
+      "last_posted_at": "2025-06-19T05:30:36.971Z",
+      "bumped": true,
+      "bumped_at": "2025-06-19T05:30:36.971Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 53,
+      "category_id": 23,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 25851,
+            "username": "EliasZ",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/eliasz/{size}/42737_2.png",
+            "trust_level": 1
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Message Time received",
+  "id": 65935,
+  "title": "Message Time received",
+  "posts_count": 1,
+  "created_at": "2025-01-09T14:43:43.333Z",
+  "views": 40,
+  "reply_count": 0,
+  "like_count": 0,
+  "last_posted_at": "2025-01-09T14:43:43.379Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "message-time-received",
+  "category_id": 9,
+  "word_count": 114,
+  "deleted_at": null,
+  "user_id": 31279,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_65935",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 31279,
+        "username": "simtig",
+        "name": "",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/s/d07c76/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 1
+      }
+    ],
+    "created_by": {
+      "id": 31279,
+      "username": "simtig",
+      "name": "",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/s/d07c76/{size}.png"
+    },
+    "last_poster": {
+      "id": 31279,
+      "username": "simtig",
+      "name": "",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/s/d07c76/{size}.png"
+    }
+  },
+  "bookmarks": []
+}

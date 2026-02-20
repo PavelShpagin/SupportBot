@@ -1,0 +1,375 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 255055,
+        "name": "",
+        "username": "Lkunited",
+        "avatar_template": "/user_avatar/community.signalusers.org/lkunited/{size}/42150_2.png",
+        "created_at": "2024-11-07T18:56:46.499Z",
+        "cooked": "<p>Currently, I have to tap through 3 menus to delete a simple message<br>\n(Long-press the message, select Delete and select whether the message shall be deleted for all or not).<br>\nThis could be fixed via adding a shortcut for deleting a message, for example a swipe like the one for showing message information on iOS or the one for responding. I could also think of something like a triple-tab.</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2024-11-07T18:56:46.499Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 27,
+        "readers_count": 26,
+        "score": 10.4,
+        "yours": false,
+        "topic_id": 64726,
+        "topic_slug": "quick-message-deletion",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "",
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 25419,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/quick-message-deletion/64726/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      255055
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      464
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Make Signal available and attractive to businesses to use",
+      "id": 69293,
+      "title": "Make Signal available and attractive to businesses to use",
+      "slug": "make-signal-available-and-attractive-to-businesses-to-use",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": null,
+      "created_at": "2025-05-21T20:17:56.136Z",
+      "last_posted_at": "2025-05-28T07:58:48.582Z",
+      "bumped": true,
+      "bumped_at": "2025-05-28T07:58:48.582Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 1,
+      "views": 252,
+      "category_id": 17,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 32966,
+            "username": "6vbz6d8ooppxhw1a",
+            "name": "Void",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/6/ce7236/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 28656,
+            "username": "pickle_umbrella",
+            "name": "Pickle",
+            "avatar_template": "/user_avatar/community.signalusers.org/pickle_umbrella/{size}/48004_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "In Contact&rsquo;s info, show which own phone# and usernames it knows",
+      "id": 68828,
+      "title": "In Contact's info, show which own phone# and usernames it knows",
+      "slug": "in-contacts-info-show-which-own-phone-and-usernames-it-knows",
+      "posts_count": 10,
+      "reply_count": 3,
+      "highest_post_number": 10,
+      "image_url": null,
+      "created_at": "2025-04-28T03:10:27.404Z",
+      "last_posted_at": "2025-04-29T10:16:20.039Z",
+      "bumped": true,
+      "bumped_at": "2025-04-29T10:16:20.039Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 5,
+      "views": 131,
+      "category_id": 17,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 32734,
+            "username": "opoier",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/o/ecccb3/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 1499,
+            "username": "CueHD",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/cuehd/{size}/42510_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 32154,
+            "username": "Delamcode",
+            "name": "Delamcode",
+            "avatar_template": "/user_avatar/community.signalusers.org/delamcode/{size}/51199_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Android System Intelligence",
+      "id": 71661,
+      "title": "Android System Intelligence",
+      "slug": "android-system-intelligence",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": null,
+      "created_at": "2025-09-15T18:04:57.887Z",
+      "last_posted_at": "2025-09-15T20:07:37.149Z",
+      "bumped": true,
+      "bumped_at": "2025-09-15T20:07:37.149Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 1,
+      "views": 114,
+      "category_id": 13,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 32612,
+            "username": "zebra521",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/z/82dd89/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Quick message deletion",
+  "id": 64726,
+  "title": "Quick message deletion",
+  "posts_count": 1,
+  "created_at": "2024-11-07T18:56:46.443Z",
+  "views": 45,
+  "reply_count": 0,
+  "like_count": 0,
+  "last_posted_at": "2024-11-07T18:56:46.499Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "quick-message-deletion",
+  "category_id": 17,
+  "word_count": 71,
+  "deleted_at": null,
+  "user_id": 25419,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_64726",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 25419,
+        "username": "Lkunited",
+        "name": "",
+        "avatar_template": "/user_avatar/community.signalusers.org/lkunited/{size}/42150_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      }
+    ],
+    "created_by": {
+      "id": 25419,
+      "username": "Lkunited",
+      "name": "",
+      "avatar_template": "/user_avatar/community.signalusers.org/lkunited/{size}/42150_2.png"
+    },
+    "last_poster": {
+      "id": 25419,
+      "username": "Lkunited",
+      "name": "",
+      "avatar_template": "/user_avatar/community.signalusers.org/lkunited/{size}/42150_2.png"
+    }
+  },
+  "bookmarks": []
+}

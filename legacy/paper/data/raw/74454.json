@@ -1,0 +1,449 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 283444,
+        "name": "Paulo",
+        "username": "PauloD",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/p/898d66/{size}.png",
+        "created_at": "2026-01-25T15:31:31.884Z",
+        "cooked": "<p>Hi,</p>\n<p>I believe previously this was not possible and I\u2019m wondering if there has been any change.</p>\n<p>iPhone 1 has signal with chats and media on each chat.</p>\n<p>iPhone 2 has been set up with signal installed but no transfer\u2026</p>\n<p>Is it possible transfer all chats AND media from iPhone 1 to iPhone 2 or is the case you have to download media to iPhone1 from the signal app</p>\n<p>TIA</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2026-01-25T15:31:31.884Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 3,
+        "reads": 19,
+        "readers_count": 18,
+        "score": 18.8,
+        "yours": false,
+        "topic_id": 74454,
+        "topic_slug": "iphone-to-iphone-and-keeping-media",
+        "display_username": "Paulo",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 14814,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/iphone-to-iphone-and-keeping-media/74454/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      },
+      {
+        "id": 283541,
+        "name": null,
+        "username": "anon88132",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/a/ba9def/{size}.png",
+        "created_at": "2026-01-27T07:41:54.709Z",
+        "cooked": "<p><a href=\"https://support.signal.org/hc/en-us/articles/10045771316762-iOS-to-iOS-Device-Transfer\" class=\"onebox\" target=\"_blank\" rel=\"noopener nofollow ugc\">https://support.signal.org/hc/en-us/articles/10045771316762-iOS-to-iOS-Device-Transfer</a></p>",
+        "post_number": 2,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2026-01-27T07:41:54.709Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 13,
+        "readers_count": 12,
+        "score": 2.6,
+        "yours": false,
+        "topic_id": 74454,
+        "topic_slug": "iphone-to-iphone-and-keeping-media",
+        "display_username": null,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://support.signal.org/hc/en-us/articles/10045771316762-iOS-to-iOS-Device-Transfer",
+            "internal": false,
+            "reflection": false,
+            "clicks": 5
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 17396,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/iphone-to-iphone-and-keeping-media/74454/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      }
+    ],
+    "stream": [
+      283444,
+      283541
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      20
+    ],
+    [
+      2,
+      18
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "After full disk, Signal data corruption, recovery not working - did I lost everything?",
+      "id": 68347,
+      "title": "After full disk, Signal data corruption, recovery not working - did I lost everything?",
+      "slug": "after-full-disk-signal-data-corruption-recovery-not-working-did-i-lost-everything",
+      "posts_count": 7,
+      "reply_count": 4,
+      "highest_post_number": 7,
+      "image_url": null,
+      "created_at": "2025-04-08T13:31:49.727Z",
+      "last_posted_at": "2025-09-03T17:44:09.636Z",
+      "bumped": true,
+      "bumped_at": "2025-09-03T17:44:09.636Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 106,
+      "category_id": 10,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 32499,
+            "username": "signalinguser",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/s/91b2a8/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31728,
+            "username": "Megan",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/megan/{size}/50954_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 34014,
+            "username": "lapis_king",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/l/dbc845/{size}.png",
+            "trust_level": 1
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Friend&rsquo;s Signal App not Auto Updating",
+      "id": 67642,
+      "title": "Friend's Signal App not Auto Updating",
+      "slug": "friends-signal-app-not-auto-updating",
+      "posts_count": 4,
+      "reply_count": 1,
+      "highest_post_number": 4,
+      "image_url": null,
+      "created_at": "2025-03-13T03:27:00.737Z",
+      "last_posted_at": "2025-03-13T20:24:24.626Z",
+      "bumped": true,
+      "bumped_at": "2025-03-13T20:24:24.626Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 72,
+      "category_id": 10,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 31498,
+            "username": "DaythimePowder",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ad7895/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "How long does it take until a donation is being worked out?",
+      "id": 67308,
+      "title": "How long does it take until a donation is being worked out?",
+      "slug": "how-long-does-it-take-until-a-donation-is-being-worked-out",
+      "posts_count": 4,
+      "reply_count": 2,
+      "highest_post_number": 4,
+      "image_url": null,
+      "created_at": "2025-03-01T14:04:56.059Z",
+      "last_posted_at": "2025-03-04T20:24:00.751Z",
+      "bumped": true,
+      "bumped_at": "2025-03-04T20:24:00.751Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 1,
+      "views": 100,
+      "category_id": 10,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": true,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster, Accepted Answer",
+          "user": {
+            "id": 31728,
+            "username": "Megan",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/megan/{size}/50954_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 3709,
+            "username": "aihpcfl",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/aihpcfl/{size}/3917_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "iPhone to iPhone and keeping media",
+  "id": 74454,
+  "title": "iPhone to iPhone and keeping media",
+  "posts_count": 2,
+  "created_at": "2026-01-25T15:31:31.797Z",
+  "views": 53,
+  "reply_count": 0,
+  "like_count": 0,
+  "last_posted_at": "2026-01-27T07:41:54.709Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "iphone-to-iphone-and-keeping-media",
+  "category_id": 10,
+  "word_count": 85,
+  "deleted_at": null,
+  "user_id": 14814,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_74454",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 2,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 2,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 14814,
+        "username": "PauloD",
+        "name": "Paulo",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/p/898d66/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 0
+      },
+      {
+        "id": 17396,
+        "username": "anon88132",
+        "name": null,
+        "avatar_template": "/letter_avatar_proxy/v4/letter/a/ba9def/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      }
+    ],
+    "created_by": {
+      "id": 14814,
+      "username": "PauloD",
+      "name": "Paulo",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/p/898d66/{size}.png"
+    },
+    "last_poster": {
+      "id": 17396,
+      "username": "anon88132",
+      "name": null,
+      "avatar_template": "/letter_avatar_proxy/v4/letter/a/ba9def/{size}.png"
+    },
+    "links": [
+      {
+        "url": "https://support.signal.org/hc/en-us/articles/10045771316762-iOS-to-iOS-Device-Transfer",
+        "title": null,
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 5,
+        "user_id": 17396,
+        "domain": "support.signal.org",
+        "root_domain": "signal.org"
+      }
+    ]
+  },
+  "bookmarks": []
+}

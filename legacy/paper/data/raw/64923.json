@@ -1,0 +1,409 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 255667,
+        "name": "",
+        "username": "sarttiso",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/s/c4cdca/{size}.png",
+        "created_at": "2024-11-15T14:37:03.663Z",
+        "cooked": "<p>Signal documentation describes how to remove contacts here:</p><aside class=\"onebox allowlistedgeneric\" data-onebox-src=\"https://support.signal.org/hc/en-us/articles/360007319011-Manage-Contacts-Nicknames-and-Notes#contact_remove\">\n  <header class=\"source\">\n      \n\n      <a href=\"https://support.signal.org/hc/en-us/articles/360007319011-Manage-Contacts-Nicknames-and-Notes#contact_remove\" target=\"_blank\" rel=\"noopener nofollow ugc\">Signal Support</a>\n  </header>\n\n  <article class=\"onebox-body\">\n    \n\n<h3><a href=\"https://support.signal.org/hc/en-us/articles/360007319011-Manage-Contacts-Nicknames-and-Notes#contact_remove\" target=\"_blank\" rel=\"noopener nofollow ugc\">Manage Contacts, Nicknames and Notes</a></h3>\n\n  <p>Signal contacts\nWho appears in the contact list?\nEdit your contact's name\nSet or edit a custom nickname and note\nView a custom note\nEdit your contact's photo\nEdit your contact's number\nRefresh your...</p>\n\n\n  </article>\n\n  <div class=\"onebox-metadata\">\n    \n    \n  </div>\n\n  <div style=\"clear: both\"></div>\n</aside>\n\n<p>However, this process can only remove contacts one at a time. Furthermore, after deleting a contact (on Android at least), the whole screen refreshes after about a second or two. This refresh introduces further delay in the already tedious process of deleting multiple contacts.</p>\n<p>It would be nice to be able to select multiple contacts at a time to then delete them all simultaneously, rather than the time-consuming process of deleting contacts individually.</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2024-11-15T14:37:03.663Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 5,
+        "reads": 26,
+        "readers_count": 25,
+        "score": 30.2,
+        "yours": false,
+        "topic_id": 64923,
+        "topic_slug": "batch-contact-removal",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://support.signal.org/hc/en-us/articles/360007319011-Manage-Contacts-Nicknames-and-Notes#contact_remove",
+            "internal": false,
+            "reflection": false,
+            "clicks": 0
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 30756,
+        "hidden": false,
+        "trust_level": 1,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/batch-contact-removal/64923/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      255667
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      456
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Arrows, Circles and other annotation tools for the Image Editor",
+      "id": 72380,
+      "title": "Arrows, Circles and other annotation tools for the Image Editor",
+      "slug": "arrows-circles-and-other-annotation-tools-for-the-image-editor",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": "https://community.signalusers.org/uploads/db3609/original/3X/6/a/6a52dc2410431be9513779bd24e8275db224adce.png",
+      "created_at": "2025-10-22T15:18:05.910Z",
+      "last_posted_at": "2025-10-22T15:18:05.979Z",
+      "bumped": true,
+      "bumped_at": "2025-10-22T15:18:05.979Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 4,
+      "views": 41,
+      "category_id": 17,
+      "featured_link": null,
+      "op_like_count": 4,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 34539,
+            "username": "hhhhhhhh",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/h/f19dbf/{size}.png",
+            "trust_level": 0
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Not blocking unknown contacts numbers can destroy someone&rsquo;s peaceful life!",
+      "id": 72039,
+      "title": "Not blocking unknown contacts numbers can destroy someone's peaceful life!",
+      "slug": "not-blocking-unknown-contacts-numbers-can-destroy-someones-peaceful-life",
+      "posts_count": 21,
+      "reply_count": 17,
+      "highest_post_number": 21,
+      "image_url": null,
+      "created_at": "2025-10-04T17:52:58.912Z",
+      "last_posted_at": "2025-10-06T11:24:47.524Z",
+      "bumped": true,
+      "bumped_at": "2025-10-06T11:24:47.524Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 16,
+      "views": 332,
+      "category_id": 17,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 4582,
+            "username": "desmond",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/e495f1/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 2521,
+            "username": "Herohtar",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+            "primary_group_name": "volunteer_moderators",
+            "flair_name": "volunteer_moderators",
+            "flair_url": "shield-halved",
+            "flair_bg_color": "1d8663",
+            "flair_color": "fff",
+            "flair_group_id": 41,
+            "moderator": true,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 6659,
+            "username": "Whatnoww",
+            "name": "Whatnoww",
+            "avatar_template": "/user_avatar/community.signalusers.org/whatnoww/{size}/54328_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Echo contact to test reception",
+      "id": 68421,
+      "title": "Echo contact to test reception",
+      "slug": "echo-contact-to-test-reception",
+      "posts_count": 9,
+      "reply_count": 5,
+      "highest_post_number": 9,
+      "image_url": null,
+      "created_at": "2025-04-10T19:19:15.684Z",
+      "last_posted_at": "2025-04-11T17:39:42.757Z",
+      "bumped": true,
+      "bumped_at": "2025-04-11T17:39:42.757Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 2,
+      "views": 92,
+      "category_id": 17,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 6918,
+            "username": "anon72041163",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/a/a6a055/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 296,
+            "username": "PiCob",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/picob/{size}/589_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 2521,
+            "username": "Herohtar",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+            "primary_group_name": "volunteer_moderators",
+            "flair_name": "volunteer_moderators",
+            "flair_url": "shield-halved",
+            "flair_bg_color": "1d8663",
+            "flair_color": "fff",
+            "flair_group_id": 41,
+            "moderator": true,
+            "trust_level": 4
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "batch contact removal",
+  "id": 64923,
+  "title": "batch contact removal",
+  "posts_count": 1,
+  "created_at": "2024-11-15T14:37:03.624Z",
+  "views": 44,
+  "reply_count": 0,
+  "like_count": 0,
+  "last_posted_at": "2024-11-15T14:37:03.663Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "batch-contact-removal",
+  "category_id": 17,
+  "word_count": 97,
+  "deleted_at": null,
+  "user_id": 30756,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_64923",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 30756,
+        "username": "sarttiso",
+        "name": "",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/s/c4cdca/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 1
+      }
+    ],
+    "created_by": {
+      "id": 30756,
+      "username": "sarttiso",
+      "name": "",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/s/c4cdca/{size}.png"
+    },
+    "last_poster": {
+      "id": 30756,
+      "username": "sarttiso",
+      "name": "",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/s/c4cdca/{size}.png"
+    }
+  },
+  "bookmarks": []
+}

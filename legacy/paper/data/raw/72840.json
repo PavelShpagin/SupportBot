@@ -1,0 +1,552 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 279051,
+        "name": "Archit",
+        "username": "Archit.01",
+        "avatar_template": "/user_avatar/community.signalusers.org/archit.01/{size}/54600_2.png",
+        "created_at": "2025-11-11T14:24:17.487Z",
+        "cooked": "<p>Dear Signal Team,</p>\n<p>I hope you are doing well. I’m a US-based investigative journalist and recent graduate from Georgetown University.</p>\n<p>I’m applying to various PhD programs with privacy as my focus. In a recent talk at the Council on Foreign Relations, Meredith Whittaker stated that the world needs more researchers in this field.</p>\n<p>Could* we possibly connect over office hours at Signal to explore synergies?</p>\n<p>Thank you for your time and consideration.</p>\n<p>Regards,<br>\nArchit</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2025-11-11T21:36:42.127Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 2,
+        "reads": 35,
+        "readers_count": 34,
+        "score": 32.0,
+        "yours": false,
+        "topic_id": 72840,
+        "topic_slug": "aspiring-phd-candidate-focus-of-privacy",
+        "display_username": "Archit",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 2,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 1
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 34778,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/aspiring-phd-candidate-focus-of-privacy/72840/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": true,
+        "can_vote": false
+      },
+      {
+        "id": 279061,
+        "name": "👊🇺🇸🔥",
+        "username": "Avitus",
+        "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+        "created_at": "2025-11-11T14:30:41.470Z",
+        "cooked": "<p>You’ll have better luck with this question over email. This forum is primarily for Signal users. Check <a href=\"https://signal.org\">https://signal.org</a> for an email address that might be most applicable.</p>",
+        "post_number": 2,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2025-11-11T14:30:41.470Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 34,
+        "readers_count": 33,
+        "score": 96.8,
+        "yours": false,
+        "topic_id": 72840,
+        "topic_slug": "aspiring-phd-candidate-focus-of-privacy",
+        "display_username": "👊🇺🇸🔥",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://signal.org",
+            "internal": false,
+            "reflection": false,
+            "title": "Signal >> Home",
+            "clicks": 1
+          }
+        ],
+        "read": true,
+        "user_title": "",
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 4
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 7657,
+        "hidden": false,
+        "trust_level": 3,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/aspiring-phd-candidate-focus-of-privacy/72840/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": true,
+        "topic_accepted_answer": true
+      }
+    ],
+    "stream": [
+      279051,
+      279061
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      95
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Moxie has been building a private LLM",
+      "id": 73788,
+      "title": "Moxie has been building a private LLM",
+      "slug": "moxie-has-been-building-a-private-llm",
+      "posts_count": 13,
+      "reply_count": 5,
+      "highest_post_number": 14,
+      "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/d/2/d23e2c80b1afac487cddd24683a72d1321c05d7e_2_1024x682.jpeg",
+      "created_at": "2025-12-23T17:58:39.270Z",
+      "last_posted_at": "2026-01-07T13:12:13.895Z",
+      "bumped": true,
+      "bumped_at": "2026-01-07T13:12:13.895Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 32,
+      "views": 597,
+      "category_id": 8,
+      "featured_link": null,
+      "op_like_count": 8,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 35,
+            "username": "jeremymasters",
+            "name": "Jeremy",
+            "avatar_template": "/user_avatar/community.signalusers.org/jeremymasters/{size}/933_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 17361,
+            "username": "hawk17",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/h/2bfe46/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 3340,
+            "username": "mangold",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/m/f6c823/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 16653,
+            "username": "QuickBanana",
+            "name": null,
+            "avatar_template": "/user_avatar/community.signalusers.org/quickbanana/{size}/35290_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "The 15 biggest announcements at Google I/O 2025",
+      "id": 69275,
+      "title": "The 15 biggest announcements at Google I/O 2025",
+      "slug": "the-15-biggest-announcements-at-google-i-o-2025",
+      "posts_count": 12,
+      "reply_count": 8,
+      "highest_post_number": 12,
+      "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/7/6/76e3b27d100e334c89d747a9466e1f3cfc1330ef_2_1024x532.png",
+      "created_at": "2025-05-20T21:19:30.421Z",
+      "last_posted_at": "2025-05-28T17:47:00.335Z",
+      "bumped": true,
+      "bumped_at": "2025-05-28T17:47:00.335Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 19,
+      "views": 228,
+      "category_id": 8,
+      "featured_link": null,
+      "op_like_count": 2,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 400,
+            "username": "jaypatelani",
+            "name": "Jay Patel",
+            "avatar_template": "/user_avatar/community.signalusers.org/jaypatelani/{size}/2458_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 22679,
+            "username": "Rico70",
+            "name": "Rico",
+            "avatar_template": "/user_avatar/community.signalusers.org/rico70/{size}/41632_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 26763,
+            "username": "zetabeta",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/zetabeta/{size}/54310_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Microsoft Cuts Off Access to Bing Search Data as It Shifts Focus to Chatbots",
+      "id": 69201,
+      "title": "Microsoft Cuts Off Access to Bing Search Data as It Shifts Focus to Chatbots",
+      "slug": "microsoft-cuts-off-access-to-bing-search-data-as-it-shifts-focus-to-chatbots",
+      "posts_count": 5,
+      "reply_count": 2,
+      "highest_post_number": 5,
+      "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/5/8/58d882066c540a33b5278f7a50f54a0e01990d71_2_1024x536.jpeg",
+      "created_at": "2025-05-16T12:06:20.264Z",
+      "last_posted_at": "2025-05-16T15:41:26.245Z",
+      "bumped": true,
+      "bumped_at": "2025-05-16T15:41:26.245Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 4,
+      "views": 72,
+      "category_id": 8,
+      "featured_link": "https://www.wired.com/story/bing-microsoft-api-support-ending/",
+      "featured_link_root_domain": "wired.com",
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 2170,
+            "username": "TeeJay82",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/teejay82/{size}/1806_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 1499,
+            "username": "CueHD",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/cuehd/{size}/42510_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 1497,
+            "username": "najodleglejszy",
+            "name": "(he/him)",
+            "avatar_template": "/user_avatar/community.signalusers.org/najodleglejszy/{size}/1213_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Aspiring PhD Candidate : Focus of Privacy",
+  "id": 72840,
+  "title": "Aspiring PhD Candidate : Focus of Privacy",
+  "posts_count": 2,
+  "created_at": "2025-11-11T14:24:17.425Z",
+  "views": 73,
+  "reply_count": 0,
+  "like_count": 5,
+  "last_posted_at": "2025-11-11T14:30:41.470Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "aspiring-phd-candidate-focus-of-privacy",
+  "category_id": 8,
+  "word_count": 107,
+  "deleted_at": null,
+  "user_id": 34778,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_72840",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 2,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 2,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "accepted_answer": {
+    "post_number": 2,
+    "username": "Avitus",
+    "name": "👊🇺🇸🔥",
+    "excerpt": "<p>You’ll have better luck with this question over email. This forum is primarily for Signal users. Check <a href=\"https://signal.org\">https://signal.org</a> for an email address that might be most applicable.</p>"
+  },
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 7657,
+        "username": "Avitus",
+        "name": "👊🇺🇸🔥",
+        "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 3
+      },
+      {
+        "id": 34778,
+        "username": "Archit.01",
+        "name": "Archit",
+        "avatar_template": "/user_avatar/community.signalusers.org/archit.01/{size}/54600_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 0
+      }
+    ],
+    "created_by": {
+      "id": 34778,
+      "username": "Archit.01",
+      "name": "Archit",
+      "avatar_template": "/user_avatar/community.signalusers.org/archit.01/{size}/54600_2.png"
+    },
+    "last_poster": {
+      "id": 7657,
+      "username": "Avitus",
+      "name": "👊🇺🇸🔥",
+      "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png"
+    },
+    "links": [
+      {
+        "url": "https://signal.org",
+        "title": "Signal >> Home",
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 1,
+        "user_id": 7657,
+        "domain": "signal.org",
+        "root_domain": "signal.org"
+      }
+    ]
+  },
+  "bookmarks": []
+}

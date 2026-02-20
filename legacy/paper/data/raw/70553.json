@@ -1,0 +1,416 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 272314,
+        "name": "Akashiseizaburou",
+        "username": "akashiseizaburou",
+        "avatar_template": "/user_avatar/community.signalusers.org/akashiseizaburou/{size}/53022_2.png",
+        "created_at": "2025-07-21T00:30:37.386Z",
+        "cooked": "<h3><a name=\"p-272314-feature-request-1\" class=\"anchor\" href=\"#p-272314-feature-request-1\" aria-label=\"Heading link\"></a>Feature Request</h3>\n<p>Please add a setting to <strong>always show the “Send” button</strong> (the paper plane icon) in the message input area, even when the input field is empty.</p>\n<h3><a name=\"p-272314-motivation-2\" class=\"anchor\" href=\"#p-272314-motivation-2\" aria-label=\"Heading link\"></a>Motivation</h3>\n<p>Some users prefer to use the mouse instead of the keyboard, or may find it more intuitive to always have a visible “Send” button regardless of whether text is currently entered. This can improve usability, especially for:</p>\n<ul>\n<li>elderly users,</li>\n<li>people switching from other messengers,</li>\n<li>accessibility purposes.</li>\n</ul>\n<h3><a name=\"p-272314-suggested-implementation-3\" class=\"anchor\" href=\"#p-272314-suggested-implementation-3\" aria-label=\"Heading link\"></a>Suggested implementation</h3>\n<p>Add a toggle in the settings such as:</p>\n<blockquote>\n<p><span class=\"chcklst-box checked fa fa-square-check-o\"></span> Always show “Send” button</p>\n</blockquote>\n<p>This would display the button in a disabled (greyed-out) state when there’s no input, and make it active once text is entered — similar to how other messaging apps behave.</p>\n<p>Thank you for considering this request!</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2025-07-21T00:30:37.386Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 2,
+        "reads": 43,
+        "readers_count": 42,
+        "score": 93.6,
+        "yours": false,
+        "topic_id": 70553,
+        "topic_slug": "add-option-to-always-show-the-send-button-in-message-input-area",
+        "display_username": "Akashiseizaburou",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 4
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 33580,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/add-option-to-always-show-the-send-button-in-message-input-area/70553/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      },
+      {
+        "id": 272555,
+        "name": "Ammar Ahmed",
+        "username": "Ammar_Ahmed",
+        "avatar_template": "/user_avatar/community.signalusers.org/ammar_ahmed/{size}/53064_2.png",
+        "created_at": "2025-07-26T00:29:13.255Z",
+        "cooked": "<p>i totally agree with that<br>\ni use hyperland and vim but i still use mouse<br>\nwhen i pick emoji and want to send it i have to  switch to keyboard that’s not flexible at all it’s pain</p>",
+        "post_number": 2,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2025-07-26T00:29:13.255Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 26,
+        "readers_count": 25,
+        "score": 20.2,
+        "yours": false,
+        "topic_id": 70553,
+        "topic_slug": "add-option-to-always-show-the-send-button-in-message-input-area",
+        "display_username": "Ammar Ahmed",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 1
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 33610,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/add-option-to-always-show-the-send-button-in-message-input-area/70553/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      }
+    ],
+    "stream": [
+      272314,
+      272555
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      209
+    ],
+    [
+      2,
+      204
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "MacOS 26 dark/transparent logo support",
+      "id": 71990,
+      "title": "MacOS 26 dark/transparent logo support",
+      "slug": "macos-26-dark-transparent-logo-support",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2025-10-02T16:12:32.210Z",
+      "last_posted_at": "2025-10-02T16:12:32.294Z",
+      "bumped": true,
+      "bumped_at": "2025-10-02T16:12:32.294Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 7,
+      "views": 104,
+      "category_id": 20,
+      "featured_link": null,
+      "op_like_count": 7,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 34333,
+            "username": "timinigi",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/timinigi/{size}/54042_2.png",
+            "trust_level": 1
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Clear locally stored gifs",
+      "id": 71972,
+      "title": "Clear locally stored gifs",
+      "slug": "clear-locally-stored-gifs",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2025-10-01T14:29:04.612Z",
+      "last_posted_at": "2025-10-01T14:29:04.729Z",
+      "bumped": true,
+      "bumped_at": "2025-10-01T14:29:04.729Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 4,
+      "views": 58,
+      "category_id": 20,
+      "featured_link": null,
+      "op_like_count": 4,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 34323,
+            "username": "Trefa1998",
+            "name": "Trefa1998",
+            "avatar_template": "/user_avatar/community.signalusers.org/trefa1998/{size}/54034_2.png",
+            "trust_level": 0
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Low Latency Video Sharing",
+      "id": 67864,
+      "title": "Low Latency Video Sharing",
+      "slug": "low-latency-video-sharing",
+      "posts_count": 4,
+      "reply_count": 1,
+      "highest_post_number": 4,
+      "image_url": null,
+      "created_at": "2025-03-22T01:35:09.186Z",
+      "last_posted_at": "2025-04-18T00:01:02.743Z",
+      "bumped": true,
+      "bumped_at": "2025-04-18T00:01:02.743Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 5,
+      "views": 168,
+      "category_id": 20,
+      "featured_link": null,
+      "op_like_count": 3,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 27607,
+            "username": "Dark_Arc",
+            "name": "Wyatt Childers",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/53a042/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31728,
+            "username": "Megan",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/megan/{size}/50954_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 32624,
+            "username": "april83c",
+            "name": "April",
+            "avatar_template": "/user_avatar/community.signalusers.org/april83c/{size}/51861_2.png",
+            "trust_level": 1
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Add option to always show the Send button in message input area",
+  "id": 70553,
+  "title": "Add option to always show the Send button in message input area",
+  "posts_count": 2,
+  "created_at": "2025-07-21T00:30:37.334Z",
+  "views": 115,
+  "reply_count": 0,
+  "like_count": 5,
+  "last_posted_at": "2025-07-26T00:29:13.255Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "add-option-to-always-show-the-send-button-in-message-input-area",
+  "category_id": 20,
+  "word_count": 166,
+  "deleted_at": null,
+  "user_id": 33580,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_70553",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 2,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 2,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 33580,
+        "username": "akashiseizaburou",
+        "name": "Akashiseizaburou",
+        "avatar_template": "/user_avatar/community.signalusers.org/akashiseizaburou/{size}/53022_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 0
+      },
+      {
+        "id": 33610,
+        "username": "Ammar_Ahmed",
+        "name": "Ammar Ahmed",
+        "avatar_template": "/user_avatar/community.signalusers.org/ammar_ahmed/{size}/53064_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 0
+      }
+    ],
+    "created_by": {
+      "id": 33580,
+      "username": "akashiseizaburou",
+      "name": "Akashiseizaburou",
+      "avatar_template": "/user_avatar/community.signalusers.org/akashiseizaburou/{size}/53022_2.png"
+    },
+    "last_poster": {
+      "id": 33610,
+      "username": "Ammar_Ahmed",
+      "name": "Ammar Ahmed",
+      "avatar_template": "/user_avatar/community.signalusers.org/ammar_ahmed/{size}/53064_2.png"
+    }
+  },
+  "bookmarks": []
+}

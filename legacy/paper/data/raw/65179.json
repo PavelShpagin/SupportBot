@@ -1,0 +1,676 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 256355,
+        "name": "plant person",
+        "username": "plantperson",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/p/e495f1/{size}.png",
+        "created_at": "2024-11-29T00:36:40.269Z",
+        "cooked": "<p>Hi there,</p>\n<p>Grateful for Signal in these less-secure times.</p>\n<p>I’m trying to move some chats from Whats App to Signal, and am frustrated with the limited character allowance for “group description.”</p>\n<p>Can you increase the allowance to up to 2-3K characters for those of us trying to establish group norms in a chat (with ongoing new members added)?</p>\n<p>Or, allow the ability to pin a post in a group chat that all members (even if added later) can see?</p>\n<p>It is annoying to repost a GROUP RULES post over and over again each time a new member is added.</p>\n<p>Thanks.</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 4,
+        "updated_at": "2025-02-19T11:29:58.948Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 27,
+        "reads": 78,
+        "readers_count": 77,
+        "score": 330.6,
+        "yours": false,
+        "topic_id": 65179,
+        "topic_slug": "expand-the-group-chat-description-or-pin-posts",
+        "display_username": "plant person",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 2,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://community.signalusers.org/t/how-can-signal-be-better-for-communities-and-organisers/74679/12",
+            "internal": true,
+            "reflection": true,
+            "title": "How can Signal be better for communities and organisers?",
+            "clicks": 0
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 12
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 30859,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/expand-the-group-chat-description-or-pin-posts/65179/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      },
+      {
+        "id": 261668,
+        "name": "",
+        "username": "desert_nip",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+        "created_at": "2025-02-20T06:15:30.731Z",
+        "cooked": "<p>Yes, I would also really like to have the option to add longer guidelines.</p>\n<p>Checking the code, I find the following:</p>\n<p>It seems that the protobuf-level group message format has no description length limit:</p><aside class=\"onebox githubblob\" data-onebox-src=\"https://github.com/signalapp/Signal-Android/blob/e1511a09a7b91c74b89796725bc7a45440c1b34e/libsignal-service/src/main/protowire/Groups.proto#L78\">\n  <header class=\"source\">\n\n      <a href=\"https://github.com/signalapp/Signal-Android/blob/e1511a09a7b91c74b89796725bc7a45440c1b34e/libsignal-service/src/main/protowire/Groups.proto#L78\" target=\"_blank\" rel=\"noopener nofollow ugc\">github.com/signalapp/Signal-Android</a>\n  </header>\n\n  <article class=\"onebox-body\">\n    <h4><a href=\"https://github.com/signalapp/Signal-Android/blob/e1511a09a7b91c74b89796725bc7a45440c1b34e/libsignal-service/src/main/protowire/Groups.proto#L78\" target=\"_blank\" rel=\"noopener nofollow ugc\">libsignal-service/src/main/protowire/Groups.proto</a></h4>\n\n<div class=\"git-blob-info\">\n  <a href=\"https://github.com/signalapp/Signal-Android/blob/e1511a09a7b91c74b89796725bc7a45440c1b34e/libsignal-service/src/main/protowire/Groups.proto#L78\" rel=\"noopener nofollow ugc\"><code>e1511a09a</code></a>\n</div>\n\n\n\n    <pre class=\"onebox\"><code class=\"lang-proto\">\n      <ol class=\"start lines\" start=\"68\" style=\"counter-reset: li-counter 67 ;\">\n          <li>           bytes            publicKey                 = 1;</li>\n          <li>           bytes            title                     = 2;</li>\n          <li>           string           avatar                    = 3;</li>\n          <li>           bytes            disappearingMessagesTimer = 4;</li>\n          <li>           AccessControl    accessControl             = 5;</li>\n          <li>           uint32           revision                  = 6;</li>\n          <li>  repeated Member           members                   = 7;</li>\n          <li>  repeated PendingMember    pendingMembers            = 8;</li>\n          <li>  repeated RequestingMember requestingMembers         = 9;</li>\n          <li>           bytes            inviteLinkPassword        = 10;</li>\n          <li class=\"selected\">           bytes            description               = 11;</li>\n          <li>           bool             announcementsOnly         = 12;</li>\n          <li>  repeated BannedMember     bannedMembers             = 13;</li>\n          <li>}</li>\n          <li></li>\n          <li>message GroupChange {</li>\n          <li></li>\n          <li>  message Actions {</li>\n          <li></li>\n          <li>    message AddMemberAction {</li>\n          <li>      Member added              = 1;</li>\n      </ol>\n    </code></pre>\n\n\n\n  </article>\n\n  <div class=\"onebox-metadata\">\n    \n    \n  </div>\n\n  <div style=\"clear: both\"></div>\n</aside>\n\n<p>Also,</p><aside class=\"onebox githubblob\" data-onebox-src=\"https://github.com/signalapp/Signal-Android/blob/e1511a09a7b91c74b89796725bc7a45440c1b34e/app/src/main/java/org/thoughtcrime/securesms/groups/v2/GroupDescriptionUtil.java#L35\">\n  <header class=\"source\">\n\n      <a href=\"https://github.com/signalapp/Signal-Android/blob/e1511a09a7b91c74b89796725bc7a45440c1b34e/app/src/main/java/org/thoughtcrime/securesms/groups/v2/GroupDescriptionUtil.java#L35\" target=\"_blank\" rel=\"noopener nofollow ugc\">github.com/signalapp/Signal-Android</a>\n  </header>\n\n  <article class=\"onebox-body\">\n    <h4><a href=\"https://github.com/signalapp/Signal-Android/blob/e1511a09a7b91c74b89796725bc7a45440c1b34e/app/src/main/java/org/thoughtcrime/securesms/groups/v2/GroupDescriptionUtil.java#L35\" target=\"_blank\" rel=\"noopener nofollow ugc\">app/src/main/java/org/thoughtcrime/securesms/groups/v2/GroupDescriptionUtil.java</a></h4>\n\n<div class=\"git-blob-info\">\n  <a href=\"https://github.com/signalapp/Signal-Android/blob/e1511a09a7b91c74b89796725bc7a45440c1b34e/app/src/main/java/org/thoughtcrime/securesms/groups/v2/GroupDescriptionUtil.java#L35\" rel=\"noopener nofollow ugc\"><code>e1511a09a</code></a>\n</div>\n\n\n\n    <pre class=\"onebox\"><code class=\"lang-java\">\n      <ol class=\"start lines\" start=\"25\" style=\"counter-reset: li-counter 24 ;\">\n          <li>public final class GroupDescriptionUtil {</li>\n          <li></li>\n          <li>  /**</li>\n          <li>   * Set a group description.</li>\n          <li>   *</li>\n          <li>   * @param description   full description</li>\n          <li>   * @param emojiTextView Text view to update with description</li>\n          <li>   * @param linkify       flag indicating if web urls should be linkified</li>\n          <li>   * @param moreClick     Callback for when truncating and need to show more via another means. Required to enable truncating.</li>\n          <li>   */</li>\n          <li class=\"selected\">  public static void setText(@NonNull Context context, @NonNull EmojiTextView emojiTextView, @NonNull String description, boolean linkify, @Nullable Runnable moreClick) {</li>\n          <li>    boolean         shouldEllipsize      = moreClick != null;</li>\n          <li>    String          scrubbedDescription  = shouldEllipsize ? description.replaceAll(\"\\\\n\", \" \") : description;</li>\n          <li>    SpannableString descriptionSpannable = new SpannableString(scrubbedDescription);</li>\n          <li></li>\n          <li>    if (linkify) {</li>\n          <li>      int     linkPattern = Linkify.WEB_URLS | Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS;</li>\n          <li>      boolean hasLinks    = LinkifyCompat.addLinks(descriptionSpannable, linkPattern);</li>\n          <li></li>\n          <li>      if (hasLinks) {</li>\n          <li>        Stream.of(descriptionSpannable.getSpans(0, descriptionSpannable.length(), URLSpan.class))</li>\n      </ol>\n    </code></pre>\n\n\n\n  </article>\n\n  <div class=\"onebox-metadata\">\n    \n    \n  </div>\n\n  <div style=\"clear: both\"></div>\n</aside>\n<p>\nindicates that the description text is not explicitly truncated when it is set.</p>\n<p>I checked xml style definitions, but can’t find any maxLength setting on EmojiTextView that matches my (counted) 480 character limit.</p>\n<p>Finally,</p><aside class=\"onebox githubblob\" data-onebox-src=\"https://github.com/signalapp/Signal-Android/blob/e1511a09a7b91c74b89796725bc7a45440c1b34e/app/src/main/java/org/thoughtcrime/securesms/profiles/edit/CreateProfileFragment.java#L64\">\n  <header class=\"source\">\n\n      <a href=\"https://github.com/signalapp/Signal-Android/blob/e1511a09a7b91c74b89796725bc7a45440c1b34e/app/src/main/java/org/thoughtcrime/securesms/profiles/edit/CreateProfileFragment.java#L64\" target=\"_blank\" rel=\"noopener nofollow ugc\">github.com/signalapp/Signal-Android</a>\n  </header>\n\n  <article class=\"onebox-body\">\n    <h4><a href=\"https://github.com/signalapp/Signal-Android/blob/e1511a09a7b91c74b89796725bc7a45440c1b34e/app/src/main/java/org/thoughtcrime/securesms/profiles/edit/CreateProfileFragment.java#L64\" target=\"_blank\" rel=\"noopener nofollow ugc\">app/src/main/java/org/thoughtcrime/securesms/profiles/edit/CreateProfileFragment.java</a></h4>\n\n<div class=\"git-blob-info\">\n  <a href=\"https://github.com/signalapp/Signal-Android/blob/e1511a09a7b91c74b89796725bc7a45440c1b34e/app/src/main/java/org/thoughtcrime/securesms/profiles/edit/CreateProfileFragment.java#L64\" rel=\"noopener nofollow ugc\"><code>e1511a09a</code></a>\n</div>\n\n\n\n    <pre class=\"onebox\"><code class=\"lang-java\">\n      <ol class=\"start lines\" start=\"54\" style=\"counter-reset: li-counter 53 ;\">\n          <li>import static org.thoughtcrime.securesms.profiles.edit.CreateProfileActivity.NEXT_BUTTON_TEXT;</li>\n          <li>import static org.thoughtcrime.securesms.profiles.edit.CreateProfileActivity.NEXT_INTENT;</li>\n          <li>import static org.thoughtcrime.securesms.profiles.edit.CreateProfileActivity.SHOW_TOOLBAR;</li>\n          <li></li>\n          <li>/**</li>\n          <li> * Used for profile creation during registration.</li>\n          <li> */</li>\n          <li>public class CreateProfileFragment extends LoggingFragment {</li>\n          <li></li>\n          <li>  private static final String TAG                    = Log.tag(CreateProfileFragment.class);</li>\n          <li class=\"selected\">  private static final int    MAX_DESCRIPTION_GLYPHS = 480;</li>\n          <li>  private static final int    MAX_DESCRIPTION_BYTES  = 8192;</li>\n          <li></li>\n          <li>  private Intent nextIntent;</li>\n          <li></li>\n          <li>  private EditProfileViewModel         viewModel;</li>\n          <li>  private CreateProfileFragmentBinding binding;</li>\n          <li></li>\n          <li>  private Controller controller;</li>\n          <li></li>\n          <li>  @Override</li>\n      </ol>\n    </code></pre>\n\n\n\n  </article>\n\n  <div class=\"onebox-metadata\">\n    \n    \n  </div>\n\n  <div style=\"clear: both\"></div>\n</aside>\n<p>\nshows that the number of glyphs is limited to 480 (with 8k max bytes). This seems to also be the case for IOS.</p>\n<p>Could this be extended to something like 3k glyphs and 48k bytes without harm? Or does anyone see an issue in doing this?</p>\n<p>As far as I can see, backwards compatibility would be given for viewing group descriptions, since the limit only exists for editing/writing group descriptions. So any user would be able to see longer descriptions, but only people on the newer version would be able to write them.</p>\n<p>PS: The green messenger that shall not be named seems to currently have a limit of 2040 characters or glyphs, so any group could be moved and Signal would even have more space.</p>\n<p>Kindly<br>\ndesert nip</p>",
+        "post_number": 3,
+        "post_type": 1,
+        "posts_count": 4,
+        "updated_at": "2025-02-20T08:20:58.260Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 3,
+        "reads": 54,
+        "readers_count": 53,
+        "score": 40.8,
+        "yours": false,
+        "topic_id": 65179,
+        "topic_slug": "expand-the-group-chat-description-or-pin-posts",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 2,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://github.com/signalapp/Signal-Android/blob/e1511a09a7b91c74b89796725bc7a45440c1b34e/libsignal-service/src/main/protowire/Groups.proto#L78",
+            "internal": false,
+            "reflection": false,
+            "title": "Signal-Android/libsignal-service/src/main/protowire/Groups.proto at e1511a09a7b91c74b89796725bc7a45440c1b34e · signalapp/Signal-Android · GitHub",
+            "clicks": 1
+          },
+          {
+            "url": "https://github.com/signalapp/Signal-Android/blob/e1511a09a7b91c74b89796725bc7a45440c1b34e/app/src/main/java/org/thoughtcrime/securesms/profiles/edit/CreateProfileFragment.java#L64",
+            "internal": false,
+            "reflection": false,
+            "title": "Signal-Android/app/src/main/java/org/thoughtcrime/securesms/profiles/edit/CreateProfileFragment.java at e1511a09a7b91c74b89796725bc7a45440c1b34e · signalapp/Signal-Android · GitHub",
+            "clicks": 0
+          },
+          {
+            "url": "https://github.com/signalapp/Signal-Android/blob/e1511a09a7b91c74b89796725bc7a45440c1b34e/app/src/main/java/org/thoughtcrime/securesms/groups/v2/GroupDescriptionUtil.java#L35",
+            "internal": false,
+            "reflection": false,
+            "title": "Signal-Android/app/src/main/java/org/thoughtcrime/securesms/groups/v2/GroupDescriptionUtil.java at e1511a09a7b91c74b89796725bc7a45440c1b34e · signalapp/Signal-Android · GitHub",
+            "clicks": 0
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 1
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 31811,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/expand-the-group-chat-description-or-pin-posts/65179/3",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 261910,
+        "name": "",
+        "username": "desert_nip",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+        "created_at": "2025-02-23T12:37:50.096Z",
+        "cooked": "<p>I would propose the following:</p>\n<p>Android:</p><aside class=\"onebox githubcommit\" data-onebox-src=\"https://github.com/isopod-a/Signal-Android/commit/5ff497847b0516ab4b929fe38210df166ecbedac\">\n  <header class=\"source\">\n\n      <a href=\"https://github.com/isopod-a/Signal-Android/commit/5ff497847b0516ab4b929fe38210df166ecbedac\" target=\"_blank\" rel=\"noopener nofollow ugc\">github.com/isopod-a/Signal-Android</a>\n  </header>\n\n  <article class=\"onebox-body\">\n    <div class=\"github-row\">\n  <div class=\"github-icon-container\" title=\"Commit\">\n    <svg width=\"60\" height=\"60\" class=\"github-icon\" viewBox=\"0 0 14 16\" aria-hidden=\"true\"><path fill-rule=\"evenodd\" d=\"M10.86 7c-.45-1.72-2-3-3.86-3-1.86 0-3.41 1.28-3.86 3H0v2h3.14c.45 1.72 2 3 3.86 3 1.86 0 3.41-1.28 3.86-3H14V7h-3.14zM7 10.2c-1.22 0-2.2-.98-2.2-2.2 0-1.22.98-2.2 2.2-2.2 1.22 0 2.2.98 2.2 2.2 0 1.22-.98 2.2-2.2 2.2z\"></path></svg>\n  </div>\n\n  <div class=\"github-info-container\">\n    <h4>\n      <a href=\"https://github.com/isopod-a/Signal-Android/commit/5ff497847b0516ab4b929fe38210df166ecbedac\" target=\"_blank\" rel=\"noopener nofollow ugc\">increase maximum description lenght in UI</a>\n    </h4>\n\n    <div class=\"github-info\">\n      <div class=\"date\">\n        committed <span class=\"discourse-local-date\" data-format=\"ll\" data-date=\"2025-02-23\" data-time=\"11:49:54\" data-timezone=\"UTC\">11:49AM - 23 Feb 25 UTC</span>\n      </div>\n\n      <div class=\"user\">\n        <a href=\"\" rel=\"noopener\">\n          <img alt=\"\" src=\"\" class=\"onebox-avatar-inline\" width=\"20\" height=\"20\">\n          \n        </a>\n      </div>\n\n      <div class=\"lines\" title=\"changed 1 files with 2 additions and 2 deletions\">\n        <a href=\"https://github.com/isopod-a/Signal-Android/commit/5ff497847b0516ab4b929fe38210df166ecbedac\" target=\"_blank\" rel=\"noopener nofollow ugc\">\n          <span class=\"added\">+2</span>\n          <span class=\"removed\">-2</span>\n        </a>\n      </div>\n    </div>\n  </div>\n</div>\n\n  <div class=\"github-row\">\n    <p class=\"github-body-container\">In the UI input, the number of glyphs is currently limited to\n480 (with 8k max b<span class=\"show-more-container\"><a href=\"https://github.com/isopod-a/Signal-Android/commit/5ff497847b0516ab4b929fe38210df166ecbedac\" target=\"_blank\" rel=\"noopener nofollow ugc\" class=\"show-more\">…</a></span><span class=\"excerpt hidden\">ytes). For larger groups with guidelines, more space\nis needed.\nThis patch increases the number of glyphs and bytes by\na factor of eight to 3840 and 65536.\nSignal community feature request: https://community.signalusers.org/t/expand-the-group-chat-description-or-pin-posts/65179</span></p>\n  </div>\n\n  </article>\n\n  <div class=\"onebox-metadata\">\n    \n    \n  </div>\n\n  <div style=\"clear: both\"></div>\n</aside>\n\n<p>iOS:</p><aside class=\"onebox githubcommit\" data-onebox-src=\"https://github.com/isopod-a/Signal-iOS/commit/3aa6022ac3e302b1ef23ec0bc54c1434e17c2907\">\n  <header class=\"source\">\n\n      <a href=\"https://github.com/isopod-a/Signal-iOS/commit/3aa6022ac3e302b1ef23ec0bc54c1434e17c2907\" target=\"_blank\" rel=\"noopener nofollow ugc\">github.com/isopod-a/Signal-iOS</a>\n  </header>\n\n  <article class=\"onebox-body\">\n    <div class=\"github-row\">\n  <div class=\"github-icon-container\" title=\"Commit\">\n    <svg width=\"60\" height=\"60\" class=\"github-icon\" viewBox=\"0 0 14 16\" aria-hidden=\"true\"><path fill-rule=\"evenodd\" d=\"M10.86 7c-.45-1.72-2-3-3.86-3-1.86 0-3.41 1.28-3.86 3H0v2h3.14c.45 1.72 2 3 3.86 3 1.86 0 3.41-1.28 3.86-3H14V7h-3.14zM7 10.2c-1.22 0-2.2-.98-2.2-2.2 0-1.22.98-2.2 2.2-2.2 1.22 0 2.2.98 2.2 2.2 0 1.22-.98 2.2-2.2 2.2z\"></path></svg>\n  </div>\n\n  <div class=\"github-info-container\">\n    <h4>\n      <a href=\"https://github.com/isopod-a/Signal-iOS/commit/3aa6022ac3e302b1ef23ec0bc54c1434e17c2907\" target=\"_blank\" rel=\"noopener nofollow ugc\">increase maximum description lenght in UI</a>\n    </h4>\n\n    <div class=\"github-info\">\n      <div class=\"date\">\n        committed <span class=\"discourse-local-date\" data-format=\"ll\" data-date=\"2025-02-23\" data-time=\"12:25:09\" data-timezone=\"UTC\">12:25PM - 23 Feb 25 UTC</span>\n      </div>\n\n      <div class=\"user\">\n        <a href=\"\" rel=\"noopener\">\n          <img alt=\"\" src=\"\" class=\"onebox-avatar-inline\" width=\"20\" height=\"20\">\n          \n        </a>\n      </div>\n\n      <div class=\"lines\" title=\"changed 1 files with 2 additions and 2 deletions\">\n        <a href=\"https://github.com/isopod-a/Signal-iOS/commit/3aa6022ac3e302b1ef23ec0bc54c1434e17c2907\" target=\"_blank\" rel=\"noopener nofollow ugc\">\n          <span class=\"added\">+2</span>\n          <span class=\"removed\">-2</span>\n        </a>\n      </div>\n    </div>\n  </div>\n</div>\n\n  <div class=\"github-row\">\n    <p class=\"github-body-container\">In the UI input, the number of glyphs is currently limited to\n480 (with 8k max b<span class=\"show-more-container\"><a href=\"https://github.com/isopod-a/Signal-iOS/commit/3aa6022ac3e302b1ef23ec0bc54c1434e17c2907\" target=\"_blank\" rel=\"noopener nofollow ugc\" class=\"show-more\">…</a></span><span class=\"excerpt hidden\">ytes). For larger groups with guidelines, more space\nis needed.\nThis patch increases the number of glyphs and bytes by\na factor of eight to 3840 and 65536.\nSignal community feature request: https://community.signalusers.org/t/expand-the-group-chat-description-or-pin-posts/65179</span></p>\n  </div>\n\n  </article>\n\n  <div class=\"onebox-metadata\">\n    \n    \n  </div>\n\n  <div style=\"clear: both\"></div>\n</aside>\n\n<p>Desktop:</p><aside class=\"onebox githubcommit\" data-onebox-src=\"https://github.com/isopod-a/Signal-Desktop/commit/d7a60d0925d95ebb519e7707f31f411761893dbf\">\n  <header class=\"source\">\n\n      <a href=\"https://github.com/isopod-a/Signal-Desktop/commit/d7a60d0925d95ebb519e7707f31f411761893dbf\" target=\"_blank\" rel=\"noopener nofollow ugc\">github.com/isopod-a/Signal-Desktop</a>\n  </header>\n\n  <article class=\"onebox-body\">\n    <div class=\"github-row\">\n  <div class=\"github-icon-container\" title=\"Commit\">\n    <svg width=\"60\" height=\"60\" class=\"github-icon\" viewBox=\"0 0 14 16\" aria-hidden=\"true\"><path fill-rule=\"evenodd\" d=\"M10.86 7c-.45-1.72-2-3-3.86-3-1.86 0-3.41 1.28-3.86 3H0v2h3.14c.45 1.72 2 3 3.86 3 1.86 0 3.41-1.28 3.86-3H14V7h-3.14zM7 10.2c-1.22 0-2.2-.98-2.2-2.2 0-1.22.98-2.2 2.2-2.2 1.22 0 2.2.98 2.2 2.2 0 1.22-.98 2.2-2.2 2.2z\"></path></svg>\n  </div>\n\n  <div class=\"github-info-container\">\n    <h4>\n      <a href=\"https://github.com/isopod-a/Signal-Desktop/commit/d7a60d0925d95ebb519e7707f31f411761893dbf\" target=\"_blank\" rel=\"noopener nofollow ugc\">increase maximum description lenght in UI</a>\n    </h4>\n\n    <div class=\"github-info\">\n      <div class=\"date\">\n        committed <span class=\"discourse-local-date\" data-format=\"ll\" data-date=\"2025-02-23\" data-time=\"12:18:57\" data-timezone=\"UTC\">12:18PM - 23 Feb 25 UTC</span>\n      </div>\n\n      <div class=\"user\">\n        <a href=\"\" rel=\"noopener\">\n          <img alt=\"\" src=\"\" class=\"onebox-avatar-inline\" width=\"20\" height=\"20\">\n          \n        </a>\n      </div>\n\n      <div class=\"lines\" title=\"changed 1 files with 2 additions and 2 deletions\">\n        <a href=\"https://github.com/isopod-a/Signal-Desktop/commit/d7a60d0925d95ebb519e7707f31f411761893dbf\" target=\"_blank\" rel=\"noopener nofollow ugc\">\n          <span class=\"added\">+2</span>\n          <span class=\"removed\">-2</span>\n        </a>\n      </div>\n    </div>\n  </div>\n</div>\n\n  <div class=\"github-row\">\n    <p class=\"github-body-container\">In the UI input, the number of glyphs is currently limited to\n480 (with 8k max b<span class=\"show-more-container\"><a href=\"https://github.com/isopod-a/Signal-Desktop/commit/d7a60d0925d95ebb519e7707f31f411761893dbf\" target=\"_blank\" rel=\"noopener nofollow ugc\" class=\"show-more\">…</a></span><span class=\"excerpt hidden\">ytes). For larger groups with guidelines, more space\nis needed.\nThis patch increases the number of glyphs and bytes by\na factor of eight to 3840 and 65536.\nSignal community feature request: https://community.signalusers.org/t/expand-the-group-chat-description-or-pin-posts/65179</span></p>\n  </div>\n\n  </article>\n\n  <div class=\"onebox-metadata\">\n    \n    \n  </div>\n\n  <div style=\"clear: both\"></div>\n</aside>\n\n<p>Could someone check, whether these work? Should I submit a pull request?</p>",
+        "post_number": 4,
+        "post_type": 1,
+        "posts_count": 4,
+        "updated_at": "2025-02-23T12:38:02.407Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 47,
+        "readers_count": 46,
+        "score": 99.4,
+        "yours": false,
+        "topic_id": 65179,
+        "topic_slug": "expand-the-group-chat-description-or-pin-posts",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://github.com/isopod-a/Signal-Android/commit/5ff497847b0516ab4b929fe38210df166ecbedac",
+            "internal": false,
+            "reflection": false,
+            "title": "increase maximum description lenght in UI · isopod-a/Signal-Android@5ff4978 · GitHub",
+            "clicks": 7
+          },
+          {
+            "url": "https://github.com/isopod-a/Signal-iOS/commit/3aa6022ac3e302b1ef23ec0bc54c1434e17c2907",
+            "internal": false,
+            "reflection": false,
+            "title": "increase maximum description lenght in UI · isopod-a/Signal-iOS@3aa6022 · GitHub",
+            "clicks": 6
+          },
+          {
+            "url": "https://github.com/isopod-a/Signal-Desktop/commit/d7a60d0925d95ebb519e7707f31f411761893dbf",
+            "internal": false,
+            "reflection": false,
+            "title": "increase maximum description lenght in UI · isopod-a/Signal-Desktop@d7a60d0 · GitHub",
+            "clicks": 1
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 6
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 31811,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/expand-the-group-chat-description-or-pin-posts/65179/4",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 262284,
+        "name": "",
+        "username": "desert_nip",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+        "created_at": "2025-02-27T07:32:54.948Z",
+        "cooked": "<p>Update: I have now tested the change for Desktop and submitted the corresponding pull request.</p>\n<p>Another update: The desktop pull request was denied (seemingly before the person actually read the commit description):</p><aside class=\"onebox githubpullrequest\" data-onebox-src=\"https://github.com/signalapp/Signal-Desktop/pull/7198#issue-2882848333\">\n  <header class=\"source\">\n\n      <a href=\"https://github.com/signalapp/Signal-Desktop/pull/7198#issue-2882848333\" target=\"_blank\" rel=\"noopener nofollow ugc\">github.com/signalapp/Signal-Desktop</a>\n  </header>\n\n  <article class=\"onebox-body\">\n    <div class=\"github-row\" data-github-private-repo=\"false\">\n\n\n\n    <div class=\"github-icon-container\" title=\"Pull Request\">\n      <svg width=\"60\" height=\"60\" class=\"github-icon\" viewBox=\"0 0 12 16\" aria-hidden=\"true\"><path fill-rule=\"evenodd\" d=\"M11 11.28V5c-.03-.78-.34-1.47-.94-2.06C9.46 2.35 8.78 2.03 8 2H7V0L4 3l3 3V4h1c.27.02.48.11.69.31.21.2.3.42.31.69v6.28A1.993 1.993 0 0 0 10 15a1.993 1.993 0 0 0 1-3.72zm-1 2.92c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zM4 3c0-1.11-.89-2-2-2a1.993 1.993 0 0 0-1 3.72v6.56A1.993 1.993 0 0 0 2 15a1.993 1.993 0 0 0 1-3.72V4.72c.59-.34 1-.98 1-1.72zm-.8 10c0 .66-.55 1.2-1.2 1.2-.65 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z\"></path></svg>\n    </div>\n\n  <div class=\"github-info-container\">\n\n\n\n      <h4>\n        <a href=\"https://github.com/signalapp/Signal-Desktop/pull/7198#issue-2882848333\" target=\"_blank\" rel=\"noopener nofollow ugc\">increase maximum description lenght in UI</a>\n      </h4>\n\n    <div class=\"branches\">\n      <code>main</code> ← <code>isopod-a:main</code>\n    </div>\n\n      <div class=\"github-info\">\n        <div class=\"date\">\n          opened <span class=\"discourse-local-date\" data-format=\"ll\" data-date=\"2025-02-26\" data-time=\"21:24:22\" data-timezone=\"UTC\">09:24PM - 26 Feb 25 UTC</span>\n        </div>\n\n        <div class=\"user\">\n          <a href=\"https://github.com/isopod-a\" target=\"_blank\" rel=\"noopener nofollow ugc\">\n            <img alt=\"\" src=\"https://community.signalusers.org/uploads/db3609/original/3X/6/d/6d1b55df756c96d57191cf15bfec54d1f1186435.png\" class=\"onebox-avatar-inline\" width=\"20\" height=\"20\" data-dominant-color=\"8A8375\">\n            isopod-a\n          </a>\n        </div>\n\n        <div class=\"lines\" title=\"1 commits changed 1 files with 2 additions and 2 deletions\">\n          <a href=\"https://github.com/signalapp/Signal-Desktop/pull/7198/files\" target=\"_blank\" rel=\"noopener nofollow ugc\">\n            <span class=\"added\">+2</span>\n            <span class=\"removed\">-2</span>\n          </a>\n        </div>\n      </div>\n  </div>\n</div>\n\n  <div class=\"github-row\">\n    <p class=\"github-body-container\">### First time contributor checklist:\n\n- [X] I have read the [README](https://<span class=\"show-more-container\"><a href=\"https://github.com/signalapp/Signal-Desktop/pull/7198\" target=\"_blank\" rel=\"noopener nofollow ugc\" class=\"show-more\">…</a></span><span class=\"excerpt hidden\">github.com/signalapp/Signal-Desktop/blob/main/README.md) and [Contributor Guidelines](https://github.com/signalapp/Signal-Desktop/blob/main/CONTRIBUTING.md)\n- [X] I have signed the [Contributor Licence Agreement](https://signal.org/cla/)\n\n### Contributor checklist:\n\n- [X] My contribution is **not** related to translations.\n- [X] My commits are in nice logical chunks with [good commit messages](http://chris.beams.io/posts/git-commit/)\n- [X] My changes are [rebased](https://medium.com/free-code-camp/git-rebase-and-the-golden-rule-explained-70715eccc372) on the latest [`main`](https://github.com/signalapp/Signal-Desktop/tree/main) branch\n- [X] A `pnpm run ready` run passes successfully ([more about tests here](https://github.com/signalapp/Signal-Desktop/blob/main/CONTRIBUTING.md#tests))\n- [X] My changes are ready to be shipped to users\n\n### Description\n\nIn the UI input, the number of glyphs is currently limited to 480 (with 8k max bytes). For larger groups with guidelines, more space is needed.\nThis patch increases the number of glyphs and bytes by a factor of eight to 3840 and 65536.\nSignal community feature request: https://community.signalusers.org/t/expand-the-group-chat-description-or-pin-posts/65179\nCorresponding commits for iOS and Android referenced there.\n\n\ntested on linux debian 12 nodejs 20</span></p>\n  </div>\n\n  </article>\n\n  <div class=\"onebox-metadata\">\n    \n    \n  </div>\n\n  <div style=\"clear: both\"></div>\n</aside>\n<p>\nI am hoping that they might be more responsive to it if the request were accepted by the android repository. This is why I would really like to test it on Android so I can submit an android pull request.<br>\nHowever, I am having multiple issues trying to actually build the apk (using the dockerfile).</p>\n<details>\n<summary>\nApparently I'm not alone in this</summary>\n<p><a href=\"https://community.signalusers.org/t/what-happened-can-anyone-help-me/67115\" class=\"inline-onebox\">What happened ? Can anyone help me ? 😭</a></p>\n</details>\n<p>There seem to be about two dozen missing/wrong checksums for gradle plugins. I have found solutions for some of them, but not all (apparently one of the dependencies of one of them, an aapt2 version, has been pulled or is no longer supported, which means it has no checksum and cannot be downloaded). I’ll be looking into the current aapt2 problem some more (of course hoping this is the last one, but it might not be) and maybe I’ll open an issue on this.</p>\n<p>Next Update (good news):<br>\nThe Android compiling issues have been fixed and the code has now compiled successfully and runs on Android. I will be submitting another pull request in the next couple of days and let’s hope that they like the idea. :)</p>",
+        "post_number": 5,
+        "post_type": 1,
+        "posts_count": 4,
+        "updated_at": "2025-03-27T09:52:43.334Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 44,
+        "readers_count": 43,
+        "score": 68.8,
+        "yours": false,
+        "topic_id": 65179,
+        "topic_slug": "expand-the-group-chat-description-or-pin-posts",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 3,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://github.com/signalapp/Signal-Desktop/pull/7198#issue-2882848333",
+            "internal": false,
+            "reflection": false,
+            "title": "increase maximum description lenght in UI by isopod-a · Pull Request #7198 · signalapp/Signal-Desktop · GitHub",
+            "clicks": 9
+          },
+          {
+            "url": "https://community.signalusers.org/t/what-happened-can-anyone-help-me/67115",
+            "internal": true,
+            "reflection": false,
+            "title": "What happened ? Can anyone help me ? 😭",
+            "clicks": 1
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 4
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 31811,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/expand-the-group-chat-description-or-pin-posts/65179/5",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      }
+    ],
+    "stream": [
+      256355,
+      261668,
+      261910,
+      262284
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      443
+    ],
+    [
+      2,
+      360
+    ],
+    [
+      3,
+      356
+    ],
+    [
+      4,
+      353
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Accept colon emoji search suggestion on enter when using physical keyboard",
+      "id": 74548,
+      "title": "Accept colon emoji search suggestion on enter when using physical keyboard",
+      "slug": "accept-colon-emoji-search-suggestion-on-enter-when-using-physical-keyboard",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2026-01-29T23:26:36.040Z",
+      "last_posted_at": "2026-01-29T23:26:36.158Z",
+      "bumped": true,
+      "bumped_at": "2026-01-29T23:26:36.158Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 1,
+      "views": 32,
+      "category_id": 17,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 2067,
+            "username": "jerryasu",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/j/54ee81/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Add SNI-spoofing feature for Signal.",
+      "id": 70246,
+      "title": "Add SNI-spoofing feature for Signal.",
+      "slug": "add-sni-spoofing-feature-for-signal",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2025-07-05T16:01:54.309Z",
+      "last_posted_at": "2025-07-05T16:01:54.361Z",
+      "bumped": true,
+      "bumped_at": "2025-07-05T16:01:54.361Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 1,
+      "views": 95,
+      "category_id": 17,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 33210,
+            "username": "anon81497774",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/a/9dc877/{size}.png",
+            "trust_level": 1
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Make Signal available and attractive to businesses to use",
+      "id": 69293,
+      "title": "Make Signal available and attractive to businesses to use",
+      "slug": "make-signal-available-and-attractive-to-businesses-to-use",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": null,
+      "created_at": "2025-05-21T20:17:56.136Z",
+      "last_posted_at": "2025-05-28T07:58:48.582Z",
+      "bumped": true,
+      "bumped_at": "2025-05-28T07:58:48.582Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 1,
+      "views": 252,
+      "category_id": 17,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 32966,
+            "username": "6vbz6d8ooppxhw1a",
+            "name": "Void",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/6/ce7236/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 28656,
+            "username": "pickle_umbrella",
+            "name": "Pickle",
+            "avatar_template": "/user_avatar/community.signalusers.org/pickle_umbrella/{size}/48004_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Expand the group chat description (or, pin posts!)",
+  "id": 65179,
+  "title": "Expand the group chat description (or, pin posts!)",
+  "posts_count": 4,
+  "created_at": "2024-11-29T00:36:40.207Z",
+  "views": 414,
+  "reply_count": 1,
+  "like_count": 23,
+  "last_posted_at": "2025-02-27T07:32:54.948Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "expand-the-group-chat-description-or-pin-posts",
+  "category_id": 17,
+  "word_count": 656,
+  "deleted_at": null,
+  "user_id": 30859,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_65179",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 5,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 8,
+  "participant_count": 2,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 31811,
+        "username": "desert_nip",
+        "name": "",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+        "post_count": 3,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      },
+      {
+        "id": 30859,
+        "username": "plantperson",
+        "name": "plant person",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/p/e495f1/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 0
+      }
+    ],
+    "created_by": {
+      "id": 30859,
+      "username": "plantperson",
+      "name": "plant person",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/p/e495f1/{size}.png"
+    },
+    "last_poster": {
+      "id": 31811,
+      "username": "desert_nip",
+      "name": "",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png"
+    },
+    "links": [
+      {
+        "url": "https://github.com/signalapp/Signal-Desktop/pull/7198#issue-2882848333",
+        "title": "increase maximum description lenght in UI by isopod-a · Pull Request #7198 · signalapp/Signal-Desktop · GitHub",
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 9,
+        "user_id": 31811,
+        "domain": "github.com",
+        "root_domain": "github.com"
+      },
+      {
+        "url": "https://github.com/isopod-a/Signal-Android/commit/5ff497847b0516ab4b929fe38210df166ecbedac",
+        "title": "increase maximum description lenght in UI · isopod-a/Signal-Android@5ff4978 · GitHub",
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 7,
+        "user_id": 31811,
+        "domain": "github.com",
+        "root_domain": "github.com"
+      },
+      {
+        "url": "https://github.com/isopod-a/Signal-iOS/commit/3aa6022ac3e302b1ef23ec0bc54c1434e17c2907",
+        "title": "increase maximum description lenght in UI · isopod-a/Signal-iOS@3aa6022 · GitHub",
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 6,
+        "user_id": 31811,
+        "domain": "github.com",
+        "root_domain": "github.com"
+      },
+      {
+        "url": "https://community.signalusers.org/t/what-happened-can-anyone-help-me/67115",
+        "title": "What happened ? Can anyone help me ? 😭",
+        "internal": true,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 1,
+        "user_id": 31811,
+        "domain": "community.signalusers.org",
+        "root_domain": "signalusers.org"
+      },
+      {
+        "url": "https://github.com/isopod-a/Signal-Desktop/commit/d7a60d0925d95ebb519e7707f31f411761893dbf",
+        "title": "increase maximum description lenght in UI · isopod-a/Signal-Desktop@d7a60d0 · GitHub",
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 1,
+        "user_id": 31811,
+        "domain": "github.com",
+        "root_domain": "github.com"
+      },
+      {
+        "url": "https://github.com/signalapp/Signal-Android/blob/e1511a09a7b91c74b89796725bc7a45440c1b34e/libsignal-service/src/main/protowire/Groups.proto#L78",
+        "title": "Signal-Android/libsignal-service/src/main/protowire/Groups.proto at e1511a09a7b91c74b89796725bc7a45440c1b34e · signalapp/Signal-Android · GitHub",
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 1,
+        "user_id": 31811,
+        "domain": "github.com",
+        "root_domain": "github.com"
+      }
+    ]
+  },
+  "bookmarks": []
+}

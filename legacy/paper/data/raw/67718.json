@@ -1,0 +1,487 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 263640,
+        "name": null,
+        "username": "eevee303",
+        "avatar_template": "/user_avatar/community.signalusers.org/eevee303/{size}/51210_2.png",
+        "created_at": "2025-03-15T15:50:36.551Z",
+        "cooked": "<p>Hi team! I’m interested in using the default ringtone from the Signal Desktop app (<a href=\"https://github.com/signalapp/Signal-Desktop/blob/main/sounds/ringtone_minimal.ogg\" rel=\"noopener nofollow ugc\">sounds/ringtone_minimal.ogg on GitHub</a>) in a podcast/audio drama. I know that the repo is under AGPLv3, but are the sound effects under the same license or do they have their own license terms? Who can I contact for permissions if needed? <img src=\"https://community.signalusers.org/images/emoji/apple/grin.png?v=12\" title=\":grin:\" class=\"emoji\" alt=\":grin:\" loading=\"lazy\" width=\"20\" height=\"20\"><img src=\"https://community.signalusers.org/images/emoji/apple/studio_microphone.png?v=12\" title=\":studio_microphone:\" class=\"emoji\" alt=\":studio_microphone:\" loading=\"lazy\" width=\"20\" height=\"20\"></p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2025-03-15T15:50:36.551Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 4,
+        "reads": 40,
+        "readers_count": 39,
+        "score": 28.0,
+        "yours": false,
+        "topic_id": 67718,
+        "topic_slug": "license-for-sound-effects",
+        "display_username": null,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://github.com/signalapp/Signal-Desktop/blob/main/sounds/ringtone_minimal.ogg",
+            "internal": false,
+            "reflection": false,
+            "title": "Signal-Desktop/sounds/ringtone_minimal.ogg at main · signalapp/Signal-Desktop · GitHub",
+            "clicks": 2
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 32167,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/license-for-sound-effects/67718/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      },
+      {
+        "id": 263642,
+        "name": "👊🇺🇸🔥",
+        "username": "Avitus",
+        "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+        "created_at": "2025-03-15T16:51:29.685Z",
+        "cooked": "<p>This is just a community forum for Signal users. Emailing <a href=\"mailto:support@signal.org\">support@signal.org</a> will probably yield better results for something like this.</p>",
+        "post_number": 2,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2025-03-15T16:51:29.685Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 40,
+        "readers_count": 39,
+        "score": 53.0,
+        "yours": false,
+        "topic_id": 67718,
+        "topic_slug": "license-for-sound-effects",
+        "display_username": "👊🇺🇸🔥",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "",
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 3
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 7657,
+        "hidden": false,
+        "trust_level": 3,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/license-for-sound-effects/67718/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      }
+    ],
+    "stream": [
+      263640,
+      263642
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      336
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Dropping support for Ubuntu 20.04 so soon?",
+      "id": 70013,
+      "title": "Dropping support for Ubuntu 20.04 so soon?",
+      "slug": "dropping-support-for-ubuntu-20-04-so-soon",
+      "posts_count": 11,
+      "reply_count": 7,
+      "highest_post_number": 11,
+      "image_url": null,
+      "created_at": "2025-06-26T15:11:51.351Z",
+      "last_posted_at": "2025-08-02T13:43:44.161Z",
+      "bumped": true,
+      "bumped_at": "2025-08-02T13:43:44.161Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 14,
+      "views": 273,
+      "category_id": 15,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 33328,
+            "username": "Charley",
+            "name": null,
+            "avatar_template": "/user_avatar/community.signalusers.org/charley/{size}/53170_2.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 1499,
+            "username": "CueHD",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/cuehd/{size}/42510_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 22679,
+            "username": "Rico70",
+            "name": "Rico",
+            "avatar_template": "/user_avatar/community.signalusers.org/rico70/{size}/41632_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "How does attachment backfill work?",
+      "id": 69783,
+      "title": "How does attachment backfill work?",
+      "slug": "how-does-attachment-backfill-work",
+      "posts_count": 5,
+      "reply_count": 2,
+      "highest_post_number": 5,
+      "image_url": null,
+      "created_at": "2025-06-17T05:29:02.307Z",
+      "last_posted_at": "2025-06-29T03:25:45.303Z",
+      "bumped": true,
+      "bumped_at": "2025-06-29T03:25:45.303Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 12,
+      "views": 152,
+      "category_id": 15,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": true,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 1255,
+            "username": "mrandr01d",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/m/f08c70/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster, Accepted Answer",
+          "user": {
+            "id": 1534,
+            "username": "greyson-signal",
+            "name": "Greyson Parrelli",
+            "avatar_template": "/user_avatar/community.signalusers.org/greyson-signal/{size}/2005_2.png",
+            "primary_group_name": "signal_staff",
+            "flair_name": "signal_staff",
+            "flair_url": "/uploads/db3609/original/3X/0/6/064a72b694359c38b577ec83488ad474c77032dc.png",
+            "flair_bg_color": "3B45FD",
+            "flair_group_id": 46,
+            "admin": true,
+            "moderator": true,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 2521,
+            "username": "Herohtar",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+            "primary_group_name": "volunteer_moderators",
+            "flair_name": "volunteer_moderators",
+            "flair_url": "shield-halved",
+            "flair_bg_color": "1d8663",
+            "flair_color": "fff",
+            "flair_group_id": 41,
+            "moderator": true,
+            "trust_level": 4
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Add option to always show the Send button in message input area",
+      "id": 70553,
+      "title": "Add option to always show the Send button in message input area",
+      "slug": "add-option-to-always-show-the-send-button-in-message-input-area",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": null,
+      "created_at": "2025-07-21T00:30:37.334Z",
+      "last_posted_at": "2025-07-26T00:29:13.255Z",
+      "bumped": true,
+      "bumped_at": "2025-07-26T00:29:13.255Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 5,
+      "views": 115,
+      "category_id": 20,
+      "featured_link": null,
+      "op_like_count": 4,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 33580,
+            "username": "akashiseizaburou",
+            "name": "Akashiseizaburou",
+            "avatar_template": "/user_avatar/community.signalusers.org/akashiseizaburou/{size}/53022_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 33610,
+            "username": "Ammar_Ahmed",
+            "name": "Ammar Ahmed",
+            "avatar_template": "/user_avatar/community.signalusers.org/ammar_ahmed/{size}/53064_2.png",
+            "trust_level": 0
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "License for sound effects",
+  "id": 67718,
+  "title": "License for sound effects",
+  "posts_count": 2,
+  "created_at": "2025-03-15T15:50:36.499Z",
+  "views": 89,
+  "reply_count": 0,
+  "like_count": 3,
+  "last_posted_at": "2025-03-15T16:51:29.685Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "license-for-sound-effects",
+  "category_id": 15,
+  "word_count": 91,
+  "deleted_at": null,
+  "user_id": 32167,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_67718",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 2,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 2,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 7657,
+        "username": "Avitus",
+        "name": "👊🇺🇸🔥",
+        "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 3
+      },
+      {
+        "id": 32167,
+        "username": "eevee303",
+        "name": null,
+        "avatar_template": "/user_avatar/community.signalusers.org/eevee303/{size}/51210_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 0
+      }
+    ],
+    "created_by": {
+      "id": 32167,
+      "username": "eevee303",
+      "name": null,
+      "avatar_template": "/user_avatar/community.signalusers.org/eevee303/{size}/51210_2.png"
+    },
+    "last_poster": {
+      "id": 7657,
+      "username": "Avitus",
+      "name": "👊🇺🇸🔥",
+      "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png"
+    },
+    "links": [
+      {
+        "url": "https://github.com/signalapp/Signal-Desktop/blob/main/sounds/ringtone_minimal.ogg",
+        "title": "Signal-Desktop/sounds/ringtone_minimal.ogg at main · signalapp/Signal-Desktop · GitHub",
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 2,
+        "user_id": 32167,
+        "domain": "github.com",
+        "root_domain": "github.com"
+      }
+    ]
+  },
+  "bookmarks": []
+}

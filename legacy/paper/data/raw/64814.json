@@ -1,0 +1,582 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 255301,
+        "name": "",
+        "username": "JJNCN",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/j/8797f3/{size}.png",
+        "created_at": "2024-11-11T05:35:20.111Z",
+        "cooked": "<p>So, I feel like this question has been asked thousands of times on the web, and received the same answer.  I’m asking here, hoping there may be some far reaching solution that I haven’t read about yet. Or maybe not, maybe I just need to accept  the loss. Long story short, old phone, with Signal app, died.  I don’t remember if I regulary backed Signal app up.  I did do regular backups with Google One.  I haven’t installed Signal on new phone yet, since I’m still hoping to get some technical help on fixing my old phone (thought it was battery but with new battery it still won’t turn on.)  I do have Signal on my laptop and so far it seems to be working. If I can get old phone fixed, I’ll immediately backup and go from there, or just transfer data.</p>\n<p>Is it possible to transfer data from my signal desktop to my new phone, or to somewhere else, so that I don’t lose that data as well?</p>\n<p>Suggestions/Ideas or apps for new phone, so that Signal data is backed up in different formats/ways, so that this doesn’t happen again?</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 3,
+        "updated_at": "2024-11-11T05:35:20.111Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 18,
+        "reads": 32,
+        "readers_count": 31,
+        "score": 96.4,
+        "yours": false,
+        "topic_id": 64814,
+        "topic_slug": "restoring-signal-from-old-phone-or-desktop-to-new-phone",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 30709,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/restoring-signal-from-old-phone-or-desktop-to-new-phone/64814/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      },
+      {
+        "id": 255341,
+        "name": "",
+        "username": "CueHD",
+        "avatar_template": "/user_avatar/community.signalusers.org/cuehd/{size}/42510_2.png",
+        "created_at": "2024-11-11T18:54:53.789Z",
+        "cooked": "<aside class=\"quote quote-modified\" data-post=\"2\" data-topic=\"62118\">\n  <div class=\"title\">\n    <div class=\"quote-controls\"></div>\n    <img loading=\"lazy\" alt=\"\" width=\"24\" height=\"24\" src=\"https://community.signalusers.org/user_avatar/community.signalusers.org/cuehd/48/42510_2.png\" class=\"avatar\">\n    <a href=\"https://community.signalusers.org/t/restore-conversations-after-factory-reset/62118/2\">Restore conversations after factory reset</a> <a class=\"badge-category__wrapper \" href=\"/c/support/android-support/11\"><span data-category-id=\"11\" style=\"--category-badge-color: #F0690F; --category-badge-text-color: #FFFFFF; --parent-category-badge-color: #F7B91D;\" data-parent-category-id=\"9\" data-drop-close=\"true\" class=\"badge-category --has-parent\" title=\"Unofficial community support for Signal Android.\nOfficial support is at https://support.signal.org\"><span class=\"badge-category__name\">Android Support</span></span></a>\n  </div>\n  <blockquote>\n    There is an experimental feature of this tool that can import conversations from Signal-Desktop into a backup from your Android phone. You would then restore this merged backup to have your full conversations. \n\n\nEffectively no. \nTechnically yes, your conversations and history are backed up but the key to decrypt them is not, so they are useless. \n\nIf you mean an ADB backup, I am not sure. It might be possible.\n  </blockquote>\n</aside>\n\n<p>Once you get Signal working on Android again, you can have it take backups on a schedule and export those backups to a safe location. I prefer to use the SD card in case the phone has issues.</p>",
+        "post_number": 2,
+        "post_type": 1,
+        "posts_count": 3,
+        "updated_at": "2024-11-11T18:54:53.789Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 23,
+        "readers_count": 22,
+        "score": 4.6,
+        "yours": false,
+        "topic_id": 64814,
+        "topic_slug": "restoring-signal-from-old-phone-or-desktop-to-new-phone",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://community.signalusers.org/t/restore-conversations-after-factory-reset/62118/2",
+            "internal": true,
+            "reflection": false,
+            "title": "Restore conversations after factory reset",
+            "clicks": 0
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 1499,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/restoring-signal-from-old-phone-or-desktop-to-new-phone/64814/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 271157,
+        "name": "",
+        "username": "desert_nip",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+        "created_at": "2025-07-01T12:48:47.651Z",
+        "cooked": "<p>If you have the time, it might be worth waiting for cloud backups and the new backup format.</p>\n<aside class=\"quote group-signal_staff\" data-username=\"greyson-signal\" data-post=\"133\" data-topic=\"69984\">\n<div class=\"title\">\n<div class=\"quote-controls\"></div>\n<img alt=\"\" width=\"24\" height=\"24\" src=\"https://community.signalusers.org/user_avatar/community.signalusers.org/greyson-signal/48/2005_2.png\" class=\"avatar\"><a href=\"https://community.signalusers.org/t/public-signal-backups-testing/69984/133\">Public Signal Backups Testing</a></div>\n<blockquote>\n<p>Yep! In fact the desktop team has already begun work on local backups :)</p>\n</blockquote>\n</aside>\n<p>This was said on possibly restoring history from a working Desktop instance. You should make sure to keep your Desktop active and linked, so all new messages arrive there and you could then hopefully get a (mostly complete) backup, since splicing backups isn’t possible yet and it’s unclear whether it will be in the future.</p>",
+        "post_number": 4,
+        "post_type": 1,
+        "posts_count": 3,
+        "updated_at": "2025-07-01T12:48:47.651Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 10,
+        "readers_count": 9,
+        "score": 2.0,
+        "yours": false,
+        "topic_id": 64814,
+        "topic_slug": "restoring-signal-from-old-phone-or-desktop-to-new-phone",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://community.signalusers.org/t/public-signal-backups-testing/69984/133",
+            "internal": true,
+            "reflection": false,
+            "title": "Public Signal Backups Testing",
+            "clicks": 0
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 31811,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/restoring-signal-from-old-phone-or-desktop-to-new-phone/64814/4",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      }
+    ],
+    "stream": [
+      255301,
+      255341,
+      271157
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      461
+    ],
+    [
+      2,
+      460
+    ],
+    [
+      3,
+      228
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Issues with registration ",
+      "id": 68222,
+      "title": "Issues with registration ",
+      "slug": "issues-with-registration",
+      "posts_count": 12,
+      "reply_count": 6,
+      "highest_post_number": 12,
+      "image_url": null,
+      "created_at": "2025-04-03T01:08:05.301Z",
+      "last_posted_at": "2025-04-05T19:33:19.890Z",
+      "bumped": true,
+      "bumped_at": "2025-04-05T19:33:19.890Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 9,
+      "views": 176,
+      "category_id": 11,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 32410,
+            "username": "Idara",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/i/b19c9b/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 1445,
+            "username": "userx404",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/userx404/{size}/4706_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 31728,
+            "username": "Megan",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/megan/{size}/50954_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Stock screen (signal is updating ) &hellip; after installing from apk bundles",
+      "id": 67961,
+      "title": "Stock screen (signal is updating ) ... after installing from apk bundles",
+      "slug": "stock-screen-signal-is-updating-after-installing-from-apk-bundles",
+      "posts_count": 9,
+      "reply_count": 6,
+      "highest_post_number": 9,
+      "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/f/4/f4b3d844b5bc2ca31a891e4c5391d41c80366898_2_576x1024.jpeg",
+      "created_at": "2025-03-25T16:27:00.864Z",
+      "last_posted_at": "2025-04-01T12:39:39.790Z",
+      "bumped": true,
+      "bumped_at": "2025-04-01T12:39:39.790Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 2,
+      "views": 76,
+      "category_id": 11,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 32302,
+            "username": "Hanle6sf",
+            "name": "An faml",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/h/e5b9ba/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 1499,
+            "username": "CueHD",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/cuehd/{size}/42510_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 6659,
+            "username": "Whatnoww",
+            "name": "Whatnoww",
+            "avatar_template": "/user_avatar/community.signalusers.org/whatnoww/{size}/54328_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "No QWERTY keypad on PIN verification prompt",
+      "id": 67204,
+      "title": "No QWERTY keypad on PIN verification prompt",
+      "slug": "no-qwerty-keypad-on-pin-verification-prompt",
+      "posts_count": 13,
+      "reply_count": 7,
+      "highest_post_number": 13,
+      "image_url": null,
+      "created_at": "2025-02-25T19:08:02.643Z",
+      "last_posted_at": "2025-03-04T18:31:12.515Z",
+      "bumped": true,
+      "bumped_at": "2025-03-04T18:31:12.515Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 6,
+      "views": 93,
+      "category_id": 11,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 31907,
+            "username": "signalkeyboard",
+            "name": "JD",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/s/dc4da7/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 26763,
+            "username": "zetabeta",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/zetabeta/{size}/54310_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 5448,
+            "username": "DirkPitt1",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/74df32/{size}.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 1499,
+            "username": "CueHD",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/cuehd/{size}/42510_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 31728,
+            "username": "Megan",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/megan/{size}/50954_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Restoring Signal from old phone or desktop to new phone",
+  "id": 64814,
+  "title": "Restoring Signal from old phone or desktop to new phone",
+  "posts_count": 3,
+  "created_at": "2024-11-11T05:35:20.048Z",
+  "views": 122,
+  "reply_count": 0,
+  "like_count": 0,
+  "last_posted_at": "2025-07-01T12:48:47.651Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "restoring-signal-from-old-phone-or-desktop-to-new-phone",
+  "category_id": 11,
+  "word_count": 351,
+  "deleted_at": null,
+  "user_id": 30709,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_64814",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 4,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 3,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 1499,
+        "username": "CueHD",
+        "name": "",
+        "avatar_template": "/user_avatar/community.signalusers.org/cuehd/{size}/42510_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      },
+      {
+        "id": 30709,
+        "username": "JJNCN",
+        "name": "",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/j/8797f3/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 0
+      },
+      {
+        "id": 31811,
+        "username": "desert_nip",
+        "name": "",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      }
+    ],
+    "created_by": {
+      "id": 30709,
+      "username": "JJNCN",
+      "name": "",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/j/8797f3/{size}.png"
+    },
+    "last_poster": {
+      "id": 31811,
+      "username": "desert_nip",
+      "name": "",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png"
+    }
+  },
+  "bookmarks": []
+}

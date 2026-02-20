@@ -1,0 +1,369 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 273811,
+        "name": "Adrian",
+        "username": "razerock",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/r/96bed5/{size}.png",
+        "created_at": "2025-08-20T16:46:34.732Z",
+        "cooked": "<p>Is it possible to make the quality and volume of voice messages identical in Discord? For example, the quality and volume of voice messages in Signal is about one and a half times better than in WhatsApp, but Discord is one and a half to two times better than Signal. If you have not heard voice messages in Discord before, you should record and listen … Is it possible to do the same in Signal? I do not know why, but in addition to quality, Discord wins not only in volume, but also in detail, since the timbre and tonality of the voice are captured, while other messengers (including Signal) either do not use the device’s microphone to the fullest, or something else. Or maybe Discord just has different Opus settings … I do not know. In any case, make the same quality in Signal, please.</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2025-08-20T16:46:34.732Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 33,
+        "readers_count": 32,
+        "score": 41.6,
+        "yours": false,
+        "topic_id": 71138,
+        "topic_slug": "quality-of-voice-messages",
+        "display_username": "Adrian",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 2
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 33331,
+        "hidden": false,
+        "trust_level": 1,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/quality-of-voice-messages/71138/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      273811
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      178
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Adapt Recall blocking for chat control on mobile",
+      "id": 73282,
+      "title": "Adapt Recall blocking for chat control on mobile",
+      "slug": "adapt-recall-blocking-for-chat-control-on-mobile",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/2/4/24710d29b8507f12407f14399a41518663b27785_2_1024x537.png",
+      "created_at": "2025-12-01T22:15:40.342Z",
+      "last_posted_at": "2025-12-01T22:15:40.416Z",
+      "bumped": true,
+      "bumped_at": "2025-12-02T21:10:27.918Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 2,
+      "views": 72,
+      "category_id": 17,
+      "featured_link": null,
+      "op_like_count": 2,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "(April Fool&rsquo;s) Signal now actively working on its AI chat assistant",
+      "id": 68178,
+      "title": "(April Fool's) Signal now actively working on its AI chat assistant",
+      "slug": "april-fools-signal-now-actively-working-on-its-ai-chat-assistant",
+      "posts_count": 6,
+      "reply_count": 2,
+      "highest_post_number": 6,
+      "image_url": null,
+      "created_at": "2025-04-01T06:39:58.922Z",
+      "last_posted_at": "2025-04-02T13:50:21.688Z",
+      "bumped": true,
+      "bumped_at": "2025-04-02T13:50:21.688Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 12,
+      "views": 207,
+      "category_id": 22,
+      "featured_link": null,
+      "op_like_count": 5,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 16653,
+            "username": "QuickBanana",
+            "name": null,
+            "avatar_template": "/user_avatar/community.signalusers.org/quickbanana/{size}/35290_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 1497,
+            "username": "najodleglejszy",
+            "name": "(he/him)",
+            "avatar_template": "/user_avatar/community.signalusers.org/najodleglejszy/{size}/1213_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 2601,
+            "username": "signalOne",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/signalone/{size}/43900_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 30664,
+            "username": "Oleh_Hreckov",
+            "name": "Oleh Hrekov",
+            "avatar_template": "/user_avatar/community.signalusers.org/oleh_hreckov/{size}/49491_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 975,
+            "username": "Stephan",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/s/8baadc/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Unread/Read Message ",
+      "id": 67335,
+      "title": "Unread/Read Message ",
+      "slug": "unread-read-message",
+      "posts_count": 3,
+      "reply_count": 1,
+      "highest_post_number": 3,
+      "image_url": null,
+      "created_at": "2025-03-02T04:57:14.499Z",
+      "last_posted_at": "2025-03-02T22:37:34.639Z",
+      "bumped": true,
+      "bumped_at": "2025-03-02T22:37:34.639Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 141,
+      "category_id": 19,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 31965,
+            "username": "LokiOfAsgard",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/l/eb9ed0/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31728,
+            "username": "Megan",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/megan/{size}/50954_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Quality of voice messages",
+  "id": 71138,
+  "title": "Quality of voice messages",
+  "posts_count": 1,
+  "created_at": "2025-08-20T16:46:34.677Z",
+  "views": 67,
+  "reply_count": 0,
+  "like_count": 2,
+  "last_posted_at": "2025-08-20T16:46:34.732Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "quality-of-voice-messages",
+  "category_id": 17,
+  "word_count": 145,
+  "deleted_at": null,
+  "user_id": 33331,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_71138",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 33331,
+        "username": "razerock",
+        "name": "Adrian",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/r/96bed5/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 1
+      }
+    ],
+    "created_by": {
+      "id": 33331,
+      "username": "razerock",
+      "name": "Adrian",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/r/96bed5/{size}.png"
+    },
+    "last_poster": {
+      "id": 33331,
+      "username": "razerock",
+      "name": "Adrian",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/r/96bed5/{size}.png"
+    }
+  },
+  "bookmarks": []
+}

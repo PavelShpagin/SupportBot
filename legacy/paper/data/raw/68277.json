@@ -1,0 +1,458 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 265335,
+        "name": "",
+        "username": "zetabeta",
+        "avatar_template": "/user_avatar/community.signalusers.org/zetabeta/{size}/54310_2.png",
+        "created_at": "2025-04-04T23:53:27.761Z",
+        "cooked": "<p>can’t set disappearing messages to custom in desktop app in linux.</p>\n<p>os is debian unstable and updated 2025-04. linux signal desktop program.</p>\n<p>when i select custom, it does something, but it does not show a new window or selection. just goes back. i think this is a bug. location: settings &gt; privacy &gt; disappearing messages &gt; default timer for new chats.</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2025-04-04T23:53:27.761Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 2,
+        "reads": 23,
+        "readers_count": 22,
+        "score": 14.6,
+        "yours": false,
+        "topic_id": 68277,
+        "topic_slug": "cant-set-disappearing-messages-to-custom-in-desktop-app-in-linux",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 26763,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/cant-set-disappearing-messages-to-custom-in-desktop-app-in-linux/68277/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      },
+      {
+        "id": 265389,
+        "name": "",
+        "username": "Megan",
+        "avatar_template": "/user_avatar/community.signalusers.org/megan/{size}/50954_2.png",
+        "created_at": "2025-04-05T20:12:00.862Z",
+        "cooked": "<p>This looks like a bug, I’d suggest you to make a support request here: <a href=\"https://support.signal.org/hc/en-us\">https://support.signal.org/hc/en-us</a></p>",
+        "post_number": 2,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2025-04-05T20:12:00.862Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 2,
+        "reads": 16,
+        "readers_count": 15,
+        "score": 28.2,
+        "yours": false,
+        "topic_id": 68277,
+        "topic_slug": "cant-set-disappearing-messages-to-custom-in-desktop-app-in-linux",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://support.signal.org/hc/en-us",
+            "internal": false,
+            "reflection": false,
+            "clicks": 0
+          }
+        ],
+        "read": true,
+        "user_title": "",
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 1
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 31728,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/cant-set-disappearing-messages-to-custom-in-desktop-app-in-linux/68277/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      }
+    ],
+    "stream": [
+      265335,
+      265389
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      316
+    ],
+    [
+      2,
+      315
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "mic not working in debian desktop (pipewire)",
+      "id": 70380,
+      "title": "mic not working in debian desktop (pipewire)",
+      "slug": "mic-not-working-in-debian-desktop-pipewire",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": null,
+      "created_at": "2025-07-12T18:43:59.156Z",
+      "last_posted_at": "2025-07-13T09:31:52.897Z",
+      "bumped": true,
+      "bumped_at": "2025-07-13T09:31:52.897Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 51,
+      "category_id": 12,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 29161,
+            "username": "akb428",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/a/8baadc/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 2850,
+            "username": "Leibi",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/leibi/{size}/3756_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Where does signal store its cache?",
+      "id": 68159,
+      "title": "Where does signal store its cache?",
+      "slug": "where-does-signal-store-its-cache",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": null,
+      "created_at": "2025-03-31T20:47:59.628Z",
+      "last_posted_at": "2025-04-05T09:02:33.138Z",
+      "bumped": true,
+      "bumped_at": "2025-04-05T09:02:33.138Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 96,
+      "category_id": 12,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 32400,
+            "username": "casu67",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/c/97f17d/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 31728,
+            "username": "Megan",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/megan/{size}/50954_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Signal Desktop behind a proxy?",
+      "id": 67087,
+      "title": "Signal Desktop behind a proxy?",
+      "slug": "signal-desktop-behind-a-proxy",
+      "posts_count": 25,
+      "reply_count": 12,
+      "highest_post_number": 25,
+      "image_url": null,
+      "created_at": "2025-02-21T16:03:12.751Z",
+      "last_posted_at": "2025-03-03T16:20:13.116Z",
+      "bumped": true,
+      "bumped_at": "2025-03-03T16:20:13.116Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 3,
+      "views": 219,
+      "category_id": 12,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 31843,
+            "username": "makrohard",
+            "name": "makrohard",
+            "avatar_template": "/user_avatar/community.signalusers.org/makrohard/{size}/50868_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 21703,
+            "username": "TomatoPlant",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/tomatoplant/{size}/31888_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 28656,
+            "username": "pickle_umbrella",
+            "name": "Pickle",
+            "avatar_template": "/user_avatar/community.signalusers.org/pickle_umbrella/{size}/48004_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 31728,
+            "username": "Megan",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/megan/{size}/50954_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Can&rsquo;t set disappearing messages to custom in desktop app in linux",
+  "id": 68277,
+  "title": "Can't set disappearing messages to custom in desktop app in linux",
+  "posts_count": 2,
+  "created_at": "2025-04-04T23:53:27.684Z",
+  "views": 44,
+  "reply_count": 0,
+  "like_count": 1,
+  "last_posted_at": "2025-04-05T20:12:00.862Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "cant-set-disappearing-messages-to-custom-in-desktop-app-in-linux",
+  "category_id": 12,
+  "word_count": 82,
+  "deleted_at": null,
+  "user_id": 26763,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_68277",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 2,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 2,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 26763,
+        "username": "zetabeta",
+        "name": "",
+        "avatar_template": "/user_avatar/community.signalusers.org/zetabeta/{size}/54310_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      },
+      {
+        "id": 31728,
+        "username": "Megan",
+        "name": "",
+        "avatar_template": "/user_avatar/community.signalusers.org/megan/{size}/50954_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      }
+    ],
+    "created_by": {
+      "id": 26763,
+      "username": "zetabeta",
+      "name": "",
+      "avatar_template": "/user_avatar/community.signalusers.org/zetabeta/{size}/54310_2.png"
+    },
+    "last_poster": {
+      "id": 31728,
+      "username": "Megan",
+      "name": "",
+      "avatar_template": "/user_avatar/community.signalusers.org/megan/{size}/50954_2.png"
+    }
+  },
+  "bookmarks": []
+}

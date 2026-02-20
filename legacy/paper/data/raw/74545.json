@@ -1,0 +1,461 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 283720,
+        "name": "diffrentcolours",
+        "username": "diffrentcolours",
+        "avatar_template": "/user_avatar/community.signalusers.org/diffrentcolours/{size}/55651_2.png",
+        "created_at": "2026-01-29T21:43:31.591Z",
+        "cooked": "<p>Allow users to search for messages within a chat by sender, a la “from:Bob cheese” to find messages from Bob talking about cheese.</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2026-01-29T21:43:31.591Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 2,
+        "reads": 24,
+        "readers_count": 23,
+        "score": 134.8,
+        "yours": false,
+        "topic_id": 74545,
+        "topic_slug": "search-for-messages-by-user",
+        "display_username": "diffrentcolours",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "",
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 8
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 35676,
+        "hidden": false,
+        "trust_level": 1,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/search-for-messages-by-user/74545/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      },
+      {
+        "id": 283779,
+        "name": null,
+        "username": "chepycou",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/c/ccd318/{size}.png",
+        "created_at": "2026-01-30T20:30:19.341Z",
+        "cooked": "<p>This is the way searching for messages works in discord, and it’s become one of the best if not the best. Having a before/after clause could also prove useful to sift through thousands of entries</p>",
+        "post_number": 2,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2026-01-30T20:30:19.341Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 20,
+        "readers_count": 19,
+        "score": 49.0,
+        "yours": false,
+        "topic_id": 74545,
+        "topic_slug": "search-for-messages-by-user",
+        "display_username": null,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 3
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 33747,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/search-for-messages-by-user/74545/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      }
+    ],
+    "stream": [
+      283720,
+      283779
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      16
+    ],
+    [
+      2,
+      15
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Don&rsquo;t show blocked users first in group member list",
+      "id": 74354,
+      "title": "Don't show blocked users first in group member list",
+      "slug": "dont-show-blocked-users-first-in-group-member-list",
+      "posts_count": 3,
+      "reply_count": 1,
+      "highest_post_number": 3,
+      "image_url": null,
+      "created_at": "2026-01-20T19:27:20.207Z",
+      "last_posted_at": "2026-01-21T09:00:48.179Z",
+      "bumped": true,
+      "bumped_at": "2026-01-21T09:00:48.179Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 2,
+      "views": 58,
+      "category_id": 28,
+      "featured_link": null,
+      "op_like_count": 2,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 19563,
+            "username": "makiro",
+            "name": "makiro",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/m/dfb087/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Device Linking Phishing Prevention (Emoji or Numeric Confirmation)",
+      "id": 68076,
+      "title": "Device Linking Phishing Prevention (Emoji or Numeric Confirmation)",
+      "slug": "device-linking-phishing-prevention-emoji-or-numeric-confirmation",
+      "posts_count": 11,
+      "reply_count": 9,
+      "highest_post_number": 12,
+      "image_url": null,
+      "created_at": "2025-03-28T16:37:34.104Z",
+      "last_posted_at": "2025-03-28T23:49:45.337Z",
+      "bumped": true,
+      "bumped_at": "2025-03-28T23:49:45.337Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 8,
+      "views": 111,
+      "category_id": 28,
+      "featured_link": null,
+      "op_like_count": 3,
+      "has_accepted_answer": true,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 27607,
+            "username": "Dark_Arc",
+            "name": "Wyatt Childers",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/53a042/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster, Accepted Answer",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 6659,
+            "username": "Whatnoww",
+            "name": "Whatnoww",
+            "avatar_template": "/user_avatar/community.signalusers.org/whatnoww/{size}/54328_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Donation to Signal",
+      "id": 74676,
+      "title": "Donation to Signal",
+      "slug": "donation-to-signal",
+      "posts_count": 4,
+      "reply_count": 1,
+      "highest_post_number": 4,
+      "image_url": null,
+      "created_at": "2026-02-11T14:10:16.251Z",
+      "last_posted_at": "2026-02-12T14:07:24.704Z",
+      "bumped": true,
+      "bumped_at": "2026-02-12T14:07:24.704Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 4,
+      "views": 98,
+      "category_id": 7,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": true,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 35874,
+            "username": "joostdekanter",
+            "name": "Joost",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/j/4bbf92/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster, Accepted Answer",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31532,
+            "username": "sciurius",
+            "name": "Johan Vromans",
+            "avatar_template": "/user_avatar/community.signalusers.org/sciurius/{size}/50487_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Search for messages by user",
+  "id": 74545,
+  "title": "Search for messages by user",
+  "posts_count": 2,
+  "created_at": "2026-01-29T21:43:31.464Z",
+  "views": 45,
+  "reply_count": 0,
+  "like_count": 11,
+  "last_posted_at": "2026-01-30T20:30:19.341Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "search-for-messages-by-user",
+  "category_id": 28,
+  "word_count": 61,
+  "deleted_at": null,
+  "user_id": 35676,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_74545",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 2,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 4,
+  "participant_count": 2,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 33747,
+        "username": "chepycou",
+        "name": null,
+        "avatar_template": "/letter_avatar_proxy/v4/letter/c/ccd318/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      },
+      {
+        "id": 35676,
+        "username": "diffrentcolours",
+        "name": "diffrentcolours",
+        "avatar_template": "/user_avatar/community.signalusers.org/diffrentcolours/{size}/55651_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 1
+      }
+    ],
+    "created_by": {
+      "id": 35676,
+      "username": "diffrentcolours",
+      "name": "diffrentcolours",
+      "avatar_template": "/user_avatar/community.signalusers.org/diffrentcolours/{size}/55651_2.png"
+    },
+    "last_poster": {
+      "id": 33747,
+      "username": "chepycou",
+      "name": null,
+      "avatar_template": "/letter_avatar_proxy/v4/letter/c/ccd318/{size}.png"
+    }
+  },
+  "bookmarks": []
+}

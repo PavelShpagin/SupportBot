@@ -1,0 +1,357 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 263545,
+        "name": "",
+        "username": "adominanouwe",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/a/3ec8ea/{size}.png",
+        "created_at": "2025-03-13T22:34:04.659Z",
+        "cooked": "<p>Greater distinction between unicolour images on iOS would be useful (perhaps similar to Signal Desktop). The type of distinction required would though have to be used for all group of images for consistency’s sake. Currently unicolour images (in my case white) meld into one. Happy to share a screen recording privately too as I am unable to upload it here.</p>\n<p><strong>iOS/Mobile</strong></p>\n<p><div class=\"lightbox-wrapper\"><a class=\"lightbox\" href=\"https://community.signalusers.org/uploads/db3609/original/3X/6/5/65fa31e66d53ea018e5d7db246cbb4689ef3c167.jpeg\" data-download-href=\"https://community.signalusers.org/uploads/db3609/65fa31e66d53ea018e5d7db246cbb4689ef3c167\" title=\"Phone:iOS Image\"><img src=\"https://community.signalusers.org/uploads/db3609/optimized/3X/6/5/65fa31e66d53ea018e5d7db246cbb4689ef3c167_2_289x499.jpeg\" alt=\"Phone:iOS Image\" data-base62-sha1=\"ey8gpmSDyahNMb10Nd0iQimBTiT\" width=\"289\" height=\"499\" srcset=\"https://community.signalusers.org/uploads/db3609/optimized/3X/6/5/65fa31e66d53ea018e5d7db246cbb4689ef3c167_2_289x499.jpeg, https://community.signalusers.org/uploads/db3609/optimized/3X/6/5/65fa31e66d53ea018e5d7db246cbb4689ef3c167_2_433x748.jpeg 1.5x, https://community.signalusers.org/uploads/db3609/optimized/3X/6/5/65fa31e66d53ea018e5d7db246cbb4689ef3c167_2_578x998.jpeg 2x\" data-dominant-color=\"B5BCCF\"><div class=\"meta\"><svg class=\"fa d-icon d-icon-far-image svg-icon\" aria-hidden=\"true\"><use href=\"#far-image\"></use></svg><span class=\"filename\">Phone:iOS Image</span><span class=\"informations\">1040×1798 78.7 KB</span><svg class=\"fa d-icon d-icon-discourse-expand svg-icon\" aria-hidden=\"true\"><use href=\"#discourse-expand\"></use></svg></div></a></div></p>\n<p><strong>macOS/Desktop</strong></p>\n<p><div class=\"lightbox-wrapper\"><a class=\"lightbox\" href=\"https://community.signalusers.org/uploads/db3609/original/3X/5/5/55a13812a9794f59d07dd1940d498a4e4d681dc0.png\" data-download-href=\"https://community.signalusers.org/uploads/db3609/55a13812a9794f59d07dd1940d498a4e4d681dc0\" title=\"Desktop:macOS\"><img src=\"https://community.signalusers.org/uploads/db3609/optimized/3X/5/5/55a13812a9794f59d07dd1940d498a4e4d681dc0_2_577x500.png\" alt=\"Desktop:macOS\" data-base62-sha1=\"cdvZHszBZ3x4xae1mmx3uECdYEE\" width=\"577\" height=\"500\" srcset=\"https://community.signalusers.org/uploads/db3609/optimized/3X/5/5/55a13812a9794f59d07dd1940d498a4e4d681dc0_2_577x500.png, https://community.signalusers.org/uploads/db3609/optimized/3X/5/5/55a13812a9794f59d07dd1940d498a4e4d681dc0_2_865x750.png 1.5x, https://community.signalusers.org/uploads/db3609/optimized/3X/5/5/55a13812a9794f59d07dd1940d498a4e4d681dc0_2_1154x1000.png 2x\" data-dominant-color=\"FBF9FB\"><div class=\"meta\"><svg class=\"fa d-icon d-icon-far-image svg-icon\" aria-hidden=\"true\"><use href=\"#far-image\"></use></svg><span class=\"filename\">Desktop:macOS</span><span class=\"informations\">1706×1476 112 KB</span><svg class=\"fa d-icon d-icon-discourse-expand svg-icon\" aria-hidden=\"true\"><use href=\"#discourse-expand\"></use></svg></div></a></div></p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2025-03-13T22:34:24.818Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 2,
+        "reads": 27,
+        "readers_count": 26,
+        "score": 15.4,
+        "yours": false,
+        "topic_id": 67668,
+        "topic_slug": "increase-distinction-between-groups-of-unicolour-images",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "",
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 15765,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/increase-distinction-between-groups-of-unicolour-images/67668/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      263545
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      338
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Pasting a GIF sends it instantly without confirmation",
+      "id": 73458,
+      "title": "Pasting a GIF sends it instantly without confirmation",
+      "slug": "pasting-a-gif-sends-it-instantly-without-confirmation",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2025-12-08T19:17:33.117Z",
+      "last_posted_at": "2025-12-08T19:17:33.204Z",
+      "bumped": true,
+      "bumped_at": "2025-12-08T19:17:33.204Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 2,
+      "views": 29,
+      "category_id": 29,
+      "featured_link": null,
+      "op_like_count": 2,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 34475,
+            "username": "whynot",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/whynot/{size}/54219_2.png",
+            "trust_level": 1
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Bug: Voice-messages don&rsquo;t show correct remaining time",
+      "id": 72431,
+      "title": "Bug: Voice-messages don't show correct remaining time",
+      "slug": "bug-voice-messages-dont-show-correct-remaining-time",
+      "posts_count": 5,
+      "reply_count": 1,
+      "highest_post_number": 5,
+      "image_url": null,
+      "created_at": "2025-10-24T14:51:49.228Z",
+      "last_posted_at": "2025-11-07T16:11:19.209Z",
+      "bumped": true,
+      "bumped_at": "2025-11-07T16:11:19.209Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 34,
+      "views": 120,
+      "category_id": 29,
+      "featured_link": null,
+      "op_like_count": 20,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 34569,
+            "username": "CarstenW",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/carstenw/{size}/52354_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 34113,
+            "username": "Alex7511",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/a/edb3f5/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 34743,
+            "username": "OscarS",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/o/e8c25b/{size}.png",
+            "trust_level": 1
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "UX Enhancements",
+      "id": 67117,
+      "title": "UX Enhancements",
+      "slug": "ux-enhancements",
+      "posts_count": 3,
+      "reply_count": 1,
+      "highest_post_number": 3,
+      "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/f/d/fd589a1e237652b1ac2130be2d033b3b92a52bf5_2_470x1024.jpeg",
+      "created_at": "2025-02-22T18:25:28.981Z",
+      "last_posted_at": "2025-02-23T01:55:59.478Z",
+      "bumped": true,
+      "bumped_at": "2025-02-23T01:55:59.478Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 2,
+      "views": 109,
+      "category_id": 29,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 31869,
+            "username": "unknpwn",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/u/ce73a5/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31728,
+            "username": "Megan",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/megan/{size}/50954_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Increase distinction between groups of unicolour images",
+  "id": 67668,
+  "title": "Increase distinction between groups of unicolour images",
+  "posts_count": 1,
+  "created_at": "2025-03-13T22:34:04.567Z",
+  "views": 48,
+  "reply_count": 0,
+  "like_count": 0,
+  "last_posted_at": "2025-03-13T22:34:04.659Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "increase-distinction-between-groups-of-unicolour-images",
+  "category_id": 29,
+  "word_count": 78,
+  "deleted_at": null,
+  "user_id": 15765,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/6/5/65fa31e66d53ea018e5d7db246cbb4689ef3c167_2_592x1024.jpeg",
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_67668",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": [
+    {
+      "max_width": null,
+      "max_height": null,
+      "width": 1040,
+      "height": 1798,
+      "url": "https://community.signalusers.org/uploads/db3609/original/3X/6/5/65fa31e66d53ea018e5d7db246cbb4689ef3c167.jpeg"
+    },
+    {
+      "max_width": 1024,
+      "max_height": 1024,
+      "width": 592,
+      "height": 1024,
+      "url": "https://community.signalusers.org/uploads/db3609/optimized/3X/6/5/65fa31e66d53ea018e5d7db246cbb4689ef3c167_2_592x1024.jpeg"
+    }
+  ],
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 15765,
+        "username": "adominanouwe",
+        "name": "",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/a/3ec8ea/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      }
+    ],
+    "created_by": {
+      "id": 15765,
+      "username": "adominanouwe",
+      "name": "",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/a/3ec8ea/{size}.png"
+    },
+    "last_poster": {
+      "id": 15765,
+      "username": "adominanouwe",
+      "name": "",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/a/3ec8ea/{size}.png"
+    }
+  },
+  "bookmarks": []
+}

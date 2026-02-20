@@ -1,0 +1,591 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 269276,
+        "name": "Thomas",
+        "username": "thomas533",
+        "avatar_template": "/user_avatar/community.signalusers.org/thomas533/{size}/52479_2.png",
+        "created_at": "2025-06-05T12:49:55.046Z",
+        "cooked": "<p>I would love to see a widget option that can send a pre-set message to a group. My specific use case is as a kind of a SOS button that would notify one of a group chat. Ideally this would also include my GPS coordinates. And a bonus would be if there was an option to repeat the message with updated coordinates on a set schedule until stopped.</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 3,
+        "updated_at": "2025-06-06T14:35:31.485Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 22,
+        "readers_count": 21,
+        "score": 9.4,
+        "yours": false,
+        "topic_id": 69586,
+        "topic_slug": "widget-that-can-send-a-pre-set-message-to-a-group",
+        "display_username": "Thomas",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 2,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 33129,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/widget-that-can-send-a-pre-set-message-to-a-group/69586/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      },
+      {
+        "id": 269360,
+        "name": "👊🇺🇸🔥",
+        "username": "Avitus",
+        "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+        "created_at": "2025-06-06T14:38:16.634Z",
+        "cooked": "<p>If you’re broadcasting your location and that you need help, there’s no reason this needs to be a Signal function. There are plenty of options that already exist:</p>\n<ul>\n<li>\n<p><strong>Life360</strong>: Has an SOS button that sends SMS alerts to designated emergency contacts when activated<a href=\"https://www.life360.com/learn/sos-alerts-with-emergency-dispatch\">1</a>.</p>\n</li>\n<li>\n<p><strong>SOS Alert by Solvaday</strong>: Activates a loud alarm, calls, and sends SMS with your location to emergency contacts. Can be triggered by shaking the phone or pressing the power button multiple times<a href=\"https://play.google.com/store/apps/details?id=com.solvaday.panic_alarm\">2</a>.</p>\n</li>\n<li>\n<p><strong>SOS Alert by Raghav Maheshwari</strong>: Sends your current location to emergency contacts via SMS, with customizable SOS messages and a one-touch widget<a href=\"https://play.google.com/store/apps/details?id=com.rghvsapp.android.sosalert\">3</a>.</p>\n</li>\n<li>\n<p><strong>Red Panic Button</strong>: Sends SMS and email with GPS coordinates to emergency contacts with one button press<a href=\"https://www.redpanicbutton.com/\">4</a>.</p>\n</li>\n<li>\n<p><strong>Send Help - SOS Panic Button (iOS)</strong>: Sends SMS, emails, and posts location on social media to pre-selected contacts with one tap<a href=\"https://apps.apple.com/us/app/send-help-sos-panic-button/id517707164\">5</a>.</p>\n</li>\n<li>\n<p><strong>Crises Control Panic Button App</strong>: Designed for employees, it sends GPS-tracked SOS alerts to emergency response teams with silent push notifications and real-time updates<a href=\"https://www.crises-control.com/products/sos-panic-button/\">6</a>.</p>\n</li>\n<li>\n<p><strong>SquareGlow Emergency SOS Button</strong>: A physical wireless SOS button that sends instant alerts and visual alarms to contacts via an app, working even without internet<a href=\"https://www.squareglow.com/products/squareglow-sos-button\">7</a>.</p>\n</li>\n<li>\n<p><strong>Google Personal Safety (Pixel phones)</strong> and <strong>Noonlight by SafeTrek</strong>: Hold-to-activate SOS apps that alert emergency contacts unless canceled, with automatic location sharing<a href=\"https://www.reddit.com/r/androidapps/comments/ugvtxa/app_that_alerts_an_emergency_contact_unless_you/\">8</a>.</p>\n</li>\n</ul>",
+        "post_number": 2,
+        "post_type": 1,
+        "posts_count": 3,
+        "updated_at": "2025-06-06T14:39:09.610Z",
+        "reply_count": 1,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 18,
+        "readers_count": 17,
+        "score": 23.6,
+        "yours": false,
+        "topic_id": 69586,
+        "topic_slug": "widget-that-can-send-a-pre-set-message-to-a-group",
+        "display_username": "👊🇺🇸🔥",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://www.life360.com/learn/sos-alerts-with-emergency-dispatch",
+            "internal": false,
+            "reflection": false,
+            "clicks": 0
+          },
+          {
+            "url": "https://play.google.com/store/apps/details?id=com.solvaday.panic_alarm",
+            "internal": false,
+            "reflection": false,
+            "clicks": 0
+          },
+          {
+            "url": "https://play.google.com/store/apps/details?id=com.rghvsapp.android.sosalert",
+            "internal": false,
+            "reflection": false,
+            "clicks": 0
+          },
+          {
+            "url": "https://www.redpanicbutton.com/",
+            "internal": false,
+            "reflection": false,
+            "title": "Red Panic Button app – safety app for emergency – SOS call app for iOS and Android",
+            "clicks": 0
+          },
+          {
+            "url": "https://apps.apple.com/us/app/send-help-sos-panic-button/id517707164",
+            "internal": false,
+            "reflection": false,
+            "title": "‎SEND HELP - SOS Panic Button on the App Store",
+            "clicks": 0
+          },
+          {
+            "url": "https://www.crises-control.com/products/sos-panic-button/",
+            "internal": false,
+            "reflection": false,
+            "title": "SOS Panic Button App | SOS emergency panic button",
+            "clicks": 0
+          },
+          {
+            "url": "https://www.squareglow.com/products/squareglow-sos-button",
+            "internal": false,
+            "reflection": false,
+            "title": "SquareGlow Emergency SOS Button - Wireless Instant Help Notification",
+            "clicks": 0
+          },
+          {
+            "url": "https://www.reddit.com/r/androidapps/comments/ugvtxa/app_that_alerts_an_emergency_contact_unless_you/",
+            "internal": false,
+            "reflection": false,
+            "clicks": 0
+          }
+        ],
+        "read": true,
+        "user_title": "",
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 1
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 7657,
+        "hidden": false,
+        "trust_level": 3,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/widget-that-can-send-a-pre-set-message-to-a-group/69586/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 269378,
+        "name": "Thomas",
+        "username": "thomas533",
+        "avatar_template": "/user_avatar/community.signalusers.org/thomas533/{size}/52479_2.png",
+        "created_at": "2025-06-06T15:56:04.668Z",
+        "cooked": "<p>A SOS message isn’t the only thing that this can be used for. My kid also takes public transit home from school and we could use this to see if she is getting held up in traffic and to figure out when to go pick her up from the bus stop. I could also see this being used for variety of activities from hiking to capture the flag games. There are lots of other possibilities.</p>\n<p>And including GPS was only one way this could be used. You could do other things like including a 5 second sound or video clip. Or maybe you are an old school war driver and want a quick way to share wireless networks your device sees. This function could automate the sharing of any sort of sensor or device data.</p>\n<p>And sure, I am am aware that there are SMS solutions for this, but most of us use signal instead of SMS for many reasons. As far as broadcasting locations go, I can imagine many reasons why I might not want that going across unencrypted channels.</p>\n<p>If your suggestion is just to use SMS, then what is the point of even having Signal?</p>",
+        "post_number": 3,
+        "post_type": 1,
+        "posts_count": 3,
+        "updated_at": "2025-06-06T15:56:04.668Z",
+        "reply_count": 0,
+        "reply_to_post_number": 2,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 14,
+        "readers_count": 13,
+        "score": 2.8,
+        "yours": false,
+        "topic_id": 69586,
+        "topic_slug": "widget-that-can-send-a-pre-set-message-to-a-group",
+        "display_username": "Thomas",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "reply_to_user": {
+          "id": 7657,
+          "username": "Avitus",
+          "name": "👊🇺🇸🔥",
+          "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png"
+        },
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 33129,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/widget-that-can-send-a-pre-set-message-to-a-group/69586/3",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      }
+    ],
+    "stream": [
+      269276,
+      269360,
+      269378
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      254
+    ],
+    [
+      2,
+      253
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Nose Required for Emoji? Time to Evolve!",
+      "id": 67285,
+      "title": "Nose Required for Emoji? Time to Evolve!",
+      "slug": "nose-required-for-emoji-time-to-evolve",
+      "posts_count": 15,
+      "reply_count": 10,
+      "highest_post_number": 16,
+      "image_url": null,
+      "created_at": "2025-02-28T18:12:08.607Z",
+      "last_posted_at": "2025-04-01T14:52:32.348Z",
+      "bumped": true,
+      "bumped_at": "2025-04-01T14:52:32.348Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 22,
+      "views": 304,
+      "category_id": 17,
+      "featured_link": null,
+      "op_like_count": 5,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 31872,
+            "username": "LonelyShark",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/l/d78d45/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 6659,
+            "username": "Whatnoww",
+            "name": "Whatnoww",
+            "avatar_template": "/user_avatar/community.signalusers.org/whatnoww/{size}/54328_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 32395,
+            "username": "rado0",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/r/e9a140/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 28656,
+            "username": "pickle_umbrella",
+            "name": "Pickle",
+            "avatar_template": "/user_avatar/community.signalusers.org/pickle_umbrella/{size}/48004_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Relink desktop after phone change",
+      "id": 67413,
+      "title": "Relink desktop after phone change",
+      "slug": "relink-desktop-after-phone-change",
+      "posts_count": 8,
+      "reply_count": 6,
+      "highest_post_number": 8,
+      "image_url": null,
+      "created_at": "2025-03-04T13:28:40.729Z",
+      "last_posted_at": "2025-03-04T19:13:40.443Z",
+      "bumped": true,
+      "bumped_at": "2025-03-04T19:13:40.443Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 1,
+      "views": 76,
+      "category_id": 12,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": true,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 32000,
+            "username": "Bobby_Cottle",
+            "name": "Bobby Cottle",
+            "avatar_template": "/user_avatar/community.signalusers.org/bobby_cottle/{size}/51049_2.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster, Accepted Answer",
+          "user": {
+            "id": 2521,
+            "username": "Herohtar",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+            "primary_group_name": "volunteer_moderators",
+            "flair_name": "volunteer_moderators",
+            "flair_url": "shield-halved",
+            "flair_bg_color": "1d8663",
+            "flair_color": "fff",
+            "flair_group_id": 41,
+            "moderator": true,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 1499,
+            "username": "CueHD",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/cuehd/{size}/42510_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "An ability to paste HTML with image from clipboard",
+      "id": 71801,
+      "title": "An ability to paste HTML with image from clipboard",
+      "slug": "an-ability-to-paste-html-with-image-from-clipboard",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": "https://community.signalusers.org/uploads/db3609/original/3X/b/2/b27877b2ea3f1d5b4e0299d4d3afa8f939d9402a.png",
+      "created_at": "2025-09-23T11:47:54.885Z",
+      "last_posted_at": "2025-09-23T11:47:54.995Z",
+      "bumped": true,
+      "bumped_at": "2025-09-23T11:47:54.995Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 46,
+      "category_id": 20,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 34230,
+            "username": "Roman",
+            "name": "=",
+            "avatar_template": "/user_avatar/community.signalusers.org/roman/{size}/53909_2.png",
+            "trust_level": 0
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Widget that can send a pre-set message to a group",
+  "id": 69586,
+  "title": "Widget that can send a pre-set message to a group",
+  "posts_count": 3,
+  "created_at": "2025-06-05T12:49:54.991Z",
+  "views": 52,
+  "reply_count": 1,
+  "like_count": 1,
+  "last_posted_at": "2025-06-06T15:56:04.668Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "widget-that-can-send-a-pre-set-message-to-a-group",
+  "category_id": 17,
+  "word_count": 565,
+  "deleted_at": null,
+  "user_id": 33129,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_69586",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 3,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 2,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 33129,
+        "username": "thomas533",
+        "name": "Thomas",
+        "avatar_template": "/user_avatar/community.signalusers.org/thomas533/{size}/52479_2.png",
+        "post_count": 2,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 0
+      },
+      {
+        "id": 7657,
+        "username": "Avitus",
+        "name": "👊🇺🇸🔥",
+        "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 3
+      }
+    ],
+    "created_by": {
+      "id": 33129,
+      "username": "thomas533",
+      "name": "Thomas",
+      "avatar_template": "/user_avatar/community.signalusers.org/thomas533/{size}/52479_2.png"
+    },
+    "last_poster": {
+      "id": 33129,
+      "username": "thomas533",
+      "name": "Thomas",
+      "avatar_template": "/user_avatar/community.signalusers.org/thomas533/{size}/52479_2.png"
+    }
+  },
+  "bookmarks": []
+}

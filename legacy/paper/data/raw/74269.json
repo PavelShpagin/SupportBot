@@ -1,0 +1,431 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 282916,
+        "name": "",
+        "username": "wlo21",
+        "avatar_template": "/user_avatar/community.signalusers.org/wlo21/{size}/55490_2.png",
+        "created_at": "2026-01-16T17:13:10.159Z",
+        "cooked": "<p>Currently, there are no code blocks in Signal, and it’s a really convenient feature to have for sharing small code snippets.</p>\n<p>Here is the Telegram implementation, is uses default markdown codeblock syntax (```)</p>\n<pre><code class=\"lang-auto\">WITH RECURSIVE leveled AS (\n    -- Base case\n    SELECT employee_id, employee_name, 1 as level\n    from Employees e0 \n    where manager_id IS NULL\n    UNION ALL\n    \n    -- Recursive case\n    SELECT e.employee_id, e.employee_name, l.level+1 as level\n    FROM Employees e\n    JOIN leveled l ON e.manager_id=l.employee_id\n)\n</code></pre>\n<p>which renders into<br>\n<div class=\"lightbox-wrapper\"><a class=\"lightbox\" href=\"https://community.signalusers.org/uploads/db3609/original/3X/6/7/67e0480ab4cc368ead87583bb54102a08a0a80a9.png\" data-download-href=\"https://community.signalusers.org/uploads/db3609/67e0480ab4cc368ead87583bb54102a08a0a80a9\" title=\"image\"><img src=\"https://community.signalusers.org/uploads/db3609/optimized/3X/6/7/67e0480ab4cc368ead87583bb54102a08a0a80a9_2_690x309.png\" alt=\"image\" data-base62-sha1=\"eOVHprHhByciUIzgpuf1Vm7NIxj\" width=\"690\" height=\"309\" srcset=\"https://community.signalusers.org/uploads/db3609/optimized/3X/6/7/67e0480ab4cc368ead87583bb54102a08a0a80a9_2_690x309.png, https://community.signalusers.org/uploads/db3609/optimized/3X/6/7/67e0480ab4cc368ead87583bb54102a08a0a80a9_2_1035x463.png 1.5x, https://community.signalusers.org/uploads/db3609/original/3X/6/7/67e0480ab4cc368ead87583bb54102a08a0a80a9.png 2x\" data-dominant-color=\"172736\"><div class=\"meta\"><svg class=\"fa d-icon d-icon-far-image svg-icon\" aria-hidden=\"true\"><use href=\"#far-image\"></use></svg><span class=\"filename\">image</span><span class=\"informations\">1210×542 52.7 KB</span><svg class=\"fa d-icon d-icon-discourse-expand svg-icon\" aria-hidden=\"true\"><use href=\"#discourse-expand\"></use></svg></div></a></div><br>\nI’m presuming <a href=\"https://github.com/yoeo/guesslang\" class=\"inline-onebox\" rel=\"noopener nofollow ugc\">GitHub - yoeo/guesslang: Detect the programming language of a source code</a> is used for language detection, which is opensource library.<br>\nMoreover, even the forums themselves are able to detect the language - see the above.</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2026-01-16T17:21:31.925Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 18,
+        "readers_count": 17,
+        "score": 8.6,
+        "yours": false,
+        "topic_id": 74269,
+        "topic_slug": "code-block-support-with-automatic-language-detection-and-syntax-syntax-highlighting",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 2,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://github.com/yoeo/guesslang",
+            "internal": false,
+            "reflection": false,
+            "title": "GitHub - yoeo/guesslang: Detect the programming language of a source code",
+            "clicks": 1
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 35551,
+        "hidden": false,
+        "trust_level": 1,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/code-block-support-with-automatic-language-detection-and-syntax-syntax-highlighting/74269/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      282916
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      29
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Configure link previews on a per-chat basis",
+      "id": 73362,
+      "title": "Configure link previews on a per-chat basis",
+      "slug": "configure-link-previews-on-a-per-chat-basis",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2025-12-04T22:32:39.209Z",
+      "last_posted_at": "2025-12-04T22:32:39.287Z",
+      "bumped": true,
+      "bumped_at": "2025-12-04T22:32:39.287Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 4,
+      "views": 43,
+      "category_id": 17,
+      "featured_link": null,
+      "op_like_count": 4,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 35051,
+            "username": "dorian",
+            "name": "dorian",
+            "avatar_template": "/user_avatar/community.signalusers.org/dorian/{size}/54970_2.png",
+            "trust_level": 0
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Selective Message Delivery to Devices",
+      "id": 70636,
+      "title": "Selective Message Delivery to Devices",
+      "slug": "selective-message-delivery-to-devices",
+      "posts_count": 5,
+      "reply_count": 2,
+      "highest_post_number": 5,
+      "image_url": null,
+      "created_at": "2025-07-25T13:17:51.776Z",
+      "last_posted_at": "2025-08-20T11:54:45.405Z",
+      "bumped": true,
+      "bumped_at": "2025-08-20T11:54:45.405Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 2,
+      "views": 87,
+      "category_id": 17,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 33617,
+            "username": "jbolger",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/j/c5a1d2/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 33362,
+            "username": "NeedsChloesure",
+            "name": "Chloe",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/n/9f8e36/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Usernames visibility ",
+      "id": 69109,
+      "title": "Usernames visibility ",
+      "slug": "usernames-visibility",
+      "posts_count": 27,
+      "reply_count": 24,
+      "highest_post_number": 30,
+      "image_url": null,
+      "created_at": "2025-05-12T19:38:06.621Z",
+      "last_posted_at": "2025-05-19T17:11:18.457Z",
+      "bumped": true,
+      "bumped_at": "2025-05-19T17:16:39.409Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 17,
+      "views": 358,
+      "category_id": 17,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 32882,
+            "username": "NG1843",
+            "name": "Norbert",
+            "avatar_template": "/user_avatar/community.signalusers.org/ng1843/{size}/52189_2.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 2521,
+            "username": "Herohtar",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+            "primary_group_name": "volunteer_moderators",
+            "flair_name": "volunteer_moderators",
+            "flair_url": "shield-halved",
+            "flair_bg_color": "1d8663",
+            "flair_color": "fff",
+            "flair_group_id": 41,
+            "moderator": true,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 6659,
+            "username": "Whatnoww",
+            "name": "Whatnoww",
+            "avatar_template": "/user_avatar/community.signalusers.org/whatnoww/{size}/54328_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 2030,
+            "username": "DonDino",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/dondino/{size}/1721_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 1499,
+            "username": "CueHD",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/cuehd/{size}/42510_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Code block support with automatic language detection and syntax syntax highlighting",
+  "id": 74269,
+  "title": "Code block support with automatic language detection and syntax syntax highlighting",
+  "posts_count": 1,
+  "created_at": "2026-01-16T17:13:10.073Z",
+  "views": 33,
+  "reply_count": 0,
+  "like_count": 0,
+  "last_posted_at": "2026-01-16T17:13:10.159Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "code-block-support-with-automatic-language-detection-and-syntax-syntax-highlighting",
+  "category_id": 17,
+  "word_count": 116,
+  "deleted_at": null,
+  "user_id": 35551,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/6/7/67e0480ab4cc368ead87583bb54102a08a0a80a9_2_1024x458.png",
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_74269",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": [
+    {
+      "max_width": null,
+      "max_height": null,
+      "width": 1210,
+      "height": 542,
+      "url": "https://community.signalusers.org/uploads/db3609/original/3X/6/7/67e0480ab4cc368ead87583bb54102a08a0a80a9.png"
+    },
+    {
+      "max_width": 1024,
+      "max_height": 1024,
+      "width": 1024,
+      "height": 458,
+      "url": "https://community.signalusers.org/uploads/db3609/optimized/3X/6/7/67e0480ab4cc368ead87583bb54102a08a0a80a9_2_1024x458.png"
+    }
+  ],
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 35551,
+        "username": "wlo21",
+        "name": "",
+        "avatar_template": "/user_avatar/community.signalusers.org/wlo21/{size}/55490_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 1
+      }
+    ],
+    "created_by": {
+      "id": 35551,
+      "username": "wlo21",
+      "name": "",
+      "avatar_template": "/user_avatar/community.signalusers.org/wlo21/{size}/55490_2.png"
+    },
+    "last_poster": {
+      "id": 35551,
+      "username": "wlo21",
+      "name": "",
+      "avatar_template": "/user_avatar/community.signalusers.org/wlo21/{size}/55490_2.png"
+    },
+    "links": [
+      {
+        "url": "https://github.com/yoeo/guesslang",
+        "title": "GitHub - yoeo/guesslang: Detect the programming language of a source code",
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 1,
+        "user_id": 35551,
+        "domain": "github.com",
+        "root_domain": "github.com"
+      }
+    ]
+  },
+  "bookmarks": []
+}

@@ -1,0 +1,446 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 282600,
+        "name": "Geobert Quach",
+        "username": "Geobert",
+        "avatar_template": "/user_avatar/community.signalusers.org/geobert/{size}/48588_2.png",
+        "created_at": "2026-01-12T17:47:32.825Z",
+        "cooked": "<p>Hi,</p>\n<p>I\u2019ve migrated from Gnome to Niri, on NixOS, and since, I have an error asking me to start with <code>\u2013password-store=\"gnome-libsecret\"</code></p>\n<p>Doing so makes Signal asking my session password in order to start.</p>\n<p>So, can I put the password-store thingy in config.json?</p>\n<p>How do I avoid the password prompt?</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2026-01-12T17:48:31.131Z",
+        "reply_count": 1,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 26,
+        "readers_count": 25,
+        "score": 15.2,
+        "yours": false,
+        "topic_id": 74180,
+        "topic_slug": "signal-start-issue-after-going-from-gnome-to-niri",
+        "display_username": "Geobert Quach",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 2,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://community.signalusers.org/t/configurable-password-store/74181",
+            "internal": true,
+            "reflection": true,
+            "title": "Configurable --password-store",
+            "clicks": 1
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 29291,
+        "hidden": false,
+        "trust_level": 1,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/signal-start-issue-after-going-from-gnome-to-niri/74180/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      },
+      {
+        "id": 282621,
+        "name": "",
+        "username": "zetabeta",
+        "avatar_template": "/user_avatar/community.signalusers.org/zetabeta/{size}/54310_2.png",
+        "created_at": "2026-01-12T20:24:54.289Z",
+        "cooked": "<p>i am investigating this issue. signal desktop may have complicated bug. my information is partial.</p>\n<aside class=\"quote no-group\" data-username=\"Geobert\" data-post=\"1\" data-topic=\"74180\">\n<div class=\"title\">\n<div class=\"quote-controls\"></div>\n<img alt=\"\" width=\"24\" height=\"24\" src=\"https://community.signalusers.org/user_avatar/community.signalusers.org/geobert/48/48588_2.png\" class=\"avatar\"> Geobert:</div>\n<blockquote>\n<p>Hi,</p>\n<p>I\u2019ve migrated from Gnome to Niri, on NixOS, and since, I have an error asking me to start with <code>\u2013password-store=\"gnome-libsecret\"</code></p>\n</blockquote>\n</aside>\n<p>linux distributions have feature called \u201corg.freedesktop.secrets\u201d. which is dbus service, where a program can register as a secrets storage. basically there is three options.</p>\n<blockquote>\n<p># pacman -Ss org.freedesktop.secrets<br>\nextra/gnome-keyring 1:48.0-1 (gnome)<br>\nStores passwords and encryption keys<br>\nextra/keepassxc 2.7.11-1<br>\nCross-platform community-driven port of Keepass password manager<br>\nextra/kwallet 6.21.0-1 (kf6)<br>\nSecure and unified container for user passwords</p>\n</blockquote>\n<p>desktop environment usually boots up default program and possibly opens storage automatically.</p>\n<p>desktop environment may have no secrets program at all.</p>\n<p>signal desktop uses secrets storage. if one is not available, then signal can store keys internally to appdata folders.</p>\n<p>if signal gets access to secrets storage afterwards, it moves into that secrets storage. however, it won\u2019t move back into internal storage if secrets storage disappears, which i think is bad.</p>\n<aside class=\"quote no-group\" data-username=\"Geobert\" data-post=\"1\" data-topic=\"74180\">\n<div class=\"title\">\n<div class=\"quote-controls\"></div>\n<img alt=\"\" width=\"24\" height=\"24\" src=\"https://community.signalusers.org/user_avatar/community.signalusers.org/geobert/48/48588_2.png\" class=\"avatar\"> Geobert:</div>\n<blockquote>\n<p>Doing so makes Signal asking my session password in order to start.</p>\n</blockquote>\n</aside>\n<p>it seems that gnome-libsecret is not started automatically.</p>\n<aside class=\"quote no-group\" data-username=\"Geobert\" data-post=\"1\" data-topic=\"74180\">\n<div class=\"title\">\n<div class=\"quote-controls\"></div>\n<img alt=\"\" width=\"24\" height=\"24\" src=\"https://community.signalusers.org/user_avatar/community.signalusers.org/geobert/48/48588_2.png\" class=\"avatar\"> Geobert:</div>\n<blockquote>\n<p>So, can I put the password-store thingy in config.json?</p>\n</blockquote>\n</aside>\n<p>in my knowledge, no.</p>\n<aside class=\"quote no-group\" data-username=\"Geobert\" data-post=\"1\" data-topic=\"74180\">\n<div class=\"title\">\n<div class=\"quote-controls\"></div>\n<img alt=\"\" width=\"24\" height=\"24\" src=\"https://community.signalusers.org/user_avatar/community.signalusers.org/geobert/48/48588_2.png\" class=\"avatar\"> Geobert:</div>\n<blockquote>\n<p>How do I avoid the password prompt?</p>\n</blockquote>\n</aside>\n<p>i don\u2019t know good fixes for this.</p>\n<p>if you relink signal desktop with destroying appdata, you may go internal storage. but do not start signal desktop in gnome system.</p>\n<p>partial solution could be using keepassxc, which has some other issues.</p>",
+        "post_number": 2,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2026-01-12T20:24:54.289Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 1,
+        "incoming_link_count": 0,
+        "reads": 19,
+        "readers_count": 18,
+        "score": 3.8,
+        "yours": false,
+        "topic_id": 74180,
+        "topic_slug": "signal-start-issue-after-going-from-gnome-to-niri",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 26763,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/signal-start-issue-after-going-from-gnome-to-niri/74180/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      }
+    ],
+    "stream": [
+      282600,
+      282621
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      33
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "cursor won&rsquo;t jump to text box when replying",
+      "id": 74031,
+      "title": "cursor won't jump to text box when replying",
+      "slug": "cursor-wont-jump-to-text-box-when-replying",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2026-01-05T04:33:09.439Z",
+      "last_posted_at": "2026-01-05T04:33:09.509Z",
+      "bumped": true,
+      "bumped_at": "2026-01-05T04:33:09.509Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 20,
+      "category_id": 12,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 33378,
+            "username": "LMKV99",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/l/cab0a1/{size}.png",
+            "trust_level": 0
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Data transfer from MacOS desktop to iPhone?",
+      "id": 72209,
+      "title": "Data transfer from MacOS desktop to iPhone?",
+      "slug": "data-transfer-from-macos-desktop-to-iphone",
+      "posts_count": 5,
+      "reply_count": 2,
+      "highest_post_number": 5,
+      "image_url": null,
+      "created_at": "2025-10-14T14:29:29.024Z",
+      "last_posted_at": "2025-10-15T13:52:25.747Z",
+      "bumped": true,
+      "bumped_at": "2025-10-15T13:52:25.747Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 67,
+      "category_id": 12,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 34454,
+            "username": "Lorraine_Martinez",
+            "name": "Lorraine Martinez",
+            "avatar_template": "/user_avatar/community.signalusers.org/lorraine_martinez/{size}/54190_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 33362,
+            "username": "NeedsChloesure",
+            "name": "Chloe",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/n/9f8e36/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "I have no phone so need the Windows app, but it needs a phone to log in",
+      "id": 68628,
+      "title": "I have no phone so need the Windows app, but it needs a phone to log in",
+      "slug": "i-have-no-phone-so-need-the-windows-app-but-it-needs-a-phone-to-log-in",
+      "posts_count": 8,
+      "reply_count": 5,
+      "highest_post_number": 8,
+      "image_url": null,
+      "created_at": "2025-04-18T17:32:13.886Z",
+      "last_posted_at": "2025-04-18T20:03:12.080Z",
+      "bumped": true,
+      "bumped_at": "2025-04-18T20:03:12.080Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 1,
+      "views": 102,
+      "category_id": 12,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 32630,
+            "username": "MadeIndescribable",
+            "name": "Ian",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/m/59ef9b/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31728,
+            "username": "Megan",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/megan/{size}/50954_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 26763,
+            "username": "zetabeta",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/zetabeta/{size}/54310_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Signal start issue after going from Gnome to Niri",
+  "id": 74180,
+  "title": "Signal start issue after going from Gnome to Niri",
+  "posts_count": 2,
+  "created_at": "2026-01-12T17:47:32.747Z",
+  "views": 47,
+  "reply_count": 0,
+  "like_count": 0,
+  "last_posted_at": "2026-01-12T20:24:54.289Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "signal-start-issue-after-going-from-gnome-to-niri",
+  "category_id": 12,
+  "word_count": 352,
+  "deleted_at": null,
+  "user_id": 29291,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_74180",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 2,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 2,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 26763,
+        "username": "zetabeta",
+        "name": "",
+        "avatar_template": "/user_avatar/community.signalusers.org/zetabeta/{size}/54310_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      },
+      {
+        "id": 29291,
+        "username": "Geobert",
+        "name": "Geobert Quach",
+        "avatar_template": "/user_avatar/community.signalusers.org/geobert/{size}/48588_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 1
+      }
+    ],
+    "created_by": {
+      "id": 29291,
+      "username": "Geobert",
+      "name": "Geobert Quach",
+      "avatar_template": "/user_avatar/community.signalusers.org/geobert/{size}/48588_2.png"
+    },
+    "last_poster": {
+      "id": 26763,
+      "username": "zetabeta",
+      "name": "",
+      "avatar_template": "/user_avatar/community.signalusers.org/zetabeta/{size}/54310_2.png"
+    },
+    "links": [
+      {
+        "url": "https://community.signalusers.org/t/configurable-password-store/74181",
+        "title": "Configurable --password-store",
+        "internal": true,
+        "attachment": false,
+        "reflection": true,
+        "clicks": 1,
+        "user_id": 4732,
+        "domain": "community.signalusers.org",
+        "root_domain": "signalusers.org"
+      }
+    ]
+  },
+  "bookmarks": []
+}

@@ -1,0 +1,568 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 242498,
+        "name": "Thiago Lima",
+        "username": "tloime",
+        "avatar_template": "/user_avatar/community.signalusers.org/tloime/{size}/33142_2.png",
+        "created_at": "2024-04-25T16:43:31.665Z",
+        "cooked": "<p>I am currently facing a problem with the x86 and x86_64 emulator for android. After building the app, after entering the verification code, the app closes showing the error below:</p>\n<p><strong>Logcat</strong></p>\n<pre><code class=\"lang-auto\">Fatal signal 4 (SIGILL), code 2 (ILL_ILLOPN), fault addr 0x74f4df8e331a in tid 6437 (signal-io-bound), pid 5937 (org.thoughtcrime.securesms)\nobtaining output fd from tombstoned, type: kDebuggerdTombstoneProto\nreceived crash request for pid 6437\nperforming dump of process 5937 (target tid = 6437)\napp_time_stats: avg=8.63ms min=2.49ms max=57.30ms count=58\n---------------------------- PROCESS STARTED (6494) for package org.thoughtcrime.securesms ----------------------------\nonUnbind: Intent { act=com.google.firebase.dynamiclinks.service.START pkg=com.google.android.gms }\nlogdr: UID=10190 GID=10190 PID=6492 n tail=500 logMask=8 pid=5937 start=0ns deadline=0ns\nlogdr: UID=10190 GID=10190 PID=6492 n tail=500 logMask=1 pid=5937 start=0ns deadline=0ns\n*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***\nBuild fingerprint: 'google/sdk_gphone64_x86_64/emu64xa:14/UE1A.230829.036.A2/11596452:userdebug/dev-keys'\nRevision: '0'\nABI: 'x86_64'\nTimestamp: 2024-04-23 18:50:34.196324600+0000\nProcess uptime: 62s\nCmdline: org.thoughtcrime.securesms\npid: 5937, tid: 6437, name: signal-io-bound  &gt;&gt;&gt; org.thoughtcrime.securesms &lt;&lt;&lt;\nuid: 10190\nsignal 4 (SIGILL), code 2 (ILL_ILLOPN), fault addr 0x000074f4df8e331a\n    rax 000000000000000b  rbx 0000000000000021  rcx 0000000000000001  rdx 0000000000000001\n    r8  0002c72b7e70524a  r9  000000000000002c  r10 0000000000000002  r11 0000000000000000\n    r12 000074f4dc923a30  r13 0000000000000000  r14 000074f4dc923a30  r15 000074f4dc923a80\n    rdi 000074f4dc923a30  rsi 000074f4dc923a80\n    rbp 000074f4dc923a80  rsp 000074f4dc9233e0  rip 000074f4df8e331a\n111 total frames\nbacktrace:\n      #00 pc 000000000026131a  /data/app/~~WsEunnTZwstaJp13mB8FUQ==/org.thoughtcrime.securesms-hGxxBYg1yaFBY82Xf_61uw==/lib/x86_64/libsignal_jni.so\n      #01 pc 0000000000261ef2  /data/app/~~WsEunnTZwstaJp13mB8FUQ==/org.thoughtcrime.securesms-hGxxBYg1yaFBY82Xf_61uw==/lib/x86_64/libsignal_jni.so\n      #02 pc 00000000002144b7  /data/app/~~WsEunnTZwstaJp13mB8FUQ==/org.thoughtcrime.securesms-hGxxBYg1yaFBY82Xf_61uw==/lib/x86_64/libsignal_jni.so\n      #03 pc 000000000020b972  /data/app/~~WsEunnTZwstaJp13mB8FUQ==/org.thoughtcrime.securesms-hGxxBYg1yaFBY82Xf_61uw==/lib/x86_64/libsignal_jni.so\n      #04 pc 000000000017ddec  /data/app/~~WsEunnTZwstaJp13mB8FUQ==/org.thoughtcrime.securesms-hGxxBYg1yaFBY82Xf_61uw==/lib/x86_64/libsignal_jni.so\n      #05 pc 00000000001d0210  /data/app/~~WsEunnTZwstaJp13mB8FUQ==/org.thoughtcrime.securesms-hGxxBYg1yaFBY82Xf_61uw==/lib/x86_64/libsignal_jni.so (Java_org_signal_libsignal_internal_Native_ECPrivateKey_1Sign+61)\n      #06 pc 0000000000391a4b  /apex/com.android.art/lib64/libart.so (art_quick_generic_jni_trampoline+219) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #07 pc 0000000000378826  /apex/com.android.art/lib64/libart.so (art_quick_invoke_static_stub+806) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #08 pc 00000000003c538f  /apex/com.android.art/lib64/libart.so (art::ArtMethod::Invoke(art::Thread*, unsigned int*, unsigned int, art::JValue*, char const*)+255) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #09 pc 000000000056ddd0  /apex/com.android.art/lib64/libart.so (bool art::interpreter::DoCall&lt;false&gt;(art::ArtMethod*, art::Thread*, art::ShadowFrame&amp;, art::Instruction const*, unsigned short, bool, art::JValue*)+2080) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #10 pc 000000000039b0a1  /apex/com.android.art/lib64/libart.so (void art::interpreter::ExecuteSwitchImplCpp&lt;false&gt;(art::interpreter::SwitchImplContext*)+17169) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #11 pc 00000000003937a5  /apex/com.android.art/lib64/libart.so (ExecuteSwitchImplAsm+5) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #12 pc 000000000012d354  &lt;anonymous:74f4ea7ac000&gt; (org.signal.libsignal.protocol.ecc.ECPrivateKey.calculateSignature+0)\n      #13 pc 0000000000566017  /apex/com.android.art/lib64/libart.so (art::interpreter::Execute(art::Thread*, art::CodeItemDataAccessor const&amp;, art::ShadowFrame&amp;, art::JValue, bool, bool) (.__uniq.112435418011751916792819755956732575238)+647) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #14 pc 000000000056d13e  /apex/com.android.art/lib64/libart.so (art::interpreter::ArtInterpreterToInterpreterBridge(art::Thread*, art::CodeItemDataAccessor const&amp;, art::ShadowFrame*, art::JValue*)+110) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #15 pc 000000000056ddb6  /apex/com.android.art/lib64/libart.so (bool art::interpreter::DoCall&lt;false&gt;(art::ArtMethod*, art::Thread*, art::ShadowFrame&amp;, art::Instruction const*, unsigned short, bool, art::JValue*)+2054) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #16 pc 000000000039ae32  /apex/com.android.art/lib64/libart.so (void art::interpreter::ExecuteSwitchImplCpp&lt;false&gt;(art::interpreter::SwitchImplContext*)+16546) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #17 pc 00000000003937a5  /apex/com.android.art/lib64/libart.so (ExecuteSwitchImplAsm+5) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #18 pc 000000000012d184  &lt;anonymous:74f4ea7ac000&gt; (org.signal.libsignal.protocol.ecc.Curve.calculateSignature+0)\n      #19 pc 0000000000566017  /apex/com.android.art/lib64/libart.so (art::interpreter::Execute(art::Thread*, art::CodeItemDataAccessor const&amp;, art::ShadowFrame&amp;, art::JValue, bool, bool) (.__uniq.112435418011751916792819755956732575238)+647) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #20 pc 000000000056d13e  /apex/com.android.art/lib64/libart.so (art::interpreter::ArtInterpreterToInterpreterBridge(art::Thread*, art::CodeItemDataAccessor const&amp;, art::ShadowFrame*, art::JValue*)+110) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #21 pc 000000000056ddb6  /apex/com.android.art/lib64/libart.so (bool art::interpreter::DoCall&lt;false&gt;(art::ArtMethod*, art::Thread*, art::ShadowFrame&amp;, art::Instruction const*, unsigned short, bool, art::JValue*)+2054) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #22 pc 000000000039b0a1  /apex/com.android.art/lib64/libart.so (void art::interpreter::ExecuteSwitchImplCpp&lt;false&gt;(art::interpreter::SwitchImplContext*)+17169) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #23 pc 00000000003937a5  /apex/com.android.art/lib64/libart.so (ExecuteSwitchImplAsm+5) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #24 pc 00000000000fa85c  &lt;anonymous:74f4ecd44000&gt; (org.thoughtcrime.securesms.crypto.PreKeyUtil.generateSignedPreKey+0)\n      #25 pc 0000000000566017  /apex/com.android.art/lib64/libart.so (art::interpreter::Execute(art::Thread*, art::CodeItemDataAccessor const&amp;, art::ShadowFrame&amp;, art::JValue, bool, bool) (.__uniq.112435418011751916792819755956732575238)+647) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #26 pc 000000000056d13e  /apex/com.android.art/lib64/libart.so (art::interpreter::ArtInterpreterToInterpreterBridge(art::Thread*, art::CodeItemDataAccessor const&amp;, art::ShadowFrame*, art::JValue*)+110) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #27 pc 000000000056ddb6  /apex/com.android.art/lib64/libart.so (bool art::interpreter::DoCall&lt;false&gt;(art::ArtMethod*, art::Thread*, art::ShadowFrame&amp;, art::Instruction const*, unsigned short, bool, art::JValue*)+2054) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #28 pc 000000000039b0a1  /apex/com.android.art/lib64/libart.so (void art::interpreter::ExecuteSwitchImplCpp&lt;false&gt;(art::interpreter::SwitchImplContext*)+17169) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #29 pc 00000000003937a5  /apex/com.android.art/lib64/libart.so (ExecuteSwitchImplAsm+5) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #30 pc 00000000000ab164  &lt;anonymous:74f4ed346000&gt; (org.thoughtcrime.securesms.registration.RegistrationRepository.generateSignedAndLastResortPreKeys+0)\n      #31 pc 0000000000566017  /apex/com.android.art/lib64/libart.so (art::interpreter::Execute(art::Thread*, art::CodeItemDataAccessor const&amp;, art::ShadowFrame&amp;, art::JValue, bool, bool) (.__uniq.112435418011751916792819755956732575238)+647) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #32 pc 000000000056d13e  /apex/com.android.art/lib64/libart.so (art::interpreter::ArtInterpreterToInterpreterBridge(art::Thread*, art::CodeItemDataAccessor const&amp;, art::ShadowFrame*, art::JValue*)+110) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #33 pc 000000000056ddb6  /apex/com.android.art/lib64/libart.so (bool art::interpreter::DoCall&lt;false&gt;(art::ArtMethod*, art::Thread*, art::ShadowFrame&amp;, art::Instruction const*, unsigned short, bool, art::JValue*)+2054) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #34 pc 000000000039b0a1  /apex/com.android.art/lib64/libart.so (void art::interpreter::ExecuteSwitchImplCpp&lt;false&gt;(art::interpreter::SwitchImplContext*)+17169) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #35 pc 00000000003937a5  /apex/com.android.art/lib64/libart.so (ExecuteSwitchImplAsm+5) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #36 pc 00000000000ac7b0  &lt;anonymous:74f4ed346000&gt; (org.thoughtcrime.securesms.registration.VerifyAccountRepository.registerAccount+0)\n      #37 pc 0000000000566017  /apex/com.android.art/lib64/libart.so (art::interpreter::Execute(art::Thread*, art::CodeItemDataAccessor const&amp;, art::ShadowFrame&amp;, art::JValue, bool, bool) (.__uniq.112435418011751916792819755956732575238)+647) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #38 pc 000000000056d13e  /apex/com.android.art/lib64/libart.so (art::interpreter::ArtInterpreterToInterpreterBridge(art::Thread*, art::CodeItemDataAccessor const&amp;, art::ShadowFrame*, art::JValue*)+110) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #39 pc 000000000056ddb6  /apex/com.android.art/lib64/libart.so (bool art::interpreter::DoCall&lt;false&gt;(art::ArtMethod*, art::Thread*, art::ShadowFrame&amp;, art::Instruction const*, unsigned short, bool, art::JValue*)+2054) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #40 pc 000000000039ae32  /apex/com.android.art/lib64/libart.so (void art::interpreter::ExecuteSwitchImplCpp&lt;false&gt;(art::interpreter::SwitchImplContext*)+16546) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #41 pc 00000000003937a5  /apex/com.android.art/lib64/libart.so (ExecuteSwitchImplAsm+5) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #42 pc 000000000074b414  &lt;anonymous:74f4edac1000&gt; (org.thoughtcrime.securesms.registration.viewmodel.RegistrationViewModel.lambda$verifyAccountWithoutRegistrationLock$1$org-thoughtcrime-securesms-registration-viewmodel-RegistrationViewModel+0)\n      #43 pc 0000000000566017  /apex/com.android.art/lib64/libart.so (art::interpreter::Execute(art::Thread*, art::CodeItemDataAccessor const&amp;, art::ShadowFrame&amp;, art::JValue, bool, bool) (.__uniq.112435418011751916792819755956732575238)+647) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #44 pc 000000000056d13e  /apex/com.android.art/lib64/libart.so (art::interpreter::ArtInterpreterToInterpreterBridge(art::Thread*, art::CodeItemDataAccessor const&amp;, art::ShadowFrame*, art::JValue*)+110) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #45 pc 000000000056ddb6  /apex/com.android.art/lib64/libart.so (bool art::interpreter::DoCall&lt;false&gt;(art::ArtMethod*, art::Thread*, art::ShadowFrame&amp;, art::Instruction const*, unsigned short, bool, art::JValue*)+2054) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #46 pc 000000000039ae32  /apex/com.android.art/lib64/libart.so (void art::interpreter::ExecuteSwitchImplCpp&lt;false&gt;(art::interpreter::SwitchImplContext*)+16546) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #47 pc 00000000003937a5  /apex/com.android.art/lib64/libart.so (ExecuteSwitchImplAsm+5) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #48 pc 000000000074a68c  &lt;anonymous:74f4edac1000&gt; (org.thoughtcrime.securesms.registration.viewmodel.RegistrationViewModel$$ExternalSyntheticLambda13.apply+0)\n      #49 pc 0000000000566017  /apex/com.android.art/lib64/libart.so (art::interpreter::Execute(art::Thread*, art::CodeItemDataAccessor const&amp;, art::ShadowFrame&amp;, art::JValue, bool, bool) (.__uniq.112435418011751916792819755956732575238)+647) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #50 pc 000000000056d13e  /apex/com.android.art/lib64/libart.so (art::interpreter::ArtInterpreterToInterpreterBridge(art::Thread*, art::CodeItemDataAccessor const&amp;, art::ShadowFrame*, art::JValue*)+110) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #51 pc 000000000056ddb6  /apex/com.android.art/lib64/libart.so (bool art::interpreter::DoCall&lt;false&gt;(art::ArtMethod*, art::Thread*, art::ShadowFrame&amp;, art::Instruction const*, unsigned short, bool, art::JValue*)+2054) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #52 pc 000000000039ae32  /apex/com.android.art/lib64/libart.so (void art::interpreter::ExecuteSwitchImplCpp&lt;false&gt;(art::interpreter::SwitchImplContext*)+16546) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #53 pc 00000000003937a5  /apex/com.android.art/lib64/libart.so (ExecuteSwitchImplAsm+5) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #54 pc 0000000000547e5c  &lt;anonymous:74f4ea7ac000&gt; (io.reactivex.rxjava3.internal.operators.single.SingleFlatMap$SingleFlatMapCallback.onSuccess+0)\n      #55 pc 0000000000566017  /apex/com.android.art/lib64/libart.so (art::interpreter::Execute(art::Thread*, art::CodeItemDataAccessor const&amp;, art::ShadowFrame&amp;, art::JValue, bool, bool) (.__uniq.112435418011751916792819755956732575238)+647) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #56 pc 000000000056d13e  /apex/com.android.art/lib64/libart.so (art::interpreter::ArtInterpreterToInterpreterBridge(art::Thread*, art::CodeItemDataAccessor const&amp;, art::ShadowFrame*, art::JValue*)+110) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #57 pc 000000000056ddb6  /apex/com.android.art/lib64/libart.so (bool art::interpreter::DoCall&lt;false&gt;(art::ArtMethod*, art::Thread*, art::ShadowFrame&amp;, art::Instruction const*, unsigned short, bool, art::JValue*)+2054) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #58 pc 000000000039ae32  /apex/com.android.art/lib64/libart.so (void art::interpreter::ExecuteSwitchImplCpp&lt;false&gt;(art::interpreter::SwitchImplContext*)+16546) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #59 pc 00000000003937a5  /apex/com.android.art/lib64/libart.so (ExecuteSwitchImplAsm+5) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #60 pc 00000000005499c0  &lt;anonymous:74f4ea7ac000&gt; (io.reactivex.rxjava3.internal.operators.single.SingleObserveOn$ObserveOnSingleObserver.run+0)\n      #61 pc 0000000000566017  /apex/com.android.art/lib64/libart.so (art::interpreter::Execute(art::Thread*, art::CodeItemDataAccessor const&amp;, art::ShadowFrame&amp;, art::JValue, bool, bool) (.__uniq.112435418011751916792819755956732575238)+647) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #62 pc 000000000056d13e  /apex/com.android.art/lib64/libart.so (art::interpreter::ArtInterpreterToInterpreterBridge(art::Thread*, art::CodeItemDataAccessor const&amp;, art::ShadowFrame*, art::JValue*)+110) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #63 pc 000000000056ddb6  /apex/com.android.art/lib64/libart.so (bool art::interpreter::DoCall&lt;false&gt;(art::ArtMethod*, art::Thread*, art::ShadowFrame&amp;, art::Instruction const*, unsigned short, bool, art::JValue*)+2054) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #64 pc 000000000039ae32  /apex/com.android.art/lib64/libart.so (void art::interpreter::ExecuteSwitchImplCpp&lt;false&gt;(art::interpreter::SwitchImplContext*)+16546) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #65 pc 00000000003937a5  /apex/com.android.art/lib64/libart.so (ExecuteSwitchImplAsm+5) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #66 pc 000000000054dd70  &lt;anonymous:74f4ea7ac000&gt; (io.reactivex.rxjava3.internal.schedulers.ScheduledDirectTask.call+0)\n      #67 pc 0000000000566017  /apex/com.android.art/lib64/libart.so (art::interpreter::Execute(art::Thread*, art::CodeItemDataAccessor const&amp;, art::ShadowFrame&amp;, art::JValue, bool, bool) (.__uniq.112435418011751916792819755956732575238)+647) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #68 pc 000000000056d13e  /apex/com.android.art/lib64/libart.so (art::interpreter::ArtInterpreterToInterpreterBridge(art::Thread*, art::CodeItemDataAccessor const&amp;, art::ShadowFrame*, art::JValue*)+110) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #69 pc 000000000056ddb6  /apex/com.android.art/lib64/libart.so (bool art::interpreter::DoCall&lt;false&gt;(art::ArtMethod*, art::Thread*, art::ShadowFrame&amp;, art::Instruction const*, unsigned short, bool, art::JValue*)+2054) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #70 pc 000000000039ae32  /apex/com.android.art/lib64/libart.so (void art::interpreter::ExecuteSwitchImplCpp&lt;false&gt;(art::interpreter::SwitchImplContext*)+16546) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #71 pc 00000000003937a5  /apex/com.android.art/lib64/libart.so (ExecuteSwitchImplAsm+5) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #72 pc 000000000054dd1c  &lt;anonymous:74f4ea7ac000&gt; (io.reactivex.rxjava3.internal.schedulers.ScheduledDirectTask.call+0)\n      #73 pc 0000000000566017  /apex/com.android.art/lib64/libart.so (art::interpreter::Execute(art::Thread*, art::CodeItemDataAccessor const&amp;, art::ShadowFrame&amp;, art::JValue, bool, bool) (.__uniq.112435418011751916792819755956732575238)+647) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #74 pc 000000000056d13e  /apex/com.android.art/lib64/libart.so (art::interpreter::ArtInterpreterToInterpreterBridge(art::Thread*, art::CodeItemDataAccessor const&amp;, art::ShadowFrame*, art::JValue*)+110) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #75 pc 000000000056ddb6  /apex/com.android.art/lib64/libart.so (bool art::interpreter::DoCall&lt;false&gt;(art::ArtMethod*, art::Thread*, art::ShadowFrame&amp;, art::Instruction const*, unsigned short, bool, art::JValue*)+2054) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #76 pc 000000000039ae32  /apex/com.android.art/lib64/libart.so (void art::interpreter::ExecuteSwitchImplCpp&lt;false&gt;(art::interpreter::SwitchImplContext*)+16546) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #77 pc 00000000003937a5  /apex/com.android.art/lib64/libart.so (ExecuteSwitchImplAsm+5) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #78 pc 000000000023b3fc  /apex/com.android.art/javalib/core-oj.jar (java.util.concurrent.FutureTask.run+0)\n      #79 pc 0000000000566017  /apex/com.android.art/lib64/libart.so (art::interpreter::Execute(art::Thread*, art::CodeItemDataAccessor const&amp;, art::ShadowFrame&amp;, art::JValue, bool, bool) (.__uniq.112435418011751916792819755956732575238)+647) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #80 pc 000000000056d13e  /apex/com.android.art/lib64/libart.so (art::interpreter::ArtInterpreterToInterpreterBridge(art::Thread*, art::CodeItemDataAccessor const&amp;, art::ShadowFrame*, art::JValue*)+110) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #81 pc 000000000056ddb6  /apex/com.android.art/lib64/libart.so (bool art::interpreter::DoCall&lt;false&gt;(art::ArtMethod*, art::Thread*, art::ShadowFrame&amp;, art::Instruction const*, unsigned short, bool, art::JValue*)+2054) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #82 pc 000000000039ae32  /apex/com.android.art/lib64/libart.so (void art::interpreter::ExecuteSwitchImplCpp&lt;false&gt;(art::interpreter::SwitchImplContext*)+16546) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #83 pc 00000000003937a5  /apex/com.android.art/lib64/libart.so (ExecuteSwitchImplAsm+5) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #84 pc 00000000002488d8  /apex/com.android.art/javalib/core-oj.jar (java.util.concurrent.ThreadPoolExecutor.runWorker+0)\n      #85 pc 0000000000566017  /apex/com.android.art/lib64/libart.so (art::interpreter::Execute(art::Thread*, art::CodeItemDataAccessor const&amp;, art::ShadowFrame&amp;, art::JValue, bool, bool) (.__uniq.112435418011751916792819755956732575238)+647) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #86 pc 000000000056d13e  /apex/com.android.art/lib64/libart.so (art::interpreter::ArtInterpreterToInterpreterBridge(art::Thread*, art::CodeItemDataAccessor const&amp;, art::ShadowFrame*, art::JValue*)+110) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #87 pc 000000000056ddb6  /apex/com.android.art/lib64/libart.so (bool art::interpreter::DoCall&lt;false&gt;(art::ArtMethod*, art::Thread*, art::ShadowFrame&amp;, art::Instruction const*, unsigned short, bool, art::JValue*)+2054) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #88 pc 000000000039ae32  /apex/com.android.art/lib64/libart.so (void art::interpreter::ExecuteSwitchImplCpp&lt;false&gt;(art::interpreter::SwitchImplContext*)+16546) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #89 pc 00000000003937a5  /apex/com.android.art/lib64/libart.so (ExecuteSwitchImplAsm+5) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #90 pc 0000000000247774  /apex/com.android.art/javalib/core-oj.jar (java.util.concurrent.ThreadPoolExecutor$Worker.run+0)\n      #91 pc 0000000000566017  /apex/com.android.art/lib64/libart.so (art::interpreter::Execute(art::Thread*, art::CodeItemDataAccessor const&amp;, art::ShadowFrame&amp;, art::JValue, bool, bool) (.__uniq.112435418011751916792819755956732575238)+647) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #92 pc 000000000056d13e  /apex/com.android.art/lib64/libart.so (art::interpreter::ArtInterpreterToInterpreterBridge(art::Thread*, art::CodeItemDataAccessor const&amp;, art::ShadowFrame*, art::JValue*)+110) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #93 pc 000000000056ddb6  /apex/com.android.art/lib64/libart.so (bool art::interpreter::DoCall&lt;false&gt;(art::ArtMethod*, art::Thread*, art::ShadowFrame&amp;, art::Instruction const*, unsigned short, bool, art::JValue*)+2054) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #94 pc 000000000039ae32  /apex/com.android.art/lib64/libart.so (void art::interpreter::ExecuteSwitchImplCpp&lt;false&gt;(art::interpreter::SwitchImplContext*)+16546) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #95 pc 00000000003937a5  /apex/com.android.art/lib64/libart.so (ExecuteSwitchImplAsm+5) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #96 pc 000000000010ee0c  /apex/com.android.art/javalib/core-oj.jar (java.lang.Thread.run+0)\n      #97 pc 0000000000566017  /apex/com.android.art/lib64/libart.so (art::interpreter::Execute(art::Thread*, art::CodeItemDataAccessor const&amp;, art::ShadowFrame&amp;, art::JValue, bool, bool) (.__uniq.112435418011751916792819755956732575238)+647) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #98 pc 000000000056d13e  /apex/com.android.art/lib64/libart.so (art::interpreter::ArtInterpreterToInterpreterBridge(art::Thread*, art::CodeItemDataAccessor const&amp;, art::ShadowFrame*, art::JValue*)+110) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #99 pc 000000000056ddb6  /apex/com.android.art/lib64/libart.so (bool art::interpreter::DoCall&lt;false&gt;(art::ArtMethod*, art::Thread*, art::ShadowFrame&amp;, art::Instruction const*, unsigned short, bool, art::JValue*)+2054) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #100 pc 000000000039ae32  /apex/com.android.art/lib64/libart.so (void art::interpreter::ExecuteSwitchImplCpp&lt;false&gt;(art::interpreter::SwitchImplContext*)+16546) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #101 pc 00000000003937a5  /apex/com.android.art/lib64/libart.so (ExecuteSwitchImplAsm+5) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #102 pc 000000000000fe34  &lt;anonymous:74f7f1416000&gt; (org.signal.core.util.concurrent.SignalExecutors$NumberedThreadFactory$1.run+0)\n      #103 pc 0000000000566017  /apex/com.android.art/lib64/libart.so (art::interpreter::Execute(art::Thread*, art::CodeItemDataAccessor const&amp;, art::ShadowFrame&amp;, art::JValue, bool, bool) (.__uniq.112435418011751916792819755956732575238)+647) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #104 pc 000000000091f056  /apex/com.android.art/lib64/libart.so (artQuickToInterpreterBridge+902) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #105 pc 0000000000391bdc  /apex/com.android.art/lib64/libart.so (art_quick_to_interpreter_bridge+140) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #106 pc 00000000003784c4  /apex/com.android.art/lib64/libart.so (art_quick_invoke_stub+756) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #107 pc 00000000003c535c  /apex/com.android.art/lib64/libart.so (art::ArtMethod::Invoke(art::Thread*, unsigned int*, unsigned int, art::JValue*, char const*)+204) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #108 pc 0000000000853176  /apex/com.android.art/lib64/libart.so (art::Thread::CreateCallback(void*)+1510) (BuildId: b6dc79e02101ea00827a35a55ab6597a)\n      #109 pc 00000000000cd06a  /apex/com.android.runtime/lib64/bionic/libc.so (__pthread_start(void*)+58) (BuildId: fa337969c798946280caa45e2d71a2e7)\n      #110 pc 0000000000062d88  /apex/com.android.runtime/lib64/bionic/libc.so (__start_thread+56) (BuildId: fa337969c798946280caa45e2d71a2e7)\nTombstone written to: tombstone_00\n\n</code></pre>\n<p><strong>Infos:</strong></p>\n<p><strong>OS:</strong> Windows 11<br>\n<strong>IDE:</strong> Android Studio Iguana / Flamingo (all of them)<br>\n<strong>Emultators</strong>: all of them</p>\n<p><strong>Other infos</strong></p>\n<ul>\n<li>The error started to occur recently, and there is no change in the code that could have caused the error.</li>\n</ul>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 3,
+        "updated_at": "2024-04-25T16:43:31.665Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 20,
+        "reads": 44,
+        "readers_count": 43,
+        "score": 108.8,
+        "yours": false,
+        "topic_id": 60416,
+        "topic_slug": "x86-android-emulator",
+        "display_username": "Thiago Lima",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 2962,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/x86-android-emulator/60416/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": true,
+        "can_vote": false
+      },
+      {
+        "id": 242564,
+        "name": "Thiago Lima",
+        "username": "tloime",
+        "avatar_template": "/user_avatar/community.signalusers.org/tloime/{size}/33142_2.png",
+        "created_at": "2024-04-26T12:48:47.943Z",
+        "cooked": "<p><strong>Update</strong></p>\n<ul>\n<li>To solve problem use HAXM 7.6.5 version¹. The newer version 7.8.0 not install if you click in android SDK tools.</li>\n</ul>\n<p>¹ <a href=\"https://github.com/intel/haxm/releases/tag/v7.6.5\" class=\"inline-onebox\" rel=\"noopener nofollow ugc\">Release HAXM v7.6.5 · intel/haxm · GitHub</a></p>",
+        "post_number": 2,
+        "post_type": 1,
+        "posts_count": 3,
+        "updated_at": "2024-04-26T12:48:47.943Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 3,
+        "reads": 29,
+        "readers_count": 28,
+        "score": 20.8,
+        "yours": false,
+        "topic_id": 60416,
+        "topic_slug": "x86-android-emulator",
+        "display_username": "Thiago Lima",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://github.com/intel/haxm/releases/tag/v7.6.5",
+            "internal": false,
+            "reflection": false,
+            "title": "Release HAXM v7.6.5 · intel/haxm · GitHub",
+            "clicks": 5
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 2962,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/x86-android-emulator/60416/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": true,
+        "topic_accepted_answer": true
+      },
+      {
+        "id": 257565,
+        "name": "",
+        "username": "Kovsh",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/k/6bbea6/{size}.png",
+        "created_at": "2024-12-19T08:59:36.213Z",
+        "cooked": "<p>Same happened on win11 with AMD CPU, can’t install HAXM</p>",
+        "post_number": 3,
+        "post_type": 1,
+        "posts_count": 3,
+        "updated_at": "2024-12-19T08:59:36.213Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 18,
+        "readers_count": 17,
+        "score": 3.6,
+        "yours": false,
+        "topic_id": 60416,
+        "topic_slug": "x86-android-emulator",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 31104,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/x86-android-emulator/60416/3",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": true
+      }
+    ],
+    "stream": [
+      242498,
+      242564,
+      257565
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      660
+    ],
+    [
+      2,
+      659
+    ],
+    [
+      3,
+      422
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Migrating to Compose",
+      "id": 74254,
+      "title": "Migrating to Compose",
+      "slug": "migrating-to-compose",
+      "posts_count": 8,
+      "reply_count": 3,
+      "highest_post_number": 8,
+      "image_url": null,
+      "created_at": "2026-01-15T21:20:05.236Z",
+      "last_posted_at": "2026-01-21T21:40:51.107Z",
+      "bumped": true,
+      "bumped_at": "2026-01-22T01:34:07.835Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 8,
+      "views": 173,
+      "category_id": 22,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": true,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 35540,
+            "username": "mrkos",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/m/73ab20/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster, Accepted Answer",
+          "user": {
+            "id": 4053,
+            "username": "alex-signal",
+            "name": "Alex Hart",
+            "avatar_template": "/user_avatar/community.signalusers.org/alex-signal/{size}/52314_2.png",
+            "primary_group_name": "signal_staff",
+            "flair_name": "signal_staff",
+            "flair_url": "/uploads/db3609/original/3X/0/6/064a72b694359c38b577ec83488ad474c77032dc.png",
+            "flair_bg_color": "3B45FD",
+            "flair_group_id": 46,
+            "admin": true,
+            "moderator": true,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 33391,
+            "username": "Mrbrighra",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/m/4da419/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "(April Fool&rsquo;s) Signal now actively working on its AI chat assistant",
+      "id": 68178,
+      "title": "(April Fool's) Signal now actively working on its AI chat assistant",
+      "slug": "april-fools-signal-now-actively-working-on-its-ai-chat-assistant",
+      "posts_count": 6,
+      "reply_count": 2,
+      "highest_post_number": 6,
+      "image_url": null,
+      "created_at": "2025-04-01T06:39:58.922Z",
+      "last_posted_at": "2025-04-02T13:50:21.688Z",
+      "bumped": true,
+      "bumped_at": "2025-04-02T13:50:21.688Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 12,
+      "views": 207,
+      "category_id": 22,
+      "featured_link": null,
+      "op_like_count": 5,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 16653,
+            "username": "QuickBanana",
+            "name": null,
+            "avatar_template": "/user_avatar/community.signalusers.org/quickbanana/{size}/35290_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 1497,
+            "username": "najodleglejszy",
+            "name": "(he/him)",
+            "avatar_template": "/user_avatar/community.signalusers.org/najodleglejszy/{size}/1213_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 2601,
+            "username": "signalOne",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/signalone/{size}/43900_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 30664,
+            "username": "Oleh_Hreckov",
+            "name": "Oleh Hrekov",
+            "avatar_template": "/user_avatar/community.signalusers.org/oleh_hreckov/{size}/49491_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 975,
+            "username": "Stephan",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/s/8baadc/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "What happened ? Can anyone help me ? :sob:",
+      "id": 67115,
+      "title": "What happened ? Can anyone help me ? 😭",
+      "slug": "what-happened-can-anyone-help-me",
+      "posts_count": 3,
+      "reply_count": 0,
+      "highest_post_number": 3,
+      "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/8/f/8f8e29c77ac92be7f839c5b6a7438d8e1ad3852f_2_1024x576.png",
+      "created_at": "2025-02-22T18:24:38.055Z",
+      "last_posted_at": "2025-03-27T09:04:50.751Z",
+      "bumped": true,
+      "bumped_at": "2025-03-27T09:04:50.751Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 5,
+      "views": 238,
+      "category_id": 22,
+      "featured_link": null,
+      "op_like_count": 2,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 31830,
+            "username": "Pine_Zxas",
+            "name": "Pine Zxas",
+            "avatar_template": "/user_avatar/community.signalusers.org/pine_zxas/{size}/50854_2.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "X86 Android Emulator",
+  "id": 60416,
+  "title": "X86 Android Emulator",
+  "posts_count": 3,
+  "created_at": "2024-04-25T16:43:31.583Z",
+  "views": 201,
+  "reply_count": 0,
+  "like_count": 0,
+  "last_posted_at": "2024-12-19T08:59:36.213Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "x86-android-emulator",
+  "category_id": 22,
+  "word_count": 2728,
+  "deleted_at": null,
+  "user_id": 2962,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_60416",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 3,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 2,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "accepted_answer": {
+    "post_number": 2,
+    "username": "tloime",
+    "name": "Thiago Lima",
+    "excerpt": "<p><strong>Update</strong></p>\n<ul>\n<li>To solve problem use HAXM 7.6.5 version¹. The newer version 7.8.0 not install if you click in android SDK tools.</li>\n</ul>\n<p>¹ <a href=\"https://github.com/intel/haxm/releases/tag/v7.6.5\" class=\"inline-onebox\" rel=\"noopener nofollow ugc\">Release HAXM v7.6.5 · intel/haxm · GitHub</a></p>"
+  },
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 2962,
+        "username": "tloime",
+        "name": "Thiago Lima",
+        "avatar_template": "/user_avatar/community.signalusers.org/tloime/{size}/33142_2.png",
+        "post_count": 2,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      },
+      {
+        "id": 31104,
+        "username": "Kovsh",
+        "name": "",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/k/6bbea6/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 0
+      }
+    ],
+    "created_by": {
+      "id": 2962,
+      "username": "tloime",
+      "name": "Thiago Lima",
+      "avatar_template": "/user_avatar/community.signalusers.org/tloime/{size}/33142_2.png"
+    },
+    "last_poster": {
+      "id": 31104,
+      "username": "Kovsh",
+      "name": "",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/k/6bbea6/{size}.png"
+    },
+    "links": [
+      {
+        "url": "https://github.com/intel/haxm/releases/tag/v7.6.5",
+        "title": "Release HAXM v7.6.5 · intel/haxm · GitHub",
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 5,
+        "user_id": 2962,
+        "domain": "github.com",
+        "root_domain": "github.com"
+      }
+    ]
+  },
+  "bookmarks": []
+}

@@ -1,0 +1,503 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 255885,
+        "name": "Mich Bub",
+        "username": "michbub",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/m/f0a364/{size}.png",
+        "created_at": "2024-11-20T04:20:21.411Z",
+        "cooked": "<p>I like the new Call Links feature. The increase in group participants to 50 users is also absolutely amazing. Two questions:</p>\n<ol>\n<li>Quality: Has anyone ever used 30+ users in Signal video calls? Is it a good user experience? How much bandwidth can Signal handle for video?</li>\n<li>Moderation: Without a missing moderation feature where admins can mute other group members, I feel that larger groups are not really usable. Is such a feature planned?</li>\n</ol>\n<p>Thank you very much!</p>\n<aside class=\"onebox allowlistedgeneric\" data-onebox-src=\"https://signal.org/blog/call-links/\">\n  <header class=\"source\">\n      <img src=\"https://signal.org/assets/images/favicon/favicon.svg\" class=\"site-icon\" width=\"16\" height=\"16\">\n\n      <a href=\"https://signal.org/blog/call-links/\" target=\"_blank\" rel=\"noopener nofollow ugc\">Signal Messenger</a>\n  </header>\n\n  <article class=\"onebox-body\">\n    <div class=\"aspect-image\" style=\"--aspect-ratio:690/361;\"><img src=\"https://community.signalusers.org/uploads/db3609/optimized/3X/3/c/3ca973067711f638ff2961b7d8d204a7a9a3e913_2_690x362.png\" class=\"thumbnail\" data-dominant-color=\"576796\" width=\"690\" height=\"362\"></div>\n\n<h3><a href=\"https://signal.org/blog/call-links/\" target=\"_blank\" rel=\"noopener nofollow ugc\">Improving Private Signal Calls: Call Links &amp; More</a></h3>\n\n  <p>If you love group calls on Signal, but don’t want to create a group chat for every combination of your friends or colleagues, you’re in luck. Today we’re launching call links: Share a link with anyone on Signal and in just a tap or click they can...</p>\n\n\n  </article>\n\n  <div class=\"onebox-metadata\">\n    \n    \n  </div>\n\n  <div style=\"clear: both\"></div>\n</aside>\n",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2024-11-20T04:20:21.411Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 3,
+        "reads": 40,
+        "readers_count": 39,
+        "score": 38.0,
+        "yours": false,
+        "topic_id": 65005,
+        "topic_slug": "call-link-feedback-missing-feature",
+        "display_username": "Mich Bub",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://signal.org/blog/call-links/",
+            "internal": false,
+            "reflection": false,
+            "title": "Signal >> Blog >> Improving Private Signal Calls: Call Links & More",
+            "clicks": 4
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 1
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 30802,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/call-link-feedback-missing-feature/65005/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      255885
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      452
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Signal&rsquo;s finance transparency",
+      "id": 67465,
+      "title": "Signal's finance transparency",
+      "slug": "signals-finance-transparency",
+      "posts_count": 8,
+      "reply_count": 6,
+      "highest_post_number": 8,
+      "image_url": null,
+      "created_at": "2025-03-06T03:10:26.970Z",
+      "last_posted_at": "2025-03-07T18:59:12.573Z",
+      "bumped": true,
+      "bumped_at": "2025-03-07T18:59:12.573Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 12,
+      "views": 261,
+      "category_id": 7,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 32030,
+            "username": "resonance",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/r/8dc957/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 8599,
+            "username": "kara42",
+            "name": "kara",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/k/7993a0/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 2521,
+            "username": "Herohtar",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+            "primary_group_name": "volunteer_moderators",
+            "flair_name": "volunteer_moderators",
+            "flair_url": "shield-halved",
+            "flair_bg_color": "1d8663",
+            "flair_color": "fff",
+            "flair_group_id": 41,
+            "moderator": true,
+            "trust_level": 4
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Signal Service Outage 2025-10-20",
+      "id": 72317,
+      "title": "Signal Service Outage 2025-10-20",
+      "slug": "signal-service-outage-2025-10-20",
+      "posts_count": 53,
+      "reply_count": 34,
+      "highest_post_number": 54,
+      "image_url": null,
+      "created_at": "2025-10-20T07:35:39.733Z",
+      "last_posted_at": "2025-10-21T13:31:28.074Z",
+      "bumped": true,
+      "bumped_at": "2025-10-21T13:17:57.047Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 161,
+      "views": 1507,
+      "category_id": 94,
+      "featured_link": null,
+      "op_like_count": 14,
+      "has_accepted_answer": true,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster, Accepted Answer",
+          "user": {
+            "id": 6659,
+            "username": "Whatnoww",
+            "name": "Whatnoww",
+            "avatar_template": "/user_avatar/community.signalusers.org/whatnoww/{size}/54328_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 2030,
+            "username": "DonDino",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/dondino/{size}/1721_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 34524,
+            "username": "jonive",
+            "name": "Jonussy",
+            "avatar_template": "/user_avatar/community.signalusers.org/jonive/{size}/54288_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Options for devices without touchscreens",
+      "id": 70647,
+      "title": "Options for devices without touchscreens",
+      "slug": "options-for-devices-without-touchscreens",
+      "posts_count": 12,
+      "reply_count": 8,
+      "highest_post_number": 12,
+      "image_url": null,
+      "created_at": "2025-07-25T19:44:35.689Z",
+      "last_posted_at": "2025-10-05T00:14:37.791Z",
+      "bumped": true,
+      "bumped_at": "2025-10-05T00:14:37.791Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 12,
+      "views": 183,
+      "category_id": 13,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": true,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 33623,
+            "username": "horseman",
+            "name": "Thomas",
+            "avatar_template": "/user_avatar/community.signalusers.org/horseman/{size}/53073_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Accepted Answer",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 2170,
+            "username": "TeeJay82",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/teejay82/{size}/1806_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 34367,
+            "username": "neutral",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/n/977dab/{size}.png",
+            "trust_level": 0
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Call Link Feedback | Missing Feature",
+  "id": 65005,
+  "title": "Call Link Feedback | Missing Feature",
+  "posts_count": 1,
+  "created_at": "2024-11-20T04:20:21.358Z",
+  "views": 81,
+  "reply_count": 0,
+  "like_count": 1,
+  "last_posted_at": "2024-11-20T04:20:21.411Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "call-link-feedback-missing-feature",
+  "category_id": 7,
+  "word_count": 85,
+  "deleted_at": null,
+  "user_id": 30802,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/3/c/3ca973067711f638ff2961b7d8d204a7a9a3e913_2_1024x537.png",
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_65005",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": [
+    {
+      "max_width": null,
+      "max_height": null,
+      "width": 1200,
+      "height": 630,
+      "url": "https://community.signalusers.org/uploads/db3609/original/3X/3/c/3ca973067711f638ff2961b7d8d204a7a9a3e913.png"
+    },
+    {
+      "max_width": 1024,
+      "max_height": 1024,
+      "width": 1024,
+      "height": 537,
+      "url": "https://community.signalusers.org/uploads/db3609/optimized/3X/3/c/3ca973067711f638ff2961b7d8d204a7a9a3e913_2_1024x537.png"
+    }
+  ],
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 30802,
+        "username": "michbub",
+        "name": "Mich Bub",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/m/f0a364/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 0
+      }
+    ],
+    "created_by": {
+      "id": 30802,
+      "username": "michbub",
+      "name": "Mich Bub",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/m/f0a364/{size}.png"
+    },
+    "last_poster": {
+      "id": 30802,
+      "username": "michbub",
+      "name": "Mich Bub",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/m/f0a364/{size}.png"
+    },
+    "links": [
+      {
+        "url": "https://signal.org/blog/call-links/",
+        "title": "Signal >> Blog >> Improving Private Signal Calls: Call Links & More",
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 4,
+        "user_id": 30802,
+        "domain": "signal.org",
+        "root_domain": "signal.org"
+      }
+    ]
+  },
+  "bookmarks": []
+}

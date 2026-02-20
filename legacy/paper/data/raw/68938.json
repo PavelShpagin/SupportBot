@@ -1,0 +1,331 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 267360,
+        "name": "",
+        "username": "Brando",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/b/bcef8e/{size}.png",
+        "created_at": "2025-05-02T13:57:43.814Z",
+        "cooked": "<p>I think it would be cool if the colors of each group chat member were uniform across users. So if my friend’s color in our group chat is red on my phone, it’s also red on someone else’s phone, etc. I noticed this is true on other messaging platforms like Snapchat. This way for any given group chat, everyone’s colors are fixed.</p>\n<p>Thanks!</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2025-05-02T13:57:43.814Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 4,
+        "reads": 30,
+        "readers_count": 29,
+        "score": 26.0,
+        "yours": false,
+        "topic_id": 68938,
+        "topic_slug": "uniform-group-chat-contact-coloring",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 32766,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/uniform-group-chat-contact-coloring/68938/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      267360
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      288
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Bug? Emoji replies. Not marked as a new message who",
+      "id": 73837,
+      "title": "Bug? Emoji replies. Not marked as a new message who",
+      "slug": "bug-emoji-replies-not-marked-as-a-new-message-who",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2025-12-25T22:54:05.585Z",
+      "last_posted_at": "2025-12-25T22:54:05.698Z",
+      "bumped": true,
+      "bumped_at": "2025-12-25T22:54:05.698Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 34,
+      "category_id": 29,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 32638,
+            "username": "NotWhatsApp",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/n/35a633/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Bug: Voice-messages don&rsquo;t show correct remaining time",
+      "id": 72431,
+      "title": "Bug: Voice-messages don't show correct remaining time",
+      "slug": "bug-voice-messages-dont-show-correct-remaining-time",
+      "posts_count": 5,
+      "reply_count": 1,
+      "highest_post_number": 5,
+      "image_url": null,
+      "created_at": "2025-10-24T14:51:49.228Z",
+      "last_posted_at": "2025-11-07T16:11:19.209Z",
+      "bumped": true,
+      "bumped_at": "2025-11-07T16:11:19.209Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 34,
+      "views": 120,
+      "category_id": 29,
+      "featured_link": null,
+      "op_like_count": 20,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 34569,
+            "username": "CarstenW",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/carstenw/{size}/52354_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 34113,
+            "username": "Alex7511",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/a/edb3f5/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 34743,
+            "username": "OscarS",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/o/e8c25b/{size}.png",
+            "trust_level": 1
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Two finger select",
+      "id": 72204,
+      "title": "Two finger select",
+      "slug": "two-finger-select",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2025-10-14T08:09:07.831Z",
+      "last_posted_at": "2025-10-14T08:09:07.907Z",
+      "bumped": true,
+      "bumped_at": "2025-10-14T08:09:07.907Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 5,
+      "views": 60,
+      "category_id": 29,
+      "featured_link": null,
+      "op_like_count": 5,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 34461,
+            "username": "reg67",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/reg67/{size}/54198_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Uniform Group Chat Contact Coloring",
+  "id": 68938,
+  "title": "Uniform Group Chat Contact Coloring",
+  "posts_count": 1,
+  "created_at": "2025-05-02T13:57:43.765Z",
+  "views": 58,
+  "reply_count": 0,
+  "like_count": 0,
+  "last_posted_at": "2025-05-02T13:57:43.814Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "uniform-group-chat-contact-coloring",
+  "category_id": 29,
+  "word_count": 67,
+  "deleted_at": null,
+  "user_id": 32766,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_68938",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 32766,
+        "username": "Brando",
+        "name": "",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/b/bcef8e/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 0
+      }
+    ],
+    "created_by": {
+      "id": 32766,
+      "username": "Brando",
+      "name": "",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/b/bcef8e/{size}.png"
+    },
+    "last_poster": {
+      "id": 32766,
+      "username": "Brando",
+      "name": "",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/b/bcef8e/{size}.png"
+    }
+  },
+  "bookmarks": []
+}

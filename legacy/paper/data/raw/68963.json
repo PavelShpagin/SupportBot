@@ -1,0 +1,370 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 267447,
+        "name": "Bapt Eash",
+        "username": "BaptEash",
+        "avatar_template": "/user_avatar/community.signalusers.org/bapteash/{size}/52101_2.png",
+        "created_at": "2025-05-04T04:54:07.699Z",
+        "cooked": "<p>Hello,</p>\n<p>Voice messages quality is bad when I record them on Android. I don’t suffer with that issue with the Dictaphone app, or Whatsapp, or Messenger (that I hate to use)… my phone is recent and has 3 microphones that works really well.</p>\n<p>My sister has Signal on her iPhone and her voice messages are crystal clear.</p>\n<p>Can we PLEASE get the same bitrate on Android and not some mushy audio?<br>\nI know it’s probably so that they’re lightweight but it’s too muffled!! When I record from my car, it’s very bad.</p>\n<p>Thanks for your consideration, Signal team!<br>\nHave a nice one.</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2025-05-04T14:50:59.519Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 7,
+        "reads": 48,
+        "readers_count": 47,
+        "score": 134.6,
+        "yours": false,
+        "topic_id": 68963,
+        "topic_slug": "improve-voice-memo-bit-rate",
+        "display_username": "Bapt Eash",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 3,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 6
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 32821,
+        "hidden": false,
+        "trust_level": 1,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/improve-voice-memo-bit-rate/68963/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      267447
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      287
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Privacy Screen Per App",
+      "id": 74512,
+      "title": "Privacy Screen Per App",
+      "slug": "privacy-screen-per-app",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/2/9/29f99cf6228ecb3dc57771cf43dbfc5aee02d3bb_2_1024x576.jpeg",
+      "created_at": "2026-01-28T14:31:59.535Z",
+      "last_posted_at": "2026-01-30T21:27:39.816Z",
+      "bumped": true,
+      "bumped_at": "2026-01-30T21:27:39.816Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 5,
+      "views": 83,
+      "category_id": 18,
+      "featured_link": null,
+      "op_like_count": 4,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 35,
+            "username": "jeremymasters",
+            "name": "Jeremy",
+            "avatar_template": "/user_avatar/community.signalusers.org/jeremymasters/{size}/933_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 33747,
+            "username": "chepycou",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/c/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Fold phone to hangup",
+      "id": 71240,
+      "title": "Fold phone to hangup",
+      "slug": "fold-phone-to-hangup",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2025-08-26T15:02:11.499Z",
+      "last_posted_at": "2025-08-26T15:02:11.606Z",
+      "bumped": true,
+      "bumped_at": "2025-08-26T15:02:11.606Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 5,
+      "views": 74,
+      "category_id": 18,
+      "featured_link": null,
+      "op_like_count": 5,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 19639,
+            "username": "nose_gnome",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/n/dec6dc/{size}.png",
+            "trust_level": 1
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Default calling and texting app",
+      "id": 68129,
+      "title": "Default calling and texting app",
+      "slug": "default-calling-and-texting-app",
+      "posts_count": 7,
+      "reply_count": 2,
+      "highest_post_number": 7,
+      "image_url": null,
+      "created_at": "2025-03-30T15:46:14.650Z",
+      "last_posted_at": "2025-11-20T10:56:41.262Z",
+      "bumped": true,
+      "bumped_at": "2025-11-20T10:56:41.262Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 8,
+      "views": 270,
+      "category_id": 18,
+      "featured_link": "https://9to5mac.com/2025/03/27/whatsapp-default-app-iphone/",
+      "featured_link_root_domain": "9to5mac.com",
+      "op_like_count": 2,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 29453,
+            "username": "Mik_96",
+            "name": "Mik",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/m/ee59a6/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 32355,
+            "username": "Stuart",
+            "name": "Stuart MW",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/s/cab0a1/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 1499,
+            "username": "CueHD",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/cuehd/{size}/42510_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 31453,
+            "username": "wertzuz",
+            "name": "WertZuz",
+            "avatar_template": "/user_avatar/community.signalusers.org/wertzuz/{size}/50395_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Improve voice memo bit rate",
+  "id": 68963,
+  "title": "Improve voice memo bit rate",
+  "posts_count": 1,
+  "created_at": "2025-05-04T04:54:07.656Z",
+  "views": 106,
+  "reply_count": 0,
+  "like_count": 6,
+  "last_posted_at": "2025-05-04T04:54:07.699Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "improve-voice-memo-bit-rate",
+  "category_id": 18,
+  "word_count": 107,
+  "deleted_at": null,
+  "user_id": 32821,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_68963",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 32821,
+        "username": "BaptEash",
+        "name": "Bapt Eash",
+        "avatar_template": "/user_avatar/community.signalusers.org/bapteash/{size}/52101_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 1
+      }
+    ],
+    "created_by": {
+      "id": 32821,
+      "username": "BaptEash",
+      "name": "Bapt Eash",
+      "avatar_template": "/user_avatar/community.signalusers.org/bapteash/{size}/52101_2.png"
+    },
+    "last_poster": {
+      "id": 32821,
+      "username": "BaptEash",
+      "name": "Bapt Eash",
+      "avatar_template": "/user_avatar/community.signalusers.org/bapteash/{size}/52101_2.png"
+    }
+  },
+  "bookmarks": []
+}

@@ -1,0 +1,440 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 258214,
+        "name": "Tam",
+        "username": "Tamnon",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/t/90ced4/{size}.png",
+        "created_at": "2025-01-04T04:39:03.618Z",
+        "cooked": "<p>When voice messaging it would be nice to be able to pause the voice message I am currently making and be able to resume making the voice message without having to send one message and create a new one. Though I will say, I absolutely LOVE that I can minimize the conversation while listening to a voice message so I can view other things on my phone while still hearing the message.</p>\n<p>Also, I have found that when my proximity sensor gets covered, my screen goes black and stops any voice message I’m listening to. It won’t pause the message I’m listening to, so when I click to play the message I have to try and find where I left off in the voice message, which is frustrating. This also makes it so when I start listening to the message again, the volume is lowered significantly and I have to back out of the conversation, then go back in the conversation, click on the voice message I was listening to again, and then find where I left off in the message. Again, very frustrating.</p>\n<p>Another thing is, when initially trying to start a voice message, the act of having to hold down the mic and flick it upwards to be hands free is frustrating. It would be more user friendly to have just a one push mic button that stays on without having to hold it down throughout the entire time making the voice message or holding down and flicking upwards to lock it so it can be hands free.</p>\n<p>I do hope you take this feedback into consideration, as I know myself and my friends and family have these same concerns. And maybe others on your app do too.</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2025-01-04T13:11:19.681Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 45,
+        "readers_count": 44,
+        "score": 14.0,
+        "yours": false,
+        "topic_id": 65840,
+        "topic_slug": "feature-requests-for-all-phones",
+        "display_username": "Tam",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 2,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "",
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 31200,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/feature-requests-for-all-phones/65840/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      },
+      {
+        "id": 258218,
+        "name": "",
+        "username": "Herohtar",
+        "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+        "created_at": "2025-01-04T07:37:14.164Z",
+        "cooked": "<p>Feature requests should be one per topic, and these are still distinct enough to warrant that despite being related to the same thing. Also, at least one of these requests already exists and so is a duplicate:</p><aside class=\"quote\" data-post=\"1\" data-topic=\"3357\">\n  <div class=\"title\">\n    <div class=\"quote-controls\"></div>\n    <img loading=\"lazy\" alt=\"\" width=\"24\" height=\"24\" src=\"https://community.signalusers.org/letter_avatar_proxy/v4/letter/z/50afbb/48.png\" class=\"avatar\">\n    <a href=\"https://community.signalusers.org/t/pause-while-recording-voice-message/3357\">Pause while recording voice message</a> <a class=\"badge-category__wrapper \" href=\"/c/feature-requests/17\"><span data-category-id=\"17\" style=\"--category-badge-color: #83B72A; --category-badge-text-color: #FFFFFF;\" data-drop-close=\"true\" class=\"badge-category \" title=\"Post your ideas here for new features and functionality for the Signal app.\"><span class=\"badge-category__name\">Feature Requests</span></span></a>\n  </div>\n  <blockquote>\n    When using voice messages to communicate, the speaker may often have to think for a few seconds, thus creating silence. But this silence has no use for the listener. \nIt would be useful if Signal offered a way to pause the recording and then continue it. For example, while holding down the mic button, swipe it up to pause, then swipe it back down to continue (similar to swiping it left to cancel).\n  </blockquote>\n</aside>\n",
+        "post_number": 2,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2025-01-04T07:37:14.164Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 38,
+        "readers_count": 37,
+        "score": 22.6,
+        "yours": false,
+        "topic_id": 65840,
+        "topic_slug": "feature-requests-for-all-phones",
+        "display_username": "",
+        "primary_group_name": "volunteer_moderators",
+        "flair_name": "volunteer_moderators",
+        "flair_url": "shield-halved",
+        "flair_bg_color": "1d8663",
+        "flair_color": "fff",
+        "flair_group_id": 41,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://community.signalusers.org/t/pause-while-recording-voice-message/3357",
+            "internal": true,
+            "reflection": false,
+            "title": "Pause while recording voice message",
+            "clicks": 0
+          }
+        ],
+        "read": true,
+        "user_title": "Volunteer Moderator",
+        "title_is_group": true,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 1
+          }
+        ],
+        "moderator": true,
+        "admin": false,
+        "staff": true,
+        "user_id": 2521,
+        "hidden": false,
+        "trust_level": 4,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/feature-requests-for-all-phones/65840/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      }
+    ],
+    "stream": [
+      258214,
+      258218
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      407
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Store transit cards on Signal",
+      "id": 72839,
+      "title": "Store transit cards on Signal",
+      "slug": "store-transit-cards-on-signal",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": null,
+      "created_at": "2025-11-11T14:24:15.475Z",
+      "last_posted_at": "2025-11-11T18:10:08.117Z",
+      "bumped": true,
+      "bumped_at": "2025-11-11T18:10:08.117Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 2,
+      "views": 76,
+      "category_id": 17,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 34778,
+            "username": "Archit.01",
+            "name": "Archit",
+            "avatar_template": "/user_avatar/community.signalusers.org/archit.01/{size}/54600_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 10172,
+            "username": "TheCircle",
+            "name": "[Android and Windows Beta]",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/t/f475e1/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Create the option to tie chat folders to notification profiles",
+      "id": 72586,
+      "title": "Create the option to tie chat folders to notification profiles",
+      "slug": "create-the-option-to-tie-chat-folders-to-notification-profiles",
+      "posts_count": 3,
+      "reply_count": 0,
+      "highest_post_number": 3,
+      "image_url": null,
+      "created_at": "2025-10-31T10:47:44.296Z",
+      "last_posted_at": "2025-11-21T07:33:41.382Z",
+      "bumped": true,
+      "bumped_at": "2025-11-21T07:33:41.382Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 2,
+      "views": 93,
+      "category_id": 17,
+      "featured_link": null,
+      "op_like_count": 2,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 34390,
+            "username": "Overjoyed5658",
+            "name": null,
+            "avatar_template": "/user_avatar/community.signalusers.org/overjoyed5658/{size}/54119_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Expiring messages at specified date/time",
+      "id": 72080,
+      "title": "Expiring messages at specified date/time",
+      "slug": "expiring-messages-at-specified-date-time",
+      "posts_count": 3,
+      "reply_count": 0,
+      "highest_post_number": 3,
+      "image_url": null,
+      "created_at": "2025-10-06T22:44:09.319Z",
+      "last_posted_at": "2025-10-09T23:18:02.617Z",
+      "bumped": true,
+      "bumped_at": "2025-10-09T23:18:02.617Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 4,
+      "views": 96,
+      "category_id": 17,
+      "featured_link": null,
+      "op_like_count": 3,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 34383,
+            "username": "ikpl1",
+            "name": "Ikpl",
+            "avatar_template": "/user_avatar/community.signalusers.org/ikpl1/{size}/54110_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 11128,
+            "username": "chiwaijm",
+            "name": "Jeffrey",
+            "avatar_template": "/user_avatar/community.signalusers.org/chiwaijm/{size}/54624_2.png",
+            "trust_level": 3
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Feature requests for all phones",
+  "id": 65840,
+  "title": "Feature requests for all phones",
+  "posts_count": 2,
+  "created_at": "2025-01-04T04:39:03.561Z",
+  "views": 102,
+  "reply_count": 0,
+  "like_count": 1,
+  "last_posted_at": "2025-01-04T07:37:14.164Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "feature-requests-for-all-phones",
+  "category_id": 17,
+  "word_count": 343,
+  "deleted_at": null,
+  "user_id": 31200,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_65840",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 2,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 2,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 2521,
+        "username": "Herohtar",
+        "name": "",
+        "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+        "post_count": 1,
+        "primary_group_name": "volunteer_moderators",
+        "flair_name": "volunteer_moderators",
+        "flair_url": "shield-halved",
+        "flair_color": "fff",
+        "flair_bg_color": "1d8663",
+        "flair_group_id": 41,
+        "moderator": true,
+        "trust_level": 4
+      },
+      {
+        "id": 31200,
+        "username": "Tamnon",
+        "name": "Tam",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/t/90ced4/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 0
+      }
+    ],
+    "created_by": {
+      "id": 31200,
+      "username": "Tamnon",
+      "name": "Tam",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/t/90ced4/{size}.png"
+    },
+    "last_poster": {
+      "id": 2521,
+      "username": "Herohtar",
+      "name": "",
+      "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png"
+    }
+  },
+  "bookmarks": []
+}

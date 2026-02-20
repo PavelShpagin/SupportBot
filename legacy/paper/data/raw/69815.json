@@ -1,0 +1,420 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 269993,
+        "name": "",
+        "username": "mintdaniel42",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/m/dc4da7/{size}.png",
+        "created_at": "2025-06-18T15:33:24.170Z",
+        "cooked": "<p>I left a group chat and tried to delete it on my phone but that didn’t work so I deleted it on my PC. After that the app remained responsible but when entering a chat it didn’t show any messages. I couldn’t even create a debug log until now. Somehow it now works again but the app was unusable for a few minutes</p>\n<p><a href=\"https://debuglogs.org/android/7.45.2/7f37aad44c130894dff20032d678188c1a45657c7e8b3fde6dc58af2bb807e90\" class=\"onebox\" target=\"_blank\" rel=\"noopener nofollow ugc\">https://debuglogs.org/android/7.45.2/7f37aad44c130894dff20032d678188c1a45657c7e8b3fde6dc58af2bb807e90</a></p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2025-06-18T15:33:59.071Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 20,
+        "readers_count": 19,
+        "score": 9.0,
+        "yours": false,
+        "topic_id": 69815,
+        "topic_slug": "deleting-groups-im-no-longer-in-causes-the-app-to-crash",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://debuglogs.org/android/7.45.2/7f37aad44c130894dff20032d678188c1a45657c7e8b3fde6dc58af2bb807e90",
+            "internal": false,
+            "reflection": false,
+            "clicks": 2
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 21553,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/deleting-groups-im-no-longer-in-causes-the-app-to-crash/69815/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      269993
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      241
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Missing button to transfer from other device",
+      "id": 72732,
+      "title": "Missing button to transfer from other device",
+      "slug": "missing-button-to-transfer-from-other-device",
+      "posts_count": 3,
+      "reply_count": 0,
+      "highest_post_number": 3,
+      "image_url": null,
+      "created_at": "2025-11-06T17:14:38.441Z",
+      "last_posted_at": "2025-11-16T14:56:30.734Z",
+      "bumped": true,
+      "bumped_at": "2025-11-16T14:56:30.734Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 1,
+      "views": 68,
+      "category_id": 11,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 34721,
+            "username": "mlauritsen",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/m/65b543/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 34830,
+            "username": "is234",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/i/e95f7d/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 1445,
+            "username": "userx404",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/userx404/{size}/4706_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Signal crashes when I open settings",
+      "id": 68048,
+      "title": "Signal crashes when I open settings",
+      "slug": "signal-crashes-when-i-open-settings",
+      "posts_count": 11,
+      "reply_count": 3,
+      "highest_post_number": 11,
+      "image_url": null,
+      "created_at": "2025-03-27T23:08:02.407Z",
+      "last_posted_at": "2025-04-19T12:53:14.493Z",
+      "bumped": true,
+      "bumped_at": "2025-04-19T12:53:14.493Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 98,
+      "category_id": 11,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": true,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster, Accepted Answer",
+          "user": {
+            "id": 32342,
+            "username": "cbttub4j",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/c/439d5e/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 1499,
+            "username": "CueHD",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/cuehd/{size}/42510_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 32592,
+            "username": "bjoernvh",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/bjoernvh/{size}/51816_2.png",
+            "trust_level": 0
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Contacts gone after reinstallation",
+      "id": 67595,
+      "title": "Contacts gone after reinstallation",
+      "slug": "contacts-gone-after-reinstallation",
+      "posts_count": 5,
+      "reply_count": 2,
+      "highest_post_number": 5,
+      "image_url": null,
+      "created_at": "2025-03-11T11:53:48.025Z",
+      "last_posted_at": "2025-03-27T23:17:56.398Z",
+      "bumped": true,
+      "bumped_at": "2025-03-27T23:17:56.398Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 87,
+      "category_id": 11,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 29201,
+            "username": "SIGUSR",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/sigusr/{size}/48677_2.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 6659,
+            "username": "Whatnoww",
+            "name": "Whatnoww",
+            "avatar_template": "/user_avatar/community.signalusers.org/whatnoww/{size}/54328_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 2521,
+            "username": "Herohtar",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+            "primary_group_name": "volunteer_moderators",
+            "flair_name": "volunteer_moderators",
+            "flair_url": "shield-halved",
+            "flair_bg_color": "1d8663",
+            "flair_color": "fff",
+            "flair_group_id": 41,
+            "moderator": true,
+            "trust_level": 4
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Deleting groups I&rsquo;m no longer in causes the app to crash",
+  "id": 69815,
+  "title": "Deleting groups I'm no longer in causes the app to crash",
+  "posts_count": 1,
+  "created_at": "2025-06-18T15:33:24.110Z",
+  "views": 40,
+  "reply_count": 0,
+  "like_count": 0,
+  "last_posted_at": "2025-06-18T15:33:24.170Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "deleting-groups-im-no-longer-in-causes-the-app-to-crash",
+  "category_id": 11,
+  "word_count": 74,
+  "deleted_at": null,
+  "user_id": 21553,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_69815",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 21553,
+        "username": "mintdaniel42",
+        "name": "",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/m/dc4da7/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      }
+    ],
+    "created_by": {
+      "id": 21553,
+      "username": "mintdaniel42",
+      "name": "",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/m/dc4da7/{size}.png"
+    },
+    "last_poster": {
+      "id": 21553,
+      "username": "mintdaniel42",
+      "name": "",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/m/dc4da7/{size}.png"
+    },
+    "links": [
+      {
+        "url": "https://debuglogs.org/android/7.45.2/7f37aad44c130894dff20032d678188c1a45657c7e8b3fde6dc58af2bb807e90",
+        "title": null,
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 2,
+        "user_id": 21553,
+        "domain": "debuglogs.org",
+        "root_domain": "debuglogs.org"
+      }
+    ]
+  },
+  "bookmarks": []
+}

@@ -1,0 +1,331 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 255059,
+        "name": "Joe B",
+        "username": "joebohnader",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/j/48db29/{size}.png",
+        "created_at": "2024-11-07T19:17:48.571Z",
+        "cooked": "<p>I wish to have the ability to turn off update notifications.</p>\n<p>Currently update messages are distractive in their frequency. Happening too often and are positioned into a prime location, in the top of my chats (MacOS). Distracting attention from the main purpose, communication.</p>\n<p>Since updates are happening very very frequently and bringing tiny tiny improvements for me updating over and over and over again to see no benefit has no point. No security updates arrived recently as far as I seen. Those should have priority, but this way washed together with very marginal ones, I assume, seen no distinction in the past 1-2 month I am using it - and did not investigate in depth, I am just a user not diagnostician. The frequent messaging of non-critical updates are distracting from using the software in peace. Especially when I am quite satisfied with the features already being there, fulfill my needs, don’t need new ones.</p>\n<p>Please, make it possible to ignore this thick stream of tiny feature addition.</p>\n<p>Optionally you may have a package of updates from time to time, like every couple of months or so, disconnecting us lowly users from your top notch develpment cycle internals (CD I assume), seeing update messages for a group of improvements instead of lonely or two or so small increments.</p>\n<p>Other option is to disconnect the critical updates from tiny incremental updates, show those in the prime location, and let users decide if they want and need the incemental small feature additions and modifications righ now and fast-fast!</p>\n<p>All updates bring in the risk of defects, and now there is a high number of small chances for this. Right now after a previous update I lost the ability of communicating with my most important contact I want to keep in touch. May be unrelated, but bothersome and update is a strong suspect. (I have no time dig in to diagnose, solving my needs elsewhere for now)</p>\n<p>Thanks for the consideration.</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2024-11-07T19:17:48.571Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 29,
+        "readers_count": 28,
+        "score": 10.8,
+        "yours": false,
+        "topic_id": 64728,
+        "topic_slug": "enable-turning-off-update-messages",
+        "display_username": "Joe B",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 30658,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/enable-turning-off-update-messages/64728/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      255059
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      464
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Clear locally stored gifs",
+      "id": 71972,
+      "title": "Clear locally stored gifs",
+      "slug": "clear-locally-stored-gifs",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2025-10-01T14:29:04.612Z",
+      "last_posted_at": "2025-10-01T14:29:04.729Z",
+      "bumped": true,
+      "bumped_at": "2025-10-01T14:29:04.729Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 4,
+      "views": 58,
+      "category_id": 20,
+      "featured_link": null,
+      "op_like_count": 4,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 34323,
+            "username": "Trefa1998",
+            "name": "Trefa1998",
+            "avatar_template": "/user_avatar/community.signalusers.org/trefa1998/{size}/54034_2.png",
+            "trust_level": 0
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Low Latency Video Sharing",
+      "id": 67864,
+      "title": "Low Latency Video Sharing",
+      "slug": "low-latency-video-sharing",
+      "posts_count": 4,
+      "reply_count": 1,
+      "highest_post_number": 4,
+      "image_url": null,
+      "created_at": "2025-03-22T01:35:09.186Z",
+      "last_posted_at": "2025-04-18T00:01:02.743Z",
+      "bumped": true,
+      "bumped_at": "2025-04-18T00:01:02.743Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 5,
+      "views": 168,
+      "category_id": 20,
+      "featured_link": null,
+      "op_like_count": 3,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 27607,
+            "username": "Dark_Arc",
+            "name": "Wyatt Childers",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/53a042/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31728,
+            "username": "Megan",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/megan/{size}/50954_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 32624,
+            "username": "april83c",
+            "name": "April",
+            "avatar_template": "/user_avatar/community.signalusers.org/april83c/{size}/51861_2.png",
+            "trust_level": 1
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Follow Through on Database Crypto Key",
+      "id": 67084,
+      "title": "Follow Through on Database Crypto Key",
+      "slug": "follow-through-on-database-crypto-key",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2025-02-21T16:02:59.951Z",
+      "last_posted_at": "2025-02-21T16:02:59.998Z",
+      "bumped": true,
+      "bumped_at": "2025-02-21T16:27:35.113Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 3,
+      "views": 91,
+      "category_id": 20,
+      "featured_link": null,
+      "op_like_count": 3,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 31855,
+            "username": "outerhavenphoenix",
+            "name": "OHPhoenix",
+            "avatar_template": "/user_avatar/community.signalusers.org/outerhavenphoenix/{size}/50873_2.png",
+            "trust_level": 0
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Enable turning off update messages",
+  "id": 64728,
+  "title": "Enable turning off update messages",
+  "posts_count": 1,
+  "created_at": "2024-11-07T19:17:48.525Z",
+  "views": 58,
+  "reply_count": 0,
+  "like_count": 0,
+  "last_posted_at": "2024-11-07T19:17:48.571Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "enable-turning-off-update-messages",
+  "category_id": 20,
+  "word_count": 331,
+  "deleted_at": null,
+  "user_id": 30658,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_64728",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 30658,
+        "username": "joebohnader",
+        "name": "Joe B",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/j/48db29/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 0
+      }
+    ],
+    "created_by": {
+      "id": 30658,
+      "username": "joebohnader",
+      "name": "Joe B",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/j/48db29/{size}.png"
+    },
+    "last_poster": {
+      "id": 30658,
+      "username": "joebohnader",
+      "name": "Joe B",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/j/48db29/{size}.png"
+    }
+  },
+  "bookmarks": []
+}

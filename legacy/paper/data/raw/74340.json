@@ -1,0 +1,342 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 283084,
+        "name": null,
+        "username": "swisig2-1",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/s/e47c2d/{size}.png",
+        "created_at": "2026-01-19T21:04:36.323Z",
+        "cooked": "<p>Hi all,</p>\n<p>Coming for practical advice:</p>\n<p>I have 2 Android phones A and B, each one with a distinct Signal account associated with a separate telephone number: A-tel1, B-tel2, different UserNames and different Verification Codes. Presently, A-tel1 is the primary, most used Signal phone; only A-tel1 has On-device backups (with associated multi-digit code)</p>\n<p>The telephone contract/number tel1 in phone A will be terminated and therefore the associated Signal account will cease to exist as such.</p>\n<p>The telephone contract/number tel2 will continue to exist but the associated Signal account will be moved from phone B to phone A. (Phone B will only be kept as reserve machine, without a Signal account). Is it possible to preserve the (originally A-tel1) On-device backups (either left on phone A or moved to a different storage medium) <em>and associate them</em> with tel2 (formerly on phone B, now on phone A with tel2 newly associated with a Signal account)?</p>\n<p>What of these projected undertakings are at all achievable and in what step-by-step order?</p>\n<p>Thanks for any advice, pointers, instructions.</p>\n<p>swig</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2026-01-19T21:04:36.323Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 17,
+        "readers_count": 16,
+        "score": 8.4,
+        "yours": false,
+        "topic_id": 74340,
+        "topic_slug": "from-2-signal-accounts-to-1-and-from-2-phones-to-1",
+        "display_username": null,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 35578,
+        "hidden": false,
+        "trust_level": 1,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/from-2-signal-accounts-to-1-and-from-2-phones-to-1/74340/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      283084
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      26
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Open and import Problem",
+      "id": 73684,
+      "title": "Open and import Problem",
+      "slug": "open-and-import-problem",
+      "posts_count": 4,
+      "reply_count": 1,
+      "highest_post_number": 4,
+      "image_url": null,
+      "created_at": "2025-12-18T18:03:49.170Z",
+      "last_posted_at": "2026-01-06T13:56:08.629Z",
+      "bumped": true,
+      "bumped_at": "2026-01-06T13:56:08.629Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 47,
+      "category_id": 11,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 35241,
+            "username": "jack99",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/j/ac91a4/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "I have an outdated phone (Android 12) but signal is still being updated",
+      "id": 73505,
+      "title": "I have an outdated phone (Android 12) but signal is still being updated",
+      "slug": "i-have-an-outdated-phone-android-12-but-signal-is-still-being-updated",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2025-12-10T18:46:18.847Z",
+      "last_posted_at": "2025-12-10T18:46:18.930Z",
+      "bumped": true,
+      "bumped_at": "2025-12-10T18:59:16.226Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 66,
+      "category_id": 11,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 35141,
+            "username": "mobex",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/m/5f9b8f/{size}.png",
+            "trust_level": 0
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Disable auto-update",
+      "id": 72837,
+      "title": "Disable auto-update",
+      "slug": "disable-auto-update",
+      "posts_count": 9,
+      "reply_count": 2,
+      "highest_post_number": 9,
+      "image_url": null,
+      "created_at": "2025-11-11T14:24:06.949Z",
+      "last_posted_at": "2025-11-19T16:01:20.371Z",
+      "bumped": true,
+      "bumped_at": "2025-11-19T16:01:20.371Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 11,
+      "views": 101,
+      "category_id": 11,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 34779,
+            "username": "TheGrave",
+            "name": "TheGrave",
+            "avatar_template": "/user_avatar/community.signalusers.org/thegrave/{size}/54601_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 17396,
+            "username": "anon88132",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/a/ba9def/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "From 2 Signal Accounts to 1 (and from 2 phones to 1)",
+  "id": 74340,
+  "title": "From 2 Signal Accounts to 1 (and from 2 phones to 1)",
+  "posts_count": 1,
+  "created_at": "2026-01-19T21:04:36.216Z",
+  "views": 27,
+  "reply_count": 0,
+  "like_count": 0,
+  "last_posted_at": "2026-01-19T21:04:36.323Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "from-2-signal-accounts-to-1-and-from-2-phones-to-1",
+  "category_id": 11,
+  "word_count": 186,
+  "deleted_at": null,
+  "user_id": 35578,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_74340",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 35578,
+        "username": "swisig2-1",
+        "name": null,
+        "avatar_template": "/letter_avatar_proxy/v4/letter/s/e47c2d/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 1
+      }
+    ],
+    "created_by": {
+      "id": 35578,
+      "username": "swisig2-1",
+      "name": null,
+      "avatar_template": "/letter_avatar_proxy/v4/letter/s/e47c2d/{size}.png"
+    },
+    "last_poster": {
+      "id": 35578,
+      "username": "swisig2-1",
+      "name": null,
+      "avatar_template": "/letter_avatar_proxy/v4/letter/s/e47c2d/{size}.png"
+    }
+  },
+  "bookmarks": []
+}

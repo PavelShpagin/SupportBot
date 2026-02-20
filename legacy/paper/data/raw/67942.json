@@ -1,0 +1,347 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 264184,
+        "name": "Thom Wiggers",
+        "username": "thomwiggers",
+        "avatar_template": "/user_avatar/community.signalusers.org/thomwiggers/{size}/51356_2.png",
+        "created_at": "2025-03-25T12:57:00.037Z",
+        "cooked": "<p><em>This was briefly discussed with Ehren and Rolfe at RWPQC</em></p>\n<p>When reporting a message for spam, it could be nice to briefly explain why Signal has more problems with fighting spam. For example, a brief toast message or whatever that says “Thanks for reporting spam. Because of our privacy focus, fighting spam is a little bit harder for us.”</p>\n<p>I would expect that this a) helps people accept that this might happen a bit more often on Signal compared to, say, WhatsApp and b) is a good opportunity to remind people that Signal is really trying to minimize what data it processes.</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2025-03-25T12:57:00.037Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 2,
+        "reads": 25,
+        "readers_count": 24,
+        "score": 30.0,
+        "yours": false,
+        "topic_id": 67942,
+        "topic_slug": "remind-users-about-signals-limitations-in-fighting-spam",
+        "display_username": "Thom Wiggers",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 1
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 32292,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/remind-users-about-signals-limitations-in-fighting-spam/67942/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      264184
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      326
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Changes in the User Interface",
+      "id": 70183,
+      "title": "Changes in the User Interface",
+      "slug": "changes-in-the-user-interface",
+      "posts_count": 4,
+      "reply_count": 0,
+      "highest_post_number": 4,
+      "image_url": null,
+      "created_at": "2025-07-02T22:21:45.723Z",
+      "last_posted_at": "2025-07-03T20:22:19.466Z",
+      "bumped": true,
+      "bumped_at": "2025-07-03T20:22:19.466Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 7,
+      "views": 172,
+      "category_id": 28,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 23905,
+            "username": "Yadir87",
+            "name": "Yadir",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/y/96bed5/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 58,
+            "username": "Wopfi",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/wopfi/{size}/1243_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Actions when clicking an emoji",
+      "id": 69337,
+      "title": "Actions when clicking an emoji",
+      "slug": "actions-when-clicking-an-emoji",
+      "posts_count": 4,
+      "reply_count": 1,
+      "highest_post_number": 4,
+      "image_url": null,
+      "created_at": "2025-05-23T11:59:57.517Z",
+      "last_posted_at": "2025-05-23T13:17:01.608Z",
+      "bumped": true,
+      "bumped_at": "2025-05-23T13:17:01.608Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 2,
+      "views": 62,
+      "category_id": 28,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 7446,
+            "username": "probably",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/p/cc9497/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 17396,
+            "username": "anon88132",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/a/ba9def/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 1499,
+            "username": "CueHD",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/cuehd/{size}/42510_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Options for the redpill of the conversation tab",
+      "id": 69320,
+      "title": "Options for the redpill of the conversation tab",
+      "slug": "options-for-the-redpill-of-the-conversation-tab",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2025-05-22T21:05:57.046Z",
+      "last_posted_at": "2025-05-22T21:05:57.103Z",
+      "bumped": true,
+      "bumped_at": "2025-05-22T22:27:49.544Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 63,
+      "category_id": 28,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 28686,
+            "username": "Jasmin",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/j/9de053/{size}.png",
+            "trust_level": 1
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Remind users about Signal&rsquo;s limitations in fighting spam",
+  "id": 67942,
+  "title": "Remind users about Signal's limitations in fighting spam",
+  "posts_count": 1,
+  "created_at": "2025-03-25T12:56:59.959Z",
+  "views": 59,
+  "reply_count": 0,
+  "like_count": 1,
+  "last_posted_at": "2025-03-25T12:57:00.037Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "remind-users-about-signals-limitations-in-fighting-spam",
+  "category_id": 28,
+  "word_count": 102,
+  "deleted_at": null,
+  "user_id": 32292,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_67942",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 32292,
+        "username": "thomwiggers",
+        "name": "Thom Wiggers",
+        "avatar_template": "/user_avatar/community.signalusers.org/thomwiggers/{size}/51356_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 0
+      }
+    ],
+    "created_by": {
+      "id": 32292,
+      "username": "thomwiggers",
+      "name": "Thom Wiggers",
+      "avatar_template": "/user_avatar/community.signalusers.org/thomwiggers/{size}/51356_2.png"
+    },
+    "last_poster": {
+      "id": 32292,
+      "username": "thomwiggers",
+      "name": "Thom Wiggers",
+      "avatar_template": "/user_avatar/community.signalusers.org/thomwiggers/{size}/51356_2.png"
+    }
+  },
+  "bookmarks": []
+}

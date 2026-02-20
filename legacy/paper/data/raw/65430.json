@@ -1,0 +1,309 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 257108,
+        "name": "",
+        "username": "Sonya",
+        "avatar_template": "/user_avatar/community.signalusers.org/sonya/{size}/49911_2.png",
+        "created_at": "2024-12-12T16:40:29.089Z",
+        "cooked": "<p>I am having trouble getting a local version of signal booted up.</p>\n<p>Steps taken:</p>\n<ol>\n<li>npm install</li>\n<li>npm run generate</li>\n<li>npm test (all tests pass)</li>\n<li>npm start</li>\n<li>Click ‘Set up as Standalone Device’</li>\n<li>Type in google phone number, or my phone number</li>\n<li>Opens web browser, where I must verify I am not a robot. Once I verify, a “Go to Signal” button turns blue. When I click on it, I get an error:</li>\n</ol>\n<pre data-code-wrap=\"Unable\"><code class=\"lang-Unable\">\n\nCannot find module …\\signal-hcaptcha.5fad97ac-7d06\n</code></pre>\n<p>Please let me know what I can try to get it working for me</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2024-12-12T16:40:29.089Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 5,
+        "reads": 24,
+        "readers_count": 23,
+        "score": 29.8,
+        "yours": false,
+        "topic_id": 65430,
+        "topic_slug": "locally-cant-start-up-signal-desktop-app",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 30998,
+        "hidden": false,
+        "trust_level": 1,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/locally-cant-start-up-signal-desktop-app/65430/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      257108
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      429
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "[hermitic reproducible builds] - stop mutating package.json during builds",
+      "id": 73775,
+      "title": "[hermitic reproducible builds] - stop mutating package.json during builds",
+      "slug": "hermitic-reproducible-builds-stop-mutating-package-json-during-builds",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": null,
+      "created_at": "2025-12-22T18:45:05.596Z",
+      "last_posted_at": "2025-12-22T19:18:30.883Z",
+      "bumped": true,
+      "bumped_at": "2025-12-22T19:18:30.883Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 45,
+      "category_id": 23,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 35156,
+            "username": "PaulCharlton",
+            "name": "Paul Charlton",
+            "avatar_template": "/user_avatar/community.signalusers.org/paulcharlton/{size}/55065_2.png",
+            "trust_level": 0
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Help is needed for someone who wants to join the development",
+      "id": 72905,
+      "title": "Help is needed for someone who wants to join the development",
+      "slug": "help-is-needed-for-someone-who-wants-to-join-the-development",
+      "posts_count": 3,
+      "reply_count": 1,
+      "highest_post_number": 3,
+      "image_url": null,
+      "created_at": "2025-11-14T14:49:55.091Z",
+      "last_posted_at": "2025-11-16T14:15:49.188Z",
+      "bumped": true,
+      "bumped_at": "2025-11-16T14:15:49.188Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 142,
+      "category_id": 23,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": true,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster, Accepted Answer",
+          "user": {
+            "id": 34817,
+            "username": "igorklyopov",
+            "name": "Igor Klyopov",
+            "avatar_template": "/user_avatar/community.signalusers.org/igorklyopov/{size}/54657_2.png",
+            "trust_level": 0
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Error building desktop app repo on OSX Monterrey (v12)",
+      "id": 70454,
+      "title": "Error building desktop app repo on OSX Monterrey (v12)",
+      "slug": "error-building-desktop-app-repo-on-osx-monterrey-v12",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2025-07-15T17:20:11.776Z",
+      "last_posted_at": "2025-07-15T17:20:11.828Z",
+      "bumped": true,
+      "bumped_at": "2025-07-15T17:20:11.828Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 24,
+      "category_id": 23,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 33526,
+            "username": "rtrigoso",
+            "name": "Ren",
+            "avatar_template": "/user_avatar/community.signalusers.org/rtrigoso/{size}/52963_2.png",
+            "trust_level": 0
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Locally can&rsquo;t start up Signal Desktop app",
+  "id": 65430,
+  "title": "Locally can't start up Signal Desktop app",
+  "posts_count": 1,
+  "created_at": "2024-12-12T16:40:29.028Z",
+  "views": 81,
+  "reply_count": 0,
+  "like_count": 0,
+  "last_posted_at": "2024-12-12T16:40:29.089Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "locally-cant-start-up-signal-desktop-app",
+  "category_id": 23,
+  "word_count": 115,
+  "deleted_at": null,
+  "user_id": 30998,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_65430",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 30998,
+        "username": "Sonya",
+        "name": "",
+        "avatar_template": "/user_avatar/community.signalusers.org/sonya/{size}/49911_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 1
+      }
+    ],
+    "created_by": {
+      "id": 30998,
+      "username": "Sonya",
+      "name": "",
+      "avatar_template": "/user_avatar/community.signalusers.org/sonya/{size}/49911_2.png"
+    },
+    "last_poster": {
+      "id": 30998,
+      "username": "Sonya",
+      "name": "",
+      "avatar_template": "/user_avatar/community.signalusers.org/sonya/{size}/49911_2.png"
+    }
+  },
+  "bookmarks": []
+}

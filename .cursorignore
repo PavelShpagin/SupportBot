@@ -1,0 +1,119 @@
+# ===========================================
+# CURSOR IGNORE FILE - Prevent Agent Hanging
+# ===========================================
+
+# ----- Node.js / JavaScript -----
+node_modules/
+**/node_modules/
+.next/
+**/.next/
+.nuxt/
+dist/
+build/
+.output/
+.out/
+
+# ----- Python -----
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+.venv/
+env/
+.env.local
+*.egg-info/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ----- Data & ML artifacts -----
+data/
+**/data/
+datasets/
+checkpoints/
+runs/
+wandb/
+*.onnx
+*.pt
+*.pth
+*.bin
+*.h5
+*.hdf5
+*.safetensors
+*.ckpt
+*.pkl
+*.pickle
+
+# ----- Build & Cache -----
+.cache/
+**/.cache/
+coverage/
+.coverage
+*.log
+*.lock
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# ----- Media & Binary files -----
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.mp4
+*.webm
+*.avi
+*.mov
+*.mp3
+*.wav
+*.pdf
+*.zip
+*.tar
+*.gz
+*.rar
+*.7z
+*.iso
+*.dmg
+*.exe
+*.dll
+*.so
+*.dylib
+
+# ----- Docker volumes & Signal data -----
+signal-bot/data/
+signal-desktop/data/
+**/signal-data/
+
+# ----- IDE & Editor -----
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# ----- Git -----
+.git/
+
+# ----- Environment files -----
+.env
+.env.*
+!.env.example
+!env.example
+
+# ----- Project-specific large directories -----
+instructions/node_modules/
+instructions/.next/
+paper/
+*.xwd
+
+# ----- Temp files -----
+*.tmp
+*.temp
+*.bak
+tmp/
+temp/

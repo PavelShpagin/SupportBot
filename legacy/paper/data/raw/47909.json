@@ -1,0 +1,675 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 192359,
+        "name": "",
+        "username": "devnull42",
+        "avatar_template": "/user_avatar/community.signalusers.org/devnull42/{size}/33491_2.png",
+        "created_at": "2022-10-11T14:40:31.790Z",
+        "cooked": "<p>Usually I have notifications turned off on my phone, because most messages I receive are not urgent and I don’t want to know about them until I check my phone in the evening or whenever.<br>\nBut of course every now and then there are messages that are in some sense time critical and therefore may not be answered in time by this strategy.<br>\nI wish there was an option for a sender of a message to set a hint that a message is time critical. And that the receiver could optionally configure (globally and possibly per contact) custom notification settings for messages with such a hint.</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 4,
+        "updated_at": "2022-10-11T14:40:31.790Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 4,
+        "reads": 80,
+        "readers_count": 79,
+        "score": 96.0,
+        "yours": false,
+        "topic_id": 47909,
+        "topic_slug": "urgency-hints-for-messages",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://community.signalusers.org/t/priority-messages-for-1-1-chats-with-mentions/70614/2",
+            "internal": true,
+            "reflection": true,
+            "title": "Priority messages for 1:1 chats with @mentions",
+            "clicks": 0
+          },
+          {
+            "url": "https://community.signalusers.org/t/add-message-specific-properties-for-granular-control-over-individual-messages/70684",
+            "internal": true,
+            "reflection": true,
+            "title": "Add message-specific properties for granular control over individual messages",
+            "clicks": 0
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 4
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 22527,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/urgency-hints-for-messages/47909/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      },
+      {
+        "id": 192365,
+        "name": "",
+        "username": "Herohtar",
+        "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+        "created_at": "2022-10-11T15:01:08.434Z",
+        "cooked": "<p>I feel like this has been requested before, but didn’t immediately find the duplicate. However, here is a similar topic:</p><aside class=\"quote\" data-post=\"1\" data-topic=\"2532\">\n  <div class=\"title\">\n    <div class=\"quote-controls\"></div>\n    <img loading=\"lazy\" alt=\"\" width=\"24\" height=\"24\" src=\"https://community.signalusers.org/user_avatar/community.signalusers.org/don42/48/1022_2.png\" class=\"avatar\">\n    <a href=\"https://community.signalusers.org/t/silent-low-priority-messages-to-avoid-disturbing-the-receiver-silent-messages/2532\">Silent, low priority messages to avoid disturbing the receiver (Silent messages)</a> <a class=\"badge-category__wrapper \" href=\"/c/feature-requests/17\"><span data-category-id=\"17\" style=\"--category-badge-color: #83B72A; --category-badge-text-color: #FFFFFF;\" data-drop-close=\"true\" class=\"badge-category \" title=\"Post your ideas here for new features and functionality for the Signal app.\"><span class=\"badge-category__name\">Feature Requests</span></span></a>\n  </div>\n  <blockquote>\n    Hi, \nSometimes I like to send messages to people who I know are busy/sleeping \nat the moment and I want to avoid disturbing them. But I still want to send \nthe message now so the can answer when they have the time to look at \ntheir phones anyway. \nI imaging a flag set on the message to mark it as low priority and the receiving \napplication could then decide only to display a notification and not play a sound or \nvibrate. \nI’m not sure if this behavior would need to be configurable. \n\ndon\n  </blockquote>\n</aside>\n\n<p>As a workaround for this, you can create a new group chat with that person and designate it for “emergency” messages and set the notifications to a different sound and/or to override Do Not Disturb, etc as desired. This works for a small number of contacts, but becomes very cumbersome if you want to make it available for more contacts/everyone.</p>",
+        "post_number": 2,
+        "post_type": 1,
+        "posts_count": 4,
+        "updated_at": "2022-10-11T15:01:08.434Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 7,
+        "reads": 79,
+        "readers_count": 78,
+        "score": 140.8,
+        "yours": false,
+        "topic_id": 47909,
+        "topic_slug": "urgency-hints-for-messages",
+        "display_username": "",
+        "primary_group_name": "volunteer_moderators",
+        "flair_name": "volunteer_moderators",
+        "flair_url": "shield-halved",
+        "flair_bg_color": "1d8663",
+        "flair_color": "fff",
+        "flair_group_id": 41,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://community.signalusers.org/t/silent-low-priority-messages-to-avoid-disturbing-the-receiver-silent-messages/2532",
+            "internal": true,
+            "reflection": false,
+            "title": "Silent, low priority messages to avoid disturbing the receiver (Silent messages)",
+            "clicks": 0
+          }
+        ],
+        "read": true,
+        "user_title": "Volunteer Moderator",
+        "title_is_group": true,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 4
+          }
+        ],
+        "moderator": true,
+        "admin": false,
+        "staff": true,
+        "user_id": 2521,
+        "hidden": false,
+        "trust_level": 4,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/urgency-hints-for-messages/47909/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 193076,
+        "name": "",
+        "username": "devnull42",
+        "avatar_template": "/user_avatar/community.signalusers.org/devnull42/{size}/33491_2.png",
+        "created_at": "2022-10-13T15:47:55.137Z",
+        "cooked": "<p>Thanks for linking that thread. It’s indeed similar and I mentioned my use case over there.</p>\n<p>Just a little side note here: I noticed that the notification profiles feature supports showing notifications only if the message contains <span class=\"mention\">@mentions</span>. So basically the use case I mentioned could be easily covered by just allowing <span class=\"mention\">@mentions</span> in normal (non-group) chats.</p>",
+        "post_number": 4,
+        "post_type": 1,
+        "posts_count": 4,
+        "updated_at": "2022-10-13T16:32:34.312Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 46,
+        "readers_count": 45,
+        "score": 54.2,
+        "yours": false,
+        "topic_id": 47909,
+        "topic_slug": "urgency-hints-for-messages",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 2,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 3
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 22527,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": "A post was merged in by Herohtar",
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/urgency-hints-for-messages/47909/4",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 272476,
+        "name": "Aashutosh",
+        "username": "oahshtsua",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/o/e79b87/{size}.png",
+        "created_at": "2025-07-24T17:02:56.758Z",
+        "cooked": "<p>I use notification profiles with Signal to only allow notifications at specific time window during the day. This helps me stay focused and only be bothered by notifications when I’m not busy and during the time of my choosing.</p>\n<p>However, there are times when messages have higher priority than usual. For group chats, we have <span class=\"mention\">@mentions</span>, which work great for this since there is an option to add exceptions for calls and for @ mentions. However, this is not possible for 1:1 chats.</p>\n<p>Currently, my solution to this has been to inform my contacts to just call me in case of urgent messages. However, calling can get inconvenient at times because there are situations where I can’t pick up a call and also when communicating with family and friends that live in different timezones. While you can just call so that they get a notification and then send the actual message as a regular chat message, I fell like it would be better to have a dedicated feature for this.</p>\n<p>My proposed solution for this is to have @ mentions be available for 1:1 chats. Since they are already implemented for groups and have an exception option already in notification profiles, adding this feature should not require as much of a change.</p>\n<p>Thanks.</p>",
+        "post_number": 5,
+        "post_type": 1,
+        "posts_count": 4,
+        "updated_at": "2025-07-24T18:17:39.092Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 4,
+        "reads": 23,
+        "readers_count": 22,
+        "score": 54.6,
+        "yours": false,
+        "topic_id": 47909,
+        "topic_slug": "urgency-hints-for-messages",
+        "display_username": "Aashutosh",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 2
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 33583,
+        "hidden": false,
+        "trust_level": 1,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/urgency-hints-for-messages/47909/5",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      }
+    ],
+    "stream": [
+      192359,
+      192365,
+      193076,
+      272476
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      1222
+    ],
+    [
+      3,
+      1220
+    ],
+    [
+      4,
+      205
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Public SHA-256 signing certs on website/socials",
+      "id": 73656,
+      "title": "Public SHA-256 signing certs on website/socials",
+      "slug": "public-sha-256-signing-certs-on-website-socials",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": null,
+      "created_at": "2025-12-17T14:36:00.649Z",
+      "last_posted_at": "2025-12-17T14:59:13.867Z",
+      "bumped": true,
+      "bumped_at": "2025-12-17T15:58:11.292Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 4,
+      "views": 67,
+      "category_id": 18,
+      "featured_link": null,
+      "op_like_count": 2,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 35219,
+            "username": "nmbrtr10",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/n/848f3c/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Don&rsquo;t show toast when URI is copied",
+      "id": 72147,
+      "title": "Don't show toast when URI is copied",
+      "slug": "dont-show-toast-when-uri-is-copied",
+      "posts_count": 10,
+      "reply_count": 4,
+      "highest_post_number": 10,
+      "image_url": null,
+      "created_at": "2025-10-10T02:50:07.353Z",
+      "last_posted_at": "2025-10-11T08:14:19.559Z",
+      "bumped": true,
+      "bumped_at": "2025-10-11T08:14:19.559Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 3,
+      "views": 128,
+      "category_id": 18,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 34198,
+            "username": "leoheitmannruiz",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/l/ac91a4/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 2521,
+            "username": "Herohtar",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+            "primary_group_name": "volunteer_moderators",
+            "flair_name": "volunteer_moderators",
+            "flair_url": "shield-halved",
+            "flair_bg_color": "1d8663",
+            "flair_color": "fff",
+            "flair_group_id": 41,
+            "moderator": true,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 11128,
+            "username": "chiwaijm",
+            "name": "Jeffrey",
+            "avatar_template": "/user_avatar/community.signalusers.org/chiwaijm/{size}/54624_2.png",
+            "trust_level": 3
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Don&rsquo;t synchronize messages from different devices",
+      "id": 67430,
+      "title": "Don't synchronize messages from different devices",
+      "slug": "dont-synchronize-messages-from-different-devices",
+      "posts_count": 6,
+      "reply_count": 0,
+      "highest_post_number": 6,
+      "image_url": null,
+      "created_at": "2025-03-05T05:42:36.282Z",
+      "last_posted_at": "2025-04-18T09:30:19.217Z",
+      "bumped": true,
+      "bumped_at": "2025-04-18T09:30:19.217Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 7,
+      "views": 241,
+      "category_id": 18,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 29073,
+            "username": "RADAR",
+            "name": "Radar",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/r/d9b06d/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31728,
+            "username": "Megan",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/megan/{size}/50954_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 1499,
+            "username": "CueHD",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/cuehd/{size}/42510_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 32628,
+            "username": "DrewEA",
+            "name": "Drew Easton",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/e495f1/{size}.png",
+            "trust_level": 0
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Urgency hints for messages",
+  "id": 47909,
+  "title": "Urgency hints for messages",
+  "posts_count": 4,
+  "created_at": "2022-10-11T14:40:31.662Z",
+  "views": 423,
+  "reply_count": 1,
+  "like_count": 13,
+  "last_posted_at": "2025-07-24T17:02:56.758Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "urgency-hints-for-messages",
+  "category_id": 18,
+  "word_count": 483,
+  "deleted_at": null,
+  "user_id": 22527,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_47909",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 5,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 3,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 22527,
+        "username": "devnull42",
+        "name": "",
+        "avatar_template": "/user_avatar/community.signalusers.org/devnull42/{size}/33491_2.png",
+        "post_count": 2,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 0
+      },
+      {
+        "id": 2521,
+        "username": "Herohtar",
+        "name": "",
+        "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+        "post_count": 1,
+        "primary_group_name": "volunteer_moderators",
+        "flair_name": "volunteer_moderators",
+        "flair_url": "shield-halved",
+        "flair_color": "fff",
+        "flair_bg_color": "1d8663",
+        "flair_group_id": 41,
+        "moderator": true,
+        "trust_level": 4
+      },
+      {
+        "id": 33583,
+        "username": "oahshtsua",
+        "name": "Aashutosh",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/o/e79b87/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 1
+      }
+    ],
+    "created_by": {
+      "id": 22527,
+      "username": "devnull42",
+      "name": "",
+      "avatar_template": "/user_avatar/community.signalusers.org/devnull42/{size}/33491_2.png"
+    },
+    "last_poster": {
+      "id": 33583,
+      "username": "oahshtsua",
+      "name": "Aashutosh",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/o/e79b87/{size}.png"
+    }
+  },
+  "bookmarks": []
+}

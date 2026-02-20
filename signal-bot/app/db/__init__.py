@@ -72,6 +72,8 @@ if DB_BACKEND == "mysql":
         get_group_docs,
         wipe_all_data,
         delete_all_group_data,
+        clear_group_runtime_data,
+        get_all_active_case_ids,
     )
     
     def create_db(settings):

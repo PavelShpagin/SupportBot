@@ -1,0 +1,447 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 274128,
+        "name": null,
+        "username": "Cooder",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/c/2acd7d/{size}.png",
+        "created_at": "2025-08-27T17:05:26.981Z",
+        "cooked": "<p>Ich habe ein neues Samsung Galaxy S24 Plus.</p>\n<p>Bei meinem alten (S8+) konnte man bei ‘Kontakte’</p>\n<p>beim jeweiligen Kontakt immer ein kleines icon sehen,</p>\n<p>ob der Kontakt WhatsApp (grün) und/oder SIGNAL (blau) hat.</p>\n<p>Beim neuen Handy sehe ich nur die grünen WhatsApp icons.</p>\n<p>Gibts das für SIGNAL (nicht) mehr oder muss man da was einstellen ???</p>\n<blockquote>\n<p>I have a new Samsung Galaxy S24 Plus.</p>\n<p>On my old phone (S8+), under ‘Contacts’,</p>\n<p>you could always see a small icon for each contact, indicating</p>\n<p>whether the contact had WhatsApp (green) and/or SIGNAL (blue).</p>\n<p>On my new phone, I only see the green WhatsApp icons.</p>\n<p>Is this (no longer) available for SIGNAL, or do I have to configure something?</p>\n</blockquote>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2025-08-27T17:07:02.151Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 5,
+        "reads": 32,
+        "readers_count": 31,
+        "score": 46.4,
+        "yours": false,
+        "topic_id": 71267,
+        "topic_slug": "signal-contact-icon",
+        "display_username": null,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 2,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 1
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 33946,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/signal-contact-icon/71267/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      },
+      {
+        "id": 274138,
+        "name": null,
+        "username": "Stephan",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/s/8baadc/{size}.png",
+        "created_at": "2025-08-27T20:33:35.604Z",
+        "cooked": "<p>I think this is a problem by Samsung contact app on newer versions and  not by Signal. If I remember correctly I had the same experience when I switched from S7 to S24+. I do not have WhatsApp, but I saw icons on S7 for contact when it had a Signal and/or Threema account.</p>\n<p>On S24+ I see at least when contact has a Threema account. Not as icon but in details it shows ThreemaID as nickname and additionally as this button<br>\n<div class=\"lightbox-wrapper\"><a class=\"lightbox\" href=\"https://community.signalusers.org/uploads/db3609/original/3X/5/c/5c73b256afa2a6e1cfb9ceb42b2c6f0084850bbf.jpeg\" data-download-href=\"https://community.signalusers.org/uploads/db3609/5c73b256afa2a6e1cfb9ceb42b2c6f0084850bbf\" title=\"1000037157\"><img src=\"https://community.signalusers.org/uploads/db3609/optimized/3X/5/c/5c73b256afa2a6e1cfb9ceb42b2c6f0084850bbf_2_690x148.jpeg\" alt=\"1000037157\" data-base62-sha1=\"dbRNYX2UdbTFJ3A9ZfSEvdKgGzt\" width=\"690\" height=\"148\" srcset=\"https://community.signalusers.org/uploads/db3609/optimized/3X/5/c/5c73b256afa2a6e1cfb9ceb42b2c6f0084850bbf_2_690x148.jpeg, https://community.signalusers.org/uploads/db3609/optimized/3X/5/c/5c73b256afa2a6e1cfb9ceb42b2c6f0084850bbf_2_1035x222.jpeg 1.5x, https://community.signalusers.org/uploads/db3609/original/3X/5/c/5c73b256afa2a6e1cfb9ceb42b2c6f0084850bbf.jpeg 2x\" data-dominant-color=\"131315\"><div class=\"meta\"><svg class=\"fa d-icon d-icon-far-image svg-icon\" aria-hidden=\"true\"><use href=\"#far-image\"></use></svg><span class=\"filename\">1000037157</span><span class=\"informations\">1080×232 18 KB</span><svg class=\"fa d-icon d-icon-discourse-expand svg-icon\" aria-hidden=\"true\"><use href=\"#discourse-expand\"></use></svg></div></a></div></p>\n<p>Edit: but I think you are right: Signal’s integration into contact app seems to be different that Threema’s or in your case WhatsApp’s</p>",
+        "post_number": 2,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2025-08-27T20:42:51.804Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 2,
+        "reads": 21,
+        "readers_count": 20,
+        "score": 14.2,
+        "yours": false,
+        "topic_id": 71267,
+        "topic_slug": "signal-contact-icon",
+        "display_username": null,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 2,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 975,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/signal-contact-icon/71267/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      }
+    ],
+    "stream": [
+      274128,
+      274138
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      171
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Registration required for backups?",
+      "id": 73648,
+      "title": "Registration required for backups?",
+      "slug": "registration-required-for-backups",
+      "posts_count": 4,
+      "reply_count": 0,
+      "highest_post_number": 4,
+      "image_url": null,
+      "created_at": "2025-12-17T05:00:39.303Z",
+      "last_posted_at": "2025-12-18T21:08:23.970Z",
+      "bumped": true,
+      "bumped_at": "2025-12-18T21:08:23.970Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 108,
+      "category_id": 11,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 27953,
+            "username": "invalid_entry",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/i/7ab992/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 33355,
+            "username": "LeslieFH",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/l/a4c791/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Change phone number :x: &ldquo;Error connecting to service&rdquo;",
+      "id": 68357,
+      "title": "Change phone number ❌ \"Error connecting to service\"",
+      "slug": "change-phone-number-error-connecting-to-service",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": null,
+      "created_at": "2025-04-08T17:35:59.879Z",
+      "last_posted_at": "2025-04-09T09:15:18.274Z",
+      "bumped": true,
+      "bumped_at": "2025-04-09T09:15:18.274Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 1,
+      "views": 53,
+      "category_id": 11,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 32503,
+            "username": "Analog.S",
+            "name": "Sal",
+            "avatar_template": "/user_avatar/community.signalusers.org/analog.s/{size}/51696_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 5448,
+            "username": "DirkPitt1",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/74df32/{size}.png",
+            "trust_level": 3
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "I got asked if I wanted to save a picture to phone storage, where can I configure this?",
+      "id": 67866,
+      "title": "I got asked if I wanted to save a picture to phone storage, where can I configure this?",
+      "slug": "i-got-asked-if-i-wanted-to-save-a-picture-to-phone-storage-where-can-i-configure-this",
+      "posts_count": 3,
+      "reply_count": 0,
+      "highest_post_number": 3,
+      "image_url": null,
+      "created_at": "2025-03-22T10:26:34.136Z",
+      "last_posted_at": "2025-03-24T15:09:20.297Z",
+      "bumped": true,
+      "bumped_at": "2025-03-24T15:09:20.297Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 2,
+      "views": 85,
+      "category_id": 11,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 2170,
+            "username": "TeeJay82",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/teejay82/{size}/1806_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 2521,
+            "username": "Herohtar",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+            "primary_group_name": "volunteer_moderators",
+            "flair_name": "volunteer_moderators",
+            "flair_url": "shield-halved",
+            "flair_bg_color": "1d8663",
+            "flair_color": "fff",
+            "flair_group_id": 41,
+            "moderator": true,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 1499,
+            "username": "CueHD",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/cuehd/{size}/42510_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Signal contact icon",
+  "id": 71267,
+  "title": "Signal contact icon",
+  "posts_count": 2,
+  "created_at": "2025-08-27T17:05:26.918Z",
+  "views": 52,
+  "reply_count": 0,
+  "like_count": 1,
+  "last_posted_at": "2025-08-27T20:33:35.604Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "signal-contact-icon",
+  "category_id": 11,
+  "word_count": 231,
+  "deleted_at": null,
+  "user_id": 33946,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_71267",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 2,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 2,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 975,
+        "username": "Stephan",
+        "name": null,
+        "avatar_template": "/letter_avatar_proxy/v4/letter/s/8baadc/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      },
+      {
+        "id": 33946,
+        "username": "Cooder",
+        "name": null,
+        "avatar_template": "/letter_avatar_proxy/v4/letter/c/2acd7d/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 0
+      }
+    ],
+    "created_by": {
+      "id": 33946,
+      "username": "Cooder",
+      "name": null,
+      "avatar_template": "/letter_avatar_proxy/v4/letter/c/2acd7d/{size}.png"
+    },
+    "last_poster": {
+      "id": 975,
+      "username": "Stephan",
+      "name": null,
+      "avatar_template": "/letter_avatar_proxy/v4/letter/s/8baadc/{size}.png"
+    }
+  },
+  "bookmarks": []
+}

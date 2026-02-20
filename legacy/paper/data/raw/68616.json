@@ -1,0 +1,314 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 266407,
+        "name": "April",
+        "username": "april83c",
+        "avatar_template": "/user_avatar/community.signalusers.org/april83c/{size}/51861_2.png",
+        "created_at": "2025-04-18T00:01:21.072Z",
+        "cooked": "<p>As of the latest update which added GIF Search, this feature along with Emojis and Stickers appear to have been consolidated into one button, the Fun Picker.</p>\n<p>While I understand and somewhat agree with this decision, this is very much a matter of personal preference and I think adding an option to separate the Fun Picker back into three separate buttons next to the chat-bar (Emojis, Stickers, GIFs) would be worth considering.</p>\n<p>On platforms with less screen real-estate it wouldn’t make sense to have an option like this, but this is specifically the <em>desktop</em> client - with the extra screen space it is absolutely viable to separate the Fun Picker into 3 separate buttons if the user would prefer so.</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2025-04-18T00:01:21.072Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 3,
+        "reads": 26,
+        "readers_count": 25,
+        "score": 65.2,
+        "yours": false,
+        "topic_id": 68616,
+        "topic_slug": "option-to-separate-the-fun-picker-into-3-separate-chat-bar-buttons",
+        "display_username": "April",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 3
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 32624,
+        "hidden": false,
+        "trust_level": 1,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/option-to-separate-the-fun-picker-into-3-separate-chat-bar-buttons/68616/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      266407
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      303
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "detect if mic is muted during call and assist user to unmute",
+      "id": 74612,
+      "title": "detect if mic is muted during call and assist user to unmute",
+      "slug": "detect-if-mic-is-muted-during-call-and-assist-user-to-unmute",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2026-02-04T23:32:18.362Z",
+      "last_posted_at": "2026-02-04T23:32:18.463Z",
+      "bumped": true,
+      "bumped_at": "2026-02-04T23:32:18.463Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 34,
+      "category_id": 20,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 35771,
+            "username": "meonkeys",
+            "name": "Adam Monsen",
+            "avatar_template": "/user_avatar/community.signalusers.org/meonkeys/{size}/55839_2.png",
+            "trust_level": 0
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Chat name in window title bar",
+      "id": 73941,
+      "title": "Chat name in window title bar",
+      "slug": "chat-name-in-window-title-bar",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": null,
+      "created_at": "2026-01-01T19:05:46.567Z",
+      "last_posted_at": "2026-01-02T06:34:59.068Z",
+      "bumped": true,
+      "bumped_at": "2026-01-02T06:34:59.068Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 3,
+      "views": 69,
+      "category_id": 20,
+      "featured_link": null,
+      "op_like_count": 3,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 34476,
+            "username": "shaded",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/shaded/{size}/54687_2.png",
+            "trust_level": 3
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Automatically remove empty conversations in Signal Desktop when disappearing messages expire",
+      "id": 68600,
+      "title": "Automatically remove empty conversations in Signal Desktop when disappearing messages expire",
+      "slug": "automatically-remove-empty-conversations-in-signal-desktop-when-disappearing-messages-expire",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2025-04-17T14:51:03.797Z",
+      "last_posted_at": "2025-04-17T14:51:03.847Z",
+      "bumped": true,
+      "bumped_at": "2025-04-17T15:08:05.755Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 1,
+      "views": 49,
+      "category_id": 20,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 32614,
+            "username": "jelowroclaw",
+            "name": "Jelowroclaw",
+            "avatar_template": "/user_avatar/community.signalusers.org/jelowroclaw/{size}/51848_2.png",
+            "trust_level": 0
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Option to separate the Fun Picker into 3 separate chat-bar buttons",
+  "id": 68616,
+  "title": "Option to separate the Fun Picker into 3 separate chat-bar buttons",
+  "posts_count": 1,
+  "created_at": "2025-04-18T00:01:21.025Z",
+  "views": 51,
+  "reply_count": 0,
+  "like_count": 3,
+  "last_posted_at": "2025-04-18T00:01:21.072Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "option-to-separate-the-fun-picker-into-3-separate-chat-bar-buttons",
+  "category_id": 20,
+  "word_count": 122,
+  "deleted_at": null,
+  "user_id": 32624,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_68616",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 32624,
+        "username": "april83c",
+        "name": "April",
+        "avatar_template": "/user_avatar/community.signalusers.org/april83c/{size}/51861_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 1
+      }
+    ],
+    "created_by": {
+      "id": 32624,
+      "username": "april83c",
+      "name": "April",
+      "avatar_template": "/user_avatar/community.signalusers.org/april83c/{size}/51861_2.png"
+    },
+    "last_poster": {
+      "id": 32624,
+      "username": "april83c",
+      "name": "April",
+      "avatar_template": "/user_avatar/community.signalusers.org/april83c/{size}/51861_2.png"
+    }
+  },
+  "bookmarks": []
+}

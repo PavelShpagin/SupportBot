@@ -1,0 +1,353 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 276540,
+        "name": "",
+        "username": "timinigi",
+        "avatar_template": "/user_avatar/community.signalusers.org/timinigi/{size}/54042_2.png",
+        "created_at": "2025-10-02T16:12:32.294Z",
+        "cooked": "<p>Since macOS 26 was officially released it would be nice if it would support all icon variants for new macOS 26 including dark/transparent same as in iOS app release.</p>\n<p>Additionally it would be nice if we could choose alternative App Icon same as on iOS app.</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2025-10-02T16:12:32.294Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 2,
+        "reads": 44,
+        "readers_count": 43,
+        "score": 123.8,
+        "yours": false,
+        "topic_id": 71990,
+        "topic_slug": "macos-26-dark-transparent-logo-support",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 7
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 34333,
+        "hidden": false,
+        "trust_level": 1,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/macos-26-dark-transparent-logo-support/71990/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      276540
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      135
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Configurable &ndash;password-store",
+      "id": 74181,
+      "title": "Configurable --password-store",
+      "slug": "configurable-password-store",
+      "posts_count": 3,
+      "reply_count": 2,
+      "highest_post_number": 4,
+      "image_url": null,
+      "created_at": "2026-01-12T18:02:49.025Z",
+      "last_posted_at": "2026-01-12T18:23:11.045Z",
+      "bumped": true,
+      "bumped_at": "2026-01-12T18:23:11.045Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 58,
+      "category_id": 20,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 4732,
+            "username": "kpcyrd",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/k/c0e974/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Proposal: Allow emoji responses to patch notes",
+      "id": 69853,
+      "title": "Proposal: Allow emoji responses to patch notes",
+      "slug": "proposal-allow-emoji-responses-to-patch-notes",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2025-06-19T17:14:39.218Z",
+      "last_posted_at": "2025-06-19T17:14:39.285Z",
+      "bumped": true,
+      "bumped_at": "2025-06-19T17:14:39.285Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 51,
+      "category_id": 20,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 33266,
+            "username": "mosyin",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/mosyin/{size}/52632_2.png",
+            "trust_level": 0
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Command line Option to disable Screen security",
+      "id": 69388,
+      "title": "Command line Option to disable Screen security",
+      "slug": "command-line-option-to-disable-screen-security",
+      "posts_count": 3,
+      "reply_count": 0,
+      "highest_post_number": 3,
+      "image_url": null,
+      "created_at": "2025-05-26T05:59:41.566Z",
+      "last_posted_at": "2025-05-26T16:02:16.099Z",
+      "bumped": true,
+      "bumped_at": "2025-05-26T16:02:16.099Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 4,
+      "views": 105,
+      "category_id": 20,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": true,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 33020,
+            "username": "Togarashi9",
+            "name": "Togarashi9",
+            "avatar_template": "/user_avatar/community.signalusers.org/togarashi9/{size}/52373_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster, Accepted Answer",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "MacOS 26 dark/transparent logo support",
+  "id": 71990,
+  "title": "MacOS 26 dark/transparent logo support",
+  "posts_count": 1,
+  "created_at": "2025-10-02T16:12:32.210Z",
+  "views": 104,
+  "reply_count": 0,
+  "like_count": 7,
+  "last_posted_at": "2025-10-02T16:12:32.294Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "macos-26-dark-transparent-logo-support",
+  "category_id": 20,
+  "word_count": 47,
+  "deleted_at": null,
+  "user_id": 34333,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_71990",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 34333,
+        "username": "timinigi",
+        "name": "",
+        "avatar_template": "/user_avatar/community.signalusers.org/timinigi/{size}/54042_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 1
+      }
+    ],
+    "created_by": {
+      "id": 34333,
+      "username": "timinigi",
+      "name": "",
+      "avatar_template": "/user_avatar/community.signalusers.org/timinigi/{size}/54042_2.png"
+    },
+    "last_poster": {
+      "id": 34333,
+      "username": "timinigi",
+      "name": "",
+      "avatar_template": "/user_avatar/community.signalusers.org/timinigi/{size}/54042_2.png"
+    }
+  },
+  "bookmarks": []
+}

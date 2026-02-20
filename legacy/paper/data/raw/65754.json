@@ -1,0 +1,356 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 258033,
+        "name": null,
+        "username": "M_D_99",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/m/e47774/{size}.png",
+        "created_at": "2024-12-29T05:20:00.811Z",
+        "cooked": "<p>Greetings Signal users,</p>\n<p>I have a slightly unique little problem on my hands, as follows:<br>\nSignal kindly places a notification icon on my lock screen when I have unread messages. This is usually the standard Signal icon, which is fine.</p>\n<p>However, I have one particular contact which I would like to distinguish from all others (this contact sends me alerts). I would like to be able to look at my lock screen and be able to tell if I have unread messages from this special contact, or just general messages.<br>\nWhen playing around with custom notification settings, I turned on ‘Set this chat as not a conversation’. After doing this, new messages from this contact were shown on the lock screen as a small circle with an ‘S’ inside. I thought this was a placeholder for the profile picture / avatar, since this sender did not have an avatar set, and the name began with ‘S’. So far so good.</p>\n<p>However, after setting an avatar on the <em>sending</em> Signal account, the icon used on the lock screen is the standard Signal icon. Not only is this not what I want, it also confuses me, as the behaviour has changed…</p>\n<p>Apologies for the long post, would appreciate any advice, explanations or suggestions. <img src=\"https://community.signalusers.org/images/emoji/apple/smiley.png?v=12\" title=\":smiley:\" class=\"emoji\" alt=\":smiley:\" loading=\"lazy\" width=\"20\" height=\"20\"></p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2024-12-29T05:20:00.811Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 24,
+        "readers_count": 23,
+        "score": 9.8,
+        "yours": false,
+        "topic_id": 65754,
+        "topic_slug": "profile-avatars-as-notification-icons-on-lock-screen",
+        "display_username": null,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 31180,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/profile-avatars-as-notification-icons-on-lock-screen/65754/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      258033
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      413
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Signal always opens on last chat - bug?",
+      "id": 74068,
+      "title": "Signal always opens on last chat - bug?",
+      "slug": "signal-always-opens-on-last-chat-bug",
+      "posts_count": 16,
+      "reply_count": 6,
+      "highest_post_number": 16,
+      "image_url": null,
+      "created_at": "2026-01-06T15:46:30.427Z",
+      "last_posted_at": "2026-02-13T22:58:29.840Z",
+      "bumped": true,
+      "bumped_at": "2026-02-13T22:58:29.840Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 17,
+      "views": 244,
+      "category_id": 11,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 3530,
+            "username": "Sentinel",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/s/fbc32d/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 2521,
+            "username": "Herohtar",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+            "primary_group_name": "volunteer_moderators",
+            "flair_name": "volunteer_moderators",
+            "flair_url": "shield-halved",
+            "flair_bg_color": "1d8663",
+            "flair_color": "fff",
+            "flair_group_id": 41,
+            "moderator": true,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 4053,
+            "username": "alex-signal",
+            "name": "Alex Hart",
+            "avatar_template": "/user_avatar/community.signalusers.org/alex-signal/{size}/52314_2.png",
+            "primary_group_name": "signal_staff",
+            "flair_name": "signal_staff",
+            "flair_url": "/uploads/db3609/original/3X/0/6/064a72b694359c38b577ec83488ad474c77032dc.png",
+            "flair_bg_color": "3B45FD",
+            "flair_group_id": 46,
+            "admin": true,
+            "moderator": true,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "I have an outdated phone (Android 12) but signal is still being updated",
+      "id": 73505,
+      "title": "I have an outdated phone (Android 12) but signal is still being updated",
+      "slug": "i-have-an-outdated-phone-android-12-but-signal-is-still-being-updated",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2025-12-10T18:46:18.847Z",
+      "last_posted_at": "2025-12-10T18:46:18.930Z",
+      "bumped": true,
+      "bumped_at": "2025-12-10T18:59:16.226Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 66,
+      "category_id": 11,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 35141,
+            "username": "mobex",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/m/5f9b8f/{size}.png",
+            "trust_level": 0
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Voice disappearing effect",
+      "id": 70375,
+      "title": "Voice disappearing effect",
+      "slug": "voice-disappearing-effect",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2025-07-12T13:50:38.186Z",
+      "last_posted_at": "2025-07-12T13:50:38.238Z",
+      "bumped": true,
+      "bumped_at": "2025-07-12T13:50:38.238Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 46,
+      "category_id": 11,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 10074,
+            "username": "Mr-Brunes",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/mr-brunes/{size}/13633_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Profile avatars as notification icons on lock screen.",
+  "id": 65754,
+  "title": "Profile avatars as notification icons on lock screen.",
+  "posts_count": 1,
+  "created_at": "2024-12-29T05:20:00.770Z",
+  "views": 47,
+  "reply_count": 0,
+  "like_count": 0,
+  "last_posted_at": "2024-12-29T05:20:00.811Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "profile-avatars-as-notification-icons-on-lock-screen",
+  "category_id": 11,
+  "word_count": 211,
+  "deleted_at": null,
+  "user_id": 31180,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_65754",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 31180,
+        "username": "M_D_99",
+        "name": null,
+        "avatar_template": "/letter_avatar_proxy/v4/letter/m/e47774/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 0
+      }
+    ],
+    "created_by": {
+      "id": 31180,
+      "username": "M_D_99",
+      "name": null,
+      "avatar_template": "/letter_avatar_proxy/v4/letter/m/e47774/{size}.png"
+    },
+    "last_poster": {
+      "id": 31180,
+      "username": "M_D_99",
+      "name": null,
+      "avatar_template": "/letter_avatar_proxy/v4/letter/m/e47774/{size}.png"
+    }
+  },
+  "bookmarks": []
+}

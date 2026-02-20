@@ -1,0 +1,539 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 255743,
+        "name": "",
+        "username": "UseSignal",
+        "avatar_template": "/user_avatar/community.signalusers.org/usesignal/{size}/49634_2.png",
+        "created_at": "2024-11-17T00:39:17.202Z",
+        "cooked": "<p>Not sure if this is the best place to submit this, if this is considered a feature request or a bug, but if you take images in RAW (which can easily be done on iOS by switching a toggle in settings), when you share the image from the share sheet in iOS from the Photos app, the full .DNG file is sent, which includes metadata, such as location, camera model, etc. Interestingly, if you select the same photo from Signal’s photo picker, it seems to send the photo as a .jpeg, with none of that metadata.</p>\n<p>For the record, I would prefer to have an option to include photo metadata if I like when sending pictures on Signal (similar to the Media Quality option). However, this in particular seems to be a privacy concern, since many people (myself included) assume that sending a picture through Signal removes the metadata by default, and that the recipient will not be able to view information such as the location. I also don’t believe the average user would be aware of there being a difference between using the image picker in the Signal app vs using the Share Sheet to send a photo via Signal, in regards to there being a difference of privacy applied to the image.</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2024-11-17T00:39:17.202Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 3,
+        "reads": 35,
+        "readers_count": 34,
+        "score": 22.0,
+        "yours": false,
+        "topic_id": 64953,
+        "topic_slug": "remove-metadata-from-dng-raw-images",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://community.signalusers.org/t/deleting-metadata/66331/2",
+            "internal": true,
+            "reflection": true,
+            "title": "Deleting metadata",
+            "clicks": 1
+          }
+        ],
+        "read": true,
+        "user_title": "",
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 30771,
+        "hidden": false,
+        "trust_level": 1,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/remove-metadata-from-dng-raw-images/64953/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      },
+      {
+        "id": 255747,
+        "name": "Chris",
+        "username": "goodec",
+        "avatar_template": "/user_avatar/community.signalusers.org/goodec/{size}/14726_2.png",
+        "created_at": "2024-11-17T02:32:32.508Z",
+        "cooked": "<p>Proton Drive has a similar oddity for iOS/iPadOS and they didn’t seem to know how to respond to me when I brought it up. Unless you include “Locations” when uploading RAW, it will just be uploaded as a high quality JPEG/PNG.</p>\n<p>With that said, there needs to be a degree of user responsibility in acknowledging that actions outside of Signal are of your make and model’s responsibility and your own awareness. Quality and protection <strong>inside</strong> the app is Signal’s responsibility but the consumer should still have a working knowledge of what does what and where what goes where.</p>\n<p>In Signal’s case: if you send RAW (DNG) via file, it sends the entire thing as a non previewable but downloadable item. Send via photo? Viewable but with all metadata stripped, as it should. Perhaps the functionality should be spelled out more, but it is there, and, quite frankly, it is the best compromise there is so as to not add more unnecessary bloat.</p>",
+        "post_number": 2,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2024-11-17T02:32:32.508Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 34,
+        "readers_count": 33,
+        "score": 6.8,
+        "yours": false,
+        "topic_id": 64953,
+        "topic_slug": "remove-metadata-from-dng-raw-images",
+        "display_username": "Chris",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "",
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 6038,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "user_suspended": true,
+        "post_url": "/t/remove-metadata-from-dng-raw-images/64953/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      }
+    ],
+    "stream": [
+      255743,
+      255747
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      455
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Option to Lock a message thread to prevent accidental deletion",
+      "id": 72502,
+      "title": "Option to Lock a message thread to prevent accidental deletion",
+      "slug": "option-to-lock-a-message-thread-to-prevent-accidental-deletion",
+      "posts_count": 4,
+      "reply_count": 2,
+      "highest_post_number": 4,
+      "image_url": null,
+      "created_at": "2025-10-27T21:43:01.578Z",
+      "last_posted_at": "2025-12-11T22:06:58.845Z",
+      "bumped": true,
+      "bumped_at": "2025-12-11T22:12:39.840Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 11,
+      "views": 121,
+      "category_id": 19,
+      "featured_link": null,
+      "op_like_count": 8,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 23901,
+            "username": "Py1970",
+            "name": "Py1970",
+            "avatar_template": "/user_avatar/community.signalusers.org/py1970/{size}/35921_2.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 2521,
+            "username": "Herohtar",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+            "primary_group_name": "volunteer_moderators",
+            "flair_name": "volunteer_moderators",
+            "flair_url": "shield-halved",
+            "flair_bg_color": "1d8663",
+            "flair_color": "fff",
+            "flair_group_id": 41,
+            "moderator": true,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 32154,
+            "username": "Delamcode",
+            "name": "Delamcode",
+            "avatar_template": "/user_avatar/community.signalusers.org/delamcode/{size}/51199_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 34555,
+            "username": "WLuigi",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/wluigi/{size}/55067_2.png",
+            "trust_level": 1
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Native support for FLAC audio playback and preview",
+      "id": 70266,
+      "title": "Native support for FLAC audio playback and preview",
+      "slug": "native-support-for-flac-audio-playback-and-preview",
+      "posts_count": 6,
+      "reply_count": 2,
+      "highest_post_number": 6,
+      "image_url": null,
+      "created_at": "2025-07-06T14:35:48.144Z",
+      "last_posted_at": "2025-07-07T11:07:56.619Z",
+      "bumped": true,
+      "bumped_at": "2025-07-07T11:07:56.619Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 6,
+      "views": 134,
+      "category_id": 19,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 33436,
+            "username": "gotoo77",
+            "name": "gotoo77",
+            "avatar_template": "/user_avatar/community.signalusers.org/gotoo77/{size}/52832_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 33306,
+            "username": "Mher_Hovhannisyan",
+            "name": "Mher Hovhannisyan",
+            "avatar_template": "/user_avatar/community.signalusers.org/mher_hovhannisyan/{size}/52680_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 6659,
+            "username": "Whatnoww",
+            "name": "Whatnoww",
+            "avatar_template": "/user_avatar/community.signalusers.org/whatnoww/{size}/54328_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Default iOS apps",
+      "id": 68030,
+      "title": "Default iOS apps",
+      "slug": "default-ios-apps",
+      "posts_count": 4,
+      "reply_count": 0,
+      "highest_post_number": 4,
+      "image_url": null,
+      "created_at": "2025-03-27T17:17:49.848Z",
+      "last_posted_at": "2025-03-30T04:47:39.933Z",
+      "bumped": true,
+      "bumped_at": "2025-03-30T04:47:39.933Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 7,
+      "views": 203,
+      "category_id": 19,
+      "featured_link": null,
+      "op_like_count": 7,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 12232,
+            "username": "ret_ff17",
+            "name": "Robert Grey",
+            "avatar_template": "/user_avatar/community.signalusers.org/ret_ff17/{size}/49655_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 32339,
+            "username": "visnescire",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/visnescire/{size}/51453_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7773,
+            "username": "brandon",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/b/f08c70/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 2521,
+            "username": "Herohtar",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+            "primary_group_name": "volunteer_moderators",
+            "flair_name": "volunteer_moderators",
+            "flair_url": "shield-halved",
+            "flair_bg_color": "1d8663",
+            "flair_color": "fff",
+            "flair_group_id": 41,
+            "moderator": true,
+            "trust_level": 4
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Remove metadata from .DNG (RAW) images",
+  "id": 64953,
+  "title": "Remove metadata from .DNG (RAW) images",
+  "posts_count": 2,
+  "created_at": "2024-11-17T00:39:17.152Z",
+  "views": 118,
+  "reply_count": 0,
+  "like_count": 0,
+  "last_posted_at": "2024-11-17T02:32:32.508Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "remove-metadata-from-dng-raw-images",
+  "category_id": 19,
+  "word_count": 384,
+  "deleted_at": null,
+  "user_id": 30771,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_64953",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 2,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 2,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 6038,
+        "username": "goodec",
+        "name": "Chris",
+        "avatar_template": "/user_avatar/community.signalusers.org/goodec/{size}/14726_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      },
+      {
+        "id": 30771,
+        "username": "UseSignal",
+        "name": "",
+        "avatar_template": "/user_avatar/community.signalusers.org/usesignal/{size}/49634_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 1
+      }
+    ],
+    "created_by": {
+      "id": 30771,
+      "username": "UseSignal",
+      "name": "",
+      "avatar_template": "/user_avatar/community.signalusers.org/usesignal/{size}/49634_2.png"
+    },
+    "last_poster": {
+      "id": 6038,
+      "username": "goodec",
+      "name": "Chris",
+      "avatar_template": "/user_avatar/community.signalusers.org/goodec/{size}/14726_2.png"
+    },
+    "links": [
+      {
+        "url": "https://community.signalusers.org/t/deleting-metadata/66331/2",
+        "title": "Deleting metadata",
+        "internal": true,
+        "attachment": false,
+        "reflection": true,
+        "clicks": 1,
+        "user_id": 1499,
+        "domain": "community.signalusers.org",
+        "root_domain": "signalusers.org"
+      }
+    ]
+  },
+  "bookmarks": []
+}

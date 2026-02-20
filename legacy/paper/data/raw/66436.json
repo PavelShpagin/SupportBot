@@ -1,0 +1,556 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 259879,
+        "name": "Mich Bub",
+        "username": "michbub",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/m/f0a364/{size}.png",
+        "created_at": "2025-01-28T06:26:39.617Z",
+        "cooked": "<p>The last Signal blog post mentioned that attachments are padded to improve privacy. How exactly is this padding done? Is the file size rounded up to a certain multiple or is the file split into fixed size chunks? What are the exact values? Thank you very much!</p>\n<aside class=\"onebox allowlistedgeneric\" data-onebox-src=\"https://signal.org/blog/a-synchronized-start-for-linked-devices/\">\n  <header class=\"source\">\n      <img src=\"https://community.signalusers.org/uploads/db3609/original/3X/a/0/a070fdcafbe5753b5b412f3e5b5c640cff8d0c48.svg\" class=\"site-icon\" data-dominant-color=\"\" width=\"16\" height=\"16\">\n\n      <a href=\"https://signal.org/blog/a-synchronized-start-for-linked-devices/\" target=\"_blank\" rel=\"noopener nofollow ugc\">Signal Messenger</a>\n  </header>\n\n  <article class=\"onebox-body\">\n    <div class=\"aspect-image\" style=\"--aspect-ratio:690/361;\"><img src=\"https://community.signalusers.org/uploads/db3609/optimized/3X/0/d/0df92fcd0e8e826f8db0a1ac3ae5786544cabbf9_2_690x362.png\" class=\"thumbnail\" data-dominant-color=\"9EA8A9\" width=\"690\" height=\"362\"></div>\n\n<h3><a href=\"https://signal.org/blog/a-synchronized-start-for-linked-devices/\" target=\"_blank\" rel=\"noopener nofollow ugc\">A Synchronized Start for Linked Devices</a></h3>\n\n  <p>With Signal on Desktop and iPad, you can link your primary Android or iOS account with another device, letting you check and respond to messages in both places or conduct video meetings and calls from the comfort of a bigger screen. Signal’s upcoming...</p>\n\n\n  </article>\n\n  <div class=\"onebox-metadata\">\n    \n    \n  </div>\n\n  <div style=\"clear: both\"></div>\n</aside>\n",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 3,
+        "updated_at": "2025-01-28T12:04:18.174Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 32,
+        "readers_count": 31,
+        "score": 56.4,
+        "yours": false,
+        "topic_id": 66436,
+        "topic_slug": "signal-attachment-padding-implementation-question",
+        "display_username": "Mich Bub",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 2,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://signal.org/blog/a-synchronized-start-for-linked-devices/",
+            "internal": false,
+            "reflection": false,
+            "title": "Signal >> Blog >> A Synchronized Start for Linked Devices",
+            "clicks": 2
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 1
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 30802,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/signal-attachment-padding-implementation-question/66436/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": true,
+        "can_vote": false
+      },
+      {
+        "id": 260039,
+        "name": "Jordan Rose",
+        "username": "jrose",
+        "avatar_template": "/user_avatar/community.signalusers.org/jrose/{size}/10470_2.png",
+        "created_at": "2025-01-30T00:46:11.243Z",
+        "cooked": "<p>Rounding up. Each client implements this separately, but you can see the one for iOS here as an example:</p>\n<aside class=\"onebox githubblob\" data-onebox-src=\"https://github.com/signalapp/Signal-iOS/blob/a44a7ba04241aa1d41549c0d8efbfd43eefe1723/SignalServiceKit/Cryptography/Cryptography.swift#L77-L83\">\n  <header class=\"source\">\n\n      <a href=\"https://github.com/signalapp/Signal-iOS/blob/a44a7ba04241aa1d41549c0d8efbfd43eefe1723/SignalServiceKit/Cryptography/Cryptography.swift#L77-L83\" target=\"_blank\" rel=\"noopener\">github.com</a>\n  </header>\n\n  <article class=\"onebox-body\">\n    <h4><a href=\"https://github.com/signalapp/Signal-iOS/blob/a44a7ba04241aa1d41549c0d8efbfd43eefe1723/SignalServiceKit/Cryptography/Cryptography.swift#L77-L83\" target=\"_blank\" rel=\"noopener\">signalapp/Signal-iOS/blob/a44a7ba04241aa1d41549c0d8efbfd43eefe1723/SignalServiceKit/Cryptography/Cryptography.swift#L77-L83</a></h4>\n\n\n\n    <pre class=\"onebox\"><code class=\"lang-swift\">\n      <ol class=\"start lines\" start=\"77\" style=\"counter-reset: li-counter 76 ;\">\n          <li>static func paddedSize(unpaddedSize: UInt) -&gt; UInt {</li>\n          <li>    // In order to obsfucate attachment size on the wire, we round up</li>\n          <li>    // attachement plaintext bytes to the nearest power of 1.05. This</li>\n          <li>    // number was selected as it provides a good balance between number</li>\n          <li>    // of buckets and wasted bytes on the wire.</li>\n          <li>    return UInt(max(541, floor(pow(1.05, ceil(log(Double(unpaddedSize)) / log(1.05))))))</li>\n          <li>}</li>\n      </ol>\n    </code></pre>\n\n\n\n  </article>\n\n  <div class=\"onebox-metadata\">\n    \n    \n  </div>\n\n  <div style=\"clear: both\"></div>\n</aside>\n",
+        "post_number": 2,
+        "post_type": 1,
+        "posts_count": 3,
+        "updated_at": "2025-01-30T00:46:11.243Z",
+        "reply_count": 1,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 17,
+        "readers_count": 16,
+        "score": 98.4,
+        "yours": false,
+        "topic_id": 66436,
+        "topic_slug": "signal-attachment-padding-implementation-question",
+        "display_username": "Jordan Rose",
+        "primary_group_name": "signal_staff",
+        "flair_name": "signal_staff",
+        "flair_url": "/uploads/db3609/original/3X/0/6/064a72b694359c38b577ec83488ad474c77032dc.png",
+        "flair_bg_color": "3B45FD",
+        "flair_color": "",
+        "flair_group_id": 46,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://github.com/signalapp/Signal-iOS/blob/a44a7ba04241aa1d41549c0d8efbfd43eefe1723/SignalServiceKit/Cryptography/Cryptography.swift#L77-L83",
+            "internal": false,
+            "reflection": false,
+            "title": "Signal-iOS/SignalServiceKit/Cryptography/Cryptography.swift at a44a7ba04241aa1d41549c0d8efbfd43eefe1723 · signalapp/Signal-iOS · GitHub",
+            "clicks": 0
+          }
+        ],
+        "read": true,
+        "user_title": "Signal Staff",
+        "title_is_group": true,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 4
+          }
+        ],
+        "moderator": true,
+        "admin": true,
+        "staff": true,
+        "user_id": 7251,
+        "hidden": false,
+        "trust_level": 4,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/signal-attachment-padding-implementation-question/66436/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": true,
+        "topic_accepted_answer": true
+      },
+      {
+        "id": 260063,
+        "name": "Mich Bub",
+        "username": "michbub",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/m/f0a364/{size}.png",
+        "created_at": "2025-01-30T05:43:34.883Z",
+        "cooked": "<p>Thanks for the info!</p>",
+        "post_number": 3,
+        "post_type": 1,
+        "posts_count": 3,
+        "updated_at": "2025-01-30T05:43:34.883Z",
+        "reply_count": 0,
+        "reply_to_post_number": 2,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 15,
+        "readers_count": 14,
+        "score": 3.0,
+        "yours": false,
+        "topic_id": 66436,
+        "topic_slug": "signal-attachment-padding-implementation-question",
+        "display_username": "Mich Bub",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "reply_to_user": {
+          "id": 7251,
+          "username": "jrose",
+          "name": "Jordan Rose",
+          "avatar_template": "/user_avatar/community.signalusers.org/jrose/{size}/10470_2.png"
+        },
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 30802,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/signal-attachment-padding-implementation-question/66436/3",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": true
+      }
+    ],
+    "stream": [
+      259879,
+      260039,
+      260063
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      383
+    ],
+    [
+      2,
+      381
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "I am looking for Signal Calling Server Guide",
+      "id": 68462,
+      "title": "I am looking for Signal Calling Server Guide",
+      "slug": "i-am-looking-for-signal-calling-server-guide",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/1/d/1db04e29213b83314deda5e5a5cf0d3b373f1786_2_1024x512.png",
+      "created_at": "2025-04-12T13:33:59.930Z",
+      "last_posted_at": "2025-04-12T18:10:51.620Z",
+      "bumped": true,
+      "bumped_at": "2025-04-12T18:10:51.620Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 77,
+      "category_id": 6,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 31808,
+            "username": "Vadym_Taran",
+            "name": "Apex",
+            "avatar_template": "/user_avatar/community.signalusers.org/vadym_taran/{size}/52285_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 31995,
+            "username": "Noah_Thomson",
+            "name": "Noah Thomson",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/n/7c8e57/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Signal-iOS download webrtc failed",
+      "id": 70496,
+      "title": "Signal-iOS download webrtc failed",
+      "slug": "signal-ios-download-webrtc-failed",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2025-07-17T17:33:22.802Z",
+      "last_posted_at": "2025-07-17T17:33:22.852Z",
+      "bumped": true,
+      "bumped_at": "2025-07-17T17:33:22.852Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 60,
+      "category_id": 21,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 33544,
+            "username": "Litost_Cheng",
+            "name": "Litost Cheng",
+            "avatar_template": "/user_avatar/community.signalusers.org/litost_cheng/{size}/52988_2.png",
+            "trust_level": 0
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Development of Signal-Android",
+      "id": 68253,
+      "title": "Development of Signal-Android",
+      "slug": "development-of-signal-android",
+      "posts_count": 6,
+      "reply_count": 4,
+      "highest_post_number": 6,
+      "image_url": null,
+      "created_at": "2025-04-04T04:32:20.278Z",
+      "last_posted_at": "2025-04-12T18:52:49.684Z",
+      "bumped": true,
+      "bumped_at": "2025-04-12T18:52:49.684Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 2,
+      "views": 256,
+      "category_id": 22,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 32456,
+            "username": "Aakash",
+            "name": "AR",
+            "avatar_template": "/user_avatar/community.signalusers.org/aakash/{size}/51745_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31995,
+            "username": "Noah_Thomson",
+            "name": "Noah Thomson",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/n/7c8e57/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 31808,
+            "username": "Vadym_Taran",
+            "name": "Apex",
+            "avatar_template": "/user_avatar/community.signalusers.org/vadym_taran/{size}/52285_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Signal Attachment Padding Implementation Question",
+  "id": 66436,
+  "title": "Signal Attachment Padding Implementation Question",
+  "posts_count": 3,
+  "created_at": "2025-01-28T06:26:39.570Z",
+  "views": 88,
+  "reply_count": 1,
+  "like_count": 5,
+  "last_posted_at": "2025-01-30T05:43:34.883Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "signal-attachment-padding-implementation-question",
+  "category_id": 6,
+  "word_count": 94,
+  "deleted_at": null,
+  "user_id": 30802,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/0/d/0df92fcd0e8e826f8db0a1ac3ae5786544cabbf9_2_1024x537.png",
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_66436",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 3,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 2,
+  "show_read_indicator": false,
+  "thumbnails": [
+    {
+      "max_width": null,
+      "max_height": null,
+      "width": 1200,
+      "height": 630,
+      "url": "https://community.signalusers.org/uploads/db3609/original/3X/0/d/0df92fcd0e8e826f8db0a1ac3ae5786544cabbf9.png"
+    },
+    {
+      "max_width": 1024,
+      "max_height": 1024,
+      "width": 1024,
+      "height": 537,
+      "url": "https://community.signalusers.org/uploads/db3609/optimized/3X/0/d/0df92fcd0e8e826f8db0a1ac3ae5786544cabbf9_2_1024x537.png"
+    }
+  ],
+  "slow_mode_enabled_until": null,
+  "accepted_answer": {
+    "post_number": 2,
+    "username": "jrose",
+    "name": "Jordan Rose",
+    "excerpt": "<p>Rounding up. Each client implements this separately, but you can see the one for iOS here as an example:</p>\n<aside class=\"onebox githubblob\" data-onebox-src=\"https://github.com/signalapp/Signal-iOS/blob/a44a7ba04241aa1d41549c0d8efbfd43eefe1723/SignalServiceKit/Cryptography/Cryptography.swift#L77-L83\">\n  <header class=\"source\">\n\n      <a href=\"https://github.com/signalapp/Signal-iOS/blob/a44a7ba04241aa1d41549c0d8efbfd43eefe1723/SignalServiceKit/Cryptography/Cryptography.swift#L77-L83\" target=\"_blank\" rel=\"noopener\">github.com</a>\n  </header>\n\n  <article class=\"onebox-body\">\n    <h4><a href=\"https://github.com/signalapp/Signal-iOS/blob/a44a7ba04241aa1d41549c0d8efbfd43eefe1723/SignalServiceKit/Cryptography/Cryptography.swift#L77-L83\" target=\"_blank\" rel=\"noopener\">signalapp/Signal-iOS/blob/a44a7ba04241aa1d41549c0d8efbfd43eefe1723/SignalServiceKit/Cryptography/Cryptography.swift#L77-L83</a></h4>\n\n\n\n    <pre class=\"onebox\"><code class=\"lang-swift\">\n      <ol class=\"start lines\" start=\"77\" style=\"counter-reset: li-counter 76 ;\">\n          <li>static func paddedSize(unpaddedSize: UInt) -&gt; UInt {</li>\n          <li>    // In order to obsfucate attachment size on the wire, we round up</li>\n          <li>    // attachement plaintext bytes to the nearest power of 1.05. This</li>\n          <li>    // number was selected as it provides a good balance between number</li>\n          <li>    // of buckets and wasted bytes on the wire.</li>\n          <li>    return UInt(max(541, floor(pow(1.05, ceil(log(Double(unpaddedSize)) / log(1.05))))))</li>\n          <li>}</li>\n      </ol>\n    </code></pre>\n\n\n\n  </article>\n\n  <div class=\"onebox-metadata\">\n    \n    \n  </div>\n\n  <div style=\"clear: both\"></div>\n</aside>\n"
+  },
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 30802,
+        "username": "michbub",
+        "name": "Mich Bub",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/m/f0a364/{size}.png",
+        "post_count": 2,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 0
+      },
+      {
+        "id": 7251,
+        "username": "jrose",
+        "name": "Jordan Rose",
+        "avatar_template": "/user_avatar/community.signalusers.org/jrose/{size}/10470_2.png",
+        "post_count": 1,
+        "primary_group_name": "signal_staff",
+        "flair_name": "signal_staff",
+        "flair_url": "/uploads/db3609/original/3X/0/6/064a72b694359c38b577ec83488ad474c77032dc.png",
+        "flair_color": "",
+        "flair_bg_color": "3B45FD",
+        "flair_group_id": 46,
+        "admin": true,
+        "moderator": true,
+        "trust_level": 4
+      }
+    ],
+    "created_by": {
+      "id": 30802,
+      "username": "michbub",
+      "name": "Mich Bub",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/m/f0a364/{size}.png"
+    },
+    "last_poster": {
+      "id": 30802,
+      "username": "michbub",
+      "name": "Mich Bub",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/m/f0a364/{size}.png"
+    },
+    "links": [
+      {
+        "url": "https://signal.org/blog/a-synchronized-start-for-linked-devices/",
+        "title": "Signal >> Blog >> A Synchronized Start for Linked Devices",
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 2,
+        "user_id": 30802,
+        "domain": "signal.org",
+        "root_domain": "signal.org"
+      }
+    ]
+  },
+  "bookmarks": []
+}

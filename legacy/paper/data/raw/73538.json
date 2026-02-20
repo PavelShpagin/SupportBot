@@ -1,0 +1,660 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 281098,
+        "name": "",
+        "username": "MMachado05",
+        "avatar_template": "/user_avatar/community.signalusers.org/mmachado05/{size}/49230_2.png",
+        "created_at": "2025-12-12T17:01:56.610Z",
+        "cooked": "<p>Currently, when you provide a link to a website that offers an embedded version, the link takes a while to load the embed, as it does it on the client-side, providing some security on the side of the receiver if they don’t want to make requests to a website they didn’t know was going to be sent. This is a valid design when security is a high priority.</p>\n<p>However, in practice, it means that most people (in my experience) simply do not send links with embeds. As soon as they’ve pasted the link into the chat, they send it off, leaving the message absent of any suggestion as to what the website content is going to be. Paradoxically, this can <em>further</em> introduce a security risk to the receiver, as now, the only way to get an idea of what’s on the website is to actually visit it, or to ask the sender what’s going to be on the website when they click, which introduces friction into the conversation.</p>\n<p>I feel that one good option to improve this would be to, on the first time someone tries to send a message with a link <em>before</em> the embed has loaded, provide a one-time pop-up explaining that they have to wait if they want the embed to send. Something like,</p>\n<blockquote>\n<p>Link previews are loaded before the message is sent. Do you want to send this message without a link preview?</p>\n</blockquote>\n<p>Of course, this still doesn’t improve the generally-annoying UX of having to wait before you can send your message just for a link to load.</p>\n<p>So, what if, on that first time a link hasn’t loaded, an additional option is introduced to essentially “throttle” messages on the sender side until an embed has loaded? That is, the user would send the message, and it would appear—visually—in the chat log, but it wouldn’t <em>actually</em> start being sent until <em>after</em> the link has loaded. This eliminates the need for the sender to wait for the embed to load in order to send a message with an embed, without introducing the security risk of rendering the embed in the receiver’s side, as well.</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 4,
+        "updated_at": "2025-12-12T17:01:56.610Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 2,
+        "reads": 48,
+        "readers_count": 47,
+        "score": 79.6,
+        "yours": false,
+        "topic_id": 73538,
+        "topic_slug": "temporarily-hold-back-messages-with-link-embeds-until-the-embed-is-done-loading",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 4
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 30455,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/temporarily-hold-back-messages-with-link-embeds-until-the-embed-is-done-loading/73538/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      },
+      {
+        "id": 281099,
+        "name": "Jeremy",
+        "username": "jeremymasters",
+        "avatar_template": "/user_avatar/community.signalusers.org/jeremymasters/{size}/933_2.png",
+        "created_at": "2025-12-12T17:18:06.497Z",
+        "cooked": "<p>Something like this. I’d prefer the message box just preloaded with a message saying it was loading</p>",
+        "post_number": 2,
+        "post_type": 1,
+        "posts_count": 4,
+        "updated_at": "2025-12-14T20:42:25.340Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 44,
+        "readers_count": 43,
+        "score": 38.8,
+        "yours": false,
+        "topic_id": 73538,
+        "topic_slug": "temporarily-hold-back-messages-with-link-embeds-until-the-embed-is-done-loading",
+        "display_username": "Jeremy",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 2,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "",
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 2
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 35,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/temporarily-hold-back-messages-with-link-embeds-until-the-embed-is-done-loading/73538/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 281117,
+        "name": "",
+        "username": "Herohtar",
+        "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+        "created_at": "2025-12-12T23:47:48.643Z",
+        "cooked": "<p>Related alternative solution:</p><aside class=\"quote quote-modified\" data-post=\"1\" data-topic=\"26690\">\n  <div class=\"title\">\n    <div class=\"quote-controls\"></div>\n    <img alt=\"\" width=\"24\" height=\"24\" src=\"https://community.signalusers.org/letter_avatar_proxy/v4/letter/a/35a633/48.png\" class=\"avatar\">\n    <div class=\"quote-title__text-content\">\n      <a href=\"https://community.signalusers.org/t/load-the-link-preview-after-sending-message/26690\">Load the link preview after sending message</a> <a class=\"badge-category__wrapper \" href=\"/c/feature-requests/17\"><span data-category-id=\"17\" style=\"--category-badge-color: #83B72A; --category-badge-text-color: #FFFFFF;\" data-drop-close=\"true\" class=\"badge-category --style-square \" title=\"Post your ideas here for new features and functionality for the Signal app.\"><span class=\"badge-category__name\">Feature Requests</span></span></a>\n    </div>\n  </div>\n  <blockquote>\n    It can be quite annoying when trying to send a video-site link, article etc. to a friend, and wait for the thumbnail to load properly, because if it’s not, it will be sent without one. \nPlease add an option to settings (or even turn it on by default) that automatically includes a thumbnail, even after you press enter to send a message, so we can just send it and expect the thumbnail to load anyways, basically like other messaging apps. \nThe app can just automatically send a message when the thum…\n  </blockquote>\n</aside>\n",
+        "post_number": 3,
+        "post_type": 1,
+        "posts_count": 4,
+        "updated_at": "2025-12-12T23:47:48.643Z",
+        "reply_count": 1,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 40,
+        "readers_count": 39,
+        "score": 43.0,
+        "yours": false,
+        "topic_id": 73538,
+        "topic_slug": "temporarily-hold-back-messages-with-link-embeds-until-the-embed-is-done-loading",
+        "display_username": "",
+        "primary_group_name": "volunteer_moderators",
+        "flair_name": "volunteer_moderators",
+        "flair_url": "shield-halved",
+        "flair_bg_color": "1d8663",
+        "flair_color": "fff",
+        "flair_group_id": 41,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://community.signalusers.org/t/load-the-link-preview-after-sending-message/26690",
+            "internal": true,
+            "reflection": false,
+            "title": "Load the link preview after sending message",
+            "clicks": 0
+          }
+        ],
+        "read": true,
+        "user_title": "Volunteer Moderator",
+        "title_is_group": true,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 2
+          }
+        ],
+        "moderator": true,
+        "admin": false,
+        "staff": true,
+        "user_id": 2521,
+        "hidden": false,
+        "trust_level": 4,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/temporarily-hold-back-messages-with-link-embeds-until-the-embed-is-done-loading/73538/3",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 281222,
+        "name": "",
+        "username": "MMachado05",
+        "avatar_template": "/user_avatar/community.signalusers.org/mmachado05/{size}/49230_2.png",
+        "created_at": "2025-12-16T04:16:06.315Z",
+        "cooked": "<p>There’s another thread linked in that thread where a (then-)Signal developer mentions how this solution was <em>deliberately</em> not implemented, due to the security concerns of rendering a message preview without the recipient’s consent on their device. However, your direct response to it in that thread (from 4 years ago now, wow!) is also another good solution, I think; prompting the user—at least the first time—to wait until the embed loads, at least to relay to them that embeds are loaded <em>before</em> the message is sent.</p>\n<p>That being said, embeds usually load relatively quickly, so I feel like visually sending the message but actually keeping it in a draft until <em>after</em> the embed is loaded would functionally accomplish the same thing, without requiring a pop-up that might bother some users.</p>",
+        "post_number": 4,
+        "post_type": 1,
+        "posts_count": 4,
+        "updated_at": "2025-12-16T04:16:06.315Z",
+        "reply_count": 0,
+        "reply_to_post_number": 3,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 23,
+        "readers_count": 22,
+        "score": 19.6,
+        "yours": false,
+        "topic_id": 73538,
+        "topic_slug": "temporarily-hold-back-messages-with-link-embeds-until-the-embed-is-done-loading",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "reply_to_user": {
+          "id": 2521,
+          "username": "Herohtar",
+          "name": "",
+          "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png"
+        },
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 1
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 30455,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/temporarily-hold-back-messages-with-link-embeds-until-the-embed-is-done-loading/73538/4",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      }
+    ],
+    "stream": [
+      281098,
+      281099,
+      281117,
+      281222
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      64
+    ],
+    [
+      4,
+      61
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Safety numbers to strengthen group chats",
+      "id": 67963,
+      "title": "Safety numbers to strengthen group chats",
+      "slug": "safety-numbers-to-strengthen-group-chats",
+      "posts_count": 9,
+      "reply_count": 5,
+      "highest_post_number": 9,
+      "image_url": null,
+      "created_at": "2025-03-25T16:27:15.147Z",
+      "last_posted_at": "2025-03-27T12:35:57.934Z",
+      "bumped": true,
+      "bumped_at": "2025-03-27T12:35:57.934Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 10,
+      "views": 192,
+      "category_id": 17,
+      "featured_link": null,
+      "op_like_count": 2,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 32295,
+            "username": "KjetilK",
+            "name": "Kjetil Kjernsmo ",
+            "avatar_template": "/user_avatar/community.signalusers.org/kjetilk/{size}/51394_2.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 1499,
+            "username": "CueHD",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/cuehd/{size}/42510_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 6659,
+            "username": "Whatnoww",
+            "name": "Whatnoww",
+            "avatar_template": "/user_avatar/community.signalusers.org/whatnoww/{size}/54328_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Automatically export all media older than a given data and remove from chats",
+      "id": 71492,
+      "title": "Automatically export all media older than a given data and remove from chats",
+      "slug": "automatically-export-all-media-older-than-a-given-data-and-remove-from-chats",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": null,
+      "created_at": "2025-09-07T16:54:10.195Z",
+      "last_posted_at": "2025-09-08T00:06:39.683Z",
+      "bumped": true,
+      "bumped_at": "2025-09-08T00:06:39.683Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 35,
+      "category_id": 12,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 34057,
+            "username": "Xwang",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/x/ac8455/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Questions about the upcoming backup feature",
+      "id": 70212,
+      "title": "Questions about the upcoming backup feature",
+      "slug": "questions-about-the-upcoming-backup-feature",
+      "posts_count": 35,
+      "reply_count": 31,
+      "highest_post_number": 36,
+      "image_url": null,
+      "created_at": "2025-07-04T03:18:52.501Z",
+      "last_posted_at": "2025-08-22T09:49:24.378Z",
+      "bumped": true,
+      "bumped_at": "2025-08-22T09:49:24.378Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 44,
+      "views": 464,
+      "category_id": 7,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": true,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 33408,
+            "username": "iluvsignal1",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/i/9de0a6/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster, Accepted Answer",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 33362,
+            "username": "NeedsChloesure",
+            "name": "Chloe",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/n/9f8e36/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 6659,
+            "username": "Whatnoww",
+            "name": "Whatnoww",
+            "avatar_template": "/user_avatar/community.signalusers.org/whatnoww/{size}/54328_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 32154,
+            "username": "Delamcode",
+            "name": "Delamcode",
+            "avatar_template": "/user_avatar/community.signalusers.org/delamcode/{size}/51199_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Temporarily “hold back” messages with link embeds until the embed is done loading",
+  "id": 73538,
+  "title": "Temporarily “hold back” messages with link embeds until the embed is done loading",
+  "posts_count": 4,
+  "created_at": "2025-12-12T17:01:56.535Z",
+  "views": 123,
+  "reply_count": 1,
+  "like_count": 9,
+  "last_posted_at": "2025-12-16T04:16:06.315Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "temporarily-hold-back-messages-with-link-embeds-until-the-embed-is-done-loading",
+  "category_id": 17,
+  "word_count": 541,
+  "deleted_at": null,
+  "user_id": 30455,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_73538",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 4,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 3,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 30455,
+        "username": "MMachado05",
+        "name": "",
+        "avatar_template": "/user_avatar/community.signalusers.org/mmachado05/{size}/49230_2.png",
+        "post_count": 2,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      },
+      {
+        "id": 35,
+        "username": "jeremymasters",
+        "name": "Jeremy",
+        "avatar_template": "/user_avatar/community.signalusers.org/jeremymasters/{size}/933_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      },
+      {
+        "id": 2521,
+        "username": "Herohtar",
+        "name": "",
+        "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+        "post_count": 1,
+        "primary_group_name": "volunteer_moderators",
+        "flair_name": "volunteer_moderators",
+        "flair_url": "shield-halved",
+        "flair_color": "fff",
+        "flair_bg_color": "1d8663",
+        "flair_group_id": 41,
+        "moderator": true,
+        "trust_level": 4
+      }
+    ],
+    "created_by": {
+      "id": 30455,
+      "username": "MMachado05",
+      "name": "",
+      "avatar_template": "/user_avatar/community.signalusers.org/mmachado05/{size}/49230_2.png"
+    },
+    "last_poster": {
+      "id": 30455,
+      "username": "MMachado05",
+      "name": "",
+      "avatar_template": "/user_avatar/community.signalusers.org/mmachado05/{size}/49230_2.png"
+    }
+  },
+  "bookmarks": []
+}

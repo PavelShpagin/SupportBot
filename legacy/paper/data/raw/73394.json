@@ -1,0 +1,402 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 280687,
+        "name": "",
+        "username": "reg67",
+        "avatar_template": "/user_avatar/community.signalusers.org/reg67/{size}/54198_2.png",
+        "created_at": "2025-12-06T11:53:06.732Z",
+        "cooked": "<p>When the user initiates account deletion on iOS and Android, all the user’s local messages and data will be wiped. This is not good for users who wish to leave the Signal service, but keep their messages.</p>\n<p>Usually, messengers which do not store messages locally, like Discord, tend to disable the user’s ability to view their chat history after account deletion. Signal, along with traditional SMS, and iMessage, store messages on-device, but unlike iMessage and traditional SMS, Signal will delete all the user’s past history if they choose to delete their account.</p>\n<p>This is user-hostile design (albeit not intentionally, I believe), and vastly differs from other messaging apps that store messages on-device: when iMessage users delete their Apple Account, the users keep their messages; when SMS users end their relationship with their provider, the users keep their messages.</p>\n<p>I am requesting that…<br>\n1.) Signal no longer mandatorily delete messages locally after the user deletes their account.</p>\n<p>2.) Signal redesigns the “device not registered” banner to be less persistent and dismissible so that users can read their past messaging history without distraction. It can replace the compose box instead. (Mock-up below)</p>\n<p>3.) Signal allows re-registeration with a different number (from the unregistered account banner). Currently, it will not allow editing the phone number to re-register with. This also ties in with <span class=\"hashtag-raw\">#8139</span>. (<a href=\"https://community.signalusers.org/t/migrate-existing-conversation-to-a-new-contact-number-merge-chats/8139\" class=\"inline-onebox\">Migrate existing conversation to a new contact number / merge chats</a>)</p>\n<p>Normal compose box:</p>\n<p><div class=\"lightbox-wrapper\"><a class=\"lightbox\" href=\"https://community.signalusers.org/uploads/db3609/original/3X/5/0/50fb6755febc4f719f4fa6af9448d575d1f1958a.png\" data-download-href=\"https://community.signalusers.org/uploads/db3609/50fb6755febc4f719f4fa6af9448d575d1f1958a\" title=\"image\"><img src=\"https://community.signalusers.org/uploads/db3609/optimized/3X/5/0/50fb6755febc4f719f4fa6af9448d575d1f1958a_2_690x127.png\" alt=\"image\" data-base62-sha1=\"byoPiQKNnclUgkEECLoRW8i2RUm\" width=\"690\" height=\"127\" srcset=\"https://community.signalusers.org/uploads/db3609/optimized/3X/5/0/50fb6755febc4f719f4fa6af9448d575d1f1958a_2_690x127.png, https://community.signalusers.org/uploads/db3609/optimized/3X/5/0/50fb6755febc4f719f4fa6af9448d575d1f1958a_2_1035x190.png 1.5x, https://community.signalusers.org/uploads/db3609/original/3X/5/0/50fb6755febc4f719f4fa6af9448d575d1f1958a.png 2x\" data-dominant-color=\"121212\"><div class=\"meta\"><svg class=\"fa d-icon d-icon-far-image svg-icon\" aria-hidden=\"true\"><use href=\"#far-image\"></use></svg><span class=\"filename\">image</span><span class=\"informations\">1170×217 40.3 KB</span><svg class=\"fa d-icon d-icon-discourse-expand svg-icon\" aria-hidden=\"true\"><use href=\"#discourse-expand\"></use></svg></div></a></div></p>\n<p>Deleted / unregistered account compose box:</p>\n<p><div class=\"lightbox-wrapper\"><a class=\"lightbox\" href=\"https://community.signalusers.org/uploads/db3609/original/3X/c/b/cb96d5f357716df2703db1015532bd0288950a51.png\" data-download-href=\"https://community.signalusers.org/uploads/db3609/cb96d5f357716df2703db1015532bd0288950a51\" title=\"mockup\"><img src=\"https://community.signalusers.org/uploads/db3609/optimized/3X/c/b/cb96d5f357716df2703db1015532bd0288950a51_2_690x127.png\" alt=\"mockup\" data-base62-sha1=\"t325CeQH98C47Wc7EryPRAdFnK9\" width=\"690\" height=\"127\" srcset=\"https://community.signalusers.org/uploads/db3609/optimized/3X/c/b/cb96d5f357716df2703db1015532bd0288950a51_2_690x127.png, https://community.signalusers.org/uploads/db3609/optimized/3X/c/b/cb96d5f357716df2703db1015532bd0288950a51_2_1035x190.png 1.5x, https://community.signalusers.org/uploads/db3609/original/3X/c/b/cb96d5f357716df2703db1015532bd0288950a51.png 2x\" data-dominant-color=\"0E0F11\"><div class=\"meta\"><svg class=\"fa d-icon d-icon-far-image svg-icon\" aria-hidden=\"true\"><use href=\"#far-image\"></use></svg><span class=\"filename\">mockup</span><span class=\"informations\">1170×217 20.2 KB</span><svg class=\"fa d-icon d-icon-discourse-expand svg-icon\" aria-hidden=\"true\"><use href=\"#discourse-expand\"></use></svg></div></a></div></p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2025-12-06T11:53:06.732Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 3,
+        "reads": 27,
+        "readers_count": 26,
+        "score": 35.4,
+        "yours": false,
+        "topic_id": 73394,
+        "topic_slug": "do-not-delete-all-data-upon-account-deletion",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://community.signalusers.org/t/migrate-existing-conversation-to-a-new-contact-number-merge-chats/8139",
+            "internal": true,
+            "reflection": false,
+            "title": "Migrate existing conversation to a new contact number / merge chats",
+            "clicks": 1
+          }
+        ],
+        "read": true,
+        "user_title": "",
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 1
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 34461,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/do-not-delete-all-data-upon-account-deletion/73394/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      280687
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      70
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Keep the chat interface bubbles always rounded!",
+      "id": 67018,
+      "title": "Keep the chat interface bubbles always rounded!",
+      "slug": "keep-the-chat-interface-bubbles-always-rounded",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2025-02-19T04:10:39.951Z",
+      "last_posted_at": "2025-02-19T04:10:40.009Z",
+      "bumped": true,
+      "bumped_at": "2025-02-19T04:10:40.009Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 59,
+      "category_id": 28,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 31798,
+            "username": "Pennkhun",
+            "name": "Pennkhun",
+            "avatar_template": "/user_avatar/community.signalusers.org/pennkhun/{size}/50786_2.png",
+            "trust_level": 0
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Are in-app messages to enter recovery code legitimate or a phishing attempt",
+      "id": 74645,
+      "title": "Are in-app messages to enter recovery code legitimate or a phishing attempt",
+      "slug": "are-in-app-messages-to-enter-recovery-code-legitimate-or-a-phishing-attempt",
+      "posts_count": 6,
+      "reply_count": 5,
+      "highest_post_number": 7,
+      "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/f/4/f4a7b86cf73c4cb37371e36a2991e327749e8b57_2_735x1023.jpeg",
+      "created_at": "2026-02-09T13:39:39.129Z",
+      "last_posted_at": "2026-02-12T00:42:08.658Z",
+      "bumped": true,
+      "bumped_at": "2026-02-12T00:42:08.658Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 6,
+      "views": 90,
+      "category_id": 10,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": true,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 34254,
+            "username": "nickster",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/n/2acd7d/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster, Accepted Answer",
+          "user": {
+            "id": 2521,
+            "username": "Herohtar",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+            "primary_group_name": "volunteer_moderators",
+            "flair_name": "volunteer_moderators",
+            "flair_url": "shield-halved",
+            "flair_bg_color": "1d8663",
+            "flair_color": "fff",
+            "flair_group_id": 41,
+            "moderator": true,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 296,
+            "username": "PiCob",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/picob/{size}/589_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "iPhone to iPhone and keeping media",
+      "id": 74454,
+      "title": "iPhone to iPhone and keeping media",
+      "slug": "iphone-to-iphone-and-keeping-media",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": null,
+      "created_at": "2026-01-25T15:31:31.797Z",
+      "last_posted_at": "2026-01-27T07:41:54.709Z",
+      "bumped": true,
+      "bumped_at": "2026-01-27T07:41:54.709Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 53,
+      "category_id": 10,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 14814,
+            "username": "PauloD",
+            "name": "Paulo",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/p/898d66/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 17396,
+            "username": "anon88132",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/a/ba9def/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Do not delete all data upon account deletion",
+  "id": 73394,
+  "title": "Do not delete all data upon account deletion",
+  "posts_count": 1,
+  "created_at": "2025-12-06T11:53:06.602Z",
+  "views": 49,
+  "reply_count": 0,
+  "like_count": 1,
+  "last_posted_at": "2025-12-06T11:53:06.732Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "do-not-delete-all-data-upon-account-deletion",
+  "category_id": 28,
+  "word_count": 264,
+  "deleted_at": null,
+  "user_id": 34461,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/5/0/50fb6755febc4f719f4fa6af9448d575d1f1958a_2_1024x189.png",
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_73394",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": [
+    {
+      "max_width": null,
+      "max_height": null,
+      "width": 1170,
+      "height": 217,
+      "url": "https://community.signalusers.org/uploads/db3609/original/3X/5/0/50fb6755febc4f719f4fa6af9448d575d1f1958a.png"
+    },
+    {
+      "max_width": 1024,
+      "max_height": 1024,
+      "width": 1024,
+      "height": 189,
+      "url": "https://community.signalusers.org/uploads/db3609/optimized/3X/5/0/50fb6755febc4f719f4fa6af9448d575d1f1958a_2_1024x189.png"
+    }
+  ],
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 34461,
+        "username": "reg67",
+        "name": "",
+        "avatar_template": "/user_avatar/community.signalusers.org/reg67/{size}/54198_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      }
+    ],
+    "created_by": {
+      "id": 34461,
+      "username": "reg67",
+      "name": "",
+      "avatar_template": "/user_avatar/community.signalusers.org/reg67/{size}/54198_2.png"
+    },
+    "last_poster": {
+      "id": 34461,
+      "username": "reg67",
+      "name": "",
+      "avatar_template": "/user_avatar/community.signalusers.org/reg67/{size}/54198_2.png"
+    },
+    "links": [
+      {
+        "url": "https://community.signalusers.org/t/migrate-existing-conversation-to-a-new-contact-number-merge-chats/8139",
+        "title": "Migrate existing conversation to a new contact number / merge chats",
+        "internal": true,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 1,
+        "user_id": 34461,
+        "domain": "community.signalusers.org",
+        "root_domain": "signalusers.org"
+      }
+    ]
+  },
+  "bookmarks": []
+}

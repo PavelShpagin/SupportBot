@@ -1,0 +1,413 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 273395,
+        "name": "Chichi",
+        "username": "Chichi",
+        "avatar_template": "/user_avatar/community.signalusers.org/chichi/{size}/53281_2.png",
+        "created_at": "2025-08-13T12:39:51.109Z",
+        "cooked": "<p>Would love to be able to search for messages reactions, e.g. finding messages marked with a <img src=\"https://community.signalusers.org/images/emoji/apple/heavy_check_mark.png?v=12\" title=\":heavy_check_mark:\" class=\"emoji\" alt=\":heavy_check_mark:\" loading=\"lazy\" width=\"20\" height=\"20\"></p>\n<p>I think most people see reactions as part of the conversation, so it makes sense for search to treat them as such.</p>\n<p>In effect this would let message reactions be used as searchable tags – really handy for finding important messages!</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2025-08-13T12:39:51.109Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 3,
+        "reads": 27,
+        "readers_count": 26,
+        "score": 65.4,
+        "yours": false,
+        "topic_id": 70998,
+        "topic_slug": "search-for-a-message-reaction",
+        "display_username": "Chichi",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 3
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 33806,
+        "hidden": false,
+        "trust_level": 1,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/search-for-a-message-reaction/70998/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      273395
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      185
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "New feature : Pokes",
+      "id": 70123,
+      "title": "New feature : Pokes",
+      "slug": "new-feature-pokes",
+      "posts_count": 9,
+      "reply_count": 2,
+      "highest_post_number": 9,
+      "image_url": null,
+      "created_at": "2025-06-30T17:19:42.217Z",
+      "last_posted_at": "2025-07-01T14:53:57.009Z",
+      "bumped": true,
+      "bumped_at": "2025-07-01T14:53:57.009Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 47,
+      "views": 236,
+      "category_id": 17,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 33373,
+            "username": "newtondotcom",
+            "name": "Robin Augereau",
+            "avatar_template": "/user_avatar/community.signalusers.org/newtondotcom/{size}/52769_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 1499,
+            "username": "CueHD",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/cuehd/{size}/42510_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 27155,
+            "username": "Croissant",
+            "name": "Croissant",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/c/43a26b/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 1497,
+            "username": "najodleglejszy",
+            "name": "(he/him)",
+            "avatar_template": "/user_avatar/community.signalusers.org/najodleglejszy/{size}/1213_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 6038,
+            "username": "goodec",
+            "name": "Chris",
+            "avatar_template": "/user_avatar/community.signalusers.org/goodec/{size}/14726_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "In Contact&rsquo;s info, show which own phone# and usernames it knows",
+      "id": 68828,
+      "title": "In Contact's info, show which own phone# and usernames it knows",
+      "slug": "in-contacts-info-show-which-own-phone-and-usernames-it-knows",
+      "posts_count": 10,
+      "reply_count": 3,
+      "highest_post_number": 10,
+      "image_url": null,
+      "created_at": "2025-04-28T03:10:27.404Z",
+      "last_posted_at": "2025-04-29T10:16:20.039Z",
+      "bumped": true,
+      "bumped_at": "2025-04-29T10:16:20.039Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 5,
+      "views": 131,
+      "category_id": 17,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 32734,
+            "username": "opoier",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/o/ecccb3/{size}.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 1499,
+            "username": "CueHD",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/cuehd/{size}/42510_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 32154,
+            "username": "Delamcode",
+            "name": "Delamcode",
+            "avatar_template": "/user_avatar/community.signalusers.org/delamcode/{size}/51199_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Android student interested in contributing (Kotlin refactors &amp; utilities)",
+      "id": 74466,
+      "title": "Android student interested in contributing (Kotlin refactors & utilities)",
+      "slug": "android-student-interested-in-contributing-kotlin-refactors-utilities",
+      "posts_count": 6,
+      "reply_count": 3,
+      "highest_post_number": 6,
+      "image_url": null,
+      "created_at": "2026-01-26T13:57:14.128Z",
+      "last_posted_at": "2026-02-11T16:51:44.393Z",
+      "bumped": true,
+      "bumped_at": "2026-02-11T16:51:44.393Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 13,
+      "views": 140,
+      "category_id": 22,
+      "featured_link": null,
+      "op_like_count": 4,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 35668,
+            "username": "Deepak_Kambam",
+            "name": "Deepak Kambam",
+            "avatar_template": "/user_avatar/community.signalusers.org/deepak_kambam/{size}/55236_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 2170,
+            "username": "TeeJay82",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/teejay82/{size}/1806_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Search for a message reaction",
+  "id": 70998,
+  "title": "Search for a message reaction",
+  "posts_count": 1,
+  "created_at": "2025-08-13T12:39:51.033Z",
+  "views": 50,
+  "reply_count": 0,
+  "like_count": 3,
+  "last_posted_at": "2025-08-13T12:39:51.109Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "search-for-a-message-reaction",
+  "category_id": 17,
+  "word_count": 58,
+  "deleted_at": null,
+  "user_id": 33806,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_70998",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 33806,
+        "username": "Chichi",
+        "name": "Chichi",
+        "avatar_template": "/user_avatar/community.signalusers.org/chichi/{size}/53281_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 1
+      }
+    ],
+    "created_by": {
+      "id": 33806,
+      "username": "Chichi",
+      "name": "Chichi",
+      "avatar_template": "/user_avatar/community.signalusers.org/chichi/{size}/53281_2.png"
+    },
+    "last_poster": {
+      "id": 33806,
+      "username": "Chichi",
+      "name": "Chichi",
+      "avatar_template": "/user_avatar/community.signalusers.org/chichi/{size}/53281_2.png"
+    }
+  },
+  "bookmarks": []
+}

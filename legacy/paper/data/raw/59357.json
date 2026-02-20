@@ -1,0 +1,498 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 238654,
+        "name": "",
+        "username": "BearVegan",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/b/34f0e0/{size}.png",
+        "created_at": "2024-03-04T17:52:25.806Z",
+        "cooked": "<p>In iOS 17.4 it is possible to set multiple languages for Siri Announcements (for example through headphones/airpods).</p>\n<p>At the moment Signal does not recognise the incoming message and reads in the corresponding language.</p>\n<p>It would be very convenient to have support for this.</p>\n<p><a href=\"https://www.macrumors.com/how-to/siri-read-messages-another-language/\" rel=\"noopener nofollow ugc\">Warning, this site is full of extreme fanboys (macrumors)</a></p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2024-03-04T18:04:11.649Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 9,
+        "reads": 49,
+        "readers_count": 48,
+        "score": 144.8,
+        "yours": false,
+        "topic_id": 59357,
+        "topic_slug": "siri-announcements-with-multiple-language-support",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 2,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://www.macrumors.com/how-to/siri-read-messages-another-language/",
+            "internal": false,
+            "reflection": false,
+            "title": "Get Siri to Read Messages to You in Another Language - MacRumors",
+            "clicks": 9
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 6
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 17433,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/siri-announcements-with-multiple-language-support/59357/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      },
+      {
+        "id": 272153,
+        "name": "",
+        "username": "FloAlex",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/f/cc9497/{size}.png",
+        "created_at": "2025-07-17T08:34:48.774Z",
+        "cooked": "<p>can we discuss here: <a href=\"https://community.signalusers.org/t/announcements-with-siri/18773/17\" class=\"inline-onebox\">Announcements with Siri - #17 by FloAlex</a> ?</p>",
+        "post_number": 3,
+        "post_type": 1,
+        "posts_count": 2,
+        "updated_at": "2025-07-17T08:34:48.774Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 19,
+        "readers_count": 18,
+        "score": 8.8,
+        "yours": false,
+        "topic_id": 59357,
+        "topic_slug": "siri-announcements-with-multiple-language-support",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://community.signalusers.org/t/announcements-with-siri/18773/17",
+            "internal": true,
+            "reflection": false,
+            "title": "Announcements with Siri",
+            "clicks": 14
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 5519,
+        "hidden": false,
+        "trust_level": 1,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/siri-announcements-with-multiple-language-support/59357/3",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      }
+    ],
+    "stream": [
+      238654,
+      272153
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      712
+    ],
+    [
+      2,
+      212
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "OPSEC IMPROVEMENT - Mark sensitive messages for batch deletion",
+      "id": 74635,
+      "title": "OPSEC IMPROVEMENT - Mark sensitive messages for batch deletion",
+      "slug": "opsec-improvement-mark-sensitive-messages-for-batch-deletion",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2026-02-07T16:02:29.126Z",
+      "last_posted_at": "2026-02-07T16:02:29.233Z",
+      "bumped": true,
+      "bumped_at": "2026-02-07T16:02:29.233Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 59,
+      "category_id": 19,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 35808,
+            "username": "zlichtman",
+            "name": "zlichtman",
+            "avatar_template": "/user_avatar/community.signalusers.org/zlichtman/{size}/55880_2.png",
+            "trust_level": 0
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "message transfer management",
+      "id": 73378,
+      "title": "message transfer management",
+      "slug": "message-transfer-management",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": null,
+      "created_at": "2025-12-05T13:22:00.778Z",
+      "last_posted_at": "2025-12-05T14:33:21.104Z",
+      "bumped": true,
+      "bumped_at": "2025-12-05T14:33:21.104Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 1,
+      "views": 50,
+      "category_id": 19,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": true,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 35034,
+            "username": "The_Puppet_Master",
+            "name": "The_Puppet_Master",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/t/c5a1d2/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster, Accepted Answer",
+          "user": {
+            "id": 21723,
+            "username": "eaaac3fdfaff",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/e/41988e/{size}.png",
+            "trust_level": 3
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Native support for FLAC audio playback and preview",
+      "id": 70266,
+      "title": "Native support for FLAC audio playback and preview",
+      "slug": "native-support-for-flac-audio-playback-and-preview",
+      "posts_count": 6,
+      "reply_count": 2,
+      "highest_post_number": 6,
+      "image_url": null,
+      "created_at": "2025-07-06T14:35:48.144Z",
+      "last_posted_at": "2025-07-07T11:07:56.619Z",
+      "bumped": true,
+      "bumped_at": "2025-07-07T11:07:56.619Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 6,
+      "views": 134,
+      "category_id": 19,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 33436,
+            "username": "gotoo77",
+            "name": "gotoo77",
+            "avatar_template": "/user_avatar/community.signalusers.org/gotoo77/{size}/52832_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 33306,
+            "username": "Mher_Hovhannisyan",
+            "name": "Mher Hovhannisyan",
+            "avatar_template": "/user_avatar/community.signalusers.org/mher_hovhannisyan/{size}/52680_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 6659,
+            "username": "Whatnoww",
+            "name": "Whatnoww",
+            "avatar_template": "/user_avatar/community.signalusers.org/whatnoww/{size}/54328_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Siri Announcements with Multiple Language Support",
+  "id": 59357,
+  "title": "Siri Announcements with Multiple Language Support",
+  "posts_count": 2,
+  "created_at": "2024-03-04T17:52:25.750Z",
+  "views": 187,
+  "reply_count": 0,
+  "like_count": 6,
+  "last_posted_at": "2025-07-17T08:34:48.774Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "siri-announcements-with-multiple-language-support",
+  "category_id": 19,
+  "word_count": 93,
+  "deleted_at": null,
+  "user_id": 17433,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_59357",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 3,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 2,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 5519,
+        "username": "FloAlex",
+        "name": "",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/f/cc9497/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 1
+      },
+      {
+        "id": 17433,
+        "username": "BearVegan",
+        "name": "",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/b/34f0e0/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      }
+    ],
+    "created_by": {
+      "id": 17433,
+      "username": "BearVegan",
+      "name": "",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/b/34f0e0/{size}.png"
+    },
+    "last_poster": {
+      "id": 5519,
+      "username": "FloAlex",
+      "name": "",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/f/cc9497/{size}.png"
+    },
+    "links": [
+      {
+        "url": "https://community.signalusers.org/t/announcements-with-siri/18773/17",
+        "title": "Announcements with Siri",
+        "internal": true,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 14,
+        "user_id": 5519,
+        "domain": "community.signalusers.org",
+        "root_domain": "signalusers.org"
+      },
+      {
+        "url": "https://www.macrumors.com/how-to/siri-read-messages-another-language/",
+        "title": "Get Siri to Read Messages to You in Another Language - MacRumors",
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 9,
+        "user_id": 17433,
+        "domain": "www.macrumors.com",
+        "root_domain": "macrumors.com"
+      }
+    ]
+  },
+  "bookmarks": []
+}

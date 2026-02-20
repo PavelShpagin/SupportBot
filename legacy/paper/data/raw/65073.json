@@ -1,0 +1,393 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 256101,
+        "name": "",
+        "username": "bjorn",
+        "avatar_template": "/user_avatar/community.signalusers.org/bjorn/{size}/49695_2.png",
+        "created_at": "2024-11-22T18:27:37.819Z",
+        "cooked": "<p>Being able to share your screen over a Signal group call is a fantastic feature.</p>\n<p>A small change that would make it even better is the ability to zoom the shared screen +/- to accomodate for different participants having different screen sizes. A 2560x1600 shared screen can be difficult to read on a 1280x720 notebook or even a phone.</p>\n<p>Also, when sharing text, resizing the image tends to make the text blurry and hard to read. Having an option to resize the image to “1:1” or “100%”, i.e showing the shared image at the original resolution, remedies this problem and makes it much more ergonomic.</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2024-11-22T18:27:37.819Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 2,
+        "reads": 34,
+        "readers_count": 33,
+        "score": 76.8,
+        "yours": false,
+        "topic_id": 65073,
+        "topic_slug": "zooming-shared-screen",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 4
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 30818,
+        "hidden": false,
+        "trust_level": 0,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/zooming-shared-screen/65073/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      256101
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      449
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Content Protection preference change prior to linking a device",
+      "id": 73377,
+      "title": "Content Protection preference change prior to linking a device",
+      "slug": "content-protection-preference-change-prior-to-linking-a-device",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2025-12-05T13:21:56.976Z",
+      "last_posted_at": "2025-12-05T13:21:57.103Z",
+      "bumped": true,
+      "bumped_at": "2025-12-05T13:21:57.103Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 41,
+      "category_id": 20,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 35050,
+            "username": "Dick.Durstein",
+            "name": "Grey",
+            "avatar_template": "/user_avatar/community.signalusers.org/dick.durstein/{size}/54990_2.png",
+            "trust_level": 1
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Automatic Download zip/rar files option.",
+      "id": 71187,
+      "title": "Automatic Download zip/rar files option.",
+      "slug": "automatic-download-zip-rar-files-option",
+      "posts_count": 3,
+      "reply_count": 0,
+      "highest_post_number": 3,
+      "image_url": null,
+      "created_at": "2025-08-23T03:30:23.595Z",
+      "last_posted_at": "2025-10-01T10:13:41.466Z",
+      "bumped": true,
+      "bumped_at": "2025-10-01T10:13:41.466Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 77,
+      "category_id": 20,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 33878,
+            "username": "whatohyou01",
+            "name": "whatohyou01",
+            "avatar_template": "/user_avatar/community.signalusers.org/whatohyou01/{size}/53361_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 33306,
+            "username": "Mher_Hovhannisyan",
+            "name": "Mher Hovhannisyan",
+            "avatar_template": "/user_avatar/community.signalusers.org/mher_hovhannisyan/{size}/52680_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Blocked contacts should not be able to see my new profile pictures or new names or any other profile update",
+      "id": 69865,
+      "title": "Blocked contacts should not be able to see my new profile pictures or new names or any other profile update",
+      "slug": "blocked-contacts-should-not-be-able-to-see-my-new-profile-pictures-or-new-names-or-any-other-profile-update",
+      "posts_count": 13,
+      "reply_count": 8,
+      "highest_post_number": 13,
+      "image_url": null,
+      "created_at": "2025-06-20T04:08:48.788Z",
+      "last_posted_at": "2025-06-23T22:05:28.601Z",
+      "bumped": true,
+      "bumped_at": "2025-06-23T22:05:28.601Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 14,
+      "views": 225,
+      "category_id": 20,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 33272,
+            "username": "speceh",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/s/f0a364/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 2521,
+            "username": "Herohtar",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+            "primary_group_name": "volunteer_moderators",
+            "flair_name": "volunteer_moderators",
+            "flair_url": "shield-halved",
+            "flair_bg_color": "1d8663",
+            "flair_color": "fff",
+            "flair_group_id": 41,
+            "moderator": true,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 1499,
+            "username": "CueHD",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/cuehd/{size}/42510_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Zooming shared screen",
+  "id": 65073,
+  "title": "Zooming shared screen",
+  "posts_count": 1,
+  "created_at": "2024-11-22T18:27:37.774Z",
+  "views": 76,
+  "reply_count": 0,
+  "like_count": 4,
+  "last_posted_at": "2024-11-22T18:27:37.819Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "zooming-shared-screen",
+  "category_id": 20,
+  "word_count": 106,
+  "deleted_at": null,
+  "user_id": 30818,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_65073",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 30818,
+        "username": "bjorn",
+        "name": "",
+        "avatar_template": "/user_avatar/community.signalusers.org/bjorn/{size}/49695_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 0
+      }
+    ],
+    "created_by": {
+      "id": 30818,
+      "username": "bjorn",
+      "name": "",
+      "avatar_template": "/user_avatar/community.signalusers.org/bjorn/{size}/49695_2.png"
+    },
+    "last_poster": {
+      "id": 30818,
+      "username": "bjorn",
+      "name": "",
+      "avatar_template": "/user_avatar/community.signalusers.org/bjorn/{size}/49695_2.png"
+    }
+  },
+  "bookmarks": []
+}

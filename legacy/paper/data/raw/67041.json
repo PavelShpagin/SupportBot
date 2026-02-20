@@ -1,0 +1,422 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 261643,
+        "name": "Scott Lewis",
+        "username": "scottslewis",
+        "avatar_template": "/user_avatar/community.signalusers.org/scottslewis/{size}/48722_2.png",
+        "created_at": "2025-02-19T23:02:53.443Z",
+        "cooked": "<p>I understand that signal-cli is not supported here, but I thought I would look for help here anyway.</p>\n<p>There is this issue on signal-cli to add support for sending stories:</p>\n<aside class=\"onebox githubissue\" data-onebox-src=\"https://github.com/AsamK/signal-cli/issues/1592\">\n  <header class=\"source\">\n\n      <a href=\"https://github.com/AsamK/signal-cli/issues/1592\" target=\"_blank\" rel=\"noopener nofollow ugc\">github.com/AsamK/signal-cli</a>\n  </header>\n\n  <article class=\"onebox-body\">\n    <div class=\"github-row\">\n  <div class=\"github-icon-container\" title=\"Issue\" data-github-private-repo=\"false\">\n\t  <svg width=\"60\" height=\"60\" class=\"github-icon\" viewBox=\"0 0 14 16\" aria-hidden=\"true\"><path fill-rule=\"evenodd\" d=\"M7 2.3c3.14 0 5.7 2.56 5.7 5.7s-2.56 5.7-5.7 5.7A5.71 5.71 0 0 1 1.3 8c0-3.14 2.56-5.7 5.7-5.7zM7 1C3.14 1 0 4.14 0 8s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7zm1 3H6v5h2V4zm0 6H6v2h2v-2z\"></path></svg>\n  </div>\n\n  <div class=\"github-info-container\">\n    <h4>\n      <a href=\"https://github.com/AsamK/signal-cli/issues/1592\" target=\"_blank\" rel=\"noopener nofollow ugc\">[Feature Request] Add stories compatibility</a>\n    </h4>\n\n    <div class=\"github-info\">\n      <div class=\"date\">\n        opened <span class=\"discourse-local-date\" data-format=\"ll\" data-date=\"2024-09-24\" data-time=\"10:37:12\" data-timezone=\"UTC\">10:37AM - 24 Sep 24 UTC</span>\n      </div>\n\n\n      <div class=\"user\">\n        <a href=\"https://github.com/LunarN0v4\" target=\"_blank\" rel=\"noopener nofollow ugc\">\n          <img alt=\"\" src=\"https://community.signalusers.org/uploads/db3609/original/3X/f/a/faf1431c545aac1493dfc095f622d743a0a5faac.png\" class=\"onebox-avatar-inline\" width=\"20\" height=\"20\" data-dominant-color=\"F0E1E6\">\n          LunarN0v4\n        </a>\n      </div>\n    </div>\n\n    <div class=\"labels\">\n        <span style=\"display:inline-block;margin-top:2px;background-color: #B8B8B8;padding: 2px;border-radius: 4px;color: #fff;margin-left: 3px;\">\n          enhancement\n        </span>\n    </div>\n  </div>\n</div>\n\n  <div class=\"github-row\">\n    <p class=\"github-body-container\">Adding support for stories, including managing story groups would be useful.  \n<span class=\"show-more-container\"><a href=\"\" rel=\"noopener\" class=\"show-more\">…</a></span><span class=\"excerpt hidden\">I'm making a bot which manages and creates stories for me, so I'd love to see this be added as a feature.</span></p>\n  </div>\n\n  </article>\n\n  <div class=\"onebox-metadata\">\n    \n    \n  </div>\n\n  <div style=\"clear: both\"></div>\n</aside>\n\n<p>The pr recent I recently contributed:</p>\n<aside class=\"onebox githubpullrequest\" data-onebox-src=\"https://github.com/AsamK/signal-cli/pull/1713\">\n  <header class=\"source\">\n\n      <a href=\"https://github.com/AsamK/signal-cli/pull/1713\" target=\"_blank\" rel=\"noopener nofollow ugc\">github.com/AsamK/signal-cli</a>\n  </header>\n\n  <article class=\"onebox-body\">\n    <div class=\"github-row\" data-github-private-repo=\"false\">\n\n\n\n    <div class=\"github-icon-container\" title=\"Pull Request\">\n      <svg width=\"60\" height=\"60\" class=\"github-icon\" viewBox=\"0 0 12 16\" aria-hidden=\"true\"><path fill-rule=\"evenodd\" d=\"M11 11.28V5c-.03-.78-.34-1.47-.94-2.06C9.46 2.35 8.78 2.03 8 2H7V0L4 3l3 3V4h1c.27.02.48.11.69.31.21.2.3.42.31.69v6.28A1.993 1.993 0 0 0 10 15a1.993 1.993 0 0 0 1-3.72zm-1 2.92c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zM4 3c0-1.11-.89-2-2-2a1.993 1.993 0 0 0-1 3.72v6.56A1.993 1.993 0 0 0 2 15a1.993 1.993 0 0 0 1-3.72V4.72c.59-.34 1-.98 1-1.72zm-.8 10c0 .66-.55 1.2-1.2 1.2-.65 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z\"></path></svg>\n    </div>\n\n  <div class=\"github-info-container\">\n\n\n\n      <h4>\n        <a href=\"https://github.com/AsamK/signal-cli/pull/1713\" target=\"_blank\" rel=\"noopener nofollow ugc\">First cut at sendStoryMessge issue #1592</a>\n      </h4>\n\n    <div class=\"branches\">\n      <code>master</code> ← <code>scottslewis:master</code>\n    </div>\n\n      <div class=\"github-info\">\n        <div class=\"date\">\n          opened <span class=\"discourse-local-date\" data-format=\"ll\" data-date=\"2025-02-18\" data-time=\"00:59:53\" data-timezone=\"UTC\">12:59AM - 18 Feb 25 UTC</span>\n        </div>\n\n        <div class=\"user\">\n          <a href=\"https://github.com/scottslewis\" target=\"_blank\" rel=\"noopener nofollow ugc\">\n            <img alt=\"\" src=\"https://community.signalusers.org/uploads/db3609/original/3X/7/6/76eee6d3920baf8551c36072713a79fda2b73237.jpeg\" class=\"onebox-avatar-inline\" width=\"20\" height=\"20\" data-dominant-color=\"715750\">\n            scottslewis\n          </a>\n        </div>\n\n        <div class=\"lines\" title=\"6 commits changed 7 files with 213 additions and 31 deletions\">\n          <a href=\"https://github.com/AsamK/signal-cli/pull/1713/files\" target=\"_blank\" rel=\"noopener nofollow ugc\">\n            <span class=\"added\">+213</span>\n            <span class=\"removed\">-31</span>\n          </a>\n        </div>\n      </div>\n  </div>\n</div>\n\n  <div class=\"github-row\">\n    <p class=\"github-body-container\">For issue #1592 \n\nWith the above changes running in jsonrpc mode, if this is p<span class=\"show-more-container\"><a href=\"https://github.com/AsamK/signal-cli/pull/1713\" target=\"_blank\" rel=\"noopener nofollow ugc\" class=\"show-more\">…</a></span><span class=\"excerpt hidden\">asted into console:\n\n{\"jsonrpc\":\"2.0\",\"method\":\"send\",\"params\":{\"attachment\":\"C:\\\\Users\\\\slewi\\\\Desktop\\\\slewis.PNG\",\"story\":true,\"group-id\":\"JTJ9xDBSHH3UNI2wSGfC8iBHNC/gyJfzAoh4R5ge2ow=\",\"message\":\"MyMESSAGE1\"},\"id\":17}\n\nwhere there is a slewis.PNG image file, note new property \"story\":true, and group-id is an existing group of my creation with one other receiver in the group.  The server responds:\n\n{\"jsonrpc\":\"2.0\",\"result\":{\"results\":[{\"recipientAddress\":{\"uuid\":\"f483a783-d1e3-4c30-9373-8d22530b5353\",\"number\":\"+19712072518\"},\"groupId\":\"JTJ9xDBSHH3UNI2wSGfC8iBHNC/gyJfzAoh4R5ge2ow=\",\"type\":\"SUCCESS\"}],\"timestamp\":1739838735451},\"id\":17}\n\nBut *nothing* gets through to any of the clients (i.e. the message/image does not appear for either member of the group, nor does it appear in other clients of mine as a posted story message.  \n\nIf, however, I post this (no \"story\":true):\n\n{\"jsonrpc\":\"2.0\",\"method\":\"send\",\"params\":{\"attachment\":\"C:\\\\Users\\\\slewi\\\\Desktop\\\\slewis.PNG\",\"group-id\":\"JTJ9xDBSHH3UNI2wSGfC8iBHNC/gyJfzAoh4R5ge2ow=\",\"message\":\"MyMESSAGE1\"},\"id\":16}\n{\"jsonrpc\":\"2.0\",\"result\":{\"results\":[{\"recipientAddress\":{\"uuid\":\"f483a783-d1e3-4c30-9373-8d22530b5353\",\"number\":\"+19712072518\"},\"groupId\":\"JTJ9xDBSHH3UNI2wSGfC8iBHNC/gyJfzAoh4R5ge2ow=\",\"type\":\"SUCCESS\"}],\"timestamp\":1739839925436},\"id\":16}\n\nThe following is retruned in response\n\n{\"jsonrpc\":\"2.0\",\"method\":\"receive\",\"params\":{\"envelope\":{\"source\":\"+19712072518\",\"sourceNumber\":\"+19712072518\",\"sourceUuid\":\"f483a783-d1e3-4c30-9373-8d22530b5353\",\"sourceName\":\"Karen\",\"sourceDevice\":2,\"timestamp\":1739839987168,\"serverReceivedTimestamp\":1739839987271,\"serverDeliveredTimestamp\":1739839987272,\"receiptMessage\":{\"when\":1739839987168,\"isDelivery\":true,\"isRead\":false,\"isViewed\":false,\"timestamps\":[1739839925436]}},\"account\":\"+15037568719\"}}\n{\"jsonrpc\":\"2.0\",\"method\":\"receive\",\"params\":{\"envelope\":{\"source\":\"+19712072518\",\"sourceNumber\":\"+19712072518\",\"sourceUuid\":\"f483a783-d1e3-4c30-9373-8d22530b5353\",\"sourceName\":\"Karen\",\"sourceDevice\":1,\"timestamp\":1739839987427,\"serverReceivedTimestamp\":1739839987439,\"serverDeliveredTimestamp\":1739839987440,\"receiptMessage\":{\"when\":1739839987427,\"isDelivery\":true,\"isRead\":false,\"isViewed\":false,\"timestamps\":[1739839925436]}},\"account\":\"+15037568719\"}}\n\nAnd both the image and the message get through just fine...using the existing sendGroupMessage\n\nIn debugging, one thing that looks a little suspect is that on SendHelper.java:711 is thsi code:\n\n       final GroupSendEndorsements groupSendEndorsements = null;//TODO\n\nAnd the null groupSendEndorsements is subsequently used in the org.whispersystems.signalservice.api.SignalServiceMessageSender.sendGroupStory(DistributionId, Optional&lt;byte[]&gt;, List&lt;SignalServiceAddress&gt;, List&lt;UnidentifiedAccess&gt;, GroupSendEndorsements, boolean, SignalServiceStoryMessage, long, Set&lt;SignalServiceStoryMessageRecipient&gt;, PartialSendBatchCompleteListener)\n\nWhich ends up calling \n\norg.whispersystems.signalservice.api.SignalServiceMessageSender.sendGroupMessage(DistributionId, List&lt;SignalServiceAddress&gt;, List&lt;UnidentifiedAccess&gt;, GroupSendEndorsements, long, Content, ContentHint, Optional&lt;byte[]&gt;, boolean, SenderKeyGroupEvents, boolean, boolean)\n\nwhich has this line 2524 in SignalServiceMessageSender\n\n    SealedSenderAccess sealedSenderAccess = SealedSenderAccess.forGroupSend(groupSendEndorsements, unidentifiedAccess, story);\n\nand groupSendEndorsements is null.   Perhaps groupSendEndorsements needs to be non-null for the server to accept it?\n\nThanksinadvance for any help debugging this.   Unfortunately, I do not know the Android Client or Desktop Client code well enough (nor have a dev environment for it yet to debug)...or I might be able to trace through the sending of a story through those UIs, to look at what arguments are passed into \n\norg.whispersystems.signalservice.api.SignalServiceMessageSender.sendGroupStory(DistributionId, Optional&lt;byte[]&gt;, List&lt;SignalServiceAddress&gt;, List&lt;UnidentifiedAccess&gt;, GroupSendEndorsements, boolean, SignalServiceStoryMessage, long, Set&lt;SignalServiceStoryMessageRecipient&gt;, PartialSendBatchCompleteListener)</span></p>\n  </div>\n\n  </article>\n\n  <div class=\"onebox-metadata\">\n    \n    \n  </div>\n\n  <div style=\"clear: both\"></div>\n</aside>\n\n<p>Gets a success response in testing, but none of the sender clients get updated and nor do other target group members get updated…i.e. the story doesn’t appear in the sender’s story list nor in the target group.</p>\n<p>I was hoping that someone could point me to the source code in either the Android client or the Desktop client that does the story creation and sending successfully.  As described on the issue it appears that perhaps the problem is not having groupSendEndorsements, but that’s just my theory.</p>\n<p>Also…is there a way to turn on debug logging in the Android client and/or the desktop client?  That might help also.</p>\n<p>Thanksinadvance.</p>",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 1,
+        "updated_at": "2025-02-19T23:02:53.443Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 4,
+        "reads": 29,
+        "readers_count": 28,
+        "score": 25.8,
+        "yours": false,
+        "topic_id": 67041,
+        "topic_slug": "story-sending-in-signal-cli",
+        "display_username": "Scott Lewis",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://github.com/AsamK/signal-cli/issues/1592",
+            "internal": false,
+            "reflection": false,
+            "title": "[Feature Request] Add stories compatibility · Issue #1592 · AsamK/signal-cli · GitHub",
+            "clicks": 5
+          },
+          {
+            "url": "https://github.com/AsamK/signal-cli/pull/1713",
+            "internal": false,
+            "reflection": false,
+            "title": "First cut at sendStoryMessge issue #1592 by scottslewis · Pull Request #1713 · AsamK/signal-cli · GitHub",
+            "clicks": 0
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 29356,
+        "hidden": false,
+        "trust_level": 1,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/story-sending-in-signal-cli/67041/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      }
+    ],
+    "stream": [
+      261643
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      360
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "How to test in Android Studio without using personal account?",
+      "id": 73298,
+      "title": "How to test in Android Studio without using personal account?",
+      "slug": "how-to-test-in-android-studio-without-using-personal-account",
+      "posts_count": 2,
+      "reply_count": 0,
+      "highest_post_number": 2,
+      "image_url": null,
+      "created_at": "2025-12-02T19:00:30.381Z",
+      "last_posted_at": "2025-12-02T19:02:20.651Z",
+      "bumped": true,
+      "bumped_at": "2025-12-02T19:02:20.651Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 0,
+      "views": 54,
+      "category_id": 22,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 35016,
+            "username": "dusktext",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ecd19e/{size}.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 2521,
+            "username": "Herohtar",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/herohtar/{size}/43780_2.png",
+            "primary_group_name": "volunteer_moderators",
+            "flair_name": "volunteer_moderators",
+            "flair_url": "shield-halved",
+            "flair_bg_color": "1d8663",
+            "flair_color": "fff",
+            "flair_group_id": 41,
+            "moderator": true,
+            "trust_level": 4
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Anonymity of user phone numbers",
+      "id": 70263,
+      "title": "Anonymity of user phone numbers",
+      "slug": "anonymity-of-user-phone-numbers",
+      "posts_count": 10,
+      "reply_count": 6,
+      "highest_post_number": 10,
+      "image_url": null,
+      "created_at": "2025-07-06T11:00:23.426Z",
+      "last_posted_at": "2025-07-07T21:58:04.530Z",
+      "bumped": true,
+      "bumped_at": "2025-07-07T21:58:04.530Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 2,
+      "views": 236,
+      "category_id": 22,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 33345,
+            "username": "AKN_01",
+            "name": null,
+            "avatar_template": "/user_avatar/community.signalusers.org/akn_01/{size}/52842_2.png",
+            "trust_level": 1
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 26763,
+            "username": "zetabeta",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/zetabeta/{size}/54310_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 24690,
+            "username": "ElPink",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/elpink/{size}/52764_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Development of Signal-Android",
+      "id": 68253,
+      "title": "Development of Signal-Android",
+      "slug": "development-of-signal-android",
+      "posts_count": 6,
+      "reply_count": 4,
+      "highest_post_number": 6,
+      "image_url": null,
+      "created_at": "2025-04-04T04:32:20.278Z",
+      "last_posted_at": "2025-04-12T18:52:49.684Z",
+      "bumped": true,
+      "bumped_at": "2025-04-12T18:52:49.684Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 2,
+      "views": 256,
+      "category_id": 22,
+      "featured_link": null,
+      "op_like_count": 0,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 32456,
+            "username": "Aakash",
+            "name": "AR",
+            "avatar_template": "/user_avatar/community.signalusers.org/aakash/{size}/51745_2.png",
+            "trust_level": 0
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 31995,
+            "username": "Noah_Thomson",
+            "name": "Noah Thomson",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/n/7c8e57/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 31808,
+            "username": "Vadym_Taran",
+            "name": "Apex",
+            "avatar_template": "/user_avatar/community.signalusers.org/vadym_taran/{size}/52285_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Story sending in signal-cli",
+  "id": 67041,
+  "title": "Story sending in signal-cli",
+  "posts_count": 1,
+  "created_at": "2025-02-19T23:02:53.354Z",
+  "views": 78,
+  "reply_count": 0,
+  "like_count": 0,
+  "last_posted_at": "2025-02-19T23:02:53.443Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "story-sending-in-signal-cli",
+  "category_id": 22,
+  "word_count": 169,
+  "deleted_at": null,
+  "user_id": 29356,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": null,
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_67041",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 1,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 1,
+  "show_read_indicator": false,
+  "thumbnails": null,
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 29356,
+        "username": "scottslewis",
+        "name": "Scott Lewis",
+        "avatar_template": "/user_avatar/community.signalusers.org/scottslewis/{size}/48722_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 1
+      }
+    ],
+    "created_by": {
+      "id": 29356,
+      "username": "scottslewis",
+      "name": "Scott Lewis",
+      "avatar_template": "/user_avatar/community.signalusers.org/scottslewis/{size}/48722_2.png"
+    },
+    "last_poster": {
+      "id": 29356,
+      "username": "scottslewis",
+      "name": "Scott Lewis",
+      "avatar_template": "/user_avatar/community.signalusers.org/scottslewis/{size}/48722_2.png"
+    },
+    "links": [
+      {
+        "url": "https://github.com/AsamK/signal-cli/issues/1592",
+        "title": "[Feature Request] Add stories compatibility · Issue #1592 · AsamK/signal-cli · GitHub",
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 5,
+        "user_id": 29356,
+        "domain": "github.com",
+        "root_domain": "github.com"
+      }
+    ]
+  },
+  "bookmarks": []
+}

@@ -1,0 +1,932 @@
+{
+  "post_stream": {
+    "posts": [
+      {
+        "id": 267042,
+        "name": "👊🇺🇸🔥",
+        "username": "Avitus",
+        "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+        "created_at": "2025-04-27T15:48:10.284Z",
+        "cooked": "<p>Kinda funny when their server isn’t open-source:</p>\n<aside class=\"onebox allowlistedgeneric\" data-onebox-src=\"https://www.techradar.com/vpn/vpn-privacy-security/telegram-pledges-to-exit-the-market-rather-than-undermine-encryption-with-backdoors\">\n  <header class=\"source\">\n      <img src=\"https://community.signalusers.org/uploads/db3609/original/3X/f/2/f2da18082a3a04fadd0d4e74d62f7c25bb1c9f86.png\" class=\"site-icon\" data-dominant-color=\"E40784\" width=\"16\" height=\"16\">\n\n      <a href=\"https://www.techradar.com/vpn/vpn-privacy-security/telegram-pledges-to-exit-the-market-rather-than-undermine-encryption-with-backdoors\" target=\"_blank\" rel=\"noopener\" title=\"03:21PM - 23 April 2025\">TechRadar – 23 Apr 25</a>\n  </header>\n\n  <article class=\"onebox-body\">\n    <div class=\"aspect-image\" style=\"--aspect-ratio:690/387;\"><img src=\"https://community.signalusers.org/uploads/db3609/optimized/3X/2/d/2d360b6516f15b998685e0429494adf279d76d9b_2_690x388.jpeg\" class=\"thumbnail\" data-dominant-color=\"5174B0\" width=\"690\" height=\"388\"></div>\n\n<h3><a href=\"https://www.techradar.com/vpn/vpn-privacy-security/telegram-pledges-to-exit-the-market-rather-than-undermine-encryption-with-backdoors\" target=\"_blank\" rel=\"noopener\">Telegram pledges to exit the market rather than \"undermine encryption with...</a></h3>\n\n  <p>\"We don’t trade privacy for market share,\" said Telegram's CEO, Pavel Durov</p>\n\n\n  </article>\n\n  <div class=\"onebox-metadata\">\n    \n    \n  </div>\n\n  <div style=\"clear: both\"></div>\n</aside>\n",
+        "post_number": 1,
+        "post_type": 1,
+        "posts_count": 6,
+        "updated_at": "2025-04-27T15:48:10.284Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 7,
+        "reads": 61,
+        "readers_count": 60,
+        "score": 77.2,
+        "yours": false,
+        "topic_id": 68816,
+        "topic_slug": "telegram-pledges-to-exit-the-market-rather-than-undermine-encryption-with-backdoors",
+        "display_username": "👊🇺🇸🔥",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://www.techradar.com/vpn/vpn-privacy-security/telegram-pledges-to-exit-the-market-rather-than-undermine-encryption-with-backdoors",
+            "internal": false,
+            "reflection": false,
+            "title": "Telegram pledges to exit the market rather than \"undermine encryption with backdoors\" | TechRadar",
+            "clicks": 10
+          }
+        ],
+        "read": true,
+        "user_title": "",
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 2
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 7657,
+        "hidden": false,
+        "trust_level": 3,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/telegram-pledges-to-exit-the-market-rather-than-undermine-encryption-with-backdoors/68816/1",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null,
+        "can_vote": false
+      },
+      {
+        "id": 267045,
+        "name": "",
+        "username": "svazzoler",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/s/aca169/{size}.png",
+        "created_at": "2025-04-27T18:57:27.433Z",
+        "cooked": "<p>Allow me to be cheeky for a minute - <em>what encryption?</em></p>\n<p>In a more serious note, this feels just like marketing… France just arrested their founder and they released all the plaintext chats and metadata that was requested… so it’s not like any encryption law makes any difference in Telegram’s case</p>",
+        "post_number": 2,
+        "post_type": 1,
+        "posts_count": 6,
+        "updated_at": "2025-04-27T18:59:01.252Z",
+        "reply_count": 1,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 53,
+        "readers_count": 52,
+        "score": 150.6,
+        "yours": false,
+        "topic_id": 68816,
+        "topic_slug": "telegram-pledges-to-exit-the-market-rather-than-undermine-encryption-with-backdoors",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "",
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 9
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 5389,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/telegram-pledges-to-exit-the-market-rather-than-undermine-encryption-with-backdoors/68816/2",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 267050,
+        "name": "Whatnoww",
+        "username": "Whatnoww",
+        "avatar_template": "/user_avatar/community.signalusers.org/whatnoww/{size}/54328_2.png",
+        "created_at": "2025-04-27T20:25:07.062Z",
+        "cooked": "<aside class=\"quote no-group\" data-username=\"svazzoler\" data-post=\"2\" data-topic=\"68816\">\n<div class=\"title\">\n<div class=\"quote-controls\"></div>\n<img alt=\"\" width=\"24\" height=\"24\" src=\"https://community.signalusers.org/letter_avatar_proxy/v4/letter/s/aca169/48.png\" class=\"avatar\"> svazzoler:</div>\n<blockquote>\n<p>France just arrested their founder and they released all the plaintext chats and metadata that was requested…</p>\n</blockquote>\n</aside>\n<p>Do we have any sources for this?</p>",
+        "post_number": 3,
+        "post_type": 1,
+        "posts_count": 6,
+        "updated_at": "2025-04-27T20:25:07.062Z",
+        "reply_count": 2,
+        "reply_to_post_number": 2,
+        "quote_count": 1,
+        "incoming_link_count": 0,
+        "reads": 52,
+        "readers_count": 51,
+        "score": 50.4,
+        "yours": false,
+        "topic_id": 68816,
+        "topic_slug": "telegram-pledges-to-exit-the-market-rather-than-undermine-encryption-with-backdoors",
+        "display_username": "Whatnoww",
+        "primary_group_name": "top_contributors",
+        "flair_name": "top_contributors",
+        "flair_url": "compass",
+        "flair_bg_color": "6058CA",
+        "flair_color": "fff",
+        "flair_group_id": 48,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "read": true,
+        "user_title": "Top Contributor",
+        "title_is_group": true,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 2
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 6659,
+        "hidden": false,
+        "trust_level": 4,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/telegram-pledges-to-exit-the-market-rather-than-undermine-encryption-with-backdoors/68816/3",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 267078,
+        "name": "",
+        "username": "DirkPitt1",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/d/74df32/{size}.png",
+        "created_at": "2025-04-28T08:42:40.460Z",
+        "cooked": "<p>Not direct confirmation that authorities have been given full access to everything, but indication that since Durov’s arrest Telegram is more willing to cooperate with law enforcement.</p><aside class=\"onebox allowlistedgeneric\" data-onebox-src=\"https://zaufanatrzeciastrona.pl/post/27-krotny-wzrost-liczby-danych-udostepnianych-przez-telegrama-organom-scigania-w-polsce/\">\n  <header class=\"source\">\n      <img src=\"https://community.signalusers.org/uploads/db3609/original/3X/c/b/cb4d594eab4205a80fb4aa2c68fede4571160f32.png\" class=\"site-icon\" data-dominant-color=\"EC535F\" width=\"32\" height=\"32\">\n\n      <a href=\"https://zaufanatrzeciastrona.pl/post/27-krotny-wzrost-liczby-danych-udostepnianych-przez-telegrama-organom-scigania-w-polsce/\" target=\"_blank\" rel=\"noopener\">Zaufana Trzecia Strona</a>\n  </header>\n\n  <article class=\"onebox-body\">\n    <div class=\"aspect-image\" style=\"--aspect-ratio:690/388;\"><img src=\"https://community.signalusers.org/uploads/db3609/optimized/3X/e/0/e061b5f0559a80ef0911e66c4472e479602fcec7_2_690x388.jpeg\" class=\"thumbnail\" data-dominant-color=\"27B2C7\" width=\"690\" height=\"388\"></div>\n\n<h3><a href=\"https://zaufanatrzeciastrona.pl/post/27-krotny-wzrost-liczby-danych-udostepnianych-przez-telegrama-organom-scigania-w-polsce/\" target=\"_blank\" rel=\"noopener\">27-krotny wzrost liczby danych udostępnianych przez Telegrama organom ścigania...</a></h3>\n\n  <p>Formatowanie dysków u telegramowych oszustów robi brrrr - to najnowszy trend w społeczności, która przez kilka lat bezgranicznie ufała komunikatorowi, któremu ufać nie powinna. Czy…</p>\n\n\n  </article>\n\n  <div class=\"onebox-metadata\">\n    \n    \n  </div>\n\n  <div style=\"clear: both\"></div>\n</aside>\n\n<blockquote>\n<p>On 24 August, the Durov Pave landed in Paris, where he was <a href=\"https://en.wikipedia.org/wiki/Arrest_and_indictment_of_Pavel_Durov\">detained by local services</a> on charges of auxiliary in many types of crimes […] At the same time, Telegram’s policy on the treatment of law enforcement inquiries has magically changed from his release from custody. The best results will be shown by the following two images, containing statistics on the usability of Telegram users’ data to Polish law enforcement authorities.</p>\n<p><a href=\"https://zaufanatrzeciastrona.pl/wp-content/uploads/2025/01/image.png\"><img src=\"https://community.signalusers.org/uploads/db3609/original/3X/8/c/8c39f91f363c8f9e1eabf81784417ce88b29bd2b.png\" alt=\"\" data-base62-sha1=\"k0v3gGbm3BYRVbmbDVevjtN2EVt\" width=\"580\" height=\"234\" role=\"presentation\"></a></p>\n<p>We see on them reports from the telegram bot <span class=\"mention\">@transparency</span>, providing statistics for the country. […]</p>\n<p>From January 1 to September 30, 2024, Telegram replied 13 queries, giving data to 53 users. At the same time, in the entire 2024, he answered 158 queries, giving the data of 546 users. This means that for the first 9 months of 2024, Telegram shared an average of data from less than 6 users a month, while in the last quarter this number increased more than 27-fold, to 164!<br>\n(Translated with Firefox)</p>\n</blockquote>",
+        "post_number": 4,
+        "post_type": 1,
+        "posts_count": 6,
+        "updated_at": "2025-04-28T08:47:45.697Z",
+        "reply_count": 0,
+        "reply_to_post_number": 3,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 43,
+        "readers_count": 42,
+        "score": 68.6,
+        "yours": false,
+        "topic_id": 68816,
+        "topic_slug": "telegram-pledges-to-exit-the-market-rather-than-undermine-encryption-with-backdoors",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 2,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://zaufanatrzeciastrona.pl/post/27-krotny-wzrost-liczby-danych-udostepnianych-przez-telegrama-organom-scigania-w-polsce/",
+            "internal": false,
+            "reflection": false,
+            "title": "27-krotny wzrost liczby danych udostępnianych przez Telegrama organom ścigania w Polsce | Zaufana Trzecia Strona",
+            "clicks": 1
+          },
+          {
+            "url": "https://zaufanatrzeciastrona.pl/wp-content/uploads/2025/01/image.png",
+            "internal": false,
+            "reflection": false,
+            "title": "image.png",
+            "clicks": 1
+          },
+          {
+            "url": "https://en.wikipedia.org/wiki/Arrest_and_indictment_of_Pavel_Durov",
+            "internal": false,
+            "reflection": false,
+            "title": "Arrest and indictment of Pavel Durov - Wikipedia",
+            "clicks": 0
+          }
+        ],
+        "read": true,
+        "user_title": "Regular",
+        "title_is_group": false,
+        "reply_to_user": {
+          "id": 6659,
+          "username": "Whatnoww",
+          "name": "Whatnoww",
+          "avatar_template": "/user_avatar/community.signalusers.org/whatnoww/{size}/54328_2.png"
+        },
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 4
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 5448,
+        "hidden": false,
+        "trust_level": 3,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": "downloaded local copies of images",
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/telegram-pledges-to-exit-the-market-rather-than-undermine-encryption-with-backdoors/68816/4",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 267105,
+        "name": "",
+        "username": "zetabeta",
+        "avatar_template": "/user_avatar/community.signalusers.org/zetabeta/{size}/54310_2.png",
+        "created_at": "2025-04-28T14:18:49.434Z",
+        "cooked": "<p><a href=\"https://www.reuters.com/article/technology/russia-lifts-ban-on-telegram-messaging-app-after-failing-to-block-it-idUSKBN23P2DY/\" rel=\"noopener nofollow ugc\">https://www.reuters.com/article/technology/russia-lifts-ban-on-telegram-messaging-app-after-failing-to-block-it-idUSKBN23P2DY/</a></p>\n<p>source says, that telegram made some kind of deal with russian government in that time, i think in 2020. deal was about combating terrorism and extremism.</p>\n<p>i think pavel durov and telegram is playing some kind of victim card and publicity stunt. we are being targeted and try to fight for encryption and something. telegram is rarely end-to-end encrypted, and therefore subject to court orders and search warrants. encryption takes many clicks to be activated and telegram still hold some metadata.</p>\n<p>i think that deal with russian government had some backroom deals, i simply do not trust telegram and pavel durov.</p>\n<p>i don’t like uk’s, france’s and sweden’s backdoor demands. signal and others are not whining like a victim, which puts me thinking. although constructive criticism is allowed for said backdoors.</p>",
+        "post_number": 5,
+        "post_type": 1,
+        "posts_count": 6,
+        "updated_at": "2025-04-28T14:18:49.434Z",
+        "reply_count": 0,
+        "reply_to_post_number": null,
+        "quote_count": 0,
+        "incoming_link_count": 1,
+        "reads": 33,
+        "readers_count": 32,
+        "score": 41.6,
+        "yours": false,
+        "topic_id": 68816,
+        "topic_slug": "telegram-pledges-to-exit-the-market-rather-than-undermine-encryption-with-backdoors",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://www.reuters.com/article/technology/russia-lifts-ban-on-telegram-messaging-app-after-failing-to-block-it-idUSKBN23P2DY/",
+            "internal": false,
+            "reflection": false,
+            "clicks": 0
+          }
+        ],
+        "read": true,
+        "user_title": null,
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 2
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 26763,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/telegram-pledges-to-exit-the-market-rather-than-undermine-encryption-with-backdoors/68816/5",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      },
+      {
+        "id": 267118,
+        "name": "",
+        "username": "svazzoler",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/s/aca169/{size}.png",
+        "created_at": "2025-04-28T16:33:35.288Z",
+        "cooked": "<p>My comment is mostly in regards to the fact that they do not have encryption enabled by default - so it’s not a messaging (social media?) app I’d consider an encrypted. Their self-rolled encryption has at times shown to be less than stellar (<a href=\"https://words.filippo.io/dispatches/telegram-ecdh/\" rel=\"noopener nofollow ugc\">source</a>)… but again, that doesn’t even matter since their encryption is not (i) on by default (ii) not able to be turned off. Effectively this means that the majority of conversations in Telegram are not encrypted since most people are not going to go out of their way to turn this feature on.</p>\n<p>Okay, now for the increased sharing of data to authorities after the arrest (<a href=\"https://fortune.com/2024/09/24/telegram-provide-user-info-governments-legal-requests-pavel-durov/\" rel=\"noopener nofollow ugc\">fortune.com</a>, <a href=\"https://www.securityweek.com/telegram-shared-data-of-thousands-of-users-after-ceos-arrest/\" rel=\"noopener nofollow ugc\">securityweek.com</a>, <a href=\"https://www.cnn.com/2024/09/23/tech/telegram-ceo-durov-arrest-user-data-changes/index.html\" rel=\"noopener nofollow ugc\">cnn.com</a>, <a href=\"https://gizmodo.com/after-founders-arrest-telegram-began-sharing-info-on-thousands-more-users-with-police-2000546992\" rel=\"noopener nofollow ugc\">gizmodo.com</a>, …)</p>\n<p>Now, you might argue that these articles which are based on Telegram’s claims and self-reported data-sharing to the authorities only mention user information - which they already have more than Signal (as <a href=\"https://telegram.org/apple_privacy\" rel=\"noopener nofollow ugc\">per their own admission</a>); this argument might actually be right… I don’t know… you gotta trust Telegram on this one since (again) chats are not encrypted by default.</p>\n<p>We <a href=\"https://signal.org/bigbrother/\" rel=\"noopener nofollow ugc\">see how</a> Signal responds to broad government requests with all they have (2 timestamps) - imaging such request goes to a service that collects way more data about you and doesn’t encrypt your chats by default… their privacy/security stands only on “trust us” which is the worse possible answer. Signal devs are awesome, but - for the most part - I do not have to trust them or what server they use or how they answer government request or how secured they are against server breaches from hackers.</p>\n<p>Anyways - hope this helps clarify my previous message <img src=\"https://community.signalusers.org/images/emoji/apple/slight_smile.png?v=12\" title=\":slight_smile:\" class=\"emoji\" alt=\":slight_smile:\" loading=\"lazy\" width=\"20\" height=\"20\"></p>",
+        "post_number": 6,
+        "post_type": 1,
+        "posts_count": 6,
+        "updated_at": "2025-04-28T16:33:35.288Z",
+        "reply_count": 0,
+        "reply_to_post_number": 3,
+        "quote_count": 0,
+        "incoming_link_count": 0,
+        "reads": 33,
+        "readers_count": 32,
+        "score": 66.6,
+        "yours": false,
+        "topic_id": 68816,
+        "topic_slug": "telegram-pledges-to-exit-the-market-rather-than-undermine-encryption-with-backdoors",
+        "display_username": "",
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_bg_color": null,
+        "flair_color": null,
+        "flair_group_id": null,
+        "badges_granted": [],
+        "version": 1,
+        "can_edit": false,
+        "can_delete": false,
+        "can_recover": false,
+        "can_see_hidden_post": false,
+        "can_wiki": false,
+        "link_counts": [
+          {
+            "url": "https://signal.org/bigbrother/",
+            "internal": false,
+            "reflection": false,
+            "title": "Signal >> Government Communication",
+            "clicks": 1
+          },
+          {
+            "url": "https://words.filippo.io/dispatches/telegram-ecdh/",
+            "internal": false,
+            "reflection": false,
+            "title": "The Most Backdoor-Looking Bug I’ve Ever Seen",
+            "clicks": 0
+          },
+          {
+            "url": "https://fortune.com/2024/09/24/telegram-provide-user-info-governments-legal-requests-pavel-durov/",
+            "internal": false,
+            "reflection": false,
+            "title": "Telegram changes tack and will now provide user info to governments in response to valid legal requests | Fortune",
+            "clicks": 0
+          },
+          {
+            "url": "https://www.securityweek.com/telegram-shared-data-of-thousands-of-users-after-ceos-arrest/",
+            "internal": false,
+            "reflection": false,
+            "clicks": 0
+          },
+          {
+            "url": "https://www.cnn.com/2024/09/23/tech/telegram-ceo-durov-arrest-user-data-changes/index.html",
+            "internal": false,
+            "reflection": false,
+            "clicks": 0
+          },
+          {
+            "url": "https://gizmodo.com/after-founders-arrest-telegram-began-sharing-info-on-thousands-more-users-with-police-2000546992",
+            "internal": false,
+            "reflection": false,
+            "title": "After Founder's Arrest, Telegram Began Sharing Info on Thousands More Users With Police",
+            "clicks": 0
+          },
+          {
+            "url": "https://telegram.org/apple_privacy",
+            "internal": false,
+            "reflection": false,
+            "title": "Apple Privacy Labels Explained",
+            "clicks": 0
+          }
+        ],
+        "read": true,
+        "user_title": "",
+        "reply_to_user": {
+          "id": 6659,
+          "username": "Whatnoww",
+          "name": "Whatnoww",
+          "avatar_template": "/user_avatar/community.signalusers.org/whatnoww/{size}/54328_2.png"
+        },
+        "bookmarked": false,
+        "actions_summary": [
+          {
+            "id": 2,
+            "count": 4
+          }
+        ],
+        "moderator": false,
+        "admin": false,
+        "staff": false,
+        "user_id": 5389,
+        "hidden": false,
+        "trust_level": 2,
+        "deleted_at": null,
+        "user_deleted": false,
+        "edit_reason": null,
+        "can_view_edit_history": true,
+        "wiki": false,
+        "post_url": "/t/telegram-pledges-to-exit-the-market-rather-than-undermine-encryption-with-backdoors/68816/6",
+        "can_accept_answer": false,
+        "can_unaccept_answer": false,
+        "accepted_answer": false,
+        "topic_accepted_answer": null
+      }
+    ],
+    "stream": [
+      267042,
+      267045,
+      267050,
+      267078,
+      267105,
+      267118
+    ]
+  },
+  "timeline_lookup": [
+    [
+      1,
+      293
+    ],
+    [
+      4,
+      292
+    ]
+  ],
+  "suggested_topics": [
+    {
+      "fancy_title": "Beyond messaging - how do you securely vault files that Signal doesn&rsquo;t cover?",
+      "id": 71999,
+      "title": "Beyond messaging - how do you securely vault files that Signal doesn't cover?",
+      "slug": "beyond-messaging-how-do-you-securely-vault-files-that-signal-doesnt-cover",
+      "posts_count": 1,
+      "reply_count": 0,
+      "highest_post_number": 1,
+      "image_url": null,
+      "created_at": "2025-10-02T19:30:16.304Z",
+      "last_posted_at": "2025-10-02T19:30:16.408Z",
+      "bumped": true,
+      "bumped_at": "2025-10-02T20:42:28.544Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 1,
+      "views": 88,
+      "category_id": 8,
+      "featured_link": null,
+      "op_like_count": 1,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": "latest single",
+          "description": "Original Poster, Most Recent Poster",
+          "user": {
+            "id": 34342,
+            "username": "Adeel_Ahmad",
+            "name": "realdeal",
+            "avatar_template": "/user_avatar/community.signalusers.org/adeel_ahmad/{size}/54060_2.png",
+            "trust_level": 0
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Starting today, Gemini AI will access your WhatsApp and more. Learn how to disable it on Android",
+      "id": 70286,
+      "title": "Starting today, Gemini AI will access your WhatsApp and more. Learn how to disable it on Android",
+      "slug": "starting-today-gemini-ai-will-access-your-whatsapp-and-more-learn-how-to-disable-it-on-android",
+      "posts_count": 14,
+      "reply_count": 10,
+      "highest_post_number": 14,
+      "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/5/b/5ba4f9e5a91134ab13198a566ecfa306ae219a0c_2_1024x576.jpeg",
+      "created_at": "2025-07-07T12:15:53.915Z",
+      "last_posted_at": "2025-07-10T20:48:59.894Z",
+      "bumped": true,
+      "bumped_at": "2025-07-10T20:48:59.894Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 37,
+      "views": 369,
+      "category_id": 8,
+      "featured_link": "https://tuta.com/blog/how-to-disable-gemini-on-android",
+      "featured_link_root_domain": "tuta.com",
+      "op_like_count": 12,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 18285,
+            "username": "rassilon1963",
+            "name": "Talya (she/her)",
+            "avatar_template": "/user_avatar/community.signalusers.org/rassilon1963/{size}/31625_2.png",
+            "primary_group_name": "top_contributors",
+            "flair_name": "top_contributors",
+            "flair_url": "compass",
+            "flair_bg_color": "6058CA",
+            "flair_color": "fff",
+            "flair_group_id": 48,
+            "trust_level": 4
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 2170,
+            "username": "TeeJay82",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/teejay82/{size}/1806_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 26763,
+            "username": "zetabeta",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/zetabeta/{size}/54310_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 22679,
+            "username": "Rico70",
+            "name": "Rico",
+            "avatar_template": "/user_avatar/community.signalusers.org/rico70/{size}/41632_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 31811,
+            "username": "desert_nip",
+            "name": "",
+            "avatar_template": "/letter_avatar_proxy/v4/letter/d/ccd318/{size}.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "fancy_title": "Skype apparently being shut down in May",
+      "id": 67269,
+      "title": "Skype apparently being shut down in May",
+      "slug": "skype-apparently-being-shut-down-in-may",
+      "posts_count": 15,
+      "reply_count": 8,
+      "highest_post_number": 15,
+      "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/9/d/9d9d27041d0d993649d28d74fd4dbf93fe4eb737_2_1024x576.jpeg",
+      "created_at": "2025-02-28T10:02:37.874Z",
+      "last_posted_at": "2025-03-02T14:08:46.320Z",
+      "bumped": true,
+      "bumped_at": "2025-03-02T14:08:46.320Z",
+      "archetype": "regular",
+      "unseen": false,
+      "pinned": false,
+      "unpinned": null,
+      "visible": true,
+      "closed": false,
+      "archived": false,
+      "bookmarked": null,
+      "liked": null,
+      "tags_descriptions": {},
+      "like_count": 40,
+      "views": 271,
+      "category_id": 8,
+      "featured_link": null,
+      "op_like_count": 4,
+      "has_accepted_answer": false,
+      "posters": [
+        {
+          "extras": null,
+          "description": "Original Poster",
+          "user": {
+            "id": 21482,
+            "username": "limetree",
+            "name": null,
+            "avatar_template": "/letter_avatar_proxy/v4/letter/l/4491bb/{size}.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 7657,
+            "username": "Avitus",
+            "name": "👊🇺🇸🔥",
+            "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+            "trust_level": 3
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 28656,
+            "username": "pickle_umbrella",
+            "name": "Pickle",
+            "avatar_template": "/user_avatar/community.signalusers.org/pickle_umbrella/{size}/48004_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": null,
+          "description": "Frequent Poster",
+          "user": {
+            "id": 18089,
+            "username": "Aku-Stable",
+            "name": "",
+            "avatar_template": "/user_avatar/community.signalusers.org/aku-stable/{size}/25198_2.png",
+            "trust_level": 2
+          }
+        },
+        {
+          "extras": "latest",
+          "description": "Most Recent Poster",
+          "user": {
+            "id": 6038,
+            "username": "goodec",
+            "name": "Chris",
+            "avatar_template": "/user_avatar/community.signalusers.org/goodec/{size}/14726_2.png",
+            "trust_level": 2
+          }
+        }
+      ]
+    }
+  ],
+  "tags_descriptions": {},
+  "fancy_title": "Telegram pledges to exit the market rather than &ldquo;undermine encryption with backdoors&rdquo;",
+  "id": 68816,
+  "title": "Telegram pledges to exit the market rather than \"undermine encryption with backdoors\"",
+  "posts_count": 6,
+  "created_at": "2025-04-27T15:48:10.229Z",
+  "views": 179,
+  "reply_count": 3,
+  "like_count": 23,
+  "last_posted_at": "2025-04-28T16:33:35.288Z",
+  "visible": true,
+  "closed": false,
+  "archived": false,
+  "has_summary": false,
+  "archetype": "regular",
+  "slug": "telegram-pledges-to-exit-the-market-rather-than-undermine-encryption-with-backdoors",
+  "category_id": 8,
+  "word_count": 870,
+  "deleted_at": null,
+  "user_id": 7657,
+  "featured_link": null,
+  "pinned_globally": false,
+  "pinned_at": null,
+  "pinned_until": null,
+  "image_url": "https://community.signalusers.org/uploads/db3609/optimized/3X/2/d/2d360b6516f15b998685e0429494adf279d76d9b_2_1024x576.jpeg",
+  "slow_mode_seconds": 0,
+  "draft": null,
+  "draft_key": "topic_68816",
+  "draft_sequence": null,
+  "unpinned": null,
+  "pinned": false,
+  "current_post_number": 1,
+  "highest_post_number": 6,
+  "deleted_by": null,
+  "actions_summary": [
+    {
+      "id": 4,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 8,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 10,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    },
+    {
+      "id": 7,
+      "count": 0,
+      "hidden": false,
+      "can_act": false
+    }
+  ],
+  "chunk_size": 20,
+  "bookmarked": false,
+  "topic_timer": null,
+  "message_bus_last_id": 0,
+  "participant_count": 5,
+  "show_read_indicator": false,
+  "thumbnails": [
+    {
+      "max_width": null,
+      "max_height": null,
+      "width": 1920,
+      "height": 1080,
+      "url": "https://community.signalusers.org/uploads/db3609/original/3X/2/d/2d360b6516f15b998685e0429494adf279d76d9b.jpeg"
+    },
+    {
+      "max_width": 1024,
+      "max_height": 1024,
+      "width": 1024,
+      "height": 576,
+      "url": "https://community.signalusers.org/uploads/db3609/optimized/3X/2/d/2d360b6516f15b998685e0429494adf279d76d9b_2_1024x576.jpeg"
+    }
+  ],
+  "slow_mode_enabled_until": null,
+  "can_vote": false,
+  "vote_count": 0,
+  "user_voted": false,
+  "discourse_zendesk_plugin_zendesk_id": null,
+  "discourse_zendesk_plugin_zendesk_url": "https://your-url.zendesk.com/agent/tickets/",
+  "details": {
+    "can_edit": false,
+    "notification_level": 1,
+    "participants": [
+      {
+        "id": 5389,
+        "username": "svazzoler",
+        "name": "",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/s/aca169/{size}.png",
+        "post_count": 2,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      },
+      {
+        "id": 5448,
+        "username": "DirkPitt1",
+        "name": "",
+        "avatar_template": "/letter_avatar_proxy/v4/letter/d/74df32/{size}.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 3
+      },
+      {
+        "id": 6659,
+        "username": "Whatnoww",
+        "name": "Whatnoww",
+        "avatar_template": "/user_avatar/community.signalusers.org/whatnoww/{size}/54328_2.png",
+        "post_count": 1,
+        "primary_group_name": "top_contributors",
+        "flair_name": "top_contributors",
+        "flair_url": "compass",
+        "flair_color": "fff",
+        "flair_bg_color": "6058CA",
+        "flair_group_id": 48,
+        "trust_level": 4
+      },
+      {
+        "id": 7657,
+        "username": "Avitus",
+        "name": "👊🇺🇸🔥",
+        "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 3
+      },
+      {
+        "id": 26763,
+        "username": "zetabeta",
+        "name": "",
+        "avatar_template": "/user_avatar/community.signalusers.org/zetabeta/{size}/54310_2.png",
+        "post_count": 1,
+        "primary_group_name": null,
+        "flair_name": null,
+        "flair_url": null,
+        "flair_color": null,
+        "flair_bg_color": null,
+        "flair_group_id": null,
+        "trust_level": 2
+      }
+    ],
+    "created_by": {
+      "id": 7657,
+      "username": "Avitus",
+      "name": "👊🇺🇸🔥",
+      "avatar_template": "/user_avatar/community.signalusers.org/avitus/{size}/34172_2.png"
+    },
+    "last_poster": {
+      "id": 5389,
+      "username": "svazzoler",
+      "name": "",
+      "avatar_template": "/letter_avatar_proxy/v4/letter/s/aca169/{size}.png"
+    },
+    "links": [
+      {
+        "url": "https://www.techradar.com/vpn/vpn-privacy-security/telegram-pledges-to-exit-the-market-rather-than-undermine-encryption-with-backdoors",
+        "title": "Telegram pledges to exit the market rather than \"undermine encryption with backdoors\" | TechRadar",
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 10,
+        "user_id": 7657,
+        "domain": "www.techradar.com",
+        "root_domain": "techradar.com"
+      },
+      {
+        "url": "https://signal.org/bigbrother/",
+        "title": "Signal >> Government Communication",
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 1,
+        "user_id": 5389,
+        "domain": "signal.org",
+        "root_domain": "signal.org"
+      },
+      {
+        "url": "https://zaufanatrzeciastrona.pl/post/27-krotny-wzrost-liczby-danych-udostepnianych-przez-telegrama-organom-scigania-w-polsce/",
+        "title": "27-krotny wzrost liczby danych udostępnianych przez Telegrama organom ścigania w Polsce | Zaufana Trzecia Strona",
+        "internal": false,
+        "attachment": false,
+        "reflection": false,
+        "clicks": 1,
+        "user_id": 5448,
+        "domain": "zaufanatrzeciastrona.pl",
+        "root_domain": "zaufanatrzeciastrona.pl"
+      }
+    ]
+  },
+  "bookmarks": []
+}
