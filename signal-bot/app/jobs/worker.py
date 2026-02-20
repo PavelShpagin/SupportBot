@@ -507,16 +507,20 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
                 ]
             ).strip()
             embedding = deps.llm.embed(text=doc_text)
+            rag_meta: dict = {
+                "group_id": group_id,
+                "status": case.status,
+            }
+            # Chroma rejects empty list metadata values — only include if non-empty
+            if evidence_ids:
+                rag_meta["evidence_ids"] = evidence_ids
+            if evidence_image_paths:
+                rag_meta["evidence_image_paths"] = evidence_image_paths
             deps.rag.upsert_case(
                 case_id=case_id,
                 document=doc_text,
                 embedding=embedding,
-                metadata={
-                    "group_id": group_id,
-                    "status": case.status,
-                    "evidence_ids": evidence_ids,
-                    "evidence_image_paths": evidence_image_paths,
-                },
+                metadata=rag_meta,
             )
             mark_case_in_rag(deps.db, case_id)
             accepted_ranges.append((span.start_idx, span.end_idx))
