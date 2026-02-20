@@ -511,8 +511,10 @@ async def take_screenshot(crop_qr: bool = Query(True, description="Crop to just 
             # Center is (290, 397)
             # Crop a 300x300 area centered on the QR
             # Crop: 300x300 starting at (140, 247)
+            # -threshold 50%: forces pure black/white so Signal's gray QR scans reliably
             convert_result = subprocess.run(
-                ["convert", "xwd:-", "-crop", "300x300+140+247", "+repage", "png:-"],
+                ["convert", "xwd:-", "-crop", "300x300+140+247", "+repage",
+                 "-threshold", "50%", "png:-"],
                 input=result.stdout,
                 capture_output=True,
                 timeout=10,
