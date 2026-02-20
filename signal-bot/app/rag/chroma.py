@@ -24,10 +24,25 @@ class ChromaRag:
         col = self._collection()
         col.upsert(ids=[case_id], documents=[document], embeddings=[embedding], metadatas=[metadata])
 
-    def retrieve_cases(self, *, group_id: str, embedding: list[float], k: int, status: str = "solved") -> List[Dict[str, Any]]:
+    def retrieve_cases(
+        self,
+        *,
+        group_id: str,
+        embedding: list[float],
+        k: int,
+        status: str | None = "solved",
+    ) -> List[Dict[str, Any]]:
+        """Semantic search in the collection.
+
+        Args:
+            status: Filter by case status. Pass None to return all statuses.
+                    Defaults to "solved" so that only SCRAG-indexed cases are returned.
+        """
         col = self._collection()
-        # Filter by group_id AND status (only return solved cases by default)
-        where_filter = {"$and": [{"group_id": group_id}, {"status": status}]}
+        if status is not None:
+            where_filter: Dict[str, Any] = {"$and": [{"group_id": group_id}, {"status": status}]}
+        else:
+            where_filter = {"group_id": group_id}
         out = col.query(
             query_embeddings=[embedding],
             n_results=k,
@@ -70,6 +85,26 @@ class ChromaRag:
         col = self._collection()
         col.delete(ids=case_ids)
         return len(case_ids)
+
+    def delete_cases_by_group(self, group_id: str) -> int:
+        """Delete ALL cases for a group using metadata filter.
+
+        More thorough than delete_cases(ids) because it catches any stale
+        ChromaDB entries whose case_ids are no longer tracked in MySQL
+        (e.g. due to a race between the live-message worker and re-ingest).
+        Returns number of documents deleted.
+        """
+        try:
+            col = self._collection()
+            result = col.get(where={"group_id": group_id}, include=[])
+            ids = result.get("ids") or []
+            if ids:
+                col.delete(ids=ids)
+                log.info("delete_cases_by_group: removed %d docs for group %s", len(ids), group_id[:20])
+            return len(ids)
+        except Exception as e:
+            log.warning("delete_cases_by_group failed for group %s: %s", group_id[:20], e)
+            return 0
 
     def wipe_all_cases(self) -> int:
         """Delete the entire RAG collection (all cases). Returns count deleted."""

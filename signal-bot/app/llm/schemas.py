@@ -68,3 +68,9 @@ class BlocksCase(BaseModel):
 class BlocksResult(BaseModel):
     cases: List[BlocksCase] = Field(default_factory=list)
 
+
+class ResolutionResult(BaseModel):
+    """Result of checking whether a B1 open case has been resolved by current B2 buffer."""
+    resolved: bool
+    solution_summary: str = ""  # Non-empty only when resolved=True
+

@@ -35,9 +35,12 @@ export default function CasePage() {
     
     fetch(`${apiUrl}/api/cases/${id}`)
       .then(async (res) => {
+        if (res.status === 404) {
+          throw new Error('not_found');
+        }
         if (!res.ok) {
-            const text = await res.text();
-            throw new Error(`API Error ${res.status}: ${res.statusText} ${text ? `(${text})` : ''}`);
+          const text = await res.text();
+          throw new Error(`API Error ${res.status}: ${res.statusText} ${text ? `(${text})` : ''}`);
         }
         return res.json();
       })
@@ -83,32 +86,47 @@ export default function CasePage() {
     </>
   );
 
-  if (error) return (
-    <>
-      <Head>
-        <title>Error | SupportBot</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="icon" type="image/png" href="/supportbot-logo.png" />
-      </Head>
-      <style jsx global>{`
-        @import url("https://rsms.me/inter/inter.css");
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-          font-family: "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-          background: #f6f7f9;
-          min-height: 100vh;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 20px;
-        }
-      `}</style>
-      <div style={{ textAlign: 'center', color: '#dc2626' }}>
-        <p style={{ fontWeight: 600, marginBottom: 8 }}>Error loading case</p>
-        <p style={{ fontSize: 14, color: '#5c5c5c' }}>{error}</p>
-      </div>
-    </>
-  );
+  if (error) {
+    const isNotFound = error === 'not_found';
+    return (
+      <>
+        <Head>
+          <title>SupportBot</title>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <link rel="icon" type="image/png" href="/supportbot-logo.png" />
+        </Head>
+        <style jsx global>{`
+          @import url("https://rsms.me/inter/inter.css");
+          * { margin: 0; padding: 0; box-sizing: border-box; }
+          body {
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: #f6f7f9;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+          }
+        `}</style>
+        {isNotFound ? (
+          <div style={{ textAlign: 'center', maxWidth: 360 }}>
+            <p style={{ fontWeight: 600, fontSize: 17, marginBottom: 8, color: '#0d0d0d' }}>
+              Посилання більше не діє
+            </p>
+            <p style={{ fontSize: 14, color: '#6b7280', lineHeight: 1.65 }}>
+              Запитайте ще раз у вашій групі — бот надасть актуальну відповідь.
+            </p>
+          </div>
+        ) : (
+          <div style={{ textAlign: 'center', maxWidth: 360 }}>
+            <p style={{ fontWeight: 600, marginBottom: 8, color: '#dc2626' }}>Помилка завантаження</p>
+            <p style={{ fontSize: 13, color: '#6b7280' }}>{error}</p>
+          </div>
+        )}
+      </>
+    );
+  }
 
   if (!data) return null;
 
@@ -186,6 +204,7 @@ export default function CasePage() {
         }
         .status-solved { background: #dcfce7; color: var(--green); }
         .status-open { background: #fef9c3; color: var(--yellow); }
+        .status-archived { background: #f3f4f6; color: #6b7280; }
 
         main { padding: 24px 20px; }
 
@@ -399,10 +418,28 @@ export default function CasePage() {
               <img src="/supportbot-logo.png" alt="SupportBot" className="logo" />
               <span className="brand">SupportBot</span>
             </a>
-            <span className={`status-badge ${data.status === 'solved' ? 'status-solved' : 'status-open'}`}>
-              {data.status === 'solved' ? 'Вирішено' : 'Відкрито'}
+            <span className={`status-badge ${data.status === 'solved' ? 'status-solved' : data.status === 'archived' ? 'status-archived' : 'status-open'}`}>
+              {data.status === 'solved' ? 'Вирішено' : data.status === 'archived' ? 'Архів' : 'Відкрито'}
             </span>
           </header>
+          {data.status === 'archived' && (
+            <div style={{
+              background: '#fef3c7',
+              borderBottom: '1px solid #fde68a',
+              padding: '10px 20px',
+              fontSize: 13,
+              color: '#92400e',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+            }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 14, height: 14, flexShrink: 0 }}>
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+              Це стара версія відповіді. Актуальне рішення може відрізнятись — запитайте бота знову.
+            </div>
+          )}
 
           <main>
             <h1>{data.problem_title}</h1>

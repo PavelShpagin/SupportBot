@@ -105,9 +105,9 @@ SEARCHING_GROUP_UK = """Шукаю групу "{group_name}"..."""
 
 SEARCHING_GROUP_EN = """Searching for group "{group_name}"..."""
 
-PROCESSING_MESSAGE_UK = """Знайшов групу "{group_name}"! Генерую QR-код..."""
+PROCESSING_MESSAGE_UK = """Знайшов групу "{group_name}"! Генерую QR-код — зачекайте ~30 секунд..."""
 
-PROCESSING_MESSAGE_EN = """Found group "{group_name}"! Generating QR code..."""
+PROCESSING_MESSAGE_EN = """Found group "{group_name}"! Generating QR code — please wait ~30 seconds..."""
 
 LANG_CHANGED_UK = """Мову змінено на українську."""
 
@@ -500,7 +500,11 @@ class SignalCliAdapter:
     # ─────────────────────────────────────────────────────────────────────────
 
     def list_groups(self) -> list[GroupInfo]:
-        """List all groups the bot is a member of."""
+        """List all groups the bot is a member of.
+
+        Raises RuntimeError if signal-cli exits non-zero so callers can
+        distinguish a genuine empty-group state from a transient failure.
+        """
         self.assert_available()
         cmd = [
             self._bin(), "--output", "json", "--config", self._config(), "-u", self._user(),
@@ -508,8 +512,9 @@ class SignalCliAdapter:
         ]
         proc = self._run(cmd)
         if proc.returncode != 0:
-            log.warning("signal-cli listGroups failed: %s", proc.stderr)
-            return []
+            raise RuntimeError(
+                f"signal-cli listGroups failed (rc={proc.returncode}): {proc.stderr}"
+            )
 
         groups = []
         try:
@@ -576,6 +581,20 @@ class SignalCliAdapter:
             "--timeout", str(timeout_seconds),
         ]
 
+        # Dedup cache: signal-cli can re-deliver the same message after a receive-loop
+        # restart.  Keep the last 500 message IDs to silently skip duplicates.
+        from collections import OrderedDict
+        _seen: OrderedDict[str, None] = OrderedDict()
+        _SEEN_MAX = 500
+
+        def _already_seen(mid: str) -> bool:
+            if mid in _seen:
+                return True
+            _seen[mid] = None
+            if len(_seen) > _SEEN_MAX:
+                _seen.popitem(last=False)
+            return False
+
         log.info("Signal receive loop cmd: %s", " ".join(cmd))
         while True:
             proc = self._run(cmd)
@@ -604,6 +623,9 @@ class SignalCliAdapter:
                 # Try parsing as group message
                 group_msg = _parse_group_message(obj)
                 if group_msg is not None:
+                    if _already_seen(group_msg.message_id):
+                        log.debug("Skipping duplicate group message %s", group_msg.message_id[:16])
+                        continue
                     try:
                         on_group_message(group_msg)
                     except Exception:
@@ -613,6 +635,9 @@ class SignalCliAdapter:
                 # Try parsing as direct message
                 direct_msg = _parse_direct_message(obj)
                 if direct_msg is not None:
+                    if _already_seen(direct_msg.message_id):
+                        log.debug("Skipping duplicate direct message %s", direct_msg.message_id[:16])
+                        continue
                     try:
                         on_direct_message(direct_msg)
                     except Exception:

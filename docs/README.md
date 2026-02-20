@@ -1,6 +1,6 @@
 # SupportBot Documentation Index
 
-**Last Updated**: 2026-02-11  
+**Last Updated**: 2026-02-19
 **Status**: Production-Ready ✅
 
 ---
@@ -14,6 +14,106 @@
 4. **[DEPLOYMENT.md](./DEPLOYMENT.md)** - Oracle Cloud deployment guide
 5. **[SIGNAL_REGISTRATION.md](./SIGNAL_REGISTRATION.md)** - Prevent re-linking + QR linking + readiness checklist
 6. **[PRIVACY_SECURITY.md](./PRIVACY_SECURITY.md)** - Data lifecycle, privacy guarantees, admin commands
+
+---
+
+## Case Pipeline Architecture: B1 / B2 / B3 / SCRAG
+
+### Overview
+
+The bot uses a four-layer pipeline to track and resolve support cases, both from historical ingestion and from live group messages.
+
+```
+SCRAG  — Solved Cases RAG       (ChromaDB, permanent, semantically searchable)
+B1     — Open Cases Buffer       (MySQL cases WHERE status='open', NOT in SCRAG)
+B2     — Rolling Message Buffer  (MySQL buffers table, sliding time/count window)
+B3     — Recent Solved Buffer    (solved cases whose evidence still falls in B2 window)
+```
+
+### Data Flow
+
+```
+Incoming message (live or ingest)
+        │
+        ▼
+  raw_messages table  ──────────────────────────────────────┐
+        │                                                    │
+        ▼                                                    │
+  B2: Rolling buffer                                        (evidence linking)
+  (buffers table)
+        │
+        ▼
+  LLM: Extract case spans from B2
+        │
+        ├── Open case detected (problem, no solution yet)
+        │       └──► B1: store in cases (status='open', in_rag=0)
+        │                Keep messages in B2
+        │
+        └── Solved case detected (problem + solution)
+                └──► DB: insert case (status='solved')
+                     SCRAG: embed + upsert to ChromaDB (in_rag=1)
+                     B3: visible via get_recent_solved_cases()
+                     B2: remove consumed message spans
+
+        │
+        ▼
+  Phase 2: Dynamic B1 resolution
+  For each B1 (open) case in this group:
+        LLM: check_case_resolved(case_problem, B2_buffer)
+        │
+        ├── Not resolved → keep in B1
+        └── Resolved     → update_case_to_solved()
+                           embed + upsert to SCRAG (in_rag=1)
+                           now visible in B3 context
+```
+
+### Answer Engine Context
+
+When a user sends a message, the bot builds a three-layer context:
+
+| Layer | Source | Description |
+|-------|--------|-------------|
+| SCRAG | ChromaDB semantic search | All-time solved cases, filtered by group |
+| B3    | `get_recent_solved_cases()` | Solved cases with evidence still in the B2 window |
+| B1    | `get_open_cases_for_group()` | Currently open, unresolved cases |
+
+**Response rules:**
+- SCRAG or B3 hit with solution → synthesize direct answer + case link
+- Only B1 hit → acknowledge the issue is tracked, TAG_ADMIN
+- Nothing found → TAG_ADMIN
+
+### DB Schema Additions
+
+```sql
+-- cases table now has:
+in_rag  TINYINT(1) NOT NULL DEFAULT 0   -- 1 = indexed in ChromaDB SCRAG
+
+-- New query functions in queries_mysql.py:
+get_open_cases_for_group(db, group_id)          -- B1 lookup
+get_recent_solved_cases(db, group_id, since_ts) -- B3 lookup
+update_case_to_solved(db, case_id, solution)    -- B1 → solved promotion
+mark_case_in_rag(db, case_id)                   -- set in_rag=1
+```
+
+### LLM Calls per Message
+
+| Call | Model | Purpose |
+|------|-------|---------|
+| `extract_case_from_buffer` | model_extract | Identify case spans in B2 |
+| `make_case` | model_case | Structured case extraction (title, status, solution) |
+| `check_case_resolved` | model_case | Check if B1 cases are resolved by new B2 content |
+| `embed` | embedding model | Vectorise case doc for SCRAG upsert / search |
+| `synthesizer` | gemini-2.0-flash | Final answer generation |
+
+### Multimodal Support
+
+Images attached to Signal messages are processed at ingest time:
+- `ingestion.py` calls `llm.image_to_text_json()` → JSON with `observations` + `extracted_text`
+- The JSON is appended to `content_text` in `raw_messages`
+- Evidence images are stored in `evidence_image_paths_json` on the case
+- Case extraction and resolution LLM calls receive image bytes when available
+
+---
 
 ### Legacy Documentation
 - **[legacy/](./legacy/)** - Historical evaluation reports and analysis

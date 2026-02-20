@@ -85,7 +85,16 @@ elif settings.signal_listener_enabled:
 else:
     signal = NoopSignalAdapter()
 
-deps = WorkerDeps(settings=settings, db=db, llm=llm, rag=rag, signal=signal, ultimate_agent=ultimate_agent)
+_bot_sender_hash = hash_sender(settings.signal_bot_e164) if settings.signal_bot_e164 else ""
+deps = WorkerDeps(
+    settings=settings,
+    db=db,
+    llm=llm,
+    rag=rag,
+    signal=signal,
+    ultimate_agent=ultimate_agent,
+    bot_sender_hash=_bot_sender_hash,
+)
 
 # Global lock for pruning to prevent concurrent runs
 _prune_lock = threading.Lock()
@@ -289,10 +298,20 @@ def _do_prune() -> None:
         return
     try:
         current_groups = {g.group_id for g in signal.list_groups()}
-    except Exception:
-        log.warning("Failed to list groups for prune; skipping group prune")
+    except Exception as _list_exc:
+        log.warning("Failed to list groups for prune; skipping group prune: %s", _list_exc)
         return
     linked_groups = list_groups_with_linked_admins(db)
+    # Safety: if signal-cli returned zero groups but the DB still has linked groups,
+    # this is almost certainly a transient network error — skip the prune to avoid
+    # incorrectly wiping live data.
+    if not current_groups and linked_groups:
+        log.warning(
+            "list_groups() returned 0 groups but DB has %d linked group(s) — "
+            "likely a transient Signal error; skipping group prune",
+            len(linked_groups),
+        )
+        return
     for group_id in linked_groups:
         if group_id in current_groups:
             continue
@@ -306,15 +325,14 @@ def _do_prune() -> None:
             log.exception("Failed to get case IDs for group %s", group_id)
             case_ids = []
         
-        # Delete from RAG
-        if case_ids:
-            try:
-                from app.rag.chroma import create_chroma
-                rag = create_chroma(settings)
-                rag.delete_cases(case_ids)
-                log.info("Deleted %d cases from RAG for group %s", len(case_ids), group_id)
-            except Exception:
-                log.exception("Failed to delete cases from RAG for group %s", group_id)
+        # Delete from RAG (use group-level delete to catch any stale entries)
+        try:
+            from app.rag.chroma import create_chroma
+            _prune_rag = create_chroma(settings)
+            deleted_rag = _prune_rag.delete_cases_by_group(group_id)
+            log.info("Deleted %d RAG docs for group %s (group-level delete)", deleted_rag, group_id)
+        except Exception:
+            log.exception("Failed to delete cases from RAG for group %s", group_id)
         
         # Delete all group data from DB
         try:
@@ -457,10 +475,24 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
             signal.send_onboarding_prompt(recipient=admin_id, lang=lang)
         return
     
-    # If admin sends a new message while awaiting QR scan, cancel the pending job
-    # and start fresh with the new group name
+    # If admin sends a new message while awaiting QR scan:
+    # - same group name → just say "still processing", avoid duplicate QR flow
+    # - different group name → cancel current job and restart with new name
     if session.state == "awaiting_qr_scan" and session.pending_token:
-        log.info("Admin %s sent new message while awaiting QR scan, cancelling pending job", admin_id)
+        same_group = (
+            session.pending_group_name
+            and text.lower().strip() == session.pending_group_name.lower().strip()
+        )
+        if same_group:
+            log.info("Admin %s resent same group name while awaiting QR scan — ignoring duplicate", admin_id)
+            wait_msg = (
+                f'QR-код для групи "{session.pending_group_name}" вже генерується. Зачекайте, будь ласка.'
+                if lang == "uk"
+                else f'QR code for group "{session.pending_group_name}" is already being generated. Please wait.'
+            )
+            signal.send_direct_text(recipient=admin_id, text=wait_msg)
+            return
+        log.info("Admin %s sent new group name while awaiting QR scan, cancelling pending job", admin_id)
         cancel_pending_history_jobs(db, session.pending_token)
         # Reset state and continue to search for new group
         set_admin_awaiting_group_name(db, admin_id)
@@ -809,7 +841,14 @@ def view_case(case_id: str):
             log.warning(f"Failed to lookup static case: {e}")
 
     if not case:
-        raise HTTPException(status_code=404, detail="Case not found")
+        html = """<!DOCTYPE html><html><head><title>Case not found</title>
+        <style>body{font-family:sans-serif;max-width:600px;margin:60px auto;padding:20px;color:#333}
+        h2{color:#c00}.note{margin-top:16px;color:#666;font-size:14px}</style></head>
+        <body><h2>Кейс не знайдено</h2>
+        <p>Цей кейс було видалено або замінено під час повторної обробки історії чату.</p>
+        <p class="note">Якщо ви бачите це посилання у відповіді бота — це тимчасова проблема. Новий кейс буде доступний після наступного запиту.</p>
+        </body></html>"""
+        return HTMLResponse(content=html, status_code=404)
     
     evidence = get_case_evidence(db, case_id)
     
@@ -1185,35 +1224,43 @@ def history_link_result(req: HistoryLinkResultRequest) -> dict:
     group_id = session.pending_group_id
     lang = session.lang
     
-    if not isinstance(signal, NoopSignalAdapter):
-        if req.success:
-            signal.send_success_message(recipient=admin_id, group_name=group_name, lang=lang)
-            if group_id:
-                link_admin_to_group(db, admin_id=admin_id, group_id=group_id)
-        else:
-            signal.send_failure_message(recipient=admin_id, group_name=group_name, lang=lang)
-
-        # Optional: send a short summary of what was actually imported.
-        if req.message_count is not None or req.cases_inserted is not None or req.note:
-            if lang == "uk":
-                summary = (
-                    f"Підсумок імпорту: повідомлень={req.message_count if req.message_count is not None else '?'}"
-                    f", кейсів додано={req.cases_inserted if req.cases_inserted is not None else '?'}."
-                )
-                if req.note:
-                    summary += f"\n{req.note}"
-            else:
-                summary = (
-                    f"Import summary: messages={req.message_count if req.message_count is not None else '?'}"
-                    f", cases_added={req.cases_inserted if req.cases_inserted is not None else '?'}."
-                )
-                if req.note:
-                    summary += f"\n{req.note}"
-            signal.send_direct_text(recipient=admin_id, text=summary)
-    
-    # Reset admin state to allow connecting another group
+    # Reset admin state first so the next message from admin goes through normally
     set_admin_awaiting_group_name(db, admin_id)
-    
+
+    if not isinstance(signal, NoopSignalAdapter):
+        # Build summary text to send
+        if req.success and group_id:
+            link_admin_to_group(db, admin_id=admin_id, group_id=group_id)
+
+        def _send_notifications():
+            try:
+                if req.success:
+                    signal.send_success_message(recipient=admin_id, group_name=group_name, lang=lang)
+                else:
+                    signal.send_failure_message(recipient=admin_id, group_name=group_name, lang=lang)
+
+                # Optional: send a short summary of what was actually imported.
+                if req.message_count is not None or req.cases_inserted is not None or req.note:
+                    if lang == "uk":
+                        summary = (
+                            f"Підсумок імпорту: повідомлень={req.message_count if req.message_count is not None else '?'}"
+                            f", кейсів додано={req.cases_inserted if req.cases_inserted is not None else '?'}."
+                        )
+                        if req.note:
+                            summary += f"\n{req.note}"
+                    else:
+                        summary = (
+                            f"Import summary: messages={req.message_count if req.message_count is not None else '?'}"
+                            f", cases_added={req.cases_inserted if req.cases_inserted is not None else '?'}."
+                        )
+                        if req.note:
+                            summary += f"\n{req.note}"
+                    signal.send_direct_text(recipient=admin_id, text=summary)
+            except Exception:
+                log.exception("Failed to send link-result notification to admin %s", admin_id)
+
+        threading.Thread(target=_send_notifications, daemon=True).start()
+
     return {"ok": True}
 
 
@@ -1239,22 +1286,36 @@ class HistoryCasesRequest(BaseModel):
 def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
     """Process history cases in background. Returns number of cases inserted."""
     import re
-    from app.db import RawMessage, delete_all_group_data
-    from app.db.queries_mysql import get_case_ids_for_group
+    from app.db import RawMessage, delete_all_group_data, mark_case_in_rag
+    from app.db.queries_mysql import get_case_ids_for_group, archive_cases_for_group
 
-    # Wipe existing data for this group before re-ingesting
-    # This keeps things simple: re-link = fresh start
-    # First get case IDs so we can also remove them from Chroma
-    old_case_ids = get_case_ids_for_group(db, req.group_id)
-    if old_case_ids:
-        try:
-            rag.delete_cases(old_case_ids)
-            log.info("Wiped %d cases from RAG for group %s", len(old_case_ids), req.group_id[:20])
-        except Exception:
-            log.exception("Failed to wipe RAG cases for group %s", req.group_id[:20])
-    stats = delete_all_group_data(db, group_id=req.group_id)
-    if any(stats.values()):
-        log.info("Wiped existing group data before re-ingest: %s", stats)
+    # Archive existing cases instead of deleting them.
+    # This keeps old case links (already sent in Signal messages) accessible via
+    # the web frontend with an 'archived' banner, while preventing them from
+    # being used as RAG sources for new answers.
+    # Also do a group-level ChromaDB purge to remove them from semantic search.
+    try:
+        archived = archive_cases_for_group(db, req.group_id)
+        log.info("Archived %d cases for group %s (re-ingest)", archived, req.group_id[:20])
+    except Exception:
+        log.exception("Failed to archive cases for group %s", req.group_id[:20])
+    try:
+        deleted_from_rag = rag.delete_cases_by_group(req.group_id)
+        log.info("Wiped %d RAG docs for group %s (group-level delete)", deleted_from_rag, req.group_id[:20])
+    except Exception:
+        log.exception("Failed to wipe RAG cases for group %s", req.group_id[:20])
+
+    # Delete non-case group data so re-ingest starts fresh
+    from app.db.queries_mysql import (
+        delete_all_group_data as _delete_non_case_data,
+    )
+    with db.connection() as _conn:
+        _cur = _conn.cursor()
+        _cur.execute("DELETE FROM raw_messages WHERE group_id = %s", (req.group_id,))
+        _cur.execute("DELETE FROM buffers WHERE group_id = %s", (req.group_id,))
+        _cur.execute("DELETE FROM reactions WHERE group_id = %s", (req.group_id,))
+        _conn.commit()
+    log.info("Cleared messages/buffer/reactions for group %s before re-ingest", req.group_id[:20])
 
     # Store raw messages for evidence linking
     message_lookup: dict = {}
@@ -1287,9 +1348,6 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
             case = llm.make_case(case_block_text=c.case_block)
             if not case.keep:
                 continue
-            if case.status == "solved" and not case.solution_summary.strip():
-                log.warning("Rejecting solved case without solution_summary (history)")
-                continue
 
             # Build evidence_ids: prefer LLM-extracted, fallback to content matching
             evidence_ids = list(case.evidence_ids)
@@ -1314,7 +1372,10 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
                             if mid not in evidence_ids:
                                 evidence_ids.append(mid)
 
-            log.info("Case evidence_ids: %d (group=%s)", len(evidence_ids), req.group_id[:20])
+            log.info(
+                "History case status=%s evidence_ids=%d (group=%s)",
+                case.status, len(evidence_ids), req.group_id[:20],
+            )
 
             evidence_image_paths: List[str] = []
             for mid in evidence_ids:
@@ -1336,26 +1397,31 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
                 evidence_image_paths=evidence_image_paths,
             )
 
-            doc_text = "\n".join([
-                case.problem_title.strip(),
-                case.problem_summary.strip(),
-                case.solution_summary.strip(),
-                "tags: " + ", ".join(case.tags),
-            ]).strip()
-            embedding = llm.embed(text=doc_text)
-            metadata: dict = {"group_id": req.group_id, "status": case.status}
-            if evidence_ids:
-                metadata["evidence_ids"] = evidence_ids
-            if evidence_image_paths:
-                metadata["evidence_image_paths"] = evidence_image_paths
-            rag.upsert_case(case_id=case_id, document=doc_text, embedding=embedding, metadata=metadata)
+            # Only index solved cases with a solution into SCRAG (B1 open cases stay out of RAG)
+            if case.status == "solved" and case.solution_summary.strip():
+                doc_text = "\n".join([
+                    f"[SOLVED] {case.problem_title.strip()}",
+                    f"Проблема: {case.problem_summary.strip()}",
+                    f"Рішення: {case.solution_summary.strip()}",
+                    "tags: " + ", ".join(case.tags),
+                ]).strip()
+                embedding = llm.embed(text=doc_text)
+                metadata: dict = {"group_id": req.group_id, "status": case.status}
+                if evidence_ids:
+                    metadata["evidence_ids"] = evidence_ids
+                if evidence_image_paths:
+                    metadata["evidence_image_paths"] = evidence_image_paths
+                rag.upsert_case(case_id=case_id, document=doc_text, embedding=embedding, metadata=metadata)
+                mark_case_in_rag(db, case_id)
+                log.info("Indexed solved history case %s in SCRAG (group=%s)", case_id, req.group_id[:20])
+            else:
+                log.info("Stored open/unsolved history case %s in B1 (not indexed in SCRAG, group=%s)", case_id, req.group_id[:20])
+
             kept += 1
-            log.info("Inserted history case %s (group=%s)", case_id, req.group_id[:20])
         except Exception:
             log.exception("Failed to process history case block")
             continue
 
-    mark_history_token_used(db, token=req.token)
     log.info("History cases done: inserted=%d group=%s", kept, req.group_id[:20])
     return kept
 
@@ -1365,7 +1431,10 @@ def history_cases(req: HistoryCasesRequest) -> dict:
     if not validate_history_token(db, token=req.token, group_id=req.group_id):
         raise HTTPException(status_code=403, detail="Invalid/expired token")
 
-    # Security: Verify bot is still in the group. No bypass — if we can't verify, we block.
+    # Security: Verify bot is still in the group.
+    # If signal adapter can't list groups (e.g. signal-cli not yet linked), we log a warning
+    # and allow through — the ingest service already verified admin group membership via
+    # Signal Desktop QR, and the one-time token provides authentication.
     try:
         current_group_ids = {g.group_id for g in signal.list_groups()}
         if req.group_id not in current_group_ids:
@@ -1374,8 +1443,14 @@ def history_cases(req: HistoryCasesRequest) -> dict:
     except HTTPException:
         raise
     except Exception as e:
-        log.error("Could not verify group membership (blocking for security): %s", e)
-        raise HTTPException(status_code=503, detail="Cannot verify group membership")
+        log.warning(
+            "Could not verify bot group membership (signal unavailable) — allowing ingest "
+            "based on token + admin-side QR verification: %s", e
+        )
+
+    # Mark token used NOW (synchronously) so concurrent retries from signal-ingest
+    # cannot pass validation and trigger a second parallel ingest for the same session.
+    mark_history_token_used(db, token=req.token)
 
     # Accept immediately, process in background to avoid HTTP timeout with many LLM calls
     n_cases = len(req.cases)

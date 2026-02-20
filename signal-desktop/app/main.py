@@ -99,15 +99,26 @@ async def status():
         try:
             convs = get_conversations(settings.signal_data_dir)
             conversations_count = len(convs)
-            # Check if there are any non-system conversations
+            # Check if there are any non-system conversations.
+            # After QR scan the admin's "Note to Self" appears immediately (type=private, has e164/uuid).
+            # Groups may take longer to sync.
             for c in convs:
-                if c.get("type") == "group":
+                c_type = c.get("type") or ""
+                if c_type == "group":
                     has_user_conversations = True
                     break
-                profile = c.get("profileName") or ""
-                if c.get("type") == "private" and profile and profile != "Signal":
-                    has_user_conversations = True
-                    break
+                if c_type == "private":
+                    profile = c.get("profileName") or ""
+                    e164 = c.get("e164") or ""
+                    uuid = c.get("uuid") or ""
+                    # Any private contact with a phone number or UUID that isn't the system Signal account
+                    if e164 or uuid:
+                        has_user_conversations = True
+                        break
+                    # Fall back to profileName check for older Signal Desktop versions
+                    if profile and profile != "Signal":
+                        has_user_conversations = True
+                        break
         except Exception as e:
             log.warning("Failed to get conversations: %s", e)
     

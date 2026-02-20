@@ -330,15 +330,29 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
         log.info("Resetting Signal Desktop for new user link...")
         _reset_desktop(settings)
 
-        # Wait for Signal Desktop to restart and show QR
-        time.sleep(10)
+        # Poll for QR code to appear instead of a fixed 10s wait.
+        # Signal Desktop typically restarts in 3-8 seconds.
+        qr_image = None
+        qr_poll_interval = 2
+        qr_poll_max = 30
+        qr_waited = 0
+        log.info("Waiting for Signal Desktop QR code to appear (up to %ds)...", qr_poll_max)
+        while qr_waited < qr_poll_max:
+            check_cancelled()
+            time.sleep(qr_poll_interval)
+            qr_waited += qr_poll_interval
+            try:
+                candidate = _get_desktop_screenshot(settings)
+                if len(candidate) >= 1000:
+                    qr_image = candidate
+                    log.info("QR code ready after %ds (%d bytes)", qr_waited, len(qr_image))
+                    break
+                log.debug("Screenshot too small (%d bytes) after %ds, retrying...", len(candidate), qr_waited)
+            except Exception as e:
+                log.debug("Screenshot not ready after %ds: %s", qr_waited, e)
 
-        # Get QR code screenshot
-        log.info("Getting QR code screenshot...")
-        qr_image = _get_desktop_screenshot(settings)
-
-        if len(qr_image) < 1000:
-            log.error("QR screenshot too small (%d bytes), Signal Desktop may not be ready", len(qr_image))
+        if qr_image is None:
+            log.error("QR code did not appear within %ds, Signal Desktop may not be ready", qr_poll_max)
             _notify_link_result(
                 settings=settings,
                 token=token,

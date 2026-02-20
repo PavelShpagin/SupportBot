@@ -22,6 +22,10 @@ from app.db import (
     get_last_messages_text,
     get_positive_reactions_for_message,
     get_message_by_ts,
+    get_open_cases_for_group,
+    update_case_to_solved,
+    mark_case_in_rag,
+    expire_old_open_cases,
 )
 from app.jobs import types as job_types
 from app.llm.client import LLMClient
@@ -40,13 +44,15 @@ class WorkerDeps:
     rag: ChromaRag
     signal: SignalAdapter
     ultimate_agent: UltimateAgent
+    bot_sender_hash: str = ""  # hash of the bot's own phone number — used to skip bot messages in extraction
 
 
-def _format_buffer_line(msg: RawMessage, positive_reactions: int = 0) -> str:
+def _format_buffer_line(msg: RawMessage, positive_reactions: int = 0, is_bot: bool = False) -> str:
     reply = f" reply_to={msg.reply_to_id}" if msg.reply_to_id else ""
     reactions = f" reactions={positive_reactions}" if positive_reactions > 0 else ""
+    bot_tag = " [BOT]" if is_bot else ""
     # Include message_id so LLM can extract evidence_ids for case linking
-    return f"{msg.sender_hash} ts={msg.ts} msg_id={msg.message_id}{reply}{reactions}\n{msg.content_text}\n\n"
+    return f"{msg.sender_hash}{bot_tag} ts={msg.ts} msg_id={msg.message_id}{reply}{reactions}\n{msg.content_text}\n\n"
 
 
 @dataclass(frozen=True)
@@ -322,9 +328,25 @@ def _append_history_block(text: str, refs: List[Dict[str, str]]) -> str:
     return "\n".join(lines).strip() + "\n"
 
 
+_EXPIRY_INTERVAL_SECONDS = 3600  # run B1 expiry check once per hour
+
+
 def worker_loop_forever(deps: WorkerDeps) -> None:
     log.info("Worker loop started")
+    last_expiry_check = 0.0
+
     while True:
+        # Periodic B1 expiry: delete open cases older than 7 days
+        now = time.time()
+        if now - last_expiry_check >= _EXPIRY_INTERVAL_SECONDS:
+            try:
+                expired = expire_old_open_cases(deps.db, max_age_days=7)
+                if expired:
+                    log.info("Expired %d stale B1 open cases: %s", len(expired), expired)
+            except Exception:
+                log.exception("B1 expiry cleanup failed")
+            last_expiry_check = now
+
         job = claim_next_job(
             deps.db,
             allowed_types=[job_types.BUFFER_UPDATE, job_types.MAYBE_RESPOND],
@@ -358,13 +380,14 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
 
     # Check for positive reactions on this message
     positive_reactions = get_positive_reactions_for_message(deps.db, group_id=group_id, target_ts=msg.ts)
-    line = _format_buffer_line(msg, positive_reactions=positive_reactions)
+    is_bot_msg = bool(deps.bot_sender_hash and msg.sender_hash == deps.bot_sender_hash)
+    line = _format_buffer_line(msg, positive_reactions=positive_reactions, is_bot=is_bot_msg)
     buf = get_buffer(deps.db, group_id=group_id)
     buf2 = (buf or "") + line
-    
+
     # Trim buffer to enforce size/age limits before processing
     buf2 = _trim_buffer(
-        buf2, 
+        buf2,
         max_age_hours=deps.settings.buffer_max_age_hours,
         max_messages=deps.settings.buffer_max_messages
     )
@@ -374,14 +397,21 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         set_buffer(deps.db, group_id=group_id, buffer_text=buf2)
         return
 
-    numbered_buffer = _format_numbered_buffer_for_extract(blocks)
+    # Build extraction view: exclude bot messages so the LLM never creates cases
+    # from bot-answered interactions.  Bot blocks are still kept in buf2 for context.
+    non_bot_blocks = [b for b in blocks if "[BOT]" not in b.raw_text.splitlines()[0]]
+    if not non_bot_blocks:
+        set_buffer(deps.db, group_id=group_id, buffer_text=buf2)
+        return
+
+    numbered_buffer = _format_numbered_buffer_for_extract(non_bot_blocks)
     extract = deps.llm.extract_case_from_buffer(buffer_text=numbered_buffer)
     if not extract.cases:
         set_buffer(deps.db, group_id=group_id, buffer_text=buf2)
         return
 
     # Hard safety: if any returned span is out of bounds, reject this extract output.
-    n_blocks = len(blocks)
+    n_blocks = len(non_bot_blocks)
     if any(c.start_idx < 0 or c.end_idx >= n_blocks for c in extract.cases):
         log.warning(
             "Rejecting extract result with out-of-range spans (n_blocks=%s): %s",
@@ -391,38 +421,24 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         set_buffer(deps.db, group_id=group_id, buffer_text=buf2)
         return
 
-    accepted_ranges: List[tuple[int, int]] = []
+    # ── Phase 1: Extract new cases from the current buffer spans ────────────
+    accepted_ranges: List[tuple[int, int]] = []  # solved ranges (indices in non_bot_blocks) to remove
     for span in extract.cases:
-        # Build exact case block from indexed message slice.
-        case_block_text = "".join(blocks[i].raw_text for i in range(span.start_idx, span.end_idx + 1))
+        # Build exact case block from non-bot indexed message slice.
+        case_block_text = "".join(non_bot_blocks[i].raw_text for i in range(span.start_idx, span.end_idx + 1))
         case = deps.llm.make_case(case_block_text=case_block_text)
         if not case.keep:
             continue
 
-        if case.status != "solved":
-            log.info(
-                "Skipping non-solved extracted span idx=%s..%s (status=%s)",
-                span.start_idx,
-                span.end_idx,
-                case.status,
-            )
-            continue
-
-        if not case.solution_summary.strip():
-            log.warning("Rejecting solved case without solution_summary for span %s..%s", span.start_idx, span.end_idx)
-            continue
-
-        # Extract evidence_ids directly from blocks (more reliable than LLM extraction)
+        # Extract evidence_ids directly from non-bot blocks
         evidence_ids = [
-            blocks[i].message_id 
-            for i in range(span.start_idx, span.end_idx + 1) 
-            if blocks[i].message_id
+            non_bot_blocks[i].message_id
+            for i in range(span.start_idx, span.end_idx + 1)
+            if non_bot_blocks[i].message_id
         ]
-        
-        # Log if we got evidence_ids
         log.info(
-            "Case span %s..%s: extracted %d evidence_ids from blocks",
-            span.start_idx, span.end_idx, len(evidence_ids)
+            "Case span %s..%s status=%s evidence_ids=%d",
+            span.start_idx, span.end_idx, case.status, len(evidence_ids),
         )
 
         case_id = new_case_id(deps.db)
@@ -440,48 +456,97 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
             evidence_image_paths=evidence_image_paths,
         )
 
-        # Build doc_text with clear labels for retrieval
-        doc_text = "\n".join(
-            [
-                f"[SOLVED] {case.problem_title.strip()}",
-                f"Проблема: {case.problem_summary.strip()}",
-                f"Рішення: {case.solution_summary.strip()}",
-                "tags: " + ", ".join(case.tags),
-            ]
-        ).strip()
-        embedding = deps.llm.embed(text=doc_text)
+        if case.status == "solved" and case.solution_summary.strip():
+            # Solved case → index in SCRAG immediately (B3)
+            doc_text = "\n".join(
+                [
+                    f"[SOLVED] {case.problem_title.strip()}",
+                    f"Проблема: {case.problem_summary.strip()}",
+                    f"Рішення: {case.solution_summary.strip()}",
+                    "tags: " + ", ".join(case.tags),
+                ]
+            ).strip()
+            embedding = deps.llm.embed(text=doc_text)
+            deps.rag.upsert_case(
+                case_id=case_id,
+                document=doc_text,
+                embedding=embedding,
+                metadata={
+                    "group_id": group_id,
+                    "status": case.status,
+                    "evidence_ids": evidence_ids,
+                    "evidence_image_paths": evidence_image_paths,
+                },
+            )
+            mark_case_in_rag(deps.db, case_id)
+            accepted_ranges.append((span.start_idx, span.end_idx))
+            log.info("New solved case %s indexed in SCRAG (group=%s)", case_id, group_id[:20])
+        else:
+            # Open case → store in B1 only, keep messages in buffer
+            log.info("New open case %s stored in B1 (not in SCRAG, group=%s)", case_id, group_id[:20])
 
-        deps.rag.upsert_case(
-            case_id=case_id,
-            document=doc_text,
-            embedding=embedding,
-            metadata={
-                "group_id": group_id,
-                "status": case.status,
-                "evidence_ids": evidence_ids,
-                "evidence_image_paths": evidence_image_paths,
-            },
-        )
-        accepted_ranges.append((span.start_idx, span.end_idx))
+    # ── Phase 2: Dynamic B1 resolution ────────────────────────────────────────
+    # Check if any previously open (B1) cases for this group are now resolved
+    # based on the current B2 buffer content.
+    try:
+        open_cases = get_open_cases_for_group(deps.db, group_id)
+        if open_cases:
+            for b1_case in open_cases:
+                try:
+                    resolution = deps.llm.check_case_resolved(
+                        case_title=b1_case["problem_title"],
+                        case_problem=b1_case["problem_summary"],
+                        buffer_text=buf2,
+                    )
+                    if resolution and resolution.resolved and resolution.solution_summary.strip():
+                        update_case_to_solved(deps.db, b1_case["case_id"], resolution.solution_summary)
+                        doc_text = "\n".join([
+                            f"[SOLVED] {b1_case['problem_title'].strip()}",
+                            f"Проблема: {b1_case['problem_summary'].strip()}",
+                            f"Рішення: {resolution.solution_summary.strip()}",
+                            "tags: " + ", ".join(b1_case.get("tags") or []),
+                        ]).strip()
+                        embedding = deps.llm.embed(text=doc_text)
+                        deps.rag.upsert_case(
+                            case_id=b1_case["case_id"],
+                            document=doc_text,
+                            embedding=embedding,
+                            metadata={
+                                "group_id": group_id,
+                                "status": "solved",
+                            },
+                        )
+                        mark_case_in_rag(deps.db, b1_case["case_id"])
+                        log.info(
+                            "B1 case %s promoted to solved and indexed in SCRAG (group=%s)",
+                            b1_case["case_id"], group_id[:20],
+                        )
+                except Exception:
+                    log.exception("B1 resolution check failed for case %s", b1_case["case_id"])
+    except Exception:
+        log.exception("B1 resolution phase failed for group %s", group_id[:20])
 
+    # ── Update buffer: remove message spans that became solved cases ──────────
     if not accepted_ranges:
         set_buffer(deps.db, group_id=group_id, buffer_text=buf2)
         return
 
-    remove_idx: set[int] = set()
+    # Map accepted ranges back to message_ids (from non_bot_blocks) so we can
+    # remove those messages from the full block list (which also has bot messages).
+    consumed_message_ids: set[str] = set()
     for start_idx, end_idx in accepted_ranges:
-        remove_idx.update(range(start_idx, end_idx + 1))
-    kept_blocks = [b.raw_text for b in blocks if b.idx not in remove_idx]
+        for i in range(start_idx, end_idx + 1):
+            mid = non_bot_blocks[i].message_id
+            if mid:
+                consumed_message_ids.add(mid)
+
+    kept_blocks = [b.raw_text for b in blocks if b.message_id not in consumed_message_ids]
     buffer_new = "".join(kept_blocks)
 
     set_buffer(deps.db, group_id=group_id, buffer_text=buffer_new)
     log.info(
-        "Extracted solved spans group_id=%s total_messages=%s removed_ranges=%s removed_messages=%s remaining_messages=%s",
-        group_id,
-        len(blocks),
-        accepted_ranges,
-        len(remove_idx),
-        len(blocks) - len(remove_idx),
+        "Buffer updated group_id=%s total=%s solved_removed=%s remaining=%s",
+        group_id, len(blocks), len(remove_idx), len(blocks) - len(remove_idx),
     )
 
 

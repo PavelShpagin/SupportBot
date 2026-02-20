@@ -600,11 +600,32 @@ def unlink_all_admins_from_group(db: MySQL, group_id: str) -> int:
         return removed
 
 
+def archive_cases_for_group(db: MySQL, group_id: str) -> int:
+    """
+    Mark all active cases for a group as 'archived' instead of deleting them.
+    Called during re-ingest so that old case links (already sent in Signal) remain
+    accessible. Archived cases are excluded from RAG queries but still served by
+    the web frontend with a soft 'archived' banner.
+    Returns the number of cases archived.
+    """
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            "UPDATE cases SET status = 'archived', in_rag = 0 "
+            "WHERE group_id = %s AND status != 'archived'",
+            (group_id,),
+        )
+        count = cur.rowcount
+        conn.commit()
+    return count
+
+
 def delete_all_group_data(db: MySQL, group_id: str) -> dict:
     """
     Delete ALL data associated with a group for compliance.
-    Called when bot is removed from a group.
-    
+    Called when the bot is removed from a group (GDPR hard-delete).
+    For re-ingest use archive_cases_for_group() instead so old links stay valid.
+
     Returns dict with counts of deleted items.
     """
     stats = {
@@ -855,6 +876,122 @@ def get_case_evidence(db: MySQL, case_id: str) -> List[RawMessage]:
             )
             for r in rows
         ]
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# B1 / B3 / SCRAG Pipeline Queries
+# ─────────────────────────────────────────────────────────────────────────────
+
+def get_open_cases_for_group(db: MySQL, group_id: str) -> List[Dict[str, Any]]:
+    """Return all open (B1) cases for a group, ordered newest first."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            """
+            SELECT case_id, problem_title, problem_summary, solution_summary, tags_json, created_at
+            FROM cases
+            WHERE group_id = %s AND status = 'open'
+            ORDER BY created_at DESC
+            """,
+            (group_id,),
+        )
+        rows = cur.fetchall()
+        return [
+            {
+                "case_id": row[0],
+                "problem_title": row[1],
+                "problem_summary": row[2],
+                "solution_summary": row[3] or "",
+                "tags": _parse_json_list(row[4]),
+                "created_at": row[5].isoformat() if row[5] else None,
+            }
+            for row in rows
+        ]
+
+
+def get_recent_solved_cases(db: MySQL, group_id: str, since_ts_ms: int) -> List[Dict[str, Any]]:
+    """Return solved (B3) cases whose evidence falls within the B2 window.
+
+    since_ts_ms is the oldest message timestamp (ms) still in the rolling buffer.
+    Cases are included when at least one of their evidence messages is >= since_ts_ms.
+    """
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            """
+            SELECT DISTINCT c.case_id, c.problem_title, c.problem_summary, c.solution_summary, c.tags_json, c.created_at
+            FROM cases c
+            JOIN case_evidence ce ON c.case_id = ce.case_id
+            JOIN raw_messages rm ON ce.message_id = rm.message_id
+            WHERE c.group_id = %s
+              AND c.status = 'solved'
+              AND rm.ts >= %s
+            ORDER BY c.created_at DESC
+            LIMIT 10
+            """,
+            (group_id, since_ts_ms),
+        )
+        rows = cur.fetchall()
+        return [
+            {
+                "case_id": row[0],
+                "problem_title": row[1],
+                "problem_summary": row[2],
+                "solution_summary": row[3] or "",
+                "tags": _parse_json_list(row[4]),
+                "created_at": row[5].isoformat() if row[5] else None,
+            }
+            for row in rows
+        ]
+
+
+def update_case_to_solved(db: MySQL, case_id: str, solution_summary: str) -> None:
+    """Promote a B1 open case to solved. Caller is responsible for RAG indexing."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            """
+            UPDATE cases SET status = 'solved', solution_summary = %s, updated_at = NOW()
+            WHERE case_id = %s
+            """,
+            (solution_summary, case_id),
+        )
+        conn.commit()
+
+
+def mark_case_in_rag(db: MySQL, case_id: str) -> None:
+    """Mark that a case has been indexed in ChromaDB (SCRAG)."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            "UPDATE cases SET in_rag = 1, updated_at = NOW() WHERE case_id = %s",
+            (case_id,),
+        )
+        conn.commit()
+
+
+def expire_old_open_cases(db: MySQL, max_age_days: int = 7) -> List[str]:
+    """Delete open B1 cases older than max_age_days. Returns list of deleted case_ids."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            """
+            SELECT case_id FROM cases
+            WHERE status = 'open'
+              AND in_rag = 0
+              AND created_at < NOW() - INTERVAL %s DAY
+            """,
+            (max_age_days,),
+        )
+        rows = cur.fetchall()
+        if not rows:
+            return []
+        expired_ids = [r[0] for r in rows]
+        placeholders = ", ".join(["%s"] * len(expired_ids))
+        cur.execute(f"DELETE FROM case_evidence WHERE case_id IN ({placeholders})", expired_ids)
+        cur.execute(f"DELETE FROM cases WHERE case_id IN ({placeholders})", expired_ids)
+        conn.commit()
+        return expired_ids
 
 
 # ─────────────────────────────────────────────────────────────────────────────

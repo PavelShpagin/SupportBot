@@ -15,6 +15,7 @@ from app.llm.schemas import (
     DecisionResult,
     ExtractResult,
     ImgExtract,
+    ResolutionResult,
     RespondResult,
 )
 
@@ -117,6 +118,21 @@ class LLMClient:
             system=P.P_EXTRACT_SYSTEM,
             user=user,
             schema=ExtractResult,
+        )
+
+    def check_case_resolved(
+        self, *, case_title: str, case_problem: str, buffer_text: str
+    ) -> ResolutionResult:
+        """Check if a B1 open case has been resolved by messages currently in B2 buffer."""
+        user = (
+            f"ПРОБЛЕМА:\nЗаголовок: {case_title}\nОпис: {case_problem}\n\n"
+            f"БУФЕР (B2):\n{buffer_text}"
+        )
+        return self._json_call(
+            model=self.settings.model_case,
+            system=P.P_RESOLVE_SYSTEM,
+            user=user,
+            schema=ResolutionResult,
         )
 
     def make_case(self, *, case_block_text: str) -> CaseResult:

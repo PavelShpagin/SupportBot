@@ -39,11 +39,13 @@ DDL_STATEMENTS = [
       solution_summary LONGTEXT,
       tags_json        LONGTEXT,
       evidence_image_paths_json LONGTEXT,
+      in_rag           TINYINT(1) NOT NULL DEFAULT 0,
       created_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
       updated_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
       CONSTRAINT cases_status_chk CHECK (status IN ('solved', 'open')),
       INDEX idx_cases_group (group_id),
-      INDEX idx_cases_status (status)
+      INDEX idx_cases_status (status),
+      INDEX idx_cases_in_rag (in_rag)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     """,
     """
@@ -128,6 +130,12 @@ MIGRATIONS = [
     "ALTER TABLE cases ADD COLUMN evidence_image_paths_json LONGTEXT",
     "ALTER TABLE raw_messages ADD COLUMN image_paths_json LONGTEXT",
     "ALTER TABLE raw_messages ADD COLUMN sender_name VARCHAR(256)",
+    # B1/B2/B3/SCRAG pipeline: track whether a case has been indexed in ChromaDB
+    "ALTER TABLE cases ADD COLUMN in_rag TINYINT(1) NOT NULL DEFAULT 0",
+    "ALTER TABLE cases ADD INDEX idx_cases_in_rag (in_rag)",
+    # Allow 'archived' status so re-ingest preserves old cases (keeps old links valid)
+    "ALTER TABLE cases DROP CONSTRAINT cases_status_chk",
+    "ALTER TABLE cases ADD CONSTRAINT cases_status_chk CHECK (status IN ('solved', 'open', 'archived'))",
 ]
 
 
