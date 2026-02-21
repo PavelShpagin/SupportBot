@@ -259,18 +259,20 @@ def _send_qr_to_user(*, settings, token: str, qr_image: bytes) -> bool:
 
 def _post_cases_to_bot(*, settings, token: str, group_id: str, case_blocks: List[str], messages: List[dict]) -> int:
     """Post extracted cases to signal-bot for RAG indexing. Returns cases_inserted from response."""
-    # Format messages for the API
+    import hashlib
+    bot_e164 = settings.signal_bot_e164 or ""
+    # Format messages for the API, excluding the bot's own messages from evidence
     formatted_messages = []
     for m in messages:
         text = m.get("text") or m.get("body") or ""
         if not text:
             continue
         sender = m.get("sender") or m.get("source") or "unknown"
+        if bot_e164 and sender == bot_e164:
+            continue  # Don't include bot's own messages in case evidence
         sender_name = m.get("sender_name") or None
         ts = m.get("ts") or m.get("timestamp") or 0
         msg_id = m.get("id") or m.get("message_id") or str(ts)
-        # Hash the sender for privacy
-        import hashlib
         sender_hash = hashlib.sha256(sender.encode()).hexdigest()[:16]
         formatted_messages.append({
             "message_id": msg_id,
@@ -389,12 +391,7 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
             time.sleep(poll_interval)
             waited += poll_interval
 
-            try:
-                status = _check_desktop_status(settings)
-            except Exception as e:
-                log.warning("Could not poll Signal Desktop status (will retry): %s", e)
-                continue
-
+            status = _check_desktop_status(settings)
             if status.get("has_user_conversations"):
                 log.info("User linked! Found %d conversations", status.get("conversations_count", 0))
                 break
@@ -530,7 +527,7 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
             api_key=settings.openai_api_key,
             base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
         )
-
+        
         case_blocks: List[str] = []
         for i, ch in enumerate(chunks):
             check_cancelled()
@@ -571,17 +568,7 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
 
     except JobCancelled:
         log.info("Job %d was cancelled", job_id)
-        # Notify admin so they're not left waiting silently
-        try:
-            _notify_link_result(
-                settings=settings,
-                token=token,
-                success=False,
-                note="Operation was cancelled. Send the group name to try again.",
-            )
-        except Exception:
-            log.exception("Failed to notify admin of job cancellation")
-        # Reset on cancellation for security
+        # Also reset on cancellation for security
         try:
             _reset_desktop(settings)
         except Exception:
