@@ -81,6 +81,7 @@ class Settings:
     retrieve_top_k: int
     worker_poll_seconds: float
     history_token_ttl_minutes: int
+    admin_session_stale_minutes: int
     
     # HTTP API (debug-only endpoints)
     http_debug_endpoints_enabled: bool
@@ -146,6 +147,7 @@ def load_settings() -> Settings:
         retrieve_top_k=_env_int("RETRIEVE_TOP_K", default=5, min_value=1),
         worker_poll_seconds=float(os.getenv("WORKER_POLL_SECONDS", "1")),
         history_token_ttl_minutes=_env_int("HISTORY_TOKEN_TTL_MINUTES", default=60, min_value=1),
+        admin_session_stale_minutes=_env_int("ADMIN_SESSION_STALE_MINUTES", default=30, min_value=1),
         http_debug_endpoints_enabled=_env_bool("HTTP_DEBUG_ENDPOINTS_ENABLED", default=False),
         buffer_max_age_hours=_env_int("BUFFER_MAX_AGE_HOURS", default=168, min_value=1),  # 7 days
         buffer_max_messages=_env_int("BUFFER_MAX_MESSAGES", default=500, min_value=10),
