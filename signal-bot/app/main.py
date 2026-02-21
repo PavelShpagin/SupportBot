@@ -429,28 +429,6 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
         return
     # -----------------------------
 
-    # Self-heal stale onboarding sessions: if a user comes back much later,
-    # restart from welcome instead of treating random text as a group name.
-    if (
-        session is not None
-        and session.state == "awaiting_group_name"
-        and session.updated_at is not None
-    ):
-        session_age_seconds = (datetime.utcnow() - session.updated_at).total_seconds()
-        stale_after_seconds = settings.admin_session_stale_minutes * 60
-        if session_age_seconds >= stale_after_seconds:
-            log.info(
-                "Admin %s session is stale (age=%ss >= %ss). Restarting onboarding.",
-                admin_id,
-                int(session_age_seconds),
-                stale_after_seconds,
-            )
-            try:
-                delete_admin_session(db, admin_id)
-            except Exception:
-                log.exception("Failed to delete stale session for %s", admin_id)
-            session = None
-    
     if session is None:
         # Brand new admin — detect language, send welcome, then fall through to group lookup
         detected_lang = _detect_language(text)
@@ -572,48 +550,6 @@ def _handle_group_message(m: InboundGroupMessage) -> None:
     )
 
 
-_POSITIVE_EMOJIS = {
-    # Thumbs up — all skin tones
-    "👍", "👍🏻", "👍🏼", "👍🏽", "👍🏾", "👍🏿",
-    # Hearts — every color/variant
-    "❤️", "❤", "🧡", "💛", "💚", "💙", "💜", "🖤", "🤍", "🤎",
-    "💗", "💓", "💕", "💞", "💝", "💖", "💘", "💟", "🩷", "🩵", "🩶",
-    # Checkmarks / approval
-    "✅", "✔️", "✔", "☑️", "✓",
-    # 100 / fire / lightning / sparkle
-    "💯", "🔥", "⚡", "💥", "✨", "🌟", "⭐", "🌠",
-    # Celebration
-    "🎉", "🎊", "🥳", "🏆", "🥂", "🎆", "🎇", "🎈",
-    # Fists / knuckle bumps — common in UA communities
-    "👊", "👊🏻", "👊🏼", "👊🏽", "👊🏾", "👊🏿",
-    "🤜", "🤜🏻", "🤜🏼", "🤜🏽", "🤜🏾", "🤜🏿",
-    "🤛", "🤛🏻", "🤛🏼", "🤛🏽", "🤛🏾", "🤛🏿",
-    # Clapping / praise — all skin tones
-    "👏", "👏🏻", "👏🏼", "👏🏽", "👏🏾", "👏🏿",
-    "🙌", "🙌🏻", "🙌🏼", "🙌🏽", "🙌🏾", "🙌🏿",
-    # Muscle / strength — all skin tones
-    "💪", "💪🏻", "💪🏼", "💪🏽", "💪🏾", "💪🏿",
-    # OK hand — all skin tones
-    "👌", "👌🏻", "👌🏼", "👌🏽", "👌🏾", "👌🏿",
-    # Pray / thanks — all skin tones
-    "🙏", "🙏🏻", "🙏🏼", "🙏🏽", "🙏🏾", "🙏🏿",
-    # Pointing up — “exactly!” / “this!” — all skin tones
-    "☝️", "☝", "☝🏻", "☝🏼", "☝🏽", "☝🏾", "☝🏿",
-    # Salute / handshake / love-you hand
-    "🫡", "🤝",
-    "🤟", "🤟🏻", "🤟🏼", "🤟🏽", "🤟🏾", "🤟🏿",
-    # Positive faces
-    "😊", "😁", "😄", "😃", "😀", "🙂", "🤩", "😎", "🥰", "😍", "🥹",
-    "😘", "🤗",
-    # Text-style shortcuts
-    "+", "🆗", "🉑",
-    # Gems / awards
-    "💎", "🎯", "🏅", "🥇",
-    # Rocket
-    "🚀",
-}
-
-
 def _handle_reaction(r: InboundReaction) -> None:
     """Handle emoji reactions to messages."""
     sender_h = hash_sender(r.sender)
@@ -637,23 +573,6 @@ def _handle_reaction(r: InboundReaction) -> None:
             emoji=r.emoji,
         )
         log.info("Reaction added: group=%s ts=%s emoji=%s", r.group_id, r.target_ts, r.emoji)
-
-        # Close any open case linked to the reacted message
-        if r.emoji in _POSITIVE_EMOJIS:
-            try:
-                closed_id = close_case_by_message_ts(
-                    db,
-                    group_id=r.group_id,
-                    target_ts=r.target_ts,
-                    emoji=r.emoji,
-                )
-                if closed_id:
-                    log.info(
-                        "Case %s closed via reaction %s (group=%s ts=%s)",
-                        closed_id, r.emoji, r.group_id, r.target_ts,
-                    )
-            except Exception:
-                log.exception("Failed to close case via reaction")
 
 
 def _handle_contact_removed(phone_number: str) -> None:
