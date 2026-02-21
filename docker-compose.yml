@@ -74,6 +74,23 @@ services:
     networks:
       - default
 
+  signal-web:
+    build:
+      context: .
+      dockerfile: signal-web/Dockerfile
+    env_file: .env
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=https://supportbot.info
+    ports:
+      - "3000:3000"
+    depends_on:
+      - signal-bot
+    networks:
+      - default
+      - supportbot-network
+    restart: unless-stopped
+
   rag:
     image: chromadb/chroma:latest
     environment:
