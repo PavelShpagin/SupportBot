@@ -430,7 +430,8 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
     # -----------------------------
 
     # Self-heal stale onboarding sessions: if a user comes back much later,
-    # restart from welcome instead of treating random text as a group name.
+    # silently reset and treat the incoming text as a group name (skip welcome).
+    session_was_stale = False
     if (
         session is not None
         and session.state == "awaiting_group_name"
@@ -440,7 +441,7 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
         stale_after_seconds = settings.admin_session_stale_minutes * 60
         if session_age_seconds >= stale_after_seconds:
             log.info(
-                "Admin %s session is stale (age=%ss >= %ss). Restarting onboarding.",
+                "Admin %s session is stale (age=%ss >= %ss). Silently resetting.",
                 admin_id,
                 int(session_age_seconds),
                 stale_after_seconds,
@@ -450,22 +451,26 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
             except Exception:
                 log.exception("Failed to delete stale session for %s", admin_id)
             session = None
-    
+            session_was_stale = True
+
     if session is None:
-        # Brand new admin — detect language, send welcome, then fall through to group lookup
         detected_lang = _detect_language(text)
-        log.info("New admin %s, detected language: %s, sending welcome", admin_id, detected_lang)
         set_admin_awaiting_group_name(db, admin_id)
         set_admin_lang(db, admin_id, detected_lang)
-        if not isinstance(signal, NoopSignalAdapter):
-            sent = signal.send_onboarding_prompt(recipient=admin_id, lang=detected_lang)
-            if isinstance(signal, SignalCliAdapter) and not sent:
-                # User blocked us - clear session
-                from app.db.queries_mysql import unlink_admin_from_all_groups
-                delete_admin_session(db, admin_id)
-                unlink_admin_from_all_groups(db, admin_id)
-                log.info("Cleared session for blocked user %s", admin_id)
-                return
+        if not session_was_stale:
+            # Truly new admin — send welcome prompt
+            log.info("New admin %s, detected language: %s, sending welcome", admin_id, detected_lang)
+            if not isinstance(signal, NoopSignalAdapter):
+                sent = signal.send_onboarding_prompt(recipient=admin_id, lang=detected_lang)
+                if isinstance(signal, SignalCliAdapter) and not sent:
+                    # User blocked us - clear session
+                    from app.db.queries_mysql import unlink_admin_from_all_groups
+                    delete_admin_session(db, admin_id)
+                    unlink_admin_from_all_groups(db, admin_id)
+                    log.info("Cleared session for blocked user %s", admin_id)
+                    return
+        else:
+            log.info("Admin %s stale session reset, processing '%s' as group name", admin_id, text)
         # Continue to group lookup with this same message
         lang = detected_lang
     else:
@@ -477,9 +482,24 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
             signal.send_onboarding_prompt(recipient=admin_id, lang=lang)
         return
     
-    # If admin sends any message while awaiting QR scan → cancel current job and restart
+    # If admin sends a new message while awaiting QR scan:
+    # - same group name → just say "still processing", avoid duplicate QR flow
+    # - different group name → cancel current job and restart with new name
     if session is not None and session.state == "awaiting_qr_scan" and session.pending_token:
-        log.info("Admin %s sent message while awaiting QR scan, cancelling pending job", admin_id)
+        same_group = (
+            session.pending_group_name
+            and text.lower().strip() == session.pending_group_name.lower().strip()
+        )
+        if same_group:
+            log.info("Admin %s resent same group name while awaiting QR scan — ignoring duplicate", admin_id)
+            wait_msg = (
+                f'QR-код для групи "{session.pending_group_name}" вже генерується. Зачекайте, будь ласка.'
+                if lang == "uk"
+                else f'QR code for group "{session.pending_group_name}" is already being generated. Please wait.'
+            )
+            signal.send_direct_text(recipient=admin_id, text=wait_msg)
+            return
+        log.info("Admin %s sent new group name while awaiting QR scan, cancelling pending job", admin_id)
         cancel_pending_history_jobs(db, session.pending_token)
         # Reset state and continue to search for new group
         set_admin_awaiting_group_name(db, admin_id)
