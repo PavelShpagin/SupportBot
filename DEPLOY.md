@@ -1,24 +1,6 @@
 # SupportBot Deployment Guide
 
-> **All containers run on the OCI VM — never locally.**
-> Local Docker is only used for `docker compose down` cleanup.
-> The workflow is: edit code → `git push` → `./scripts/deploy-oci.sh rebuild`.
-
-## Development Workflow
-
-```bash
-# After any code change:
-git add . && git commit -m "..." && git push
-./scripts/deploy-oci.sh rebuild          # push + rebuild signal-bot & signal-ingest
-
-# Or rebuild a single service:
-./scripts/deploy-oci.sh rebuild signal-bot
-
-# View live logs:
-./scripts/deploy-oci.sh logs signal-bot
-```
-
----
+Complete instructions for deploying SupportBot to Oracle Cloud Infrastructure (OCI).
 
 ## Quick Start (Existing VM)
 
@@ -222,7 +204,7 @@ After scanning, the bot:
 | First-ever message OR session expired (30 min idle) | Welcome + language detection |
 | Active session, state = awaiting group name | Welcome again (idempotent) |
 | Active session, state = awaiting QR scan | Handles in-progress scan |
-| Send same group name while QR is generating | "Already generating, please wait" |
+| Send any message while QR is generating | Cancels current job, restarts with new input |
 | Send different group name while QR is generating | Cancels old job, starts new one |
 | `/wipe` command | Erases all groups/cases/sessions (keeps bot registration) |
 | `/en` or `/uk` | Switch UI language |
