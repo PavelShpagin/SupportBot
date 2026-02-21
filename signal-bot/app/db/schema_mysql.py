@@ -136,6 +136,8 @@ MIGRATIONS = [
     # Allow 'archived' status so re-ingest preserves old cases (keeps old links valid)
     "ALTER TABLE cases DROP CONSTRAINT cases_status_chk",
     "ALTER TABLE cases ADD CONSTRAINT cases_status_chk CHECK (status IN ('solved', 'open', 'archived'))",
+    # Emoji reaction that closed/confirmed the case (e.g. 👍)
+    "ALTER TABLE cases ADD COLUMN closed_emoji VARCHAR(16)",
 ]
 
 

@@ -841,7 +841,7 @@ def get_case(db: MySQL, case_id: str) -> Optional[Dict[str, Any]]:
         cur = conn.cursor()
         cur.execute(
             """
-            SELECT case_id, group_id, status, problem_title, problem_summary, solution_summary, tags_json, evidence_image_paths_json, created_at
+            SELECT case_id, group_id, status, problem_title, problem_summary, solution_summary, tags_json, evidence_image_paths_json, created_at, closed_emoji
             FROM cases
             WHERE case_id = %s
             """,
@@ -860,7 +860,55 @@ def get_case(db: MySQL, case_id: str) -> Optional[Dict[str, Any]]:
             "tags": _parse_json_list(row[6]),
             "evidence_image_paths": _parse_json_list(row[7]),
             "created_at": row[8].isoformat() if row[8] else None,
+            "closed_emoji": row[9],
         }
+
+
+def close_case_by_message_ts(
+    db: MySQL,
+    *,
+    group_id: str,
+    target_ts: int,
+    emoji: str,
+) -> Optional[str]:
+    """Close an open case associated with a message (by timestamp).
+
+    Looks up the raw_message at (group_id, ts=target_ts), finds any case linked
+    via case_evidence, marks it solved with the given emoji.  Returns case_id or None.
+    """
+    with db.connection() as conn:
+        cur = conn.cursor()
+        # Find the message_id for this timestamp in this group
+        cur.execute(
+            "SELECT message_id FROM raw_messages WHERE group_id = %s AND ts = %s LIMIT 1",
+            (group_id, target_ts),
+        )
+        row = cur.fetchone()
+        if not row:
+            return None
+        message_id = row[0]
+
+        # Find a case linked to this message
+        cur.execute(
+            """
+            SELECT c.case_id FROM cases c
+            JOIN case_evidence ce ON c.case_id = ce.case_id
+            WHERE ce.message_id = %s AND c.status = 'open'
+            LIMIT 1
+            """,
+            (message_id,),
+        )
+        row = cur.fetchone()
+        if not row:
+            return None
+        case_id = row[0]
+
+        cur.execute(
+            "UPDATE cases SET status = 'solved', closed_emoji = %s, updated_at = NOW() WHERE case_id = %s",
+            (emoji, case_id),
+        )
+        conn.commit()
+        return case_id
 
 
 def get_case_evidence(db: MySQL, case_id: str) -> List[RawMessage]:

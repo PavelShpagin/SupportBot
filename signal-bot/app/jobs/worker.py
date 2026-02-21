@@ -653,7 +653,44 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
 
         # Check for bot mention to force response (optional, but good for UX)
         force = _mentions_bot(deps.settings, msg.content_text)
-        
+
+        # ── Gate: fast Flash model decides if this is a genuine support inquiry ──
+        # Load recent messages for context (exclude the current one)
+        context_msgs = get_last_messages_text(deps.db, group_id, n=9)
+        # context_msgs are newest-last; current message is the last item
+        context_text = "\n".join(context_msgs[:-1]) if len(context_msgs) > 1 else ""
+
+        # Load images attached to the current message
+        gate_images: list[tuple[bytes, str]] | None = None
+        if msg.image_paths:
+            gate_images = []
+            for img_path in msg.image_paths[:2]:
+                try:
+                    mime, _ = mimetypes.guess_type(img_path)
+                    mime = mime or "image/jpeg"
+                    with open(img_path, "rb") as fh:
+                        gate_images.append((fh.read(), mime))
+                except Exception as _img_err:
+                    log.debug("Gate: could not load image %s: %s", img_path, _img_err)
+            if not gate_images:
+                gate_images = None
+
+        try:
+            gate = deps.llm.decide_consider(
+                message=msg.content_text,
+                context=context_text,
+                images=gate_images,
+            )
+            log.info(
+                "Gate: consider=%s tag=%s force=%s group=%s",
+                gate.consider, gate.tag, force, group_id,
+            )
+            if not gate.consider and not force:
+                log.info("MAYBE_RESPOND: gate filtered message (tag=%s)", gate.tag)
+                return
+        except Exception as _gate_err:
+            log.warning("Gate failed, proceeding without filter: %s", _gate_err)
+
         answer = deps.ultimate_agent.answer(msg.content_text, group_id=group_id, db=deps.db, lang=group_lang)
         
         if answer == "SKIP":

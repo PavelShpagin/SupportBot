@@ -431,27 +431,28 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
 
     # Self-heal stale onboarding sessions: if a user comes back much later,
     # restart from welcome instead of treating random text as a group name.
-    # NULL updated_at means an old session without a timestamp — treat as stale too.
-    if session is not None and session.state == "awaiting_group_name":
-        is_stale = session.updated_at is None or (
-            (datetime.utcnow() - session.updated_at).total_seconds()
-            >= settings.admin_session_stale_minutes * 60
-        )
-        if is_stale:
+    if (
+        session is not None
+        and session.state == "awaiting_group_name"
+        and session.updated_at is not None
+    ):
+        session_age_seconds = (datetime.utcnow() - session.updated_at).total_seconds()
+        stale_after_seconds = settings.admin_session_stale_minutes * 60
+        if session_age_seconds >= stale_after_seconds:
             log.info(
-                "Admin %s session is stale (updated_at=%s). Restarting onboarding.",
+                "Admin %s session is stale (age=%ss >= %ss). Restarting onboarding.",
                 admin_id,
-                session.updated_at,
+                int(session_age_seconds),
+                stale_after_seconds,
             )
             try:
                 delete_admin_session(db, admin_id)
             except Exception:
                 log.exception("Failed to delete stale session for %s", admin_id)
             session = None
-
+    
     if session is None:
-        # Brand new admin (or stale session cleared) — detect language, send welcome, stop.
-        # The NEXT message from the admin will be treated as the group name.
+        # Brand new admin — detect language, send welcome, then fall through to group lookup
         detected_lang = _detect_language(text)
         log.info("New admin %s, detected language: %s, sending welcome", admin_id, detected_lang)
         set_admin_awaiting_group_name(db, admin_id)
@@ -464,9 +465,11 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
                 delete_admin_session(db, admin_id)
                 unlink_admin_from_all_groups(db, admin_id)
                 log.info("Cleared session for blocked user %s", admin_id)
-        return
-
-    lang = session.lang
+                return
+        # Continue to group lookup with this same message
+        lang = detected_lang
+    else:
+        lang = session.lang
 
     if not text:
         # Empty message - resend prompt
@@ -569,6 +572,16 @@ def _handle_group_message(m: InboundGroupMessage) -> None:
     )
 
 
+_POSITIVE_EMOJIS = {
+    "👍", "👍🏻", "👍🏼", "👍🏽", "👍🏾", "👍🏿",
+    "❤️", "❤", "🧡", "💛", "💚", "💙", "💜", "🖤", "🤍",
+    "💯", "✅", "✔️", "✔", "☑️",
+    "🎉", "🥳", "🏆", "⭐", "🌟",
+    "👏", "🙌", "🤝", "🫡", "💪",
+    "😊", "🙏", "+",
+}
+
+
 def _handle_reaction(r: InboundReaction) -> None:
     """Handle emoji reactions to messages."""
     sender_h = hash_sender(r.sender)
@@ -592,6 +605,23 @@ def _handle_reaction(r: InboundReaction) -> None:
             emoji=r.emoji,
         )
         log.info("Reaction added: group=%s ts=%s emoji=%s", r.group_id, r.target_ts, r.emoji)
+
+        # Close any open case linked to the reacted message
+        if r.emoji in _POSITIVE_EMOJIS:
+            try:
+                closed_id = close_case_by_message_ts(
+                    db,
+                    group_id=r.group_id,
+                    target_ts=r.target_ts,
+                    emoji=r.emoji,
+                )
+                if closed_id:
+                    log.info(
+                        "Case %s closed via reaction %s (group=%s ts=%s)",
+                        closed_id, r.emoji, r.group_id, r.target_ts,
+                    )
+            except Exception:
+                log.exception("Failed to close case via reaction")
 
 
 def _handle_contact_removed(phone_number: str) -> None:

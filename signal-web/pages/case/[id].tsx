@@ -10,6 +10,7 @@ interface CaseData {
   solution_summary: string;
   status: string;
   created_at: string;
+  closed_emoji: string | null;
   tags: string[];
   evidence: {
     message_id: string;
@@ -418,9 +419,20 @@ export default function CasePage() {
               <img src="/supportbot-logo.png" alt="SupportBot" className="logo" />
               <span className="brand">SupportBot</span>
             </a>
-            <span className={`status-badge ${data.status === 'solved' ? 'status-solved' : data.status === 'archived' ? 'status-archived' : 'status-open'}`}>
-              {data.status === 'solved' ? 'Вирішено' : data.status === 'archived' ? 'Архів' : 'Відкрито'}
-            </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              {data.closed_emoji && data.status === 'solved' && (
+                <span title="Підтверджено реакцією" style={{
+                  fontSize: 22,
+                  lineHeight: 1,
+                  filter: 'drop-shadow(0 1px 2px rgba(0,0,0,.15))',
+                }}>
+                  {data.closed_emoji}
+                </span>
+              )}
+              <span className={`status-badge ${data.status === 'solved' ? 'status-solved' : data.status === 'archived' ? 'status-archived' : 'status-open'}`}>
+                {data.status === 'solved' ? 'Вирішено' : data.status === 'archived' ? 'Архів' : 'Відкрито'}
+              </span>
+            </div>
           </header>
           {data.status === 'archived' && (
             <div style={{
