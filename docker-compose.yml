@@ -76,8 +76,8 @@ services:
 
   signal-web:
     build:
-      context: .
-      dockerfile: signal-web/Dockerfile
+      context: ./signal-web
+      dockerfile: Dockerfile
     env_file: .env
     environment:
       - NODE_ENV=production
