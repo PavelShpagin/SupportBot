@@ -35,10 +35,11 @@ source .env 2>/dev/null || true
 
 VM_IP="${ORACLE_VM_IP:-}"
 VM_KEY="${ORACLE_VM_KEY:-~/.ssh/supportbot_ed25519}"
-VM_USER="opc"
-REMOTE_DIR="/home/opc/supportbot"
 
-# Auto-detect user if opc doesn't work
+# Expand ~ in VM_KEY
+VM_KEY="${VM_KEY/#\~/$HOME}"
+
+# Auto-detect SSH user (opc for OCI, ubuntu for Ubuntu VMs)
 detect_user() {
     if ssh -i "$VM_KEY" -o StrictHostKeyChecking=no -o ConnectTimeout=5 "opc@$VM_IP" "true" 2>/dev/null; then
         echo "opc"
@@ -49,8 +50,8 @@ detect_user() {
     fi
 }
 
-# Expand ~ in VM_KEY
-VM_KEY="${VM_KEY/#\~/$HOME}"
+VM_USER="${ORACLE_VM_USER:-$(detect_user 2>/dev/null || echo opc)}"
+REMOTE_DIR="/home/$VM_USER/supportbot"
 
 check_prerequisites() {
     if [ -z "$VM_IP" ]; then
@@ -266,6 +267,10 @@ case "${1:-}" in
     full)
         cmd_full
         ;;
+    rebuild)
+        shift
+        cmd_rebuild "$@"
+        ;;
     ssh)
         cmd_ssh
         ;;
@@ -293,20 +298,22 @@ case "${1:-}" in
         echo "Usage: $0 <command>"
         echo ""
         echo "Commands:"
-        echo "  init        - Initialize VM (install Docker, create dirs)"
-        echo "  push        - Push code to VM"
-        echo "  deploy      - Build and start services on VM"
-        echo "  full        - Push + Deploy (complete deployment)"
-        echo "  ssh         - SSH into VM"
-        echo "  logs [svc]  - View logs"
-        echo "  status      - Show service status"
-        echo "  stop        - Stop services"
-        echo "  restart     - Restart services"
-        echo "  link-signal - Link Signal account"
-        echo "  set-avatar  - Set bot avatar"
+        echo "  init              - Initialize VM (install Docker, create dirs)"
+        echo "  push              - Push code to VM"
+        echo "  deploy            - Build and start all services on VM"
+        echo "  full              - Push + Deploy (complete deployment)"
+        echo "  rebuild [svc...]  - Push + rebuild specific services (default: signal-bot signal-ingest)"
+        echo "  ssh               - SSH into VM"
+        echo "  logs [svc]        - View logs (tail -f)"
+        echo "  status            - Show service status"
+        echo "  stop              - Stop all services"
+        echo "  restart           - Restart all services"
+        echo "  link-signal       - Link Signal account"
+        echo "  set-avatar        - Set bot avatar"
         echo ""
         echo "Environment (from .env):"
         echo "  ORACLE_VM_IP=$VM_IP"
         echo "  ORACLE_VM_KEY=$VM_KEY"
+        echo "  VM_USER=$VM_USER"
         ;;
 esac

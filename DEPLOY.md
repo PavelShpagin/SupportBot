@@ -1,6 +1,24 @@
 # SupportBot Deployment Guide
 
-Complete instructions for deploying SupportBot to Oracle Cloud Infrastructure (OCI).
+> **All containers run on the OCI VM — never locally.**
+> Local Docker is only used for `docker compose down` cleanup.
+> The workflow is: edit code → `git push` → `./scripts/deploy-oci.sh rebuild`.
+
+## Development Workflow
+
+```bash
+# After any code change:
+git add . && git commit -m "..." && git push
+./scripts/deploy-oci.sh rebuild          # push + rebuild signal-bot & signal-ingest
+
+# Or rebuild a single service:
+./scripts/deploy-oci.sh rebuild signal-bot
+
+# View live logs:
+./scripts/deploy-oci.sh logs signal-bot
+```
+
+---
 
 ## Quick Start (Existing VM)
 
@@ -265,37 +283,6 @@ The site is at: https://supportbot.info
 1. Check logs: `./scripts/deploy-oci.sh logs signal-bot`
 2. Verify Signal is linked: Look for "receive" messages in logs
 3. Check API health: `curl http://161.33.64.115:8000/healthz`
-
-### "Failed to get QR code. Signal Desktop may not be ready"?
-
-Signal Desktop needs to fully start before a screenshot can be taken. The ingest service waits up to 120 s for `linked=false` (no user account) **and** `devtools_connected=true` (Electron renderer up). If it still fails:
-
-```bash
-# Check signal-desktop is running
-./scripts/deploy-oci.sh logs signal-desktop
-
-# Verify status endpoint
-curl http://161.33.64.115:8001/status
-# Expected when unlinked: {"linked":false, "devtools_connected":true, ...}
-# Expected when linked:   {"linked":true,  "has_user_conversations":true, ...}
-
-# Manually trigger reset to confirm it works
-curl -X POST http://161.33.64.115:8001/reset
-```
-
-> **How `linked` is determined**: Signal Desktop is considered linked only when it has real user conversations (`has_user_conversations=true`). A fresh/reset instance always has exactly 1 system "Signal" conversation which does NOT count.
-
-### Admin DM session stuck / welcome not appearing?
-
-If the bot skips the welcome and jumps straight to group search, the session has not expired yet (TTL: 30 min idle). To force a reset:
-
-```bash
-# Clear all admin sessions from the DB
-docker exec supportbot-db-1 mysql -u supportbot -psupportbot -D supportbot \
-  -e "DELETE FROM admin_sessions;"
-```
-
-Or send `/wipe` to the bot (clears all data including sessions).
 
 ### Signal registration issues?
 

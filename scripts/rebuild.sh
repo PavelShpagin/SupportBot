@@ -1,9 +1,6 @@
 #!/bin/bash
+# Shortcut: push code and rebuild signal-bot + signal-ingest on the OCI VM.
+# Usage: ./scripts/rebuild.sh [service1 service2 ...]
 set -e
-cd /home/opc/SupportBot
-echo "=== Rebuilding signal-bot container ==="
-docker compose -f docker-compose.yml build signal-bot --no-cache
-echo "=== Restarting signal-bot ==="
-docker compose -f docker-compose.yml up -d signal-bot
-echo "=== Done! Checking status ==="
-docker ps --format "table {{.Names}}\t{{.Status}}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+exec "$SCRIPT_DIR/deploy-oci.sh" rebuild "$@"
