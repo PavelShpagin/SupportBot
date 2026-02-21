@@ -356,7 +356,7 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
                 log.info("Status not ready yet: %s (%d/40)", e, attempt + 1)
 
         if not qr_image:
-            log.error("Signal Desktop never showed QR after 120s")
+            log.error("Signal Desktop never showed QR after 72s")
             _notify_link_result(
                 settings=settings,
                 token=token,
@@ -533,7 +533,11 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
                 _notify_progress(settings=settings, token=token, progress_key="processing_chunk", current=i+1, total=len(chunks))
             case_blocks.extend(_extract_case_blocks(openai_client=openai_client, model=settings.model_blocks, chunk_text=ch))
 
-        deduped = list(dict.fromkeys([b for b in case_blocks if b.strip()]))
+        deduped = _dedup_case_blocks([b for b in case_blocks if b.strip()])
+        log.info(
+            "Case deduplication: raw=%d unique=%d (group=%s)",
+            len(case_blocks), len(deduped), group_id[:20],
+        )
         
         # ?????????????????????????????????????????????????????????????????
         # Step 4: Post cases to signal-bot
