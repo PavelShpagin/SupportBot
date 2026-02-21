@@ -526,6 +526,11 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
         )
         log.info("Split into %d chunks for processing", len(chunks))
 
+        openai_client = OpenAI(
+            api_key=settings.openai_api_key,
+            base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
+        )
+
         case_blocks: List[str] = []
         for i, ch in enumerate(chunks):
             check_cancelled()
