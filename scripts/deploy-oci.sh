@@ -238,6 +238,15 @@ cmd_full() {
     log_info "API endpoint: http://$VM_IP:8000"
 }
 
+cmd_rebuild() {
+    log_info "Fast rebuild on OCI VM..."
+    check_prerequisites
+    SERVICES="${*:-signal-bot signal-ingest}"
+    cmd_push
+    ssh_cmd "cd $REMOTE_DIR && docker compose -f docker-compose.yml up -d --build $SERVICES"
+    log_success "Rebuilt and restarted: $SERVICES"
+}
+
 cmd_stop() {
     check_prerequisites
     ssh_cmd "cd $REMOTE_DIR && docker compose -f docker-compose.yml down"
@@ -269,7 +278,7 @@ case "${1:-}" in
         ;;
     rebuild)
         shift
-        cmd_rebuild "$@"
+        cmd_rebuild $*
         ;;
     ssh)
         cmd_ssh
@@ -298,22 +307,20 @@ case "${1:-}" in
         echo "Usage: $0 <command>"
         echo ""
         echo "Commands:"
-        echo "  init              - Initialize VM (install Docker, create dirs)"
-        echo "  push              - Push code to VM"
-        echo "  deploy            - Build and start all services on VM"
-        echo "  full              - Push + Deploy (complete deployment)"
-        echo "  rebuild [svc...]  - Push + rebuild specific services (default: signal-bot signal-ingest)"
-        echo "  ssh               - SSH into VM"
-        echo "  logs [svc]        - View logs (tail -f)"
-        echo "  status            - Show service status"
-        echo "  stop              - Stop all services"
-        echo "  restart           - Restart all services"
-        echo "  link-signal       - Link Signal account"
-        echo "  set-avatar        - Set bot avatar"
+        echo "  init        - Initialize VM (install Docker, create dirs)"
+        echo "  push        - Push code to VM"
+        echo "  deploy      - Build and start services on VM"
+        echo "  full        - Push + Deploy (complete deployment)"
+        echo "  ssh         - SSH into VM"
+        echo "  logs [svc]  - View logs"
+        echo "  status      - Show service status"
+        echo "  stop        - Stop services"
+        echo "  restart     - Restart services"
+        echo "  link-signal - Link Signal account"
+        echo "  set-avatar  - Set bot avatar"
         echo ""
         echo "Environment (from .env):"
         echo "  ORACLE_VM_IP=$VM_IP"
         echo "  ORACLE_VM_KEY=$VM_KEY"
-        echo "  VM_USER=$VM_USER"
         ;;
 esac
