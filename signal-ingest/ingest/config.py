@@ -56,6 +56,7 @@ class Settings:
 
     openai_api_key: str
     model_blocks: str
+    model_img: str
 
     signal_cli: str
     signal_ingest_storage: str
@@ -92,6 +93,7 @@ def load_settings() -> Settings:
         oracle_wallet_dir=_env("ORACLE_WALLET_DIR", default=_env("TNS_ADMIN", default="")),
         openai_api_key=_env("GOOGLE_API_KEY", required=True),
         model_blocks=_env("MODEL_BLOCKS", default="gemini-3-pro-preview"),
+        model_img=_env("MODEL_IMG", default="gemini-2.0-flash"),
         signal_cli=_env("SIGNAL_CLI", default="signal-cli"),
         signal_ingest_storage=_env("SIGNAL_INGEST_STORAGE", default="/var/lib/signal/ingest"),
         history_dir=_env("HISTORY_DIR", default="/var/lib/history"),

@@ -29,6 +29,15 @@ class SignalMessage:
     group_name: Optional[str] = None
     reactions: int = 0  # count of emoji reactions on this message
     sender_name: Optional[str] = None  # display name from contacts
+    # Attachment metadata parsed from the json column.
+    # Each entry is a dict with keys: path (relative to Signal data dir),
+    # fileName, contentType.  Only entries with a non-empty path are included.
+    attachments: list = None  # list[dict]
+
+    def __post_init__(self):
+        # dataclass frozen=True doesn't allow setattr, use object.__setattr__
+        if self.attachments is None:
+            object.__setattr__(self, "attachments", [])
 
 
 def _get_db_key(signal_data_dir: str) -> str:
@@ -301,20 +310,48 @@ def get_messages(
         for row in rows:
             try:
                 ts = int(row[2]) if row[2] else 0
+                body = str(row[3] or "")
+                sender_name = str(row[8]) if len(row) > 8 and row[8] else None
+                raw_json_str = str(row[9]) if len(row) > 9 and row[9] else None
+
+                # Parse attachments from the raw json column
+                attachments: list = []
+                if raw_json_str:
+                    try:
+                        msg_json = json.loads(raw_json_str)
+                        for att in msg_json.get("attachments") or []:
+                            if not isinstance(att, dict):
+                                continue
+                            att_path = att.get("path") or ""
+                            content_type = att.get("contentType") or ""
+                            file_name = att.get("fileName") or ""
+                            if att_path:
+                                attachments.append({
+                                    "path": att_path,
+                                    "fileName": file_name,
+                                    "contentType": content_type,
+                                })
+                    except (json.JSONDecodeError, TypeError):
+                        pass
+
+                # Skip messages with neither text nor attachments
+                if not body and not attachments:
+                    continue
+
                 msg = SignalMessage(
                     id=str(row[0]),
                     conversation_id=str(row[1]) if row[1] else "",
                     timestamp=ts,
-                    body=str(row[3] or ""),
+                    body=body,
                     sender=str(row[4]) if row[4] else None,
                     type=str(row[5]) if row[5] else "unknown",
                     group_id=str(row[6]) if row[6] else None,
                     group_name=str(row[7]) if row[7] else None,
                     reactions=reactions_by_ts.get(ts, 0),
-                    sender_name=str(row[8]) if len(row) > 8 and row[8] else None,
+                    sender_name=sender_name,
+                    attachments=attachments,
                 )
-                if msg.body:  # Skip empty messages
-                    result.append(msg)
+                result.append(msg)
             except Exception as e:
                 log.warning("Failed to parse message row: %s", e)
                 continue

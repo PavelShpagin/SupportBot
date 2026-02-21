@@ -509,6 +509,28 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
         log.info("Fetched %d messages from Signal Desktop", len(msgs))
         _notify_progress(settings=settings, token=token, progress_key="found_messages", count=len(msgs))
 
+        openai_client = OpenAI(
+            api_key=settings.openai_api_key,
+            base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
+        )
+
+        # Enrich messages: OCR image attachments, include file names for other media
+        msgs_with_attachments = [m for m in msgs if m.get("attachments")]
+        if msgs_with_attachments:
+            log.info(
+                "Enriching %d/%d messages that have attachments",
+                len(msgs_with_attachments), len(msgs),
+            )
+            msgs = [
+                _enrich_message_with_attachments(
+                    settings=settings,
+                    openai_client=openai_client,
+                    model_img=settings.model_img,
+                    message=m,
+                )
+                for m in msgs
+            ]
+
         check_cancelled()
 
         # ?????????????????????????????????????????????????????????????????
@@ -521,11 +543,6 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
         )
         log.info("Split into %d chunks for processing", len(chunks))
 
-        openai_client = OpenAI(
-            api_key=settings.openai_api_key,
-            base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
-        )
-        
         case_blocks: List[str] = []
         for i, ch in enumerate(chunks):
             check_cancelled()
@@ -533,11 +550,7 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
                 _notify_progress(settings=settings, token=token, progress_key="processing_chunk", current=i+1, total=len(chunks))
             case_blocks.extend(_extract_case_blocks(openai_client=openai_client, model=settings.model_blocks, chunk_text=ch))
 
-        deduped = _dedup_case_blocks([b for b in case_blocks if b.strip()])
-        log.info(
-            "Case deduplication: raw=%d unique=%d (group=%s)",
-            len(case_blocks), len(deduped), group_id[:20],
-        )
+        deduped = list(dict.fromkeys([b for b in case_blocks if b.strip()]))
         
         # ?????????????????????????????????????????????????????????????????
         # Step 4: Post cases to signal-bot
