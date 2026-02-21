@@ -122,12 +122,13 @@ async def status():
         except Exception as e:
             log.warning("Failed to get conversations: %s", e)
     
-    # Consider linked only if the DB has actual account data (conversations).
-    # A freshly reset / unlinked Signal Desktop has an empty DB (0 conversations)
-    # even though the DB file itself opens fine.  signal-ingest polls for
-    # linked=False to know when the QR code is visible, so this must be False
-    # whenever no account is registered.
-    is_linked = db_available and conversations_count > 0
+    # Consider linked only when a real user account has synced conversations.
+    # Signal Desktop creates 1 system conversation immediately on startup even
+    # before any QR scan, so conversations_count > 0 is NOT a reliable linked
+    # signal.  has_user_conversations (non-system private/group contacts) is
+    # False until the admin scans the QR and their account data syncs.
+    # signal-ingest polls for linked=False to know when the QR is visible.
+    is_linked = has_user_conversations
     
     # Check DevTools connection
     devtools_connected = False
@@ -309,46 +310,6 @@ async def get_group_history(
     except Exception as e:
         log.exception("Failed to get group messages")
         raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.get("/attachment")
-async def get_attachment(path: str = Query(..., description="Attachment path relative to Signal data dir")):
-    """
-    Serve a Signal Desktop attachment file by its relative path.
-
-    Signal stores attachments at <data_dir>/attachments.noindex/<path>.
-    The path comes from the 'path' field in the message JSON attachments array.
-
-    Security: only paths inside <data_dir>/attachments.noindex/ are allowed.
-    """
-    base_dir = Path(settings.signal_data_dir) / "attachments.noindex"
-    # Resolve the full path and confirm it stays within the attachments directory
-    try:
-        full_path = (base_dir / path).resolve()
-    except Exception:
-        raise HTTPException(status_code=400, detail="Invalid path")
-
-    try:
-        base_resolved = base_dir.resolve()
-    except Exception:
-        raise HTTPException(status_code=503, detail="Attachments directory not available")
-
-    if not str(full_path).startswith(str(base_resolved)):
-        raise HTTPException(status_code=403, detail="Path traversal not allowed")
-
-    if not full_path.exists():
-        raise HTTPException(status_code=404, detail="Attachment not found")
-
-    content = full_path.read_bytes()
-    # Guess media type from extension; default to octet-stream
-    suffix = full_path.suffix.lower()
-    media_type = {
-        ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png",
-        ".gif": "image/gif", ".webp": "image/webp", ".heic": "image/heic",
-        ".mp4": "video/mp4", ".mov": "video/quicktime",
-        ".pdf": "application/pdf",
-    }.get(suffix, "application/octet-stream")
-    return Response(content=content, media_type=media_type)
 
 
 # ?????????????????????????????????????????????????????????????????????????????
