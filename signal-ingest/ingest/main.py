@@ -389,7 +389,12 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
             time.sleep(poll_interval)
             waited += poll_interval
 
-            status = _check_desktop_status(settings)
+            try:
+                status = _check_desktop_status(settings)
+            except Exception as e:
+                log.warning("Could not poll Signal Desktop status (will retry): %s", e)
+                continue
+
             if status.get("has_user_conversations"):
                 log.info("User linked! Found %d conversations", status.get("conversations_count", 0))
                 break
@@ -509,28 +514,6 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
         log.info("Fetched %d messages from Signal Desktop", len(msgs))
         _notify_progress(settings=settings, token=token, progress_key="found_messages", count=len(msgs))
 
-        openai_client = OpenAI(
-            api_key=settings.openai_api_key,
-            base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
-        )
-
-        # Enrich messages: OCR image attachments, include file names for other media
-        msgs_with_attachments = [m for m in msgs if m.get("attachments")]
-        if msgs_with_attachments:
-            log.info(
-                "Enriching %d/%d messages that have attachments",
-                len(msgs_with_attachments), len(msgs),
-            )
-            msgs = [
-                _enrich_message_with_attachments(
-                    settings=settings,
-                    openai_client=openai_client,
-                    model_img=settings.model_img,
-                    message=m,
-                )
-                for m in msgs
-            ]
-
         check_cancelled()
 
         # ?????????????????????????????????????????????????????????????????
@@ -583,7 +566,17 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
 
     except JobCancelled:
         log.info("Job %d was cancelled", job_id)
-        # Also reset on cancellation for security
+        # Notify admin so they're not left waiting silently
+        try:
+            _notify_link_result(
+                settings=settings,
+                token=token,
+                success=False,
+                note="Operation was cancelled. Send the group name to try again.",
+            )
+        except Exception:
+            log.exception("Failed to notify admin of job cancellation")
+        # Reset on cancellation for security
         try:
             _reset_desktop(settings)
         except Exception:
