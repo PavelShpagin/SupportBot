@@ -16,8 +16,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libgbm1 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 \
     libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libpango-1.0-0 \
     libcairo2 fonts-liberation \
-    # Python (sqlcipher3-binary is pre-compiled, no build tools needed)
-    python3 python3-pip python3-venv \
+    # Python
+    python3 python3-pip python3-venv python3-dev \
+    # sqlcipher3 build deps (needed on ARM64 where no binary wheel exists)
+    build-essential libsqlcipher-dev libssl-dev \
     curl jq netcat-openbsd \
     && rm -rf /var/lib/apt/lists/*
 
@@ -43,7 +45,13 @@ WORKDIR /app
 COPY signal-desktop/requirements.txt /app/requirements.txt
 RUN python3 -m venv /app/venv \
     && /app/venv/bin/pip install --upgrade pip \
-    && /app/venv/bin/pip install --no-cache-dir -r requirements.txt
+    && ARCH=$(dpkg --print-architecture) \
+    && if [ "$ARCH" = "arm64" ] || [ "$ARCH" = "aarch64" ]; then \
+        sed 's/sqlcipher3-binary[^#]*/sqlcipher3/' /app/requirements.txt > /tmp/req_patched.txt \
+        && /app/venv/bin/pip install --no-cache-dir -r /tmp/req_patched.txt; \
+    else \
+        /app/venv/bin/pip install --no-cache-dir -r requirements.txt; \
+    fi
 
 # Copy application code
 COPY signal-desktop/app /app/app

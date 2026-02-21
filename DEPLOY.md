@@ -172,14 +172,42 @@ curl http://161.33.64.115:8000/healthz
 3. Tap group name > Add Members
 4. Add `+380730017651`
 
-### 3. Bootstrap Group History
+### 3. Bootstrap Group History (Admin ↔ Bot DM Flow)
 
-Send a direct message to the bot with the **group name**:
-1. Open Signal > New Message > `+380730017651`
-2. Type the exact group name (e.g., "Tech Support")
-3. Bot sends QR code
-4. Scan QR in Signal (Settings > Linked Devices)
-5. Bot syncs history and builds knowledge base
+Open a direct message with the bot (`+380730017651`) and follow these steps:
+
+#### Step 1 — First message (any content)
+Send any message. The bot detects your language and replies with a welcome prompt asking which group to connect. It stops here and waits.
+
+> **Language detection**: if your first message contains Cyrillic characters → Ukrainian UI. Latin-only → English UI. You can always override with `/uk` or `/en`.
+
+#### Step 2 — Send the group name
+Reply with the exact group name (e.g. `group-x`). The bot:
+1. Sends "Searching for group…"
+2. Finds the group (bot must already be a member)
+3. Sends "Found! Generating QR code (~30s)…"
+4. Signal Desktop resets, generates a linking QR, and sends it as an image
+
+#### Step 3 — Scan the QR code
+In Signal on your phone: **Settings → Linked Devices → Link New Device** → scan the QR image the bot sent you. You have ~5 minutes.
+
+#### Step 4 — Automatic history sync
+After scanning, the bot:
+- Syncs up to 800 messages from the last 45 days
+- Extracts solved support cases using LLM
+- Adds them to the RAG knowledge base
+- Sends you a summary: `Import complete: messages=N, cases added=M`
+
+#### Session behaviour
+| Situation | Bot behaviour |
+|-----------|--------------|
+| First-ever message OR session expired (30 min idle) | Welcome + language detection |
+| Active session, state = awaiting group name | Welcome again (idempotent) |
+| Active session, state = awaiting QR scan | Handles in-progress scan |
+| Send same group name while QR is generating | "Already generating, please wait" |
+| Send different group name while QR is generating | Cancels old job, starts new one |
+| `/wipe` command | Erases all groups/cases/sessions (keeps bot registration) |
+| `/en` or `/uk` | Switch UI language |
 
 ### 4. Test Bot Responses
 
@@ -237,6 +265,37 @@ The site is at: https://supportbot.info
 1. Check logs: `./scripts/deploy-oci.sh logs signal-bot`
 2. Verify Signal is linked: Look for "receive" messages in logs
 3. Check API health: `curl http://161.33.64.115:8000/healthz`
+
+### "Failed to get QR code. Signal Desktop may not be ready"?
+
+Signal Desktop needs to fully start before a screenshot can be taken. The ingest service waits up to 120 s for `linked=false` (no user account) **and** `devtools_connected=true` (Electron renderer up). If it still fails:
+
+```bash
+# Check signal-desktop is running
+./scripts/deploy-oci.sh logs signal-desktop
+
+# Verify status endpoint
+curl http://161.33.64.115:8001/status
+# Expected when unlinked: {"linked":false, "devtools_connected":true, ...}
+# Expected when linked:   {"linked":true,  "has_user_conversations":true, ...}
+
+# Manually trigger reset to confirm it works
+curl -X POST http://161.33.64.115:8001/reset
+```
+
+> **How `linked` is determined**: Signal Desktop is considered linked only when it has real user conversations (`has_user_conversations=true`). A fresh/reset instance always has exactly 1 system "Signal" conversation which does NOT count.
+
+### Admin DM session stuck / welcome not appearing?
+
+If the bot skips the welcome and jumps straight to group search, the session has not expired yet (TTL: 30 min idle). To force a reset:
+
+```bash
+# Clear all admin sessions from the DB
+docker exec supportbot-db-1 mysql -u supportbot -psupportbot -D supportbot \
+  -e "DELETE FROM admin_sessions;"
+```
+
+Or send `/wipe` to the bot (clears all data including sessions).
 
 ### Signal registration issues?
 

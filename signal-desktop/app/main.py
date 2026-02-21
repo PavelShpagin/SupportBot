@@ -122,8 +122,11 @@ async def status():
         except Exception as e:
             log.warning("Failed to get conversations: %s", e)
     
-    # Consider linked if DB is available
-    is_linked = db_available
+    # A fresh / reset Signal Desktop always has 1 system "Signal" conversation
+    # even before any account is linked.  The meaningful signal is whether
+    # there are actual USER conversations (groups or real contacts with e164/uuid).
+    # signal-ingest polls linked=False to know when the QR code is visible.
+    is_linked = has_user_conversations
     
     # Check DevTools connection
     devtools_connected = False

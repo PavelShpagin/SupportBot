@@ -1,4 +1,9 @@
 supportbot.info {
+    log {
+        output file /var/log/caddy/access.log
+        format json
+    }
+
     # Security headers for case pages — prevent indexing and referrer leaks
     @case_pages path /case/* /api/case/*
     header @case_pages {

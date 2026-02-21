@@ -330,29 +330,33 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
         log.info("Resetting Signal Desktop for new user link...")
         _reset_desktop(settings)
 
-        # Poll for QR code to appear instead of a fixed 10s wait.
-        # Signal Desktop typically restarts in 3-8 seconds.
-        qr_image = None
-        qr_poll_interval = 2
-        qr_poll_max = 30
-        qr_waited = 0
-        log.info("Waiting for Signal Desktop QR code to appear (up to %ds)...", qr_poll_max)
-        while qr_waited < qr_poll_max:
-            check_cancelled()
-            time.sleep(qr_poll_interval)
-            qr_waited += qr_poll_interval
+        # Poll /status until Signal Desktop is unlinked AND DevTools is connected
+        # (DevTools connected = Electron renderer is up = QR code is rendered on screen)
+        log.info("Waiting for Signal Desktop to show QR code (polling status)...")
+        qr_image = b""
+        for attempt in range(40):  # up to 120 seconds
+            time.sleep(3)
             try:
-                candidate = _get_desktop_screenshot(settings)
-                if len(candidate) >= 1000:
-                    qr_image = candidate
-                    log.info("QR code ready after %ds (%d bytes)", qr_waited, len(qr_image))
+                status = _check_desktop_status(settings)
+                is_unlinked = not status.get("linked", True)
+                devtools_ready = status.get("devtools_connected", False)
+                log.info(
+                    "Desktop status: linked=%s devtools=%s (%d/40)",
+                    status.get("linked"), devtools_ready, attempt + 1,
+                )
+                if is_unlinked and devtools_ready:
+                    log.info("Signal Desktop is unlinked and DevTools ready — QR visible, taking screenshot")
+                    time.sleep(3)  # extra wait for QR to fully render
+                    qr_image = _get_desktop_screenshot(settings)
+                    log.info("Screenshot size: %d bytes", len(qr_image))
                     break
-                log.debug("Screenshot too small (%d bytes) after %ds, retrying...", len(candidate), qr_waited)
+                elif is_unlinked:
+                    log.info("Unlinked but DevTools not ready yet, waiting...")
             except Exception as e:
-                log.debug("Screenshot not ready after %ds: %s", qr_waited, e)
+                log.info("Status not ready yet: %s (%d/40)", e, attempt + 1)
 
-        if qr_image is None:
-            log.error("QR code did not appear within %ds, Signal Desktop may not be ready", qr_poll_max)
+        if not qr_image:
+            log.error("Signal Desktop never showed QR after 120s")
             _notify_link_result(
                 settings=settings,
                 token=token,
