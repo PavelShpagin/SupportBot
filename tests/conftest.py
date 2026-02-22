@@ -35,6 +35,11 @@ _SIGNAL_INGEST_TESTS = {
     "TestChunkMessages",
     "TestCaseExtraction",
 }
+# DB-layer tests for signal-bot: need the signal-bot app package but NOT the full startup
+_SIGNAL_BOT_DB_TESTS = {
+    "TestUpsertCase",
+    "TestConfirmCasesByEvidenceTs",
+}
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -98,6 +103,9 @@ def _isolate_service_namespace(request):
         # signal-ingest tests manage their own sys.path; nothing to do here
         yield
         return
+    elif class_name in _SIGNAL_BOT_DB_TESTS:
+        _clear_app_modules()
+        _prioritize("signal-bot")
     elif class_name in _SIGNAL_BOT_TESTS:
         _clear_app_modules()
         _prioritize("signal-bot")
