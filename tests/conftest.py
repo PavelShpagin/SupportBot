@@ -34,6 +34,7 @@ _SIGNAL_DESKTOP_TESTS = {
 _SIGNAL_INGEST_TESTS = {
     "TestChunkMessages",
     "TestCaseExtraction",
+    "TestPipelineE2E",
 }
 # DB-layer tests for signal-bot: need the signal-bot app package but NOT the full startup
 _SIGNAL_BOT_DB_TESTS = {
