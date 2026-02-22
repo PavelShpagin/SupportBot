@@ -9,10 +9,12 @@ This replaces signal-cli for both sending and receiving messages.
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import logging
 import threading
 import time
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Callable, List, Optional
 
 import httpx
@@ -44,6 +46,25 @@ from app.signal.signal_cli import (
 )
 
 log = logging.getLogger(__name__)
+
+_MIME_TO_EXT: dict = {
+    "image/jpeg": ".jpg",
+    "image/png": ".png",
+    "image/gif": ".gif",
+    "image/webp": ".webp",
+    "image/heic": ".heic",
+    "video/mp4": ".mp4",
+    "video/quicktime": ".mov",
+}
+
+
+def _ext_for_mime(content_type: str) -> str:
+    """Return a file extension for a MIME type, defaulting to .jpg."""
+    if content_type:
+        ct = content_type.split(";")[0].strip().lower()
+        if ct in _MIME_TO_EXT:
+            return _MIME_TO_EXT[ct]
+    return ".jpg"
 
 
 @dataclass
@@ -177,22 +198,36 @@ class SignalDesktopAdapter:
                 log.exception("Failed to send direct message via Signal Desktop")
                 return False
     
-    def send_direct_image(self, *, recipient: str, image_path: str, caption: str = "") -> None:
-        """Send image to a user (1:1 chat) with optional caption."""
+    def send_direct_image(self, *, recipient: str, image_path: str, caption: str = "", **kwargs) -> None:
+        """Send image to a user (1:1 chat) with optional caption.
+
+        The image is read from *image_path* (local to the signal-bot container),
+        encoded as base64, and sent to the signal-desktop service so no shared
+        volume between containers is needed.
+
+        Extra keyword arguments (e.g. ``retries``, ``retry_delay`` from the
+        signal-cli adapter) are accepted but ignored for compatibility.
+        """
+        import base64
+
+        # Read image and encode to base64 before sending to signal-desktop
+        try:
+            with open(image_path, "rb") as fh:
+                image_base64 = base64.b64encode(fh.read()).decode("utf-8")
+        except OSError as e:
+            log.error("Cannot read QR image file %s: %s", image_path, e)
+            if caption:
+                self.send_direct_text(recipient=recipient, text=caption)
+            return
+
         with self._lock:
             try:
                 with self._client() as client:
                     resp = client.post("/send/image", json={
                         "recipient": recipient,
-                        "image_path": image_path,
+                        "image_base64": image_base64,
                         "caption": caption,
                     })
-                    if resp.status_code == 501:
-                        log.warning("Image sending not yet implemented in Signal Desktop, falling back to text")
-                        # Fallback: send caption as text
-                        if caption:
-                            self.send_direct_text(recipient=recipient, text=caption)
-                        return
                     resp.raise_for_status()
                     log.info("Sent image to %s via Signal Desktop", recipient)
             except Exception as e:
@@ -351,9 +386,75 @@ class SignalDesktopAdapter:
             return None
 
     # ─────────────────────────────────────────────────────────────────────────
+    # Attachment helpers
+    # ─────────────────────────────────────────────────────────────────────────
+
+    def _fetch_message_attachments(
+        self,
+        *,
+        client: httpx.Client,
+        attachments: list,
+        msg_id: str,
+        max_size_bytes: int = 5_000_000,
+    ) -> List[str]:
+        """Fetch attachment files from signal-desktop and save them locally.
+
+        Returns a list of absolute local paths for successfully fetched files.
+        Files are saved under ``<signal_bot_storage>/attachments/``.
+        """
+        if not attachments:
+            return []
+
+        storage_root = Path(getattr(self.settings, "signal_bot_storage", "/var/lib/signal/bot"))
+        att_dir = storage_root / "attachments"
+        try:
+            att_dir.mkdir(parents=True, exist_ok=True)
+        except OSError as e:
+            log.warning("Cannot create attachment dir %s: %s", att_dir, e)
+            return []
+
+        local_paths: List[str] = []
+        for att in attachments:
+            att_path = att.get("path", "")
+            if not att_path:
+                continue
+            file_name = att.get("fileName") or ""
+            ext = Path(file_name).suffix if file_name else ""
+            if not ext:
+                content_type = att.get("contentType", "")
+                ext = _ext_for_mime(content_type)
+
+            # Deterministic filename: sha256 of the relative path + msg_id
+            key = hashlib.sha256(f"{msg_id}:{att_path}".encode()).hexdigest()[:16]
+            local_file = att_dir / f"{key}{ext}"
+
+            if local_file.exists():
+                local_paths.append(str(local_file))
+                continue
+
+            try:
+                resp = client.get("/attachment", params={"path": att_path}, timeout=30)
+                if resp.status_code != 200:
+                    log.warning("Attachment %s returned HTTP %d", att_path, resp.status_code)
+                    continue
+                if len(resp.content) > max_size_bytes:
+                    log.warning(
+                        "Attachment %s too large (%d bytes), skipping",
+                        att_path, len(resp.content),
+                    )
+                    continue
+                local_file.write_bytes(resp.content)
+                local_paths.append(str(local_file))
+                log.debug("Saved attachment %s → %s", att_path, local_file)
+            except Exception as e:
+                log.warning("Failed to fetch attachment %s: %s", att_path, e)
+
+        return local_paths
+
+    # ─────────────────────────────────────────────────────────────────────────
     # Listen loop (polls Signal Desktop for new messages)
     # ─────────────────────────────────────────────────────────────────────────
-    
+
     def listen_forever(
         self,
         *,
@@ -403,6 +504,12 @@ class SignalDesktopAdapter:
                             if msg_type == "outgoing":
                                 continue
                             
+                            image_paths = self._fetch_message_attachments(
+                                client=client,
+                                attachments=msg.get("attachments") or [],
+                                msg_id=str(msg.get("id", "")),
+                            )
+
                             if group_id:
                                 # Group message
                                 group_msg = InboundGroupMessage(
@@ -411,7 +518,7 @@ class SignalDesktopAdapter:
                                     sender=str(msg.get("sender", "")),
                                     ts=int(ts),
                                     text=str(msg.get("body", "")),
-                                    image_paths=[],  # TODO: handle attachments
+                                    image_paths=image_paths,
                                     reply_to_id=None,
                                 )
                                 try:
@@ -425,7 +532,7 @@ class SignalDesktopAdapter:
                                     sender=str(msg.get("sender", "")),
                                     ts=int(ts),
                                     text=str(msg.get("body", "")),
-                                    image_paths=[],  # TODO: handle attachments
+                                    image_paths=image_paths,
                                 )
                                 try:
                                     on_direct_message(direct_msg)

@@ -402,19 +402,100 @@ class DevToolsClient:
     async def send_image(
         self,
         recipient: str,
-        image_path: str,
+        image_base64: str,
         caption: str = "",
     ) -> bool:
         """
-        Send an image to a Signal user.
-        
-        Note: This is more complex as we need to handle file attachments.
-        For now, this is a placeholder - full implementation requires
-        reading the file and converting to the format Signal expects.
+        Send an image to a Signal user via Chrome DevTools Protocol.
+
+        The image is passed as a base64-encoded string so no shared filesystem
+        is required between the caller and this service.
+
+        The JS tries two strategies:
+        1. window.Signal.Migrations.processNewAttachment – writes the data to
+           Signal's own attachment store and returns a proper attachment object.
+        2. Raw ArrayBuffer attachment – pass the data directly to sendMessage.
+           Older Signal Desktop builds accept this without extra processing.
         """
-        # TODO: Implement image sending via DevTools
-        log.warning("Image sending via DevTools not yet implemented")
-        return False
+        js_code = f"""
+        (async function() {{
+            try {{
+                // ── decode base64 → ArrayBuffer ───────────────────────────
+                const b64 = {json.dumps(image_base64)};
+                const binStr = atob(b64);
+                const bytes = new Uint8Array(binStr.length);
+                for (let i = 0; i < binStr.length; i++) {{
+                    bytes[i] = binStr.charCodeAt(i);
+                }}
+                const arrayBuffer = bytes.buffer;
+
+                // ── find / create conversation ────────────────────────────
+                const recipient = {json.dumps(recipient)};
+                const conversations = window.ConversationController.getAll();
+                let conversation = null;
+                for (const conv of conversations) {{
+                    const e164 = conv.get('e164');
+                    const uuid = conv.get('uuid');
+                    if (e164 === recipient || uuid === recipient) {{
+                        conversation = conv;
+                        break;
+                    }}
+                }}
+                if (!conversation) {{
+                    conversation = await window.ConversationController.getOrCreateAndWait(recipient, 'private');
+                }}
+                if (!conversation) {{
+                    return {{ success: false, error: 'Conversation not found for ' + recipient }};
+                }}
+
+                // ── build attachment ──────────────────────────────────────
+                let attachment = {{
+                    contentType: 'image/png',
+                    data: arrayBuffer,
+                    size: bytes.byteLength,
+                    fileName: 'qr.png',
+                }};
+
+                // Strategy 1: process through Signal's migration pipeline
+                // (writes data to attachment store, returns attachment with path)
+                try {{
+                    if (
+                        window.Signal &&
+                        window.Signal.Migrations &&
+                        typeof window.Signal.Migrations.processNewAttachment === 'function'
+                    ) {{
+                        attachment = await window.Signal.Migrations.processNewAttachment(attachment);
+                    }}
+                }} catch (migErr) {{
+                    // Strategy 2: fall back to raw ArrayBuffer attachment
+                }}
+
+                // ── send ──────────────────────────────────────────────────
+                await conversation.sendMessage({{
+                    body: {json.dumps(caption)},
+                    attachments: [attachment],
+                }});
+
+                return {{ success: true }};
+            }} catch (err) {{
+                return {{ success: false, error: err.message || String(err) }};
+            }}
+        }})();
+        """
+
+        try:
+            result = await self.evaluate_js(js_code)
+            if isinstance(result, dict):
+                if result.get("success"):
+                    log.info("Sent image to %s", recipient)
+                    return True
+                else:
+                    log.error("Failed to send image: %s", result.get("error"))
+                    return False
+            return False
+        except Exception:
+            log.exception("Failed to send image to %s", recipient)
+            return False
     
     async def list_conversations(self) -> List[SignalConversation]:
         """Get all conversations from Signal Desktop."""

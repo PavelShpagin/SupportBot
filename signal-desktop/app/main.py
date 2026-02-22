@@ -20,6 +20,8 @@ import time
 from pathlib import Path
 from typing import Optional, List
 
+import mimetypes
+
 import httpx
 from fastapi import FastAPI, HTTPException, Query, BackgroundTasks
 from fastapi.responses import Response
@@ -254,6 +256,7 @@ async def poll_messages(
                     "type": m.type,
                     "group_id": m.group_id,
                     "group_name": m.group_name,
+                    "attachments": m.attachments,
                 }
                 for m in msgs
             ],
@@ -300,6 +303,7 @@ async def get_group_history(
                     "group_id": m.group_id,
                     "group_name": m.group_name,
                     "reactions": m.reactions,
+                    "attachments": m.attachments,
                 }
                 for m in msgs
             ],
@@ -333,7 +337,7 @@ class SendGroupMessageRequest(BaseModel):
 class SendImageRequest(BaseModel):
     """Request body for sending an image."""
     recipient: str = Field(..., description="Phone number in E.164 format")
-    image_path: str = Field(..., description="Path to image file")
+    image_base64: str = Field(..., description="Base64-encoded PNG image data")
     caption: str = Field("", description="Optional caption for the image")
 
 
@@ -400,25 +404,26 @@ async def send_group_message(request: SendGroupMessageRequest):
 @app.post("/send/image")
 async def send_image(request: SendImageRequest):
     """
-    Send an image to a Signal user.
-    
-    Note: Image sending is not yet fully implemented via DevTools.
+    Send an image to a Signal user via Chrome DevTools Protocol.
+
+    The image is supplied as a base64-encoded string so no shared filesystem
+    between containers is required.
     """
     try:
         devtools = await get_devtools()
         if not devtools.is_connected:
             raise HTTPException(status_code=503, detail="DevTools not connected to Signal Desktop")
-        
+
         success = await devtools.send_image(
             recipient=request.recipient,
-            image_path=request.image_path,
+            image_base64=request.image_base64,
             caption=request.caption,
         )
-        
+
         if success:
             return {"success": True, "message": "Image sent"}
         else:
-            raise HTTPException(status_code=501, detail="Image sending not yet implemented via DevTools")
+            raise HTTPException(status_code=500, detail="Failed to send image via DevTools")
             
     except HTTPException:
         raise
@@ -544,6 +549,35 @@ async def take_screenshot(crop_qr: bool = Query(True, description="Crop to just 
     except Exception as e:
         log.exception("Screenshot failed")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/attachment")
+async def get_attachment(path: str = Query(..., description="Relative attachment path from Signal data dir")):
+    """
+    Serve a Signal Desktop attachment by its relative path.
+
+    Attachment paths come from the ``path`` field in the ``attachments`` array
+    of a message's JSON column (e.g. ``attachments.noindex/abc123/image.jpg``).
+
+    Access is restricted to files inside the Signal data directory to prevent
+    directory traversal attacks.
+    """
+    data_dir = Path(settings.signal_data_dir).resolve()
+    # Normalise the path and prevent traversal outside the data dir
+    try:
+        full_path = (data_dir / path).resolve()
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Invalid path: {e}")
+
+    if not str(full_path).startswith(str(data_dir)):
+        raise HTTPException(status_code=403, detail="Path traversal not allowed")
+
+    if not full_path.exists() or not full_path.is_file():
+        raise HTTPException(status_code=404, detail=f"Attachment not found: {path}")
+
+    mime_type, _ = mimetypes.guess_type(str(full_path))
+    content = full_path.read_bytes()
+    return Response(content=content, media_type=mime_type or "application/octet-stream")
 
 
 @app.post("/reset-poll-timestamp")

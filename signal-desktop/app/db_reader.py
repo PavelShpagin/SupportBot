@@ -226,16 +226,33 @@ def get_messages(
         else:
             select_parts.append("NULL as sender_name")
 
+        # Include the raw JSON column so we can parse attachments (row[9]).
+        # The column is present in Signal Desktop 6+ and contains attachments,
+        # reactions, and other rich data.
+        has_json_col = "json" in msg_cols
+        if has_json_col:
+            select_parts.append("m.json as raw_json")
+
         sender_join = ""
         if sender_col:
             sender_join = f"LEFT JOIN conversations sc ON m.{sender_col} = sc.id"
+
+        # Include messages that have either a text body OR at least one
+        # attachment.  The post-filter below drops rows with neither.
+        if has_json_col:
+            body_cond = (
+                f"(m.{body_col} IS NOT NULL AND m.{body_col} != '')"
+                f" OR (m.json LIKE '%\"attachments\":[{{%')"
+            )
+        else:
+            body_cond = f"m.{body_col} IS NOT NULL AND m.{body_col} != ''"
 
         q = f"""
             SELECT {', '.join(select_parts)}
             FROM messages m
             LEFT JOIN conversations c ON m.{conv_id_col} = c.id
             {sender_join}
-            WHERE m.{body_col} IS NOT NULL AND m.{body_col} != ''
+            WHERE {body_cond}
         """
         
         params: list = []
@@ -312,7 +329,8 @@ def get_messages(
                 ts = int(row[2]) if row[2] else 0
                 body = str(row[3] or "")
                 sender_name = str(row[8]) if len(row) > 8 and row[8] else None
-                raw_json_str = str(row[9]) if len(row) > 9 and row[9] else None
+                # row[9] is raw_json only when has_json_col is True (added last)
+                raw_json_str = str(row[9]) if (has_json_col and len(row) > 9 and row[9]) else None
 
                 # Parse attachments from the raw json column
                 attachments: list = []

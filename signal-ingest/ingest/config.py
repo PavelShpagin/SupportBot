@@ -40,14 +40,14 @@ def _env_bool(name: str, *, default: bool) -> bool:
 class Settings:
     # Database backend
     db_backend: str  # "mysql" or "oracle"
-    
+
     # MySQL settings
     mysql_host: str
     mysql_port: int
     mysql_user: str
     mysql_password: str
     mysql_database: str
-    
+
     # Oracle settings (legacy)
     oracle_user: str
     oracle_password: str
@@ -62,6 +62,7 @@ class Settings:
     signal_ingest_storage: str
     history_dir: str
     signal_bot_url: str
+    signal_bot_e164: str  # Bot's own phone number — used to exclude bot messages from cases
 
     # Signal Desktop settings
     use_signal_desktop: bool
@@ -77,7 +78,7 @@ class Settings:
 
 def load_settings() -> Settings:
     db_backend = _env("DB_BACKEND", default="mysql").lower()
-    
+
     return Settings(
         db_backend=db_backend,
         # MySQL settings (default)
@@ -92,7 +93,8 @@ def load_settings() -> Settings:
         oracle_dsn=_env("ORACLE_DSN", default=""),
         oracle_wallet_dir=_env("ORACLE_WALLET_DIR", default=_env("TNS_ADMIN", default="")),
         openai_api_key=_env("GOOGLE_API_KEY", required=True),
-        model_blocks=_env("MODEL_BLOCKS", default="gemini-3-pro-preview"),
+        model_blocks=_env("MODEL_BLOCKS", default="gemini-2.0-flash"),
+        model_img=_env("MODEL_IMG", default="gemini-2.0-flash"),
         signal_cli=_env("SIGNAL_CLI", default="signal-cli"),
         signal_ingest_storage=_env("SIGNAL_INGEST_STORAGE", default="/var/lib/signal/ingest"),
         history_dir=_env("HISTORY_DIR", default="/var/lib/history"),

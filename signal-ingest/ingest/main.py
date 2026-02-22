@@ -13,12 +13,13 @@ Each history import requires the user to scan a QR code.
 """
 from __future__ import annotations
 
+import base64
 import json
 import logging
 import time
 import urllib.parse
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 import httpx
 from openai import OpenAI
@@ -116,6 +117,77 @@ def _get_desktop_screenshot(settings) -> bytes:
         raise RuntimeError(f"Failed to get screenshot: {e}")
 
 
+def _fetch_attachment(settings, rel_path: str, max_bytes: int = 5_000_000) -> Optional[bytes]:
+    """Fetch raw bytes for a Signal Desktop attachment by its relative path.
+
+    Returns None if the fetch fails or the file is too large.
+    """
+    url = settings.signal_desktop_url.rstrip("/") + "/attachment"
+    try:
+        with httpx.Client(timeout=30) as client:
+            r = client.get(url, params={"path": rel_path})
+            if r.status_code == 404:
+                log.warning("Attachment not found on signal-desktop: %s", rel_path)
+                return None
+            r.raise_for_status()
+            if len(r.content) > max_bytes:
+                log.warning(
+                    "Attachment %s too large (%d bytes), skipping",
+                    rel_path, len(r.content),
+                )
+                return None
+            return r.content
+    except Exception as e:
+        log.warning("Failed to fetch attachment %s: %s", rel_path, e)
+        return None
+
+
+def _ocr_attachment(
+    openai_client: OpenAI,
+    model: str,
+    image_bytes: bytes,
+    content_type: str,
+    context_text: str = "",
+) -> str:
+    """Run multimodal OCR on an image and return a compact JSON description.
+
+    Returns an empty string on failure (the message is still stored without OCR).
+    """
+    try:
+        import base64 as _b64
+        b64 = _b64.b64encode(image_bytes).decode("utf-8")
+        prompt = (
+            "You are an assistant that extracts all visible text and key observations "
+            "from an image shared in a technical support chat. "
+            "Return a JSON object with two keys:\n"
+            '  "extracted_text": all text visible in the image,\n'
+            '  "observations": a brief list of key visual elements.\n'
+            "Return only valid JSON, no markdown."
+        )
+        messages: List[Dict] = [
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "image_url",
+                        "image_url": {"url": f"data:{content_type};base64,{b64}"},
+                    },
+                    {"type": "text", "text": prompt},
+                ],
+            }
+        ]
+        resp = openai_client.chat.completions.create(
+            model=model,
+            messages=messages,
+            max_tokens=512,
+            temperature=0,
+        )
+        return resp.choices[0].message.content or ""
+    except Exception as e:
+        log.warning("OCR failed for attachment: %s", e)
+        return ""
+
+
 def _get_desktop_messages(settings, group_id: str, group_name: str, limit: int = 800) -> List[dict]:
     """Get messages from Signal Desktop for a specific group."""
     url = settings.signal_desktop_url.rstrip("/") + "/group/messages"
@@ -147,11 +219,80 @@ def _get_desktop_messages(settings, group_id: str, group_name: str, limit: int =
 # LLM Case Extraction
 # ?????????????????????????????????????????????????????????????????????????????
 
+def _enrich_messages_with_attachments(
+    *,
+    settings,
+    openai_client: OpenAI,
+    messages: List[dict],
+    max_att_per_message: int = 3,
+) -> List[dict]:
+    """Fetch attachment bytes for each message, OCR them, and enrich the body.
+
+    Each message dict is copied with two new keys:
+    - ``enriched_body``: original body + appended OCR JSON for each attachment.
+    - ``image_payloads``: list of ``{filename, content_type, data_b64}`` dicts
+      for storage in signal-bot's raw_messages.image_paths_json.
+
+    Messages without attachments pass through unchanged (but gain empty keys).
+    """
+    enriched: List[dict] = []
+    att_count = 0
+    for m in messages:
+        atts = m.get("attachments") or []
+        if not atts:
+            enriched.append({**m, "enriched_body": m.get("body") or m.get("text") or "", "image_payloads": []})
+            continue
+
+        body = m.get("body") or m.get("text") or ""
+        payloads: List[dict] = []
+        ocr_texts: List[str] = []
+
+        for att in atts[:max_att_per_message]:
+            rel_path = att.get("path", "")
+            if not rel_path:
+                continue
+            content_type = att.get("contentType") or "image/jpeg"
+            if not content_type.startswith("image/"):
+                continue  # only OCR images for now
+
+            img_bytes = _fetch_attachment(settings, rel_path)
+            if img_bytes is None:
+                continue
+
+            att_count += 1
+            ocr_json = _ocr_attachment(
+                openai_client=openai_client,
+                model=settings.model_img,
+                image_bytes=img_bytes,
+                content_type=content_type,
+                context_text=body,
+            )
+            if ocr_json:
+                ocr_texts.append(ocr_json)
+
+            payloads.append({
+                "filename": att.get("fileName") or "",
+                "content_type": content_type,
+                "data_b64": base64.b64encode(img_bytes).decode("utf-8"),
+            })
+
+        enriched_body = body
+        if ocr_texts:
+            enriched_body = body + "\n\n" + "\n".join(f"[image]\n{t}" for t in ocr_texts)
+
+        enriched.append({**m, "enriched_body": enriched_body, "image_payloads": payloads})
+
+    if att_count:
+        log.info("Processed %d image attachments across %d messages", att_count, len(messages))
+    return enriched
+
+
 def _chunk_messages(*, messages: List[dict], max_chars: int, overlap_messages: int) -> List[str]:
     """Split messages into chunks for LLM processing."""
     formatted = []
     for m in messages:
-        text = m.get("text") or m.get("body") or ""
+        # Prefer enriched_body which includes OCR text for images
+        text = m.get("enriched_body") or m.get("text") or m.get("body") or ""
         if not text:
             continue
         sender = m.get("sender") or m.get("source") or "unknown"
@@ -264,9 +405,12 @@ def _post_cases_to_bot(*, settings, token: str, group_id: str, case_blocks: List
     # Format messages for the API, excluding the bot's own messages from evidence
     formatted_messages = []
     for m in messages:
-        text = m.get("text") or m.get("body") or ""
+        # Use the enriched text (may include OCR JSON appended by the attachment pipeline)
+        text = m.get("enriched_body") or m.get("text") or m.get("body") or ""
         if not text:
-            continue
+            # Keep attachment-only messages if they have image_payloads
+            if not m.get("image_payloads"):
+                continue
         sender = m.get("sender") or m.get("source") or "unknown"
         if bot_e164 and sender == bot_e164:
             continue  # Don't include bot's own messages in case evidence
@@ -280,6 +424,7 @@ def _post_cases_to_bot(*, settings, token: str, group_id: str, case_blocks: List
             "sender_name": sender_name,
             "ts": ts,
             "content_text": text,
+            "image_payloads": m.get("image_payloads") or [],
         })
     
     payload = {
@@ -514,7 +659,23 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
         check_cancelled()
 
         # ?????????????????????????????????????????????????????????????????
-        # Step 3: Process messages - extract cases using LLM
+        # Step 3b: Enrich messages that have attachments with OCR text
+        # Each message dict gets an "enriched_body" and "image_payloads" key.
+        # ?????????????????????????????????????????????????????????????????
+        openai_client_early = OpenAI(
+            api_key=settings.openai_api_key,
+            base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
+        )
+        msgs = _enrich_messages_with_attachments(
+            settings=settings,
+            openai_client=openai_client_early,
+            messages=msgs,
+        )
+
+        check_cancelled()
+
+        # ?????????????????????????????????????????????????????????????????
+        # Step 4: Process messages - extract cases using LLM
         # ?????????????????????????????????????????????????????????????????
         chunks = _chunk_messages(
             messages=msgs,
@@ -523,17 +684,12 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
         )
         log.info("Split into %d chunks for processing", len(chunks))
 
-        openai_client = OpenAI(
-            api_key=settings.openai_api_key,
-            base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
-        )
-        
         case_blocks: List[str] = []
         for i, ch in enumerate(chunks):
             check_cancelled()
             if len(chunks) > 1:
                 _notify_progress(settings=settings, token=token, progress_key="processing_chunk", current=i+1, total=len(chunks))
-            case_blocks.extend(_extract_case_blocks(openai_client=openai_client, model=settings.model_blocks, chunk_text=ch))
+            case_blocks.extend(_extract_case_blocks(openai_client=openai_client_early, model=settings.model_blocks, chunk_text=ch))
 
         deduped = list(dict.fromkeys([b for b in case_blocks if b.strip()]))
         

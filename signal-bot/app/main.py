@@ -1271,12 +1271,20 @@ def history_link_result(req: HistoryLinkResultRequest) -> dict:
     return {"ok": True}
 
 
+class HistoryImagePayload(BaseModel):
+    """A single image attachment encoded as base64, sent from signal-ingest."""
+    filename: str = ""
+    content_type: str = "image/jpeg"
+    data_b64: str  # base64-encoded image bytes
+
+
 class HistoryMessage(BaseModel):
     message_id: str
     sender_hash: str
     sender_name: str | None = None
     ts: int
     content_text: str
+    image_payloads: List[HistoryImagePayload] = []
 
 
 class CaseBlock(BaseModel):
@@ -1288,6 +1296,60 @@ class HistoryCasesRequest(BaseModel):
     group_id: str
     cases: List[CaseBlock]
     messages: List[HistoryMessage] = []  # Optional: raw messages for evidence linking
+
+
+def _save_history_images(
+    group_id: str,
+    message_id: str,
+    image_payloads: list,
+    storage_root: str,
+) -> list:
+    """Decode base64 image payloads and save to disk.
+
+    Files are stored under ``<storage_root>/history/<group_id>/``.
+    Returns a list of absolute paths for successfully saved files.
+    """
+    import base64
+    import os
+
+    if not image_payloads:
+        return []
+
+    dest_dir = Path(storage_root) / "history" / group_id
+    try:
+        dest_dir.mkdir(parents=True, exist_ok=True)
+    except OSError as e:
+        log.warning("Cannot create history image dir %s: %s", dest_dir, e)
+        return []
+
+    paths: list = []
+    for i, img in enumerate(image_payloads):
+        try:
+            raw_bytes = base64.b64decode(img.data_b64)
+        except Exception as e:
+            log.warning("Failed to decode image payload for %s[%d]: %s", message_id, i, e)
+            continue
+
+        filename = img.filename or ""
+        ext = Path(filename).suffix if filename else ""
+        if not ext:
+            ct = (img.content_type or "").split(";")[0].strip().lower()
+            ext_map = {
+                "image/jpeg": ".jpg",
+                "image/png": ".png",
+                "image/gif": ".gif",
+                "image/webp": ".webp",
+            }
+            ext = ext_map.get(ct, ".jpg")
+
+        dest_file = dest_dir / f"{message_id}_{i}{ext}"
+        try:
+            dest_file.write_bytes(raw_bytes)
+            paths.append(str(dest_file))
+        except OSError as e:
+            log.warning("Failed to write history image %s: %s", dest_file, e)
+
+    return paths
 
 
 def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
@@ -1320,6 +1382,12 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
     message_lookup: dict = {}
     messages_stored = 0
     for m in req.messages:
+        image_paths = _save_history_images(
+            group_id=req.group_id,
+            message_id=m.message_id,
+            image_payloads=m.image_payloads,
+            storage_root=settings.signal_bot_storage,
+        )
         raw_msg = RawMessage(
             message_id=m.message_id,
             group_id=req.group_id,
@@ -1327,7 +1395,7 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
             sender_hash=m.sender_hash,
             sender_name=m.sender_name,
             content_text=m.content_text,
-            image_paths=[],
+            image_paths=image_paths,
             reply_to_id=None,
         )
         if insert_raw_message(db, raw_msg):
