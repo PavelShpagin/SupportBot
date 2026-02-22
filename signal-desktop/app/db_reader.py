@@ -252,7 +252,7 @@ def get_messages(
             FROM messages m
             LEFT JOIN conversations c ON m.{conv_id_col} = c.id
             {sender_join}
-            WHERE {body_cond}
+            WHERE ({body_cond})
         """
         
         params: list = []
