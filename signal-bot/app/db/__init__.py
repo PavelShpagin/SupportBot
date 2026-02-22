@@ -44,6 +44,8 @@ if DB_BACKEND == "mysql":
         set_buffer,
         new_case_id,
         insert_case,
+        upsert_case,
+        confirm_cases_by_evidence_ts,
         create_history_token,
         validate_history_token,
         mark_history_token_used,

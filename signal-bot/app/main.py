@@ -24,6 +24,9 @@ from app.db import (
     mark_history_token_used,
     new_case_id,
     insert_case,
+    upsert_case,
+    confirm_cases_by_evidence_ts,
+    POSITIVE_EMOJI,
     insert_raw_message,
     get_raw_message,
     get_case,
@@ -569,7 +572,7 @@ def _handle_group_message(m: InboundGroupMessage) -> None:
 def _handle_reaction(r: InboundReaction) -> None:
     """Handle emoji reactions to messages."""
     sender_h = hash_sender(r.sender)
-    
+
     if r.is_remove:
         delete_reaction(
             db,
@@ -589,6 +592,17 @@ def _handle_reaction(r: InboundReaction) -> None:
             emoji=r.emoji,
         )
         log.info("Reaction added: group=%s ts=%s emoji=%s", r.group_id, r.target_ts, r.emoji)
+
+        # Positive emoji on a message that is evidence for a case → confirm that case
+        if r.emoji in POSITIVE_EMOJI:
+            n = confirm_cases_by_evidence_ts(
+                db, group_id=r.group_id, target_ts=r.target_ts, emoji=r.emoji
+            )
+            if n:
+                log.info(
+                    "Case confirmation via emoji %s on ts=%s in group=%s: %d case(s) confirmed",
+                    r.emoji, r.target_ts, r.group_id, n,
+                )
 
 
 def _send_direct_or_cleanup(admin_id: str, text: str) -> bool:
@@ -1443,21 +1457,15 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
                             if mid not in evidence_ids:
                                 evidence_ids.append(mid)
 
-            log.info(
-                "History case status=%s evidence_ids=%d (group=%s)",
-                case.status, len(evidence_ids), req.group_id[:20],
-            )
-
             evidence_image_paths: List[str] = []
             for mid in evidence_ids:
                 msg = get_raw_message(db, message_id=mid)
                 if msg:
                     evidence_image_paths.extend(p for p in msg.image_paths if p)
 
-            case_id = new_case_id(db)
-            insert_case(
+            case_id, created = upsert_case(
                 db,
-                case_id=case_id,
+                case_id=new_case_id(db),
                 group_id=req.group_id,
                 status=case.status,
                 problem_title=case.problem_title,
@@ -1466,6 +1474,11 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
                 tags=case.tags,
                 evidence_ids=evidence_ids,
                 evidence_image_paths=evidence_image_paths,
+            )
+            action = "inserted" if created else "updated (duplicate override)"
+            log.info(
+                "History case %s status=%s evidence_ids=%d action=%s (group=%s)",
+                case_id, case.status, len(evidence_ids), action, req.group_id[:20],
             )
 
             # Only index solved cases with a solution into SCRAG (B1 open cases stay out of RAG)
@@ -1484,9 +1497,9 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
                     metadata["evidence_image_paths"] = evidence_image_paths
                 rag.upsert_case(case_id=case_id, document=doc_text, embedding=embedding, metadata=metadata)
                 mark_case_in_rag(db, case_id)
-                log.info("Indexed solved history case %s in SCRAG (group=%s)", case_id, req.group_id[:20])
+                log.info("Indexed solved history case %s in SCRAG action=%s (group=%s)", case_id, action, req.group_id[:20])
             else:
-                log.info("Stored open/unsolved history case %s in B1 (not indexed in SCRAG, group=%s)", case_id, req.group_id[:20])
+                log.info("Stored open/unsolved history case %s action=%s (not in SCRAG, group=%s)", case_id, action, req.group_id[:20])
 
             kept += 1
         except Exception:

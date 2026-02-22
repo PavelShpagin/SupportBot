@@ -1134,3 +1134,145 @@ def wipe_all_data(db: MySQL) -> dict:
         cur.execute("SET FOREIGN_KEY_CHECKS=1")
         conn.commit()
     return stats
+
+
+def find_case_by_title(db: MySQL, *, group_id: str, problem_title: str) -> Optional[str]:
+    """Return the case_id of an existing non-archived case with the same title in this group, or None."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            """
+            SELECT case_id FROM cases
+            WHERE group_id = %s
+              AND problem_title = %s
+              AND status != 'archived'
+            ORDER BY created_at DESC
+            LIMIT 1
+            """,
+            (group_id, problem_title),
+        )
+        row = cur.fetchone()
+        return row[0] if row else None
+
+
+def upsert_case(
+    db: MySQL,
+    *,
+    case_id: str,
+    group_id: str,
+    status: str,
+    problem_title: str,
+    problem_summary: str,
+    solution_summary: str,
+    tags: List[str],
+    evidence_ids: List[str],
+    evidence_image_paths: List[str],
+) -> tuple[str, bool]:
+    """Insert a new case or update an existing one with the same title in the same group.
+
+    Returns (final_case_id, created) where created=True means a new row was inserted.
+    The existing case's confirmed status is preserved on update.
+    """
+    existing_id = find_case_by_title(db, group_id=group_id, problem_title=problem_title)
+
+    with db.connection() as conn:
+        cur = conn.cursor()
+        if existing_id:
+            cur.execute(
+                """
+                UPDATE cases
+                SET status = %s,
+                    problem_summary = %s,
+                    solution_summary = %s,
+                    tags_json = %s,
+                    evidence_image_paths_json = %s,
+                    in_rag = 0,
+                    updated_at = NOW()
+                WHERE case_id = %s
+                """,
+                (
+                    status,
+                    problem_summary,
+                    solution_summary,
+                    json.dumps(tags, ensure_ascii=False),
+                    json.dumps(evidence_image_paths, ensure_ascii=False),
+                    existing_id,
+                ),
+            )
+            # Replace evidence links
+            cur.execute("DELETE FROM case_evidence WHERE case_id = %s", (existing_id,))
+            for mid in evidence_ids:
+                try:
+                    cur.execute(
+                        "INSERT INTO case_evidence(case_id, message_id) VALUES(%s, %s)",
+                        (existing_id, mid),
+                    )
+                except Exception:
+                    pass
+            conn.commit()
+            return existing_id, False
+        else:
+            cur.execute(
+                """
+                INSERT INTO cases(
+                  case_id, group_id, status, problem_title, problem_summary,
+                  solution_summary, tags_json, evidence_image_paths_json
+                )
+                VALUES(%s, %s, %s, %s, %s, %s, %s, %s)
+                """,
+                (
+                    case_id,
+                    group_id,
+                    status,
+                    problem_title,
+                    problem_summary,
+                    solution_summary,
+                    json.dumps(tags, ensure_ascii=False),
+                    json.dumps(evidence_image_paths, ensure_ascii=False),
+                ),
+            )
+            for mid in evidence_ids:
+                cur.execute(
+                    "INSERT INTO case_evidence(case_id, message_id) VALUES(%s, %s)",
+                    (case_id, mid),
+                )
+            conn.commit()
+            return case_id, True
+
+
+def confirm_cases_by_evidence_ts(
+    db: MySQL, *, group_id: str, target_ts: int, emoji: str
+) -> int:
+    """Mark cases as confirmed when a positive emoji is reacted to one of their evidence messages.
+
+    Looks up raw_messages by (group_id, ts), then finds all cases that have that
+    message_id in case_evidence, and sets closed_emoji + confirmed_at on them.
+    Returns the number of cases confirmed.
+    """
+    with db.connection() as conn:
+        cur = conn.cursor()
+        # Find message_ids at this timestamp in this group
+        cur.execute(
+            "SELECT message_id FROM raw_messages WHERE group_id = %s AND ts = %s",
+            (group_id, target_ts),
+        )
+        rows = cur.fetchall()
+        if not rows:
+            return 0
+
+        confirmed = 0
+        for (message_id,) in rows:
+            cur.execute(
+                """
+                UPDATE cases c
+                JOIN case_evidence ce ON ce.case_id = c.case_id
+                SET c.closed_emoji = %s, c.updated_at = NOW()
+                WHERE ce.message_id = %s
+                  AND c.status IN ('solved', 'open')
+                  AND c.closed_emoji IS NULL
+                """,
+                (emoji, message_id),
+            )
+            confirmed += cur.rowcount
+        conn.commit()
+        return confirmed
