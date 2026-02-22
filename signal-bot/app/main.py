@@ -393,16 +393,16 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
         set_admin_lang(db, admin_id, "en")
         if session: session = get_admin_session(db, admin_id) # Refresh session
         msg = "Language set to English. Please enter the group name you want to link."
-        if isinstance(signal, SignalCliAdapter):
-            signal.send_direct_text(recipient=admin_id, text=msg)
+        if not isinstance(signal, NoopSignalAdapter):
+            _send_direct_or_cleanup(admin_id, msg)
         return
 
     if text_lower in ("/ua", "/uk", "/ukrainian"):
         set_admin_lang(db, admin_id, "uk")
         if session: session = get_admin_session(db, admin_id) # Refresh session
         msg = "Мову змінено на українську. Введіть назву групи для підключення."
-        if isinstance(signal, SignalCliAdapter):
-            signal.send_direct_text(recipient=admin_id, text=msg)
+        if not isinstance(signal, NoopSignalAdapter):
+            _send_direct_or_cleanup(admin_id, msg)
         return
 
     # /wipe — erase ALL bot data (groups, cases, history, sessions). Keeps phone registration.
@@ -419,13 +419,13 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
             msg = f"✅ Wiped all data.\n{summary}\nBot registration kept. Send group name to start fresh."
         except Exception as e:
             msg = f"❌ Wipe failed: {e}"
-        signal.send_direct_text(recipient=admin_id, text=msg)
+        _send_direct_or_cleanup(admin_id, msg)
         return
 
     # Ignore commands other than language to prevent accidental group searches
     if text.startswith("/"):
         msg = "Unknown command. Available: /en, /uk, /wipe"
-        signal.send_direct_text(recipient=admin_id, text=msg)
+        _send_direct_or_cleanup(admin_id, msg)
         return
     # -----------------------------
 
@@ -462,12 +462,14 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
             log.info("New admin %s, detected language: %s, sending welcome", admin_id, detected_lang)
             if not isinstance(signal, NoopSignalAdapter):
                 sent = signal.send_onboarding_prompt(recipient=admin_id, lang=detected_lang)
-                if isinstance(signal, SignalCliAdapter) and not sent:
-                    # User blocked us - clear session
+                if not sent:
+                    # User blocked/removed us — _send_direct_or_cleanup already ran inside
+                    # send_onboarding_prompt for SignalDesktopAdapter; for SignalCliAdapter
+                    # we still need the explicit cleanup below.
                     from app.db.queries_mysql import unlink_admin_from_all_groups
                     delete_admin_session(db, admin_id)
                     unlink_admin_from_all_groups(db, admin_id)
-                    log.info("Cleared session for blocked user %s", admin_id)
+                    log.info("Cleared session for blocked/removed user %s", admin_id)
                     return
         else:
             log.info("Admin %s stale session reset, processing '%s' as group name", admin_id, text)
@@ -497,7 +499,7 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
                 if lang == "uk"
                 else f'QR code for group "{session.pending_group_name}" is already being generated. Please wait.'
             )
-            signal.send_direct_text(recipient=admin_id, text=wait_msg)
+            _send_direct_or_cleanup(admin_id, wait_msg)
             return
         log.info("Admin %s sent new group name while awaiting QR scan, cancelling pending job", admin_id)
         cancel_pending_history_jobs(db, session.pending_token)
@@ -600,6 +602,21 @@ def _handle_reaction(r: InboundReaction) -> None:
             emoji=r.emoji,
         )
         log.info("Reaction added: group=%s ts=%s emoji=%s", r.group_id, r.target_ts, r.emoji)
+
+
+def _send_direct_or_cleanup(admin_id: str, text: str) -> bool:
+    """Send a direct message to an admin; trigger contact-removed cleanup on failure.
+
+    Signal Desktop (and signal-cli) return False when the recipient has blocked
+    or removed the bot.  Any adapter other than NoopSignalAdapter is expected to
+    return a meaningful bool, so we use the failure to eagerly clean up state.
+    Returns True if the message was sent successfully.
+    """
+    sent = signal.send_direct_text(recipient=admin_id, text=text)
+    if not sent and not isinstance(signal, NoopSignalAdapter):
+        log.info("send_direct_text to %s failed — triggering contact-removed cleanup", admin_id)
+        _handle_contact_removed(admin_id)
+    return sent
 
 
 def _handle_contact_removed(phone_number: str) -> None:
@@ -1131,7 +1148,7 @@ def history_progress(req: HistoryProgressRequest) -> dict:
     )
     
     if not isinstance(signal, NoopSignalAdapter) and progress_text:
-        signal.send_direct_text(recipient=admin_id, text=progress_text)
+        _send_direct_or_cleanup(admin_id, progress_text)
     
     return {"ok": True}
 
@@ -1262,7 +1279,7 @@ def history_link_result(req: HistoryLinkResultRequest) -> dict:
                         )
                         if req.note:
                             summary += f"\n{req.note}"
-                    signal.send_direct_text(recipient=admin_id, text=summary)
+                    _send_direct_or_cleanup(admin_id, summary)
             except Exception:
                 log.exception("Failed to send link-result notification to admin %s", admin_id)
 
