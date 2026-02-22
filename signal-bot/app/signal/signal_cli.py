@@ -105,9 +105,9 @@ SEARCHING_GROUP_UK = """Шукаю групу "{group_name}"..."""
 
 SEARCHING_GROUP_EN = """Searching for group "{group_name}"..."""
 
-PROCESSING_MESSAGE_UK = """Знайшов групу "{group_name}"! Генерую QR-код — зачекайте ~30 секунд..."""
+PROCESSING_MESSAGE_UK = """Знайшов групу "{group_name}"! Генерую QR-код. Зачекайте кілька хвилин..."""
 
-PROCESSING_MESSAGE_EN = """Found group "{group_name}"! Generating QR code — please wait ~30 seconds..."""
+PROCESSING_MESSAGE_EN = """Found group "{group_name}"! Generating QR code. Please wait a few minutes..."""
 
 LANG_CHANGED_UK = """Мову змінено на українську."""
 
