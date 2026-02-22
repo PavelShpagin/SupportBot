@@ -26,6 +26,9 @@ from app.db import (
     insert_case,
     upsert_case,
     confirm_cases_by_evidence_ts,
+    store_case_embedding,
+    find_similar_case,
+    merge_case,
     POSITIVE_EMOJI,
     insert_raw_message,
     get_raw_message,
@@ -1463,19 +1466,43 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
                 if msg:
                     evidence_image_paths.extend(p for p in msg.image_paths if p)
 
-            case_id, created = upsert_case(
-                db,
-                case_id=new_case_id(db),
-                group_id=req.group_id,
-                status=case.status,
-                problem_title=case.problem_title,
-                problem_summary=case.problem_summary,
-                solution_summary=case.solution_summary,
-                tags=case.tags,
-                evidence_ids=evidence_ids,
-                evidence_image_paths=evidence_image_paths,
-            )
-            action = "inserted" if created else "updated (duplicate override)"
+            # Compute embedding for semantic dedup (problem only — match on problem, not solution)
+            embed_text = f"{case.problem_title}\n{case.problem_summary}"
+            dedup_embedding = llm.embed(text=embed_text)
+
+            # Semantic dedup: find existing case with cosine similarity > 0.85
+            similar_id = find_similar_case(db, group_id=req.group_id, embedding=dedup_embedding)
+            if similar_id:
+                merge_case(
+                    db,
+                    target_case_id=similar_id,
+                    status=case.status,
+                    problem_summary=case.problem_summary,
+                    solution_summary=case.solution_summary,
+                    tags=case.tags,
+                    evidence_ids=evidence_ids,
+                    evidence_image_paths=evidence_image_paths,
+                )
+                store_case_embedding(db, similar_id, dedup_embedding)
+                case_id = similar_id
+                action = "semantic-merged"
+            else:
+                # Fallback: exact-title dedup via upsert_case
+                case_id, created = upsert_case(
+                    db,
+                    case_id=new_case_id(db),
+                    group_id=req.group_id,
+                    status=case.status,
+                    problem_title=case.problem_title,
+                    problem_summary=case.problem_summary,
+                    solution_summary=case.solution_summary,
+                    tags=case.tags,
+                    evidence_ids=evidence_ids,
+                    evidence_image_paths=evidence_image_paths,
+                )
+                store_case_embedding(db, case_id, dedup_embedding)
+                action = "inserted" if created else "title-deduped"
+
             log.info(
                 "History case %s status=%s evidence_ids=%d action=%s (group=%s)",
                 case_id, case.status, len(evidence_ids), action, req.group_id[:20],
@@ -1489,13 +1516,13 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
                     f"Рішення: {case.solution_summary.strip()}",
                     "tags: " + ", ".join(case.tags),
                 ]).strip()
-                embedding = llm.embed(text=doc_text)
+                rag_embedding = llm.embed(text=doc_text)
                 metadata: dict = {"group_id": req.group_id, "status": case.status}
                 if evidence_ids:
                     metadata["evidence_ids"] = evidence_ids
                 if evidence_image_paths:
                     metadata["evidence_image_paths"] = evidence_image_paths
-                rag.upsert_case(case_id=case_id, document=doc_text, embedding=embedding, metadata=metadata)
+                rag.upsert_case(case_id=case_id, document=doc_text, embedding=rag_embedding, metadata=metadata)
                 mark_case_in_rag(db, case_id)
                 log.info("Indexed solved history case %s in SCRAG action=%s (group=%s)", case_id, action, req.group_id[:20])
             else:

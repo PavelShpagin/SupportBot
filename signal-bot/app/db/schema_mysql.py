@@ -138,6 +138,8 @@ MIGRATIONS = [
     "ALTER TABLE cases ADD CONSTRAINT cases_status_chk CHECK (status IN ('solved', 'open', 'archived'))",
     # Emoji reaction that closed/confirmed the case (e.g. 👍)
     "ALTER TABLE cases ADD COLUMN closed_emoji VARCHAR(16)",
+    # Embedding vector for semantic dedup (JSON array of floats)
+    "ALTER TABLE cases ADD COLUMN embedding_json LONGTEXT",
 ]
 
 

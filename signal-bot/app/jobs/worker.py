@@ -27,6 +27,10 @@ from app.db import (
     mark_case_in_rag,
     expire_old_open_cases,
     get_all_active_case_ids,
+    store_case_embedding,
+    find_similar_case,
+    merge_case,
+    archive_case,
 )
 from app.jobs import types as job_types
 from app.llm.client import LLMClient
@@ -481,20 +485,41 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
             span.start_idx, span.end_idx, case.status, len(evidence_ids),
         )
 
-        case_id = new_case_id(deps.db)
         evidence_image_paths = _collect_evidence_image_paths(deps, evidence_ids)
-        insert_case(
-            deps.db,
-            case_id=case_id,
-            group_id=group_id,
-            status=case.status,
-            problem_title=case.problem_title,
-            problem_summary=case.problem_summary,
-            solution_summary=case.solution_summary,
-            tags=case.tags,
-            evidence_ids=evidence_ids,
-            evidence_image_paths=evidence_image_paths,
-        )
+
+        # Semantic dedup: embed problem text and check similarity against existing cases
+        embed_text = f"{case.problem_title}\n{case.problem_summary}"
+        dedup_embedding = deps.llm.embed(text=embed_text)
+        similar_id = find_similar_case(deps.db, group_id=group_id, embedding=dedup_embedding)
+        if similar_id:
+            merge_case(
+                deps.db,
+                target_case_id=similar_id,
+                status=case.status,
+                problem_summary=case.problem_summary,
+                solution_summary=case.solution_summary,
+                tags=case.tags,
+                evidence_ids=evidence_ids,
+                evidence_image_paths=evidence_image_paths,
+            )
+            store_case_embedding(deps.db, similar_id, dedup_embedding)
+            case_id = similar_id
+            log.info("Semantic dedup: merged live case into existing %s (group=%s)", case_id, group_id[:20])
+        else:
+            case_id = new_case_id(deps.db)
+            insert_case(
+                deps.db,
+                case_id=case_id,
+                group_id=group_id,
+                status=case.status,
+                problem_title=case.problem_title,
+                problem_summary=case.problem_summary,
+                solution_summary=case.solution_summary,
+                tags=case.tags,
+                evidence_ids=evidence_ids,
+                evidence_image_paths=evidence_image_paths,
+            )
+            store_case_embedding(deps.db, case_id, dedup_embedding)
 
         if case.status == "solved" and case.solution_summary.strip():
             # Solved case → index in SCRAG immediately (B3)
@@ -543,27 +568,66 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
                         buffer_text=buf2,
                     )
                     if resolution and resolution.resolved and resolution.solution_summary.strip():
-                        update_case_to_solved(deps.db, b1_case["case_id"], resolution.solution_summary)
+                        # Semantic dedup on promotion: check if a solved case for the
+                        # same problem already exists (from history ingest or another live case).
+                        promote_embed_text = f"{b1_case['problem_title']}\n{b1_case['problem_summary']}"
+                        promote_embedding = deps.llm.embed(text=promote_embed_text)
+                        existing_solved = find_similar_case(
+                            deps.db,
+                            group_id=group_id,
+                            embedding=promote_embedding,
+                            exclude_case_id=b1_case["case_id"],
+                            statuses=["solved"],
+                        )
+
+                        if existing_solved:
+                            # Merge the new solution into the existing solved case
+                            merge_case(
+                                deps.db,
+                                target_case_id=existing_solved,
+                                status="solved",
+                                problem_summary=b1_case["problem_summary"],
+                                solution_summary=resolution.solution_summary,
+                                tags=b1_case.get("tags") or [],
+                                evidence_ids=[],
+                                evidence_image_paths=[],
+                            )
+                            store_case_embedding(deps.db, existing_solved, promote_embedding)
+                            archive_case(deps.db, b1_case["case_id"])
+                            final_case_id = existing_solved
+                            log.info(
+                                "B1 case %s merged into existing solved %s (group=%s)",
+                                b1_case["case_id"], existing_solved, group_id[:20],
+                            )
+                        else:
+                            update_case_to_solved(deps.db, b1_case["case_id"], resolution.solution_summary)
+                            store_case_embedding(deps.db, b1_case["case_id"], promote_embedding)
+                            final_case_id = b1_case["case_id"]
+                            log.info(
+                                "B1 case %s promoted to solved (group=%s)",
+                                final_case_id, group_id[:20],
+                            )
+
                         doc_text = "\n".join([
                             f"[SOLVED] {b1_case['problem_title'].strip()}",
                             f"Проблема: {b1_case['problem_summary'].strip()}",
                             f"Рішення: {resolution.solution_summary.strip()}",
                             "tags: " + ", ".join(b1_case.get("tags") or []),
                         ]).strip()
-                        embedding = deps.llm.embed(text=doc_text)
+                        rag_embedding = deps.llm.embed(text=doc_text)
                         deps.rag.upsert_case(
-                            case_id=b1_case["case_id"],
+                            case_id=final_case_id,
                             document=doc_text,
-                            embedding=embedding,
+                            embedding=rag_embedding,
                             metadata={
                                 "group_id": group_id,
                                 "status": "solved",
                             },
                         )
-                        mark_case_in_rag(deps.db, b1_case["case_id"])
+                        mark_case_in_rag(deps.db, final_case_id)
                         log.info(
-                            "B1 case %s promoted to solved and indexed in SCRAG (group=%s)",
-                            b1_case["case_id"], group_id[:20],
+                            "B1 case %s indexed in SCRAG (group=%s)",
+                            final_case_id, group_id[:20],
                         )
                 except Exception:
                     log.exception("B1 resolution check failed for case %s", b1_case["case_id"])

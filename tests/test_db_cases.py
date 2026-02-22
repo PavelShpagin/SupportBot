@@ -111,6 +111,7 @@ class FakeDB:
                 evidence_image_paths_json TEXT,
                 in_rag INTEGER NOT NULL DEFAULT 0,
                 closed_emoji TEXT,
+                embedding_json TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
@@ -351,3 +352,172 @@ class TestConfirmCasesByEvidenceTs:
 
         case = db.fetch_case("c1")
         assert case["closed_emoji"] is None
+
+
+# ===========================================================================
+# Tests: semantic dedup helpers (_cosine_similarity, store_case_embedding,
+#        find_similar_case, merge_case, archive_case)
+# ===========================================================================
+
+# Fake embeddings: unit vectors in different "directions" (using sparse 4-d vectors
+# for simplicity — real embeddings are 768-d but the math is identical)
+import math as _math
+
+def _unit(v):
+    mag = _math.sqrt(sum(x*x for x in v))
+    return [x/mag for x in v]
+
+# Two vectors for the SAME problem (high cosine similarity ~0.999)
+GPS_EMB_A = _unit([1.0, 0.0, 0.05, 0.0])   # "GPS not working — tracking off"
+GPS_EMB_B = _unit([0.99, 0.0, 0.06, 0.0])  # "GPS broken — needs tracking enable"
+# Vector for a completely different problem (low similarity ~0.0)
+FROST_EMB = _unit([0.0, 1.0, 0.0, 0.05])   # "Drone froze in cold weather"
+
+
+class TestCosineSimAndHelpers:
+
+    def test_identical_vectors_give_1(self):
+        from app.db.queries_mysql import _cosine_similarity
+        v = [0.1, 0.9, 0.3]
+        assert abs(_cosine_similarity(v, v) - 1.0) < 1e-9
+
+    def test_orthogonal_vectors_give_0(self):
+        from app.db.queries_mysql import _cosine_similarity
+        assert abs(_cosine_similarity([1, 0], [0, 1])) < 1e-9
+
+    def test_similar_gps_vectors_above_threshold(self):
+        from app.db.queries_mysql import _cosine_similarity
+        sim = _cosine_similarity(GPS_EMB_A, GPS_EMB_B)
+        assert sim > 0.85, f"Expected GPS vectors to be similar, got {sim:.4f}"
+
+    def test_different_problem_vectors_below_threshold(self):
+        from app.db.queries_mysql import _cosine_similarity
+        sim = _cosine_similarity(GPS_EMB_A, FROST_EMB)
+        assert sim < 0.5, f"Expected different problems to be dissimilar, got {sim:.4f}"
+
+
+class TestSemanticDedup:
+
+    def _insert_with_embedding(self, db: FakeDB, *, case_id, group_id="g1",
+                                status="solved", title, embedding):
+        from app.db.queries_mysql import store_case_embedding
+        _upsert(db, case_id=case_id, group_id=group_id, status=status,
+                problem_title=title)
+        store_case_embedding(db, case_id, embedding)
+
+    def test_find_similar_returns_match_above_threshold(self):
+        from app.db.queries_mysql import find_similar_case
+        db = FakeDB()
+        self._insert_with_embedding(db, case_id="gps1", title="GPS issue", embedding=GPS_EMB_A)
+
+        result = find_similar_case(db, group_id="g1", embedding=GPS_EMB_B, threshold=0.85)
+        assert result == "gps1"
+
+    def test_find_similar_returns_none_below_threshold(self):
+        from app.db.queries_mysql import find_similar_case
+        db = FakeDB()
+        self._insert_with_embedding(db, case_id="gps1", title="GPS issue", embedding=GPS_EMB_A)
+
+        # Frost is unrelated — should not match GPS
+        result = find_similar_case(db, group_id="g1", embedding=FROST_EMB, threshold=0.85)
+        assert result is None
+
+    def test_find_similar_ignores_archived_cases(self):
+        from app.db.queries_mysql import find_similar_case, store_case_embedding
+        db = FakeDB()
+        self._insert_with_embedding(db, case_id="gps_arch", title="GPS issue", embedding=GPS_EMB_A)
+        db._conn.execute("UPDATE cases SET status='archived' WHERE case_id='gps_arch'")
+        db._conn.commit()
+
+        result = find_similar_case(db, group_id="g1", embedding=GPS_EMB_B, threshold=0.85)
+        assert result is None
+
+    def test_find_similar_excludes_specific_case_id(self):
+        """exclude_case_id prevents self-match during B1 promotion."""
+        from app.db.queries_mysql import find_similar_case
+        db = FakeDB()
+        self._insert_with_embedding(db, case_id="gps1", title="GPS issue", embedding=GPS_EMB_A)
+
+        # Exclude the only match — should return None
+        result = find_similar_case(db, group_id="g1", embedding=GPS_EMB_B,
+                                   threshold=0.85, exclude_case_id="gps1")
+        assert result is None
+
+    def test_find_similar_status_filter_solved_only(self):
+        """statuses=['solved'] must not match open cases."""
+        from app.db.queries_mysql import find_similar_case
+        db = FakeDB()
+        self._insert_with_embedding(db, case_id="gps_open", title="GPS issue",
+                                    status="open", embedding=GPS_EMB_A)
+
+        result = find_similar_case(db, group_id="g1", embedding=GPS_EMB_B,
+                                   threshold=0.85, statuses=["solved"])
+        assert result is None
+
+    def test_find_similar_picks_closest_of_two_candidates(self):
+        """When two cases are similar, the closer one is returned."""
+        from app.db.queries_mysql import find_similar_case
+        db = FakeDB()
+        gps_close = _unit([1.0, 0.0, 0.01, 0.0])   # very close to GPS_EMB_B
+        gps_far   = _unit([0.88, 0.0, 0.47, 0.0])  # still > 0.85 but farther
+        self._insert_with_embedding(db, case_id="close", title="GPS A", embedding=gps_close)
+        self._insert_with_embedding(db, case_id="far",   title="GPS B", embedding=gps_far)
+
+        result = find_similar_case(db, group_id="g1", embedding=GPS_EMB_B, threshold=0.85)
+        assert result == "close"
+
+    def test_merge_case_updates_content_preserves_title(self):
+        from app.db.queries_mysql import merge_case
+        db = FakeDB()
+        _upsert(db, case_id="orig", problem_title="GPS issue",
+                problem_summary="old summary", solution_summary="old sol")
+
+        merge_case(db, target_case_id="orig", status="solved",
+                   problem_summary="new summary", solution_summary="new sol",
+                   tags=["tag1"], evidence_ids=[], evidence_image_paths=[])
+
+        case = db.fetch_case("orig")
+        assert case["problem_title"] == "GPS issue"   # title preserved
+        assert case["problem_summary"] == "new summary"
+        assert case["solution_summary"] == "new sol"
+        assert case["in_rag"] == 0  # reset for re-indexing
+
+    def test_archive_case_sets_archived_status(self):
+        from app.db.queries_mysql import archive_case
+        db = FakeDB()
+        _upsert(db, case_id="c1", problem_title="GPS issue", status="open")
+        archive_case(db, "c1")
+        assert db.fetch_case("c1")["status"] == "archived"
+
+    def test_semantic_dedup_full_flow_three_duplicates(self):
+        """Simulate extracting 3 semantically similar case blocks → only 1 case in DB."""
+        from app.db.queries_mysql import find_similar_case, merge_case, store_case_embedding
+
+        db = FakeDB()
+        # Slightly varied embeddings for the same GPS problem
+        embs = [
+            _unit([1.00, 0.0, 0.05, 0.0]),
+            _unit([0.99, 0.0, 0.06, 0.0]),
+            _unit([0.98, 0.0, 0.07, 0.0]),
+        ]
+        titles = [
+            "GPS не працює на дроні",
+            "Не працює GPS: потрібна допомога",
+            "Проблема з GPS на дроні",
+        ]
+
+        for i, (emb, title) in enumerate(zip(embs, titles)):
+            similar = find_similar_case(db, group_id="g1", embedding=emb, threshold=0.85)
+            if similar:
+                merge_case(db, target_case_id=similar, status="solved",
+                           problem_summary=f"summary {i}", solution_summary=f"sol {i}",
+                           tags=[], evidence_ids=[], evidence_image_paths=[])
+                store_case_embedding(db, similar, emb)
+            else:
+                _upsert(db, case_id=f"c{i}", group_id="g1", problem_title=title,
+                        status="solved", problem_summary=f"summary {i}")
+                store_case_embedding(db, f"c{i}", emb)
+
+        assert db.count_cases() == 1, (
+            f"Expected 1 case after semantic dedup, got {db.count_cases()}"
+        )

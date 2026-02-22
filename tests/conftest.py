@@ -40,6 +40,8 @@ _SIGNAL_INGEST_TESTS = {
 _SIGNAL_BOT_DB_TESTS = {
     "TestUpsertCase",
     "TestConfirmCasesByEvidenceTs",
+    "TestCosineSimAndHelpers",
+    "TestSemanticDedup",
 }
 
 # ---------------------------------------------------------------------------

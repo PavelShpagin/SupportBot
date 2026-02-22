@@ -86,7 +86,7 @@ class FakeDB:
                 case_id TEXT PRIMARY KEY, group_id TEXT NOT NULL, status TEXT NOT NULL,
                 problem_title TEXT NOT NULL, problem_summary TEXT NOT NULL,
                 solution_summary TEXT, tags_json TEXT, evidence_image_paths_json TEXT,
-                in_rag INTEGER NOT NULL DEFAULT 0, closed_emoji TEXT,
+                in_rag INTEGER NOT NULL DEFAULT 0, closed_emoji TEXT, embedding_json TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
@@ -144,6 +144,7 @@ def _make_llm_client(api_key, model):
     settings = MagicMock()
     settings.openai_api_key = api_key
     settings.model_case = model
+    settings.embedding_model = os.getenv("EMBEDDING_MODEL", "gemini-embedding-001")
     return LLMClient(settings)
 
 
@@ -173,7 +174,7 @@ class TestPipelineE2E:
         group_id = data["group_id"]
 
         from ingest.main import _chunk_messages, _extract_case_blocks
-        from app.db.queries_mysql import upsert_case
+        from app.db.queries_mysql import upsert_case, find_similar_case, merge_case, store_case_embedding
 
         oc     = _make_openai_client(api_key)
         llm    = _make_llm_client(api_key, model)
@@ -207,23 +208,43 @@ class TestPipelineE2E:
                     if m:
                         evidence_ids.append(m.group(1))
 
-            case_id = uuid.uuid4().hex
-            final_id, created = upsert_case(
-                db,
-                case_id=case_id,
-                group_id=group_id,
-                status=case.status,
-                problem_title=case.problem_title,
-                problem_summary=case.problem_summary,
-                solution_summary=case.solution_summary or "",
-                tags=case.tags,
-                evidence_ids=evidence_ids,
-                evidence_image_paths=[],
-            )
-            if created:
-                inserted += 1
-            else:
+            # Semantic dedup: embed problem and find similar existing case
+            embed_text = f"{case.problem_title}\n{case.problem_summary}"
+            dedup_embedding = llm.embed(text=embed_text)
+            similar_id = find_similar_case(db, group_id=group_id, embedding=dedup_embedding)
+
+            if similar_id:
+                merge_case(
+                    db,
+                    target_case_id=similar_id,
+                    status=case.status,
+                    problem_summary=case.problem_summary,
+                    solution_summary=case.solution_summary or "",
+                    tags=case.tags,
+                    evidence_ids=evidence_ids,
+                    evidence_image_paths=[],
+                )
+                store_case_embedding(db, similar_id, dedup_embedding)
                 updated += 1
+            else:
+                case_id = uuid.uuid4().hex
+                final_id, created = upsert_case(
+                    db,
+                    case_id=case_id,
+                    group_id=group_id,
+                    status=case.status,
+                    problem_title=case.problem_title,
+                    problem_summary=case.problem_summary,
+                    solution_summary=case.solution_summary or "",
+                    tags=case.tags,
+                    evidence_ids=evidence_ids,
+                    evidence_image_paths=[],
+                )
+                store_case_embedding(db, final_id, dedup_embedding)
+                if created:
+                    inserted += 1
+                else:
+                    updated += 1
 
         # ── Phase 3: report ───────────────────────────────────────────────
         final_cases = db.all_cases()
@@ -231,11 +252,11 @@ class TestPipelineE2E:
         with capsys.disabled():
             print(f"\n{'='*65}")
             print(f"PIPELINE RESULT: {len(messages)} messages → {len(chunks)} chunk(s)")
-            print(f"  Raw blocks extracted : {len(raw_blocks)}")
-            print(f"  Skipped (keep=False) : {skipped}")
-            print(f"  Inserted (new)       : {inserted}")
-            print(f"  Updated (dedup)      : {updated}")
-            print(f"  FINAL UNIQUE CASES   : {len(final_cases)}")
+            print(f"  Raw blocks extracted  : {len(raw_blocks)}")
+            print(f"  Skipped (keep=False)  : {skipped}")
+            print(f"  Inserted (new)        : {inserted}")
+            print(f"  Semantic-merged       : {updated}")
+            print(f"  FINAL UNIQUE CASES    : {len(final_cases)}")
             print(f"{'='*65}")
             for i, c in enumerate(final_cases, 1):
                 emoji = f" [{c['closed_emoji']}]" if c.get("closed_emoji") else ""
@@ -247,6 +268,10 @@ class TestPipelineE2E:
         assert len(raw_blocks) >= 1, "No case blocks extracted from 105 messages"
         assert len(final_cases) >= 1, "No cases survived into DB"
         assert len(final_cases) < len(raw_blocks), (
-            f"Dedup had no effect: {len(final_cases)} cases == {len(raw_blocks)} raw blocks. "
-            f"Expected dedup to reduce count."
+            f"Dedup had no effect: {len(final_cases)} cases == {len(raw_blocks)} raw blocks."
+        )
+        # The fixture has ~3 distinct problems; semantic dedup should reduce to ≤ 6
+        assert len(final_cases) <= 6, (
+            f"Expected ≤6 semantically unique cases from this fixture (3 real problems), "
+            f"got {len(final_cases)}. Check threshold or embedding quality."
         )

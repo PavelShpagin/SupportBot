@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import math
 import uuid
 from dataclasses import dataclass
 from datetime import datetime
@@ -1276,3 +1277,144 @@ def confirm_cases_by_evidence_ts(
             confirmed += cur.rowcount
         conn.commit()
         return confirmed
+
+
+# ---------------------------------------------------------------------------
+# Semantic deduplication helpers
+# ---------------------------------------------------------------------------
+
+def _cosine_similarity(a: List[float], b: List[float]) -> float:
+    dot = sum(x * y for x, y in zip(a, b))
+    mag_a = math.sqrt(sum(x * x for x in a))
+    mag_b = math.sqrt(sum(x * x for x in b))
+    if mag_a == 0.0 or mag_b == 0.0:
+        return 0.0
+    return dot / (mag_a * mag_b)
+
+
+def store_case_embedding(db: MySQL, case_id: str, embedding: List[float]) -> None:
+    """Persist the embedding vector for a case (used for semantic dedup on next ingest)."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            "UPDATE cases SET embedding_json = %s WHERE case_id = %s",
+            (json.dumps(embedding), case_id),
+        )
+        conn.commit()
+
+
+def find_similar_case(
+    db: MySQL,
+    *,
+    group_id: str,
+    embedding: List[float],
+    threshold: float = 0.85,
+    exclude_case_id: Optional[str] = None,
+    statuses: Optional[List[str]] = None,
+) -> Optional[str]:
+    """Return the case_id of the most semantically similar case in this group, or None.
+
+    Args:
+        statuses: if provided, only consider cases with these statuses (e.g. ['solved']).
+                  Default: all non-archived cases.
+        exclude_case_id: skip this case_id (used to avoid self-match on promotion).
+    """
+    with db.connection() as conn:
+        cur = conn.cursor()
+        if statuses:
+            placeholders = ", ".join(["%s"] * len(statuses))
+            cur.execute(
+                f"""
+                SELECT case_id, embedding_json FROM cases
+                WHERE group_id = %s
+                  AND status IN ({placeholders})
+                  AND embedding_json IS NOT NULL
+                """,
+                (group_id, *statuses),
+            )
+        else:
+            cur.execute(
+                """
+                SELECT case_id, embedding_json FROM cases
+                WHERE group_id = %s
+                  AND status != 'archived'
+                  AND embedding_json IS NOT NULL
+                """,
+                (group_id,),
+            )
+        rows = cur.fetchall()
+
+    best_id: Optional[str] = None
+    best_sim = threshold  # strict: must *exceed* threshold
+
+    for (cid, emb_json) in rows:
+        if exclude_case_id and cid == exclude_case_id:
+            continue
+        try:
+            stored = json.loads(emb_json)
+        except Exception:
+            continue
+        sim = _cosine_similarity(embedding, stored)
+        if sim > best_sim:
+            best_sim = sim
+            best_id = cid
+
+    return best_id
+
+
+def merge_case(
+    db: MySQL,
+    *,
+    target_case_id: str,
+    status: str,
+    problem_summary: str,
+    solution_summary: str,
+    tags: List[str],
+    evidence_ids: List[str],
+    evidence_image_paths: List[str],
+) -> None:
+    """Overwrite an existing case's content (semantic merge). Does not touch problem_title."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            """
+            UPDATE cases
+            SET status = %s,
+                problem_summary = %s,
+                solution_summary = %s,
+                tags_json = %s,
+                evidence_image_paths_json = %s,
+                in_rag = 0,
+                updated_at = NOW()
+            WHERE case_id = %s
+            """,
+            (
+                status,
+                problem_summary,
+                solution_summary,
+                json.dumps(tags, ensure_ascii=False),
+                json.dumps(evidence_image_paths, ensure_ascii=False),
+                target_case_id,
+            ),
+        )
+        cur.execute("DELETE FROM case_evidence WHERE case_id = %s", (target_case_id,))
+        for mid in evidence_ids:
+            try:
+                cur.execute(
+                    "INSERT INTO case_evidence(case_id, message_id) VALUES(%s, %s)",
+                    (target_case_id, mid),
+                )
+            except Exception:
+                pass
+        conn.commit()
+
+
+def archive_case(db: MySQL, case_id: str) -> None:
+    """Archive a single case (e.g. an open case that got merged into a solved one)."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            "UPDATE cases SET status = 'archived', updated_at = NOW() WHERE case_id = %s",
+            (case_id,),
+        )
+        conn.commit()
