@@ -369,7 +369,6 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
     """
     from app.db.queries_mysql import (
         set_admin_lang,
-        cancel_pending_history_jobs,
         cancel_all_history_jobs_for_admin,
         delete_admin_session,
     )
@@ -484,26 +483,14 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
             signal.send_onboarding_prompt(recipient=admin_id, lang=lang)
         return
     
-    # If admin sends a new message while awaiting QR scan:
-    # - same group name → just say "still processing", avoid duplicate QR flow
-    # - different group name → cancel current job and restart with new name
+    # Any message while a job is running cancels it and restarts.
+    # This covers both "same group name sent again" and "different group name".
     if session is not None and session.state == "awaiting_qr_scan" and session.pending_token:
-        same_group = (
-            session.pending_group_name
-            and text.lower().strip() == session.pending_group_name.lower().strip()
+        log.info(
+            "Admin %s sent message while job is running — cancelling job %s and restarting",
+            admin_id, session.pending_token,
         )
-        if same_group:
-            log.info("Admin %s resent same group name while awaiting QR scan — ignoring duplicate", admin_id)
-            wait_msg = (
-                f'QR-код для групи "{session.pending_group_name}" вже генерується. Зачекайте, будь ласка.'
-                if lang == "uk"
-                else f'QR code for group "{session.pending_group_name}" is already being generated. Please wait.'
-            )
-            _send_direct_or_cleanup(admin_id, wait_msg)
-            return
-        log.info("Admin %s sent new group name while awaiting QR scan, cancelling pending job", admin_id)
-        cancel_pending_history_jobs(db, session.pending_token)
-        # Reset state and continue to search for new group
+        cancel_all_history_jobs_for_admin(db, admin_id)
         set_admin_awaiting_group_name(db, admin_id)
     
     # Try to find group by name
@@ -1192,7 +1179,7 @@ def history_qr_code(req: HistoryQrCodeRequest) -> dict:
                 "1. Відкрийте Signal на телефоні\n"
                 "2. Налаштування → Пов'язані пристрої → Додати пристрій\n"
                 "3. Відскануйте QR-код\n\n"
-                "Очікую сканування (2 хв)..."
+                "Очікую сканування (5 хв)..."
             )
         else:
             caption = (
