@@ -30,6 +30,11 @@ _SIGNAL_DESKTOP_TESTS = {
     "TestAttachmentEndpoint",
     "TestDbReaderAttachmentParsing",
 }
+# Tests that manage their own sys.path (signal-ingest); the autouse fixture leaves them alone
+_SIGNAL_INGEST_TESTS = {
+    "TestChunkMessages",
+    "TestCaseExtraction",
+}
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -89,7 +94,11 @@ def _isolate_service_namespace(request):
     """
     class_name = request.node.cls.__name__ if request.node.cls else None
 
-    if class_name in _SIGNAL_BOT_TESTS:
+    if class_name in _SIGNAL_INGEST_TESTS:
+        # signal-ingest tests manage their own sys.path; nothing to do here
+        yield
+        return
+    elif class_name in _SIGNAL_BOT_TESTS:
         _clear_app_modules()
         _prioritize("signal-bot")
         # signal-bot/app/main.py calls load_settings() and creates adapters at import time

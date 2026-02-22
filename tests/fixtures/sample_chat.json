@@ -1,0 +1,845 @@
+{
+  "group_id": "1fWBz1RwCF0B/wGHfNMER4NkWBJPYvjGCv2kXsBJTok=",
+  "messages": [
+    {
+      "ts": 1771097595279,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "В мене не працює GPS на дроні, допоможіть!",
+      "id": "019c86ce-80ac-7d3c-b1c0-aaf092d079f5",
+      "reactions": 0
+    },
+    {
+      "ts": 1771097600822,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "Так, просто в налаштуваннях ствбх зайди \"налаштування\"->\"tracking\"->\"on\"",
+      "id": "019c86ce-80ad-790f-99ab-b875e68cde6f",
+      "reactions": 0
+    },
+    {
+      "ts": 1771097606043,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "О, дякую велике!",
+      "id": "019c86ce-80ae-770c-b853-a65d29331f0e",
+      "reactions": 0
+    },
+    {
+      "ts": 1771097612065,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "Привіт",
+      "id": "019c86ce-80af-796b-a9a8-48b9ca3203ca",
+      "reactions": 0
+    },
+    {
+      "ts": 1771097617113,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "в мене замерз дрон, що робити?",
+      "id": "019c86ce-80b0-7dd7-9672-af0fd1377db9",
+      "reactions": 0
+    },
+    {
+      "ts": 1771097622423,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "Використовуй термосумку",
+      "id": "019c86ce-80b1-798a-9568-8735950d0068",
+      "reactions": 0
+    },
+    {
+      "ts": 1771097637394,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "вітаю, раніше(2міс тому) в records завантажити давало зіп файл зі стрімом а зараз .stabx, як отримати попередній варіант або розпакувати .stabx?",
+      "id": "019c86ce-80b2-7c7f-9f22-5d4cfe673c47",
+      "reactions": 0
+    },
+    {
+      "ts": 1771097641392,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "Це можна зробити тільки якщо передати нам лог, або дивитись на самій стабі",
+      "id": "019c86ce-80b3-7023-aadc-e68f48040aff",
+      "reactions": 0
+    },
+    {
+      "ts": 1771097909763,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "@admin",
+      "id": "019c86ce-80b5-7491-84d9-8399f2d46cb6",
+      "reactions": 0
+    },
+    {
+      "ts": 1771351852097,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "@",
+      "id": "019c86ce-8195-71ed-9344-13f4dfe84863",
+      "reactions": 0
+    },
+    {
+      "ts": 1771355130435,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "що робити, якщо не працює GPS?",
+      "id": "019c86ce-819a-7726-8516-85d80b997396",
+      "reactions": 0
+    },
+    {
+      "ts": 1771355156300,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "Перевірте, чи увімкнено функцію відстеження в налаштуваннях дрона. Перейдіть до розділу \"налаштування\" -> \"tracking\" та переконайтеся, що опція \"on\" активована. [http://localhost:3000/case/e3ea0c10751e4dfb969cbf73304d4426] [http://localhost:3000/case/dccd7f119e414f58aafccde918765b9e] [http://localhost:3000/case/38b4c162d7ea4973a81e767c21c27b79]",
+      "id": "019c86ce-819b-7532-8e91-21b2493bb6f6",
+      "reactions": 0
+    },
+    {
+      "ts": 1771355884568,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "що робити, якщо не працює GPS?",
+      "id": "019c86ce-819c-7231-8b0c-46efc7887dd2",
+      "reactions": 0
+    },
+    {
+      "ts": 1771355908441,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "Перевірте, чи увімкнено функцію відстеження в налаштуваннях дрона. Перейдіть до розділу \"налаштування\" -> \"tracking\" та переконайтеся, що опція \"on\" активована. [https://supportbot.info/case/e3ea0c10751e4dfb969cbf73304d4426]\\n[https://supportbot.info/case/dccd7f119e414f58aafccde918765b9e]\\n[https://supportbot.info/case/38b4c162d7ea4973a81e767c21c27b79]",
+      "id": "019c86ce-819d-7bd2-97c9-5e940c35f705",
+      "reactions": 0
+    },
+    {
+      "ts": 1771357686569,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "@",
+      "id": "019c86ce-81a1-7e01-b4f8-e6179b0605da",
+      "reactions": 0
+    },
+    {
+      "ts": 1771357822635,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "допоможіть, заерзає дрон",
+      "id": "019c86ce-81a2-76c4-92cc-356ef6db55bb",
+      "reactions": 0
+    },
+    {
+      "ts": 1771357854287,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "Знайдено декілька схожих випадків, коли користувачі повідомляли про замерзання дрона. Ось посилання на вирішення з минулих випадків: [https://supportbot.info/case/7a81c966a0204ead8a27b7e5fe169082], [https://supportbot.info/case/1853c53c4755454a892189582014ccaa], [https://supportbot.info/case/404c44b0fc834ce280c618a4e65bf59d].",
+      "id": "019c86ce-81a3-76e9-8927-e73fa4e885ea",
+      "reactions": 0
+    },
+    {
+      "ts": 1771358769238,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "у мене не працює GPS???",
+      "id": "019c86ce-81a4-7b46-826a-3f48c39aa0f1",
+      "reactions": 0
+    },
+    {
+      "ts": 1771358792401,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "Для вирішення проблеми з GPS на вашому дроні, будь ласка, перевірте налаштування відстеження. Перейдіть до розділу \"налаштування\" -> \"tracking\" та переконайтеся, що опція \"on\" активована. [https://supportbot.info/case/e24b2bd696144e37af73f744cafadeed], [https://supportbot.info/case/e3ea0c10751e4dfb969cbf73304d4426], [https://supportbot.info/case/38b4c162d7ea4973a81e767c21c27b79]",
+      "id": "019c86ce-81a5-7d86-9d21-c0479225e7b6",
+      "reactions": 0
+    },
+    {
+      "ts": 1771359174430,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "у мене не працює GPS???",
+      "id": "019c86ce-81a6-77e5-a20d-5b3ba32bb763",
+      "reactions": 0
+    },
+    {
+      "ts": 1771359199890,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "Для вирішення проблеми з GPS на вашому дроні, будь ласка, перевірте наступне:\\n\\nПереконайтеся, що функцію відстеження увімкнено в налаштуваннях дрона. Перейдіть до розділу \"налаштування\" -> \"tracking\" та переконайтеся, що опція \"on\" активована. [https://supportbot.info/case/e24b2bd696144e37af73f744cafadeed]",
+      "id": "019c86ce-81a7-7f4f-a79e-7b28880ea6fb",
+      "reactions": 0
+    },
+    {
+      "ts": 1771360698520,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "@",
+      "id": "019c86ce-81aa-785a-b11c-751c1099ab28",
+      "reactions": 0
+    },
+    {
+      "ts": 1771360832655,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "замерз дрон -- є поради?",
+      "id": "019c86ce-81ab-7956-9992-f729131d332a",
+      "reactions": 0
+    },
+    {
+      "ts": 1771360855922,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "Використовуйте термосумку для вирішення проблеми з замерзлим дроном. [https://supportbot.info/case/c01d5547b91f48bf84c4845559277216]",
+      "id": "019c86ce-81ac-7cb5-b603-dd25f46e5c34",
+      "reactions": 0
+    },
+    {
+      "ts": 1771362132194,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "@",
+      "id": "019c86ce-81b0-7109-a24a-d16ef8b60437",
+      "reactions": 0
+    },
+    {
+      "ts": 1771362153675,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "@",
+      "id": "019c86ce-81b1-7982-bc50-1d13b3b49bad",
+      "reactions": 0
+    },
+    {
+      "ts": 1771362289822,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "у мене не працює GPS???",
+      "id": "019c86ce-81b2-7be2-b8a8-cfc5ebd99acc",
+      "reactions": 0
+    },
+    {
+      "ts": 1771362319845,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "Зайдіть в налаштування, виберіть розділ \"tracking\" та увімкніть опцію \"on\". [https://supportbot.info/case/e24b2bd696144e37af73f744cafadeed]",
+      "id": "019c86ce-81b3-779b-a256-dfe335debdb5",
+      "reactions": 0
+    },
+    {
+      "ts": 1771362886240,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "@",
+      "id": "019c86ce-81b6-7cff-8257-9d1d1ac29ddb",
+      "reactions": 0
+    },
+    {
+      "ts": 1771362910893,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "@",
+      "id": "019c86ce-81b7-764b-832b-1fb2cb1308c2",
+      "reactions": 0
+    },
+    {
+      "ts": 1771363437803,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "замерз дрон :((",
+      "id": "019c86ce-81b9-742a-b2c9-517429ed6ebf",
+      "reactions": 0
+    },
+    {
+      "ts": 1771363462144,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "Використовуйте термосумку для вирішення проблеми з замерзлим дроном. [https://supportbot.info/case/66a783ca995a492a9cf3b0ff6b8ff77d]",
+      "id": "019c86ce-81ba-7837-993a-5667cb0dd500",
+      "reactions": 0
+    },
+    {
+      "ts": 1771363778462,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "хелпаніть, GPS не работає",
+      "id": "019c86ce-81bc-784b-bc22-8652f7907ed8",
+      "reactions": 0
+    },
+    {
+      "ts": 1771416342752,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "що робити -- замерз дрончик",
+      "id": "019c86ce-81ca-7133-bcb6-a5cc3741bbdb",
+      "reactions": 0
+    },
+    {
+      "ts": 1771417330699,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "друзі, GPS не працює!",
+      "id": "019c86ce-81cc-75b7-92ad-2af31fe32a60",
+      "reactions": 0
+    },
+    {
+      "ts": 1771446564019,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "замерз дрон, хелп?",
+      "id": "019c86ce-81da-74e1-9379-e1dd9e49aef7",
+      "reactions": 0
+    },
+    {
+      "ts": 1771446847192,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "замерз дрон, хелп?\\n3m",
+      "id": "019c86ce-81db-7720-b940-e8dc5a1c2188",
+      "reactions": 0
+    },
+    {
+      "ts": 1771446905353,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "Unfortunately, I don't have specific troubleshooting steps for a frozen drone. Flying in cold temperatures can impact drone performance. Consider bringing the drone inside to warm up gradually.",
+      "id": "019c86ce-81dc-7135-8d29-d569017ce5fc",
+      "reactions": 0
+    },
+    {
+      "ts": 1771447137175,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "замерз дрон, хелп?",
+      "id": "019c86ce-81dd-7783-a895-dfd7ba338294",
+      "reactions": 0
+    },
+    {
+      "ts": 1771500821389,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "GPS заглох :((",
+      "id": "019c86ce-8209-7824-a924-b9d93decf213",
+      "reactions": 0
+    },
+    {
+      "ts": 1771500904506,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "@ Потребує уваги адміністратора.",
+      "id": "019c86ce-820a-71d2-af58-395475d22dd8",
+      "reactions": 0
+    },
+    {
+      "ts": 1771505546040,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "замерз дрон, хелп?",
+      "id": "019c86ce-8214-737a-8f78-546b243e36ac",
+      "reactions": 0
+    },
+    {
+      "ts": 1771505664757,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "Використовуйте термосумку для захисту дрона від замерзання. https://supportbot.info/case/55ec3a7c114e43e08fa1fe3505200f5f",
+      "id": "019c86ce-8215-7553-92d9-ddc7a85be1c9",
+      "reactions": 0
+    },
+    {
+      "ts": 1771510547254,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "GPS заглох :((",
+      "id": "019c86ce-8222-70bb-883f-2c8b88ae3694",
+      "reactions": 0
+    },
+    {
+      "ts": 1771512319921,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "GPS заглох :((",
+      "id": "019c86ce-8225-71c7-8323-ed7c77abb996",
+      "reactions": 0
+    },
+    {
+      "ts": 1771512354851,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "@ Потребує уваги адміністратора.",
+      "id": "019c86ce-8226-7849-bd6c-7c78e8ef9b09",
+      "reactions": 0
+    },
+    {
+      "ts": 1771512399822,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "замерз дрон, хелп?",
+      "id": "019c86ce-8227-720a-9ef0-47266dc82a6d",
+      "reactions": 0
+    },
+    {
+      "ts": 1771512456031,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "@ Потребує уваги адміністратора.",
+      "id": "019c86ce-8228-72db-abe3-4e2a60d8e4e2",
+      "reactions": 0
+    },
+    {
+      "ts": 1771512897375,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "замерз дрон, хелп?",
+      "id": "019c86ce-8229-71f6-9e80-c0252a1c7ef0",
+      "reactions": 0
+    },
+    {
+      "ts": 1771512951743,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "Використовуйте термосумку, щоб запобігти замерзанню дрона. https://supportbot.info/case/9a453b99d6cb4ea78c7fdd84515f3921",
+      "id": "019c86ce-822a-74a8-a79c-8996dbb67f57",
+      "reactions": 0
+    },
+    {
+      "ts": 1771514282656,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "в records завантажити давало зіп файл зі стрімом а зараз .stabx, як отримати попередній варіант?",
+      "id": "019c86ce-822c-7d2d-9dda-3f99cbe49063",
+      "reactions": 0
+    },
+    {
+      "ts": 1771514376748,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "@ Потребує уваги адміністратора.",
+      "id": "019c86ce-822d-7d5b-9d65-5e89f639aabd",
+      "reactions": 0
+    },
+    {
+      "ts": 1771519769089,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "допоможіть, GPS зламався",
+      "id": "019c86ce-8233-7561-8458-26308411ab50",
+      "reactions": 0
+    },
+    {
+      "ts": 1771519853949,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "Спробуйте активувати функцію відстеження в налаштуваннях дрона: \"налаштування\" -> \"tracking\" -> \"on\". https://supportbot.info/case/4b7de43beeb942c6a6946c0aa5228f8e",
+      "id": "019c86ce-8234-72f9-836f-26bd2273f3cc",
+      "reactions": 0
+    },
+    {
+      "ts": 1771521125389,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "в records завантажити давало зіп файл зі стрімом а зараз .stabx, як отримати попередній варіант?",
+      "id": "019c86ce-8235-79c3-a7f6-d8d14188add5",
+      "reactions": 0
+    },
+    {
+      "ts": 1771521194087,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "@ Потребує уваги адміністратора.",
+      "id": "019c86ce-8236-7d20-84a3-9e1c0a6bf63f",
+      "reactions": 0
+    },
+    {
+      "ts": 1771529447857,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "вітаю, раніше(2міс тому) в records завантажити давало зіп файл зі стрімом а зараз .stabx, як отримати попередній варіант або розпакувати .stabx?",
+      "id": "019c86ce-8241-780a-b8db-5f5d86b0e390",
+      "reactions": 0
+    },
+    {
+      "ts": 1771529473322,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "Вітаю! Ми знаємо про цю проблему зі зміною формату файлів у records і вже працюємо над її вирішенням. Адміністратор зв'яжеться з вами найближчим часом. @",
+      "id": "019c86ce-8242-73b6-8ee6-f34747e1b922",
+      "reactions": 0
+    },
+    {
+      "ts": 1771530781541,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "вітаю, раніше(2міс тому) в records завантажити давало зіп файл зі стрімом а зараз .stabx, як отримати попередній варіант або розпакувати .stabx?",
+      "id": "019c86ce-8243-7c7d-9e7e-f0e21b8299b0",
+      "reactions": 0
+    },
+    {
+      "ts": 1771530816149,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "Ця проблема вже відстежується: https://supportbot.info/case/182f4a43887a4efc961fbc47a592967a @",
+      "id": "019c86ce-8244-7b04-b469-5fea99606abc",
+      "reactions": 0
+    },
+    {
+      "ts": 1771574494951,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "вітаю, раніше(2міс тому) в records завантажити давало зіп файл зі стрімом а зараз .stabx, як отримати попередній варіант або розпакувати .stabx?",
+      "id": "019c86ce-8255-7564-b8e2-eddc54feb43f",
+      "reactions": 0
+    },
+    {
+      "ts": 1771574564355,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "Передайте лог або перевірте інформацію безпосередньо на стабі. https://supportbot.info/case/b18f468942f945589064d2753c6d58fb",
+      "id": "019c86ce-8256-79de-aa1f-9c26e23b40c4",
+      "reactions": 0
+    },
+    {
+      "ts": 1771575708998,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "вітаю, раніше(2міс тому) в records завантажити давало зіп файл зі стрімом а зараз .stabx, як отримати попередній варіант або розпакувати .stabx?",
+      "id": "019c86ce-8259-7239-b58b-f0468d3fd4b2",
+      "reactions": 0
+    },
+    {
+      "ts": 1771575767900,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "Передайте лог або перевірте інформацію безпосередньо на стабі. https://supportbot.info/case/b18f468942f945589064d2753c6d58fb",
+      "id": "019c86ce-825a-7605-ba66-4dd78d032ce1",
+      "reactions": 0
+    },
+    {
+      "ts": 1771576873368,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "вітаю, раніше(2міс тому) в records завантажити давало зіп файл зі стрімом а зараз .stabx, як отримати попередній варіант або розпакувати .stabx?",
+      "id": "019c86ce-825b-7008-9411-74d1ae93f5e9",
+      "reactions": 0
+    },
+    {
+      "ts": 1771576965078,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "Для вирішення проблеми, будь ласка, надайте лог або перегляньте дані безпосередньо на стабі. [https://supportbot.info/case/154a2f9d2b1f4fb1a52770fbe9b1e87f]",
+      "id": "019c86ce-825c-7c55-886d-0a5c45839a98",
+      "reactions": 0
+    },
+    {
+      "ts": 1771578997831,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "вітаю, раніше(2міс тому) в records завантажити давало зіп файл зі стрімом а зараз .stabx, як отримати попередній варіант або розпакувати .stabx?\\n35m",
+      "id": "019c86ce-825e-732e-94b9-1780149fbf2e",
+      "reactions": 0
+    },
+    {
+      "ts": 1771579037061,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "Для вирішення проблеми необхідно надати лог або переглянути дані безпосередньо на стабі. [https://supportbot.info/case/a24ead30b7d54a2c96ab0aacdbd1dafc]",
+      "id": "019c86ce-825f-7eea-8c0f-8a19ddb31f6b",
+      "reactions": 0
+    },
+    {
+      "ts": 1771580347245,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "вітаю, раніше(2міс тому) в records завантажити давало зіп файл зі стрімом а зараз .stabx, як отримати попередній варіант або розпакувати .stabx?",
+      "id": "019c86ce-8260-72c1-ad9d-2b67821d5128",
+      "reactions": 0
+    },
+    {
+      "ts": 1771580411743,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "Для вирішення проблеми, надайте лог або перегляньте дані безпосередньо на стабі. [https://supportbot.info/case/a24ead30b7d54a2c96ab0aacdbd1dafc]",
+      "id": "019c86ce-8261-7cff-951a-51ffa5752b3f",
+      "reactions": 0
+    },
+    {
+      "ts": 1771581378372,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "вітаю, раніше(2міс тому) в records завантажити давало зіп файл зі стрімом а зараз .stabx, як отримати попередній варіант або розпакувати .stabx?",
+      "id": "019c86ce-8262-729e-901a-99439d0dc549",
+      "reactions": 0
+    },
+    {
+      "ts": 1771581443749,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "Для вирішення проблеми необхідно передати лог або переглянути інформацію безпосередньо на стабі. [https://supportbot.info/case/3e5dedf5c3e64a8d9d64360ef3a51055]",
+      "id": "019c86ce-8263-7986-a4d3-63cb8cc3ded6",
+      "reactions": 0
+    },
+    {
+      "ts": 1771582992930,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "вітаю, раніше(2міс тому) в records завантажити давало зіп файл зі стрімом а зараз .stabx, як отримати попередній варіант або розпакувати .stabx?",
+      "id": "019c86ce-8264-7490-8819-215dc8405ef7",
+      "reactions": 0
+    },
+    {
+      "ts": 1771583030308,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "Для вирішення проблеми необхідно надати лог або перевірити файл безпосередньо на стабі. [https://supportbot.info/case/977b1f956cdc4884bb0de2b1c9f03e2f]",
+      "id": "019c86ce-8265-7fda-8eea-6e57fada6c63",
+      "reactions": 0
+    },
+    {
+      "ts": 1771583521497,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "вітаю, раніше(2міс тому) в records завантажити давало зіп файл зі стрімом а зараз .stabx, як отримати попередній варіант або розпакувати .stabx?",
+      "id": "019c86ce-8266-795f-85f0-64888eebd540",
+      "reactions": 0
+    },
+    {
+      "ts": 1771583632133,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "Для вирішення проблеми необхідно надати лог або перевірити файл безпосередньо на стабі. [https://supportbot.info/case/977b1f956cdc4884bb0de2b1c9f03e2f]",
+      "id": "019c86ce-8267-7efd-9ed6-1746227ba7ee",
+      "reactions": 0
+    },
+    {
+      "ts": 1771584590124,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "вітаю, раніше(2міс тому) в records завантажити давало зіп файл зі стрімом а зараз .stabx, як отримати попередній варіант або розпакувати .stabx?",
+      "id": "019c86ce-8268-7305-83ba-9b6922b8eca1",
+      "reactions": 0
+    },
+    {
+      "ts": 1771584652886,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "Для отримання попереднього формату або розпакування .stabx файлу необхідно передати лог або дивитись на самій стабі. [https://supportbot.info/case/0aae15dfd2cf4fe194cdadb746a38583]",
+      "id": "019c86ce-8269-7229-a532-34b2fa36bc91",
+      "reactions": 0
+    },
+    {
+      "ts": 1771588067223,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "вітаю, раніше(2міс тому) в records завантажити давало зіп файл зі стрімом а зараз .stabx, як отримати попередній варіант або розпакувати .stabx?",
+      "id": "019c86ce-826d-7013-88f5-8c1ce8160495",
+      "reactions": 0
+    },
+    {
+      "ts": 1771588126962,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "Для вирішення проблеми з форматом файлу, передайте лог або перевірте інформацію безпосередньо на стабі. [https://supportbot.info/case/f3428d1dfe374caca09a19ac221c92c4]",
+      "id": "019c86ce-826e-725b-8da1-f68b96867f58",
+      "reactions": 0
+    },
+    {
+      "ts": 1771603999849,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "вітаю, раніше(2міс тому) в records завантажити давало зіп файл зі стрімом а зараз .stabx, як отримати попередній варіант або розпакувати .stabx?",
+      "id": "019c86ce-8277-7a55-a8c8-a64373ca84e3",
+      "reactions": 0
+    },
+    {
+      "ts": 1771604050476,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "Для вирішення проблеми необхідно передати лог або переглянути дані безпосередньо на стабі. @ https://supportbot.info/case/9aad4e8d083f4ad9ace9311435169193",
+      "id": "019c86ce-8278-7f95-8f2e-367b16c62bbf",
+      "reactions": 0
+    },
+    {
+      "ts": 1771669419706,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "вітаю, раніше(2міс тому) в records завантажити давало зіп файл зі стрімом а зараз .stabx, як отримати попередній варіант або розпакувати .stabx?",
+      "id": "019c86ce-82b2-77c0-a436-d9d1ff754006",
+      "reactions": 0
+    },
+    {
+      "ts": 1771669516362,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "Для вирішення проблеми необхідно передати лог або перевірити інформацію безпосередньо на стабі. @ https://supportbot.info/case/eb8bae086c0c4332835b6c3f0df4c861",
+      "id": "019c86ce-82b3-7658-8cc9-1a6f2b479ebc",
+      "reactions": 0
+    },
+    {
+      "ts": 1771684507780,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "вітаю, раніше(2міс тому) в records завантажити давало зіп файл зі стрімом а зараз .stabx, як отримати попередній варіант або розпакувати .stabx?",
+      "id": "019c86ce-82d1-71b8-b46b-b553d99db97e",
+      "reactions": 0
+    },
+    {
+      "ts": 1771684622145,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "Для вирішення проблеми необхідно передати лог або переглянути файл безпосередньо на стабі. @ https://supportbot.info/case/0675fc8b0f03469e84dce53c99fa8eac",
+      "id": "019c86ce-82d2-7867-83f7-0ded109baebc",
+      "reactions": 0
+    },
+    {
+      "ts": 1771684742189,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "GPS не працює, допоможіть!",
+      "id": "019c86ce-82d3-7e37-a4a8-096cabf448c1",
+      "reactions": 0
+    },
+    {
+      "ts": 1771684837563,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "Перейдіть в \"налаштування\" -> \"tracking\" -> \"on\", щоб увімкнути GPS. https://supportbot.info/case/853a60018aac4cb8abbccad81e93ac53",
+      "id": "019c86ce-82d4-7cd1-8ccb-34aa6721907b",
+      "reactions": 0
+    },
+    {
+      "ts": 1771684862536,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "замерз дрон :((((((",
+      "id": "019c86ce-82d5-7493-ae3d-fe7ee3ea24f3",
+      "reactions": 0
+    },
+    {
+      "ts": 1771684913606,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "Використовуйте термосумку для запобігання замерзанню дрона. https://supportbot.info/case/9b416777b61b481f8a1e2368ff592e53",
+      "id": "019c86ce-82d6-7e07-9f0f-ccfdc486776d",
+      "reactions": 0
+    },
+    {
+      "ts": 1771685191687,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "Що робити, якщо в мене згоріла батарейка для дрона?",
+      "id": "019c86ce-82d8-7e4d-8023-bf2e81e68096",
+      "reactions": 0
+    },
+    {
+      "ts": 1771685224919,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "@ Потребує уваги адміністратора.",
+      "id": "019c86ce-82d9-7406-a1f4-61e891f10f0b",
+      "reactions": 0
+    },
+    {
+      "ts": 1771685248278,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "Привіт всім",
+      "id": "019c86ce-82da-7358-bc0f-b387e2c7e00d",
+      "reactions": 0
+    },
+    {
+      "ts": 1771685348065,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "@ Потребує уваги адміністратора.",
+      "id": "019c86ce-82db-70c9-988d-36ffd3396088",
+      "reactions": 0
+    },
+    {
+      "ts": 1771685391489,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "щодо батарейки, заміни на LiPo",
+      "id": "019c86ce-82dc-7f29-875f-8b8c50f80575",
+      "reactions": 0
+    },
+    {
+      "ts": 1771685495259,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "я пробував, теж такі собі",
+      "id": "019c86ce-82dd-73e3-a4c1-45720780b236",
+      "reactions": 0
+    },
+    {
+      "ts": 1771685526744,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "ага, тоді спробуй RadioMaster 5000mah 2S Li-ion",
+      "id": "019c86ce-82de-7fc8-aa78-2c5554597866",
+      "reactions": 0
+    },
+    {
+      "ts": 1771685548145,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "Рекомендовано замінити батарейку на LiPo. https://supportbot.info/case/f6c4558a5a3b4e828a6b763b14a3b17a",
+      "id": "019c86ce-82df-749a-81f2-f1d992ad7d5a",
+      "reactions": 0
+    },
+    {
+      "ts": 1771685622141,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "@ Потребує уваги адміністратора.",
+      "id": "019c86ce-82e0-7a9c-a8e3-8d08d87e7c82",
+      "reactions": 0
+    },
+    {
+      "ts": 1771685726391,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "@ Потребує уваги адміністратора.",
+      "id": "019c86ce-82e2-78ac-ab1e-b8ac6bc1f180",
+      "reactions": 0
+    },
+    {
+      "ts": 1771703598852,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "Привіт всім",
+      "id": "019c86ce-8305-7480-8098-acb98e2a7530",
+      "reactions": 0
+    },
+    {
+      "ts": 1771704198355,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "Що робити, якщо в мене згоріла батарейка для дрона?",
+      "id": "019c86ce-8306-759a-813c-60dee8f35fa5",
+      "reactions": 0
+    },
+    {
+      "ts": 1771704223331,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "@ Потребує уваги адміністратора.",
+      "id": "019c86ce-8307-73c6-bb90-aed01eaf2063",
+      "reactions": 0
+    },
+    {
+      "ts": 1771704711210,
+      "sender": "fa1c8d3b9ba9ffb0",
+      "sender_name": null,
+      "body": "замерз дрон :((((((",
+      "id": "019c86ce-830b-752a-9f8e-57cbf2375a5d",
+      "reactions": 0
+    },
+    {
+      "ts": 1771704743039,
+      "sender": "a1b32086a587ad67",
+      "sender_name": null,
+      "body": "Для запобігання замерзанню дрона рекомендується використовувати термосумку. https://supportbot.info/case/26ff22c6874e48d6b505e81c2408bb86",
+      "id": "019c86ce-830c-7e77-9664-e3e28ba0f005",
+      "reactions": 0
+    }
+  ]
+}
