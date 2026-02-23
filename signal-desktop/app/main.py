@@ -581,6 +581,67 @@ async def get_attachment(path: str = Query(..., description="Relative attachment
     return Response(content=content, media_type=mime_type or "application/octet-stream")
 
 
+@app.post("/refresh-qr")
+async def refresh_qr():
+    """
+    Click the 'Refresh code' button in Signal Desktop to regenerate an expired QR code,
+    then return a fresh cropped screenshot.
+
+    Call this when the QR code has expired (screenshot is blank / user couldn't scan).
+    Signal Desktop automatically shows a 'Refresh code' button when the QR expires.
+    """
+    try:
+        devtools = await get_devtools()
+        if devtools.is_connected:
+            # Click any button whose visible text contains 'Refresh' (case-insensitive)
+            js = (
+                "(function(){"
+                "  var btns = Array.from(document.querySelectorAll('button'));"
+                "  var btn = btns.find(function(b){"
+                "    return (b.innerText||b.textContent||'').toLowerCase().includes('refresh');"
+                "  });"
+                "  if(btn){ btn.click(); return 'clicked'; }"
+                "  return 'not_found';"
+                "})()"
+            )
+            result = await devtools._send_command(
+                "Runtime.evaluate", {"expression": js, "returnByValue": True}
+            )
+            clicked = (result or {}).get("result", {}).get("value", "unknown")
+            log.info("Refresh QR click result: %s", clicked)
+        else:
+            log.warning("DevTools not connected; cannot click Refresh button")
+
+        # Wait for Signal Desktop to generate and render the new QR code
+        await asyncio.sleep(6)
+
+        # Take a fresh cropped screenshot and return it
+        result_sc = subprocess.run(
+            ["xwd", "-root", "-display", ":99"],
+            capture_output=True, timeout=10,
+        )
+        if result_sc.returncode != 0:
+            raise HTTPException(status_code=500, detail="Screenshot failed after QR refresh")
+
+        convert_result = subprocess.run(
+            ["convert", "xwd:-", "-crop", "300x300+140+247", "+repage",
+             "-threshold", "50%", "png:-"],
+            input=result_sc.stdout, capture_output=True, timeout=10,
+        )
+        if convert_result.returncode != 0:
+            raise HTTPException(status_code=500, detail="Convert failed after QR refresh")
+
+        return Response(content=convert_result.stdout, media_type="image/png")
+
+    except HTTPException:
+        raise
+    except subprocess.TimeoutExpired:
+        raise HTTPException(status_code=500, detail="Screenshot timed out")
+    except Exception as e:
+        log.exception("refresh-qr failed")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.post("/reset-poll-timestamp")
 async def reset_poll_timestamp(ts: int = Query(0, description="New timestamp to start from")):
     """Reset the poll timestamp (useful for re-ingesting history)."""
