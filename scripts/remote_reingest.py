@@ -113,6 +113,9 @@ def _chunk_messages(msgs, max_chars=12000, overlap=3):
         header = f"{sender} ts={ts} msg_id={mid}"
         if reactions > 0:
             header += f" reactions={reactions}"
+            rxn_emoji = m.get("reaction_emoji") or ""
+            if rxn_emoji:
+                header += f" reaction_emoji={rxn_emoji}"
         formatted.append(f"{header}\n{body}\n")
     chunks, cur_chunk = [], []
     for line in formatted:

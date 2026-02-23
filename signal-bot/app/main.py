@@ -1471,6 +1471,9 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
 
             # Detect emoji-confirmed cases: case_block header lines contain reactions=N
             emoji_confirmed = bool(re.search(r'\breactions=\d+', c.case_block))
+            # Extract the actual reaction emoji if present in header (reaction_emoji=<emoji>)
+            rxn_emoji_match = re.search(r'\breaction_emoji=(\S+)', c.case_block)
+            confirmed_emoji = rxn_emoji_match.group(1) if rxn_emoji_match else "👍"
 
             evidence_image_paths: List[str] = []
             for mid in evidence_ids:
@@ -1515,12 +1518,12 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
                 store_case_embedding(db, case_id, dedup_embedding)
                 action = "inserted" if created else "title-deduped"
 
-            # For emoji-confirmed cases set a generic closed_emoji if not already set by a live reaction
+            # For emoji-confirmed cases set closed_emoji if not already set by a live reaction
             if emoji_confirmed and case.status == "solved":
                 with db.connection() as _conn:
                     _conn.cursor().execute(
-                        "UPDATE cases SET closed_emoji = '👍' WHERE case_id = %s AND closed_emoji IS NULL",
-                        (case_id,),
+                        "UPDATE cases SET closed_emoji = %s WHERE case_id = %s AND closed_emoji IS NULL",
+                        (confirmed_emoji, case_id),
                     )
                     _conn.commit()
 

@@ -41,24 +41,22 @@ Return ONLY valid JSON with key:
   - case_block: string (the EXACT messages from the chunk that form this case, problem through resolution, preserving all header lines with msg_id)
 
 Rules:
-- Extract ONLY solved cases with a HUMAN-CONFIRMED working solution.
+- Extract ONLY solved cases with a confirmed working solution.
 - Do NOT extract open/unresolved issues, greetings, or off-topic messages.
-- Each case_block must include both the problem AND a human confirmation that it was resolved.
-- Preserve the original message headers (sender_hash ts=... msg_id=...) verbatim inside case_block — they are needed for evidence linking.
+- Each case_block must include both the problem and the confirmed solution.
+- Preserve the original message headers (sender_hash ts=... msg_id=...) verbatim inside case_block ? they are needed for evidence linking.
 - Do not paraphrase or summarize; copy the exact message lines.
 - If there are no solved cases, return {"cases": []}.
 
-CRITICAL — valid resolution signals (at least one REQUIRED):
-- reactions=N (N > 0) on a message — STRONGEST signal, always treat as confirmed resolved
-- Explicit human text confirmation AFTER a technical answer:
+Resolution signals (from strongest to weakest):
+- reactions=N (N > 0) on a technical answer message -- STRONG signal, treat as confirmed resolved
+- Text confirmation after a technical answer (any language):
   English: "thanks", "working", "works", "ok", "solved", "it worked", "fixed"
-  Ukrainian: "дякую", "працює", "вирішено", "ок", "заробило", "допомогло"
-  Russian: "спасибо", "заработало", "помогло"
+  Ukrainian: "\u0434\u044f\u043a\u0443\u044e", "\u043f\u0440\u0430\u0446\u044e\u0454", "\u0432\u0438\u0440\u0456\u0448\u0435\u043d\u043e", "\u043e\u043a", "\u0437\u0430\u0440\u0430\u0431\u043e\u0442\u0430\u043b\u043e"
+  Russian: "\u0441\u043f\u0430\u0441\u0438\u0431\u043e", "\u0437\u0430\u0440\u0430\u0431\u043e\u0442\u0430\u043b\u043e", "\u043f\u043e\u043c\u043e\u0433\u043b\u043e"
+- The conversation thread ends after a technical answer (no follow-up questions)
 
-CRITICAL — what does NOT count as resolution:
-- Silence or end of thread — a question with no follow-up is NOT solved
-- A person answering their own question without the questioner confirming it worked
-- One person suggesting a solution with no acknowledgement from the person who had the problem
+Be generous: if a technical answer has any positive reaction OR brief confirmation, treat as solved.
 """
 
 log = logging.getLogger(__name__)
@@ -317,6 +315,9 @@ def _chunk_messages(*, messages: List[dict], max_chars: int, overlap_messages: i
         header = f'{sender} ts={ts} msg_id={msg_id}'
         if reactions > 0:
             header += f' reactions={reactions}'
+            rxn_emoji = m.get("reaction_emoji") or ""
+            if rxn_emoji:
+                header += f' reaction_emoji={rxn_emoji}'
         formatted.append(f'{header}\n{text}\n')
     
     chunks: List[str] = []

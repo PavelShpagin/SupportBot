@@ -28,6 +28,7 @@ class SignalMessage:
     group_id: Optional[str] = None
     group_name: Optional[str] = None
     reactions: int = 0  # count of emoji reactions on this message
+    reaction_emoji: Optional[str] = None  # first/representative reaction emoji (if known)
     sender_name: Optional[str] = None  # display name from contacts
     # Attachment metadata parsed from the json column.
     # Each entry is a dict with keys: path (relative to Signal data dir),
@@ -289,14 +290,15 @@ def get_messages(
         
         rows = conn.execute(q, params).fetchall()
 
-        # Build a reactions-per-timestamp map.
+        # Build reactions maps: count and first emoji per message timestamp.
         # Signal Desktop stores reactions either in a separate 'reactions' table
         # OR embedded in the 'json' column of the messages table.
         reactions_by_ts: dict[int, int] = {}
+        emoji_by_ts: dict[int, str] = {}
         try:
             tables = {r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall()}
             
-            # Method 1: Try the reactions table
+            # Method 1: Try the reactions table (includes emoji column)
             if "reactions" in tables:
                 rxn_cols = _get_table_columns(conn, "reactions")
                 log.info("Reactions table columns: %s", rxn_cols)
@@ -306,11 +308,19 @@ def get_messages(
                     if conversation_id and "conversationId" in rxn_cols:
                         rxn_where = "WHERE conversationId = ?"
                         rxn_params = [conversation_id]
+                    has_emoji_col = "emoji" in rxn_cols
+                    emoji_sel = ", MIN(emoji)" if has_emoji_col else ""
                     rxn_rows = conn.execute(
-                        f"SELECT targetTimestamp, COUNT(*) FROM reactions {rxn_where} GROUP BY targetTimestamp",
+                        f"SELECT targetTimestamp, COUNT(*){emoji_sel} FROM reactions {rxn_where} GROUP BY targetTimestamp",
                         rxn_params,
                     ).fetchall()
-                    reactions_by_ts = {int(r[0]): int(r[1]) for r in rxn_rows if r[0] is not None}
+                    for r in rxn_rows:
+                        if r[0] is None:
+                            continue
+                        ts_val = int(r[0])
+                        reactions_by_ts[ts_val] = int(r[1])
+                        if has_emoji_col and r[2]:
+                            emoji_by_ts[ts_val] = str(r[2])
                     log.info("Found %d messages with reactions (from reactions table)", len(reactions_by_ts))
             
             # Method 2: Try the json column in messages table (newer Signal Desktop versions)
@@ -330,6 +340,9 @@ def get_messages(
                         rxns = msg_json.get("reactions", [])
                         if rxns and isinstance(rxns, list):
                             reactions_by_ts[ts_val] = len(rxns)
+                            first_emoji = rxns[0].get("emoji") if isinstance(rxns[0], dict) else None
+                            if first_emoji:
+                                emoji_by_ts[ts_val] = str(first_emoji)
                     except (json.JSONDecodeError, TypeError, ValueError):
                         continue
                 
@@ -385,6 +398,7 @@ def get_messages(
                     group_id=str(row[6]) if row[6] else None,
                     group_name=str(row[7]) if row[7] else None,
                     reactions=reactions_by_ts.get(ts, 0),
+                    reaction_emoji=emoji_by_ts.get(ts),
                     sender_name=sender_name,
                     attachments=attachments,
                 )

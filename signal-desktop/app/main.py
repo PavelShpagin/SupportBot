@@ -303,6 +303,7 @@ async def get_group_history(
                     "group_id": m.group_id,
                     "group_name": m.group_name,
                     "reactions": m.reactions,
+                    "reaction_emoji": m.reaction_emoji,
                     "attachments": m.attachments,
                 }
                 for m in msgs
