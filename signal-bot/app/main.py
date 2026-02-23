@@ -1272,26 +1272,25 @@ def history_link_result(req: HistoryLinkResultRequest) -> dict:
             try:
                 if req.success:
                     signal.send_success_message(recipient=admin_id, group_name=group_name, lang=lang)
+                    # Send metrics summary only on success
+                    if req.message_count is not None or req.cases_inserted is not None or req.note:
+                        if lang == "uk":
+                            summary = (
+                                f"Підсумок імпорту: повідомлень={req.message_count if req.message_count is not None else '?'}"
+                                f", кейсів додано={req.cases_inserted if req.cases_inserted is not None else '?'}."
+                            )
+                            if req.note:
+                                summary += f"\n{req.note}"
+                        else:
+                            summary = (
+                                f"Import summary: messages={req.message_count if req.message_count is not None else '?'}"
+                                f", cases_added={req.cases_inserted if req.cases_inserted is not None else '?'}."
+                            )
+                            if req.note:
+                                summary += f"\n{req.note}"
+                        _send_direct_or_cleanup(admin_id, summary)
                 else:
                     signal.send_failure_message(recipient=admin_id, group_name=group_name, lang=lang)
-
-                # Optional: send a short summary of what was actually imported.
-                if req.message_count is not None or req.cases_inserted is not None or req.note:
-                    if lang == "uk":
-                        summary = (
-                            f"Підсумок імпорту: повідомлень={req.message_count if req.message_count is not None else '?'}"
-                            f", кейсів додано={req.cases_inserted if req.cases_inserted is not None else '?'}."
-                        )
-                        if req.note:
-                            summary += f"\n{req.note}"
-                    else:
-                        summary = (
-                            f"Import summary: messages={req.message_count if req.message_count is not None else '?'}"
-                            f", cases_added={req.cases_inserted if req.cases_inserted is not None else '?'}."
-                        )
-                        if req.note:
-                            summary += f"\n{req.note}"
-                    _send_direct_or_cleanup(admin_id, summary)
             except Exception:
                 log.exception("Failed to send link-result notification to admin %s", admin_id)
 

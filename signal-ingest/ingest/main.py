@@ -117,18 +117,6 @@ def _get_desktop_screenshot(settings) -> bytes:
         raise RuntimeError(f"Failed to get screenshot: {e}")
 
 
-def _refresh_desktop_qr(settings) -> bytes:
-    """Click 'Refresh code' in Signal Desktop and return a fresh QR screenshot."""
-    url = settings.signal_desktop_url.rstrip("/") + "/refresh-qr"
-    try:
-        with httpx.Client(timeout=30) as client:
-            r = client.post(url)
-            r.raise_for_status()
-            return r.content
-    except Exception as e:
-        log.warning("QR refresh request failed: %s", e)
-        return b""
-
 
 def _fetch_attachment(settings, rel_path: str, max_bytes: int = 5_000_000) -> Optional[bytes]:
     """Fetch raw bytes for a Signal Desktop attachment by its relative path.
@@ -558,16 +546,12 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
 
         _notify_progress(settings=settings, token=token, progress_key="qr_sent")
 
-        # Step 2: Wait for user to scan QR code
+        # Step 2: Wait for user to scan QR code (QR expires after ~5 minutes)
         log.info("Waiting for user to scan QR code...")
-        max_wait_seconds = 300  # 5 minutes to scan
+        max_wait_seconds = 270  # slightly under the ~5-min QR expiry so we detect it in time
         poll_interval = 3
         waited = 0
-        # QR codes expire after ~5 min; refresh at 4-min intervals so user always has a valid code
-        QR_REFRESH_INTERVAL = 240  # seconds
-        last_qr_sent_at = 0  # elapsed seconds when last QR was sent
 
-        reminder_sent = False
         while waited < max_wait_seconds:
             check_cancelled()
             time.sleep(poll_interval)
@@ -577,30 +561,13 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
             if status.get("has_user_conversations"):
                 log.info("User linked! Found %d conversations", status.get("conversations_count", 0))
                 break
-
-            # Auto-refresh QR before it expires (~every 4 minutes)
-            if waited - last_qr_sent_at >= QR_REFRESH_INTERVAL:
-                log.info("QR code approaching expiry at %ds, refreshing...", waited)
-                new_qr = _refresh_desktop_qr(settings)
-                if new_qr and len(new_qr) > 1000:
-                    log.info("Refreshed QR screenshot: %d bytes, re-sending to user", len(new_qr))
-                    _send_qr_to_user(settings=settings, token=token, qr_image=new_qr)
-                    _notify_progress(settings=settings, token=token, progress_key="qr_refreshed")
-                    last_qr_sent_at = waited
-                else:
-                    log.warning("QR refresh returned blank image (%d bytes), skipping re-send", len(new_qr) if new_qr else 0)
-
-            # Send a reminder at the 2-minute mark (halfway)
-            if not reminder_sent and waited >= 120:
-                reminder_sent = True
-                _notify_progress(settings=settings, token=token, progress_key="qr_reminder")
         else:
-            log.warning("Timeout waiting for user to scan QR code")
+            log.warning("QR code expired without a successful scan")
             _notify_link_result(
                 settings=settings,
                 token=token,
                 success=False,
-                note="Timeout waiting for QR scan. Please try again.",
+                note="QR code expired. Please start the import again to get a fresh code.",
             )
             return
 
