@@ -390,6 +390,24 @@ export default function CasePage() {
           font-size: 14px;
         }
 
+        .emoji-confirmation {
+          padding: 14px 20px;
+          border-top: 1px solid #bbf7d0;
+          background: #f0fdf4;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          font-size: 13px;
+          color: var(--green);
+          font-weight: 500;
+        }
+
+        .emoji-confirmation .emoji-bubble {
+          font-size: 22px;
+          line-height: 1;
+          filter: drop-shadow(0 1px 2px rgba(0,0,0,.12));
+        }
+
         footer {
           padding: 14px 20px;
           border-top: 1px solid var(--border);
@@ -547,6 +565,12 @@ export default function CasePage() {
                   );
                 });
               })()}
+              {data.closed_emoji && data.status === 'solved' && (
+                <div className="emoji-confirmation">
+                  <span className="emoji-bubble">{data.closed_emoji}</span>
+                  Учасник підтвердив вирішення реакцією
+                </div>
+              )}
             </div>
           ) : (
             <div className="empty-chat">
