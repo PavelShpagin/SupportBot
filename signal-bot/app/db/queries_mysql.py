@@ -865,6 +865,56 @@ def get_case(db: MySQL, case_id: str) -> Optional[Dict[str, Any]]:
         }
 
 
+def get_cases_for_group(
+    db: MySQL,
+    group_id: str,
+    *,
+    include_archived: bool = False,
+) -> List[dict]:
+    """Return all cases for a group, excluding archived by default."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        if include_archived:
+            cur.execute(
+                """
+                SELECT case_id, status, problem_title, problem_summary,
+                       solution_summary, tags_json, closed_emoji,
+                       created_at, updated_at
+                FROM cases
+                WHERE group_id = %s
+                ORDER BY created_at DESC
+                """,
+                (group_id,),
+            )
+        else:
+            cur.execute(
+                """
+                SELECT case_id, status, problem_title, problem_summary,
+                       solution_summary, tags_json, closed_emoji,
+                       created_at, updated_at
+                FROM cases
+                WHERE group_id = %s AND status != 'archived'
+                ORDER BY created_at DESC
+                """,
+                (group_id,),
+            )
+        rows = cur.fetchall()
+    return [
+        {
+            "case_id": r[0],
+            "status": r[1],
+            "problem_title": r[2],
+            "problem_summary": r[3],
+            "solution_summary": r[4],
+            "tags": _parse_json_list(r[5]),
+            "closed_emoji": r[6],
+            "created_at": r[7].isoformat() if r[7] else None,
+            "updated_at": r[8].isoformat() if r[8] else None,
+        }
+        for r in rows
+    ]
+
+
 def close_case_by_message_ts(
     db: MySQL,
     *,

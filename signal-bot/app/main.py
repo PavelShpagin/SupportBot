@@ -774,6 +774,16 @@ def get_case_endpoint(case_id: str):
     return case
 
 
+@app.get("/api/groups/{group_id}/cases")
+def list_group_cases(group_id: str, include_archived: bool = False):
+    """List cases for a group (non-archived by default)."""
+    from app.db import get_cases_for_group
+    import urllib.parse
+    group_id = urllib.parse.unquote(group_id)
+    cases = get_cases_for_group(db, group_id, include_archived=include_archived)
+    return {"group_id": group_id, "cases": cases}
+
+
 @app.get("/")
 def root() -> dict:
     return {"status": "ok", "service": "SupportBot"}
@@ -1431,6 +1441,7 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
         log.info("Stored %d raw messages (group=%s)", messages_stored, req.group_id[:20])
 
     kept = 0
+    final_case_ids: List[str] = []
     for c in req.cases:
         try:
             case = llm.make_case(case_block_text=c.case_block)
@@ -1529,12 +1540,13 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
                 log.info("Stored open/unsolved history case %s action=%s (not in SCRAG, group=%s)", case_id, action, req.group_id[:20])
 
             kept += 1
+            final_case_ids.append(case_id)
         except Exception:
             log.exception("Failed to process history case block")
             continue
 
     log.info("History cases done: inserted=%d group=%s", kept, req.group_id[:20])
-    return kept
+    return kept, final_case_ids
 
 
 @app.post("/history/cases")
@@ -1566,9 +1578,9 @@ def history_cases(req: HistoryCasesRequest) -> dict:
     n_cases = len(req.cases)
     n_messages = len(req.messages)
     log.info("History ingest started: %d cases, %d messages (group=%s)", n_cases, n_messages, req.group_id[:20])
-    inserted = _process_history_cases_bg(req)
+    inserted, case_ids = _process_history_cases_bg(req)
     log.info("History ingest done: %d/%d cases inserted (group=%s)", inserted, n_cases, req.group_id[:20])
-    return {"ok": True, "cases_inserted": inserted}
+    return {"ok": True, "cases_inserted": inserted, "case_ids": case_ids}
 
 
 class RetrieveRequest(BaseModel):

@@ -80,6 +80,7 @@ if DB_BACKEND == "mysql":
         delete_all_group_data,
         clear_group_runtime_data,
         get_all_active_case_ids,
+        get_cases_for_group,
     )
     
     def create_db(settings):
