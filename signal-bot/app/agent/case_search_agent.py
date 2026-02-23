@@ -23,7 +23,10 @@ sys.stdout.reconfigure(encoding="utf-8")
 log = logging.getLogger(__name__)
 
 
-SCRAG_TOP_K = 3  # always return top-K results; let the synthesizer decide relevance
+SCRAG_TOP_K = 3
+# Cosine distance threshold: cases with distance > this are too dissimilar to use.
+# Lower = stricter. 0.75 keeps good matches (GPS=0.43, stabx=0.68) and drops random queries (0.9+).
+SCRAG_DISTANCE_THRESHOLD = 0.75
 
 
 class CaseSearchAgent:
@@ -53,6 +56,10 @@ class CaseSearchAgent:
                     r.get("case_id", "")[:16],
                     distance,
                 )
+                if distance > SCRAG_DISTANCE_THRESHOLD:
+                    log.debug("SCRAG case %s filtered out (dist=%.3f > threshold=%.2f)",
+                              r.get("case_id", "")[:16], distance, SCRAG_DISTANCE_THRESHOLD)
+                    continue
                 doc = r.get("document", "")
                 # Parse the structured doc format: [SOLVED] title\nПроблема: ...\nРішення: ...
                 problem, solution = "", ""

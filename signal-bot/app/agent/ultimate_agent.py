@@ -1,8 +1,6 @@
-import os
 import re
 import sys
 import time
-import google.generativeai as genai
 
 from .case_search_agent import CaseSearchAgent
 from app.config import load_settings
@@ -11,18 +9,9 @@ from app.llm.client import LLMClient
 
 sys.stdout.reconfigure(encoding='utf-8')
 
-GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY")
-if GOOGLE_API_KEY:
-    genai.configure(api_key=GOOGLE_API_KEY)
-
-MODEL_NAME = "gemini-2.0-flash"
-
 
 def detect_lang(text: str) -> str:
-    """Detect language from message text.
-    Returns 'uk' if Cyrillic characters present, else 'en'.
-    Cyrillic = Ukrainian/Russian; this bot serves Ukrainian users so we default to 'uk'.
-    """
+    """Return 'uk' if Cyrillic characters are present, else 'en'."""
     if re.search(r'[а-яіїєґА-ЯІЇЄҐ]', text):
         return "uk"
     return "en"
@@ -36,7 +25,6 @@ class UltimateAgent:
         self.rag = create_chroma(self.settings)
         self.llm = LLMClient(self.settings)
         self.case_agent = CaseSearchAgent(rag=self.rag, llm=self.llm, public_url=self.public_url)
-        self.synthesizer = genai.GenerativeModel(MODEL_NAME)
         self.last_load_time = time.time()
         print("Agents loaded.", flush=True)
 
@@ -45,7 +33,6 @@ class UltimateAgent:
         self.rag = create_chroma(self.settings)
         self.llm = LLMClient(self.settings)
         self.case_agent = CaseSearchAgent(rag=self.rag, llm=self.llm, public_url=self.public_url)
-        self.synthesizer = genai.GenerativeModel(MODEL_NAME)
         self.last_load_time = time.time()
 
     def answer(self, question, group_id=None, db=None, lang="uk"):
@@ -57,13 +44,11 @@ class UltimateAgent:
             except Exception as e:
                 print(f"Error refreshing agents: {e}", flush=True)
 
-        # Always detect language from the actual message, not admin session
         lang = detect_lang(question)
         lang_instruction = "Ukrainian (українська)" if lang == "uk" else "English"
 
         print(f"\n--- Ultimate: '{question}' (group={group_id}, lang={lang}) ---", flush=True)
 
-        # Search cases for this group (SCRAG + B3 + B1)
         case_ans = "No relevant cases found."
         try:
             case_ans = self.case_agent.answer(question, group_id=group_id, db=db)
@@ -96,9 +81,7 @@ BAD: "Вітаю! Ми знаємо про цю проблему і вже пр�
 
 Answer:"""
             try:
-                response = self.synthesizer.generate_content(prompt)
-                text = response.text.strip()
-                # Ensure admin is tagged even if LLM forgot
+                text = self.llm.chat(prompt=prompt)
                 if "[[TAG_ADMIN]]" not in text:
                     text = text + " [[TAG_ADMIN]]"
                 return text
@@ -116,25 +99,26 @@ Relevant solved cases:
 
 RULES:
 1. NO greeting, NO "Based on...", NO "According to...".
-2. State the ACTUAL solution from the relevant case in 1-2 sentences. Then add the case link.
+2. State the ACTUAL solution from the most relevant case in 1-2 sentences. ALWAYS end with the case link.
 3. Respond in {lang_instruction}.
-4. If the retrieved cases don't actually address the question → output ONLY "[[TAG_ADMIN]]".
+4. ALWAYS use the case context above — never ignore it. The cases were selected semantically so at least one is relevant.
 5. NO bullet points, NO lists, NO multiple links. Solution + one link only.
 6. Do NOT copy example text — write the solution from the case context above.
 7. CRITICAL: If the solution requires the user to provide something (a log, a file, a screenshot,
    send something to someone) — that means admin follow-up is needed. In that case add [[TAG_ADMIN]]
-   at the end so the admin is notified. Format: "<instruction to user> [[TAG_ADMIN]] <case link>"
+   BEFORE the case link so the admin is notified.
+   Format: "<instruction to user> [[TAG_ADMIN]] <case link>"
+8. Even when tagging admin, ALWAYS include the case link at the end.
 
 GOOD (self-service fix): "Перейдіть у Налаштування → Оновлення та натисніть 'Перевстановити'. https://supportbot.info/case/xxx"
 GOOD (needs admin): "Надайте лог з папки /var/log/app/ [[TAG_ADMIN]] https://supportbot.info/case/xxx"
-BAD: "Надайте лог" without [[TAG_ADMIN]] — user has nobody to send it to.
+BAD: bare "[[TAG_ADMIN]]" without any instruction or case link.
 BAD: "Вітаю! На основі знайдених кейсів, ось що ми знайшли..."
 
 Answer:"""
 
         try:
-            response = self.synthesizer.generate_content(prompt)
-            return response.text.strip()
+            return self.llm.chat(prompt=prompt)
         except Exception as e:
             print(f"Synthesizer error: {e}", flush=True)
             return "[[TAG_ADMIN]]"

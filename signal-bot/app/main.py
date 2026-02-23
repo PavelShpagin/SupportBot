@@ -1557,7 +1557,38 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
             log.exception("Failed to process history case block")
             continue
 
-    log.info("History cases done: inserted=%d group=%s", kept, req.group_id[:20])
+    # Re-index ALL cases for this group that have a solution into SCRAG.
+    # This includes cases from previous ingests that were just archived above — their
+    # knowledge is still valid and must remain searchable.
+    reindexed = 0
+    try:
+        from app.db.queries_mysql import get_cases_for_group
+        all_group_cases = get_cases_for_group(db, req.group_id, include_archived=True)
+        for gc in all_group_cases:
+            sol = (gc.get("solution_summary") or "").strip()
+            if not sol:
+                continue
+            cid = gc["case_id"]
+            doc_text = "\n".join([
+                f"[SOLVED] {(gc.get('problem_title') or '').strip()}",
+                f"Проблема: {(gc.get('problem_summary') or '').strip()}",
+                f"Рішення: {sol}",
+                "tags: " + ", ".join(gc.get("tags") or []),
+            ]).strip()
+            rag_emb = llm.embed(text=doc_text)
+            rag.upsert_case(
+                case_id=cid,
+                document=doc_text,
+                embedding=rag_emb,
+                # Always mark as "solved" in SCRAG — presence in SCRAG means a solution exists.
+                # The MySQL status (archived/solved) is not relevant here.
+                metadata={"group_id": req.group_id, "status": "solved"},
+            )
+            mark_case_in_rag(db, cid)
+            reindexed += 1
+    except Exception:
+        log.exception("Failed to re-index archived cases for group %s", req.group_id[:20])
+    log.info("History cases done: inserted=%d re-indexed_to_scrag=%d group=%s", kept, reindexed, req.group_id[:20])
     return kept, final_case_ids
 
 
@@ -1637,3 +1668,49 @@ def debug_ingest(req: DebugIngestRequest) -> dict:
         reply_to_id=req.reply_to_id,
     )
     return {"ok": True, "message_id": msg_id}
+
+
+class DebugAnswerRequest(BaseModel):
+    group_id: str
+    question: str
+    lang: str = "uk"
+
+
+@app.post("/debug/answer")
+def debug_answer(req: DebugAnswerRequest) -> dict:
+    """
+    Directly invoke the RAG pipeline and return the synthesized answer.
+    Does NOT send anything via Signal — for testing only.
+    Requires HTTP_DEBUG_ENDPOINTS_ENABLED=1.
+    """
+    if not settings.http_debug_endpoints_enabled:
+        raise HTTPException(status_code=404, detail="Not found")
+
+    # SCRAG search
+    from app.agent.case_search_agent import CaseSearchAgent
+    agent = CaseSearchAgent(rag=rag, llm=llm, public_url=settings.public_url.rstrip("/"))
+    ctx = agent.search(req.question, group_id=req.group_id, db=db)
+
+    # Synthesize
+    case_ans = agent.answer(req.question, group_id=req.group_id, db=db)
+    response = ultimate_agent.answer(req.question, group_id=req.group_id, db=db, lang=req.lang)
+
+    # Also check what ultimate_agent's OWN case_agent finds (to diagnose rag isolation issues)
+    ua_ctx = ultimate_agent.case_agent.search(req.question, group_id=req.group_id, db=db)
+    ua_case_ans = ultimate_agent.case_agent.answer(req.question, group_id=req.group_id, db=db)
+
+    return {
+        "question": req.question,
+        # From the freshly created agent (uses global `rag`)
+        "scrag_hits": len(ctx["scrag"]),
+        "b3_hits": len(ctx["b3"]),
+        "b1_hits": len(ctx["b1"]),
+        "case_context": case_ans[:500] if case_ans else "",
+        # From ultimate_agent's internal case_agent (uses its own `self.rag`)
+        "ua_scrag_hits": len(ua_ctx["scrag"]),
+        "ua_case_context": ua_case_ans[:500] if ua_case_ans else "",
+        # Final response
+        "response": response,
+        "is_admin_tag": "[[TAG_ADMIN]]" in (response or ""),
+        "has_case_link": "supportbot.info/case/" in (response or ""),
+    }

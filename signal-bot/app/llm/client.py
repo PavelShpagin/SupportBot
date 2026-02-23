@@ -95,6 +95,16 @@ class LLMClient:
 
         raise RuntimeError(f"LLM JSON call failed after retries: {last_exc}")
 
+    def chat(self, *, prompt: str, model: str | None = None) -> str:
+        """Free-text (non-JSON) completion. Returns the raw text response."""
+        m = model or self.settings.model_respond
+        resp = self.client.chat.completions.create(
+            model=m,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0,
+        )
+        return (resp.choices[0].message.content or "").strip()
+
     def embed(self, *, text: str) -> list[float]:
         resp = self.client.embeddings.create(model=self.settings.embedding_model, input=[text])
         return resp.data[0].embedding
