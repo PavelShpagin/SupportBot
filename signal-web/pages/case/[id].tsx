@@ -1,7 +1,15 @@
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { format } from 'date-fns';
+
+interface EvidenceMessage {
+  message_id: string;
+  ts: number;
+  sender_hash: string;
+  sender_name: string | null;
+  content_text: string;
+  images: string[];
+}
 
 interface CaseData {
   case_id: string;
@@ -12,126 +20,35 @@ interface CaseData {
   created_at: string;
   closed_emoji: string | null;
   tags: string[];
-  evidence: {
-    message_id: string;
-    ts: number;
-    sender_hash: string;
-    sender_name: string | null;
-    content_text: string;
-    images: string[];
-  }[];
+  evidence: EvidenceMessage[];
 }
 
-export default function CasePage() {
-  const router = useRouter();
-  const { id } = router.query;
-  const [data, setData] = useState<CaseData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+interface Props {
+  data: CaseData;
+  publicApiUrl: string;
+}
 
-  useEffect(() => {
-    if (!id) return;
+export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
+  const { id } = ctx.params as { id: string };
+  const internalUrl = process.env.API_INTERNAL_URL || 'http://signal-bot:8000';
+  const publicApiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-    
-    fetch(`${apiUrl}/api/cases/${id}`)
-      .then(async (res) => {
-        if (res.status === 404) {
-          throw new Error('not_found');
-        }
-        if (!res.ok) {
-          const text = await res.text();
-          throw new Error(`API Error ${res.status}: ${res.statusText} ${text ? `(${text})` : ''}`);
-        }
-        return res.json();
-      })
-      .then((data) => {
-        setData(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message);
-        setLoading(false);
-      });
-  }, [id]);
-
-  if (loading) return (
-    <>
-      <Head>
-        <title>Loading... | SupportBot</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="icon" type="image/png" href="/supportbot-logo.png" />
-      </Head>
-      <style jsx global>{`
-        @import url("https://rsms.me/inter/inter.css");
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-          font-family: "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-          background: #f6f7f9;
-          min-height: 100vh;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-        .spinner {
-          width: 32px;
-          height: 32px;
-          border: 3px solid #d8d8d8;
-          border-top-color: #2c6bed;
-          border-radius: 50%;
-          animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-      `}</style>
-      <div className="spinner"></div>
-    </>
-  );
-
-  if (error) {
-    const isNotFound = error === 'not_found';
-    return (
-      <>
-        <Head>
-          <title>SupportBot</title>
-          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-          <link rel="icon" type="image/png" href="/supportbot-logo.png" />
-        </Head>
-        <style jsx global>{`
-          @import url("https://rsms.me/inter/inter.css");
-          * { margin: 0; padding: 0; box-sizing: border-box; }
-          body {
-            font-family: "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-            background: #f6f7f9;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-          }
-        `}</style>
-        {isNotFound ? (
-          <div style={{ textAlign: 'center', maxWidth: 360 }}>
-            <p style={{ fontWeight: 600, fontSize: 17, marginBottom: 8, color: '#0d0d0d' }}>
-              Посилання більше не діє
-            </p>
-            <p style={{ fontSize: 14, color: '#6b7280', lineHeight: 1.65 }}>
-              Запитайте ще раз у вашій групі — бот надасть актуальну відповідь.
-            </p>
-          </div>
-        ) : (
-          <div style={{ textAlign: 'center', maxWidth: 360 }}>
-            <p style={{ fontWeight: 600, marginBottom: 8, color: '#dc2626' }}>Помилка завантаження</p>
-            <p style={{ fontSize: 13, color: '#6b7280' }}>{error}</p>
-          </div>
-        )}
-      </>
-    );
+  try {
+    const res = await fetch(`${internalUrl}/api/cases/${id}`);
+    if (res.status === 404) return { notFound: true };
+    if (!res.ok) throw new Error(`API ${res.status}`);
+    const data: CaseData = await res.json();
+    return { props: { data, publicApiUrl } };
+  } catch {
+    return { notFound: true };
   }
+};
 
-  if (!data) return null;
-
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+export default function CasePage({ data, publicApiUrl }: Props) {
+  const senderOrder: string[] = [];
+  data.evidence?.forEach((msg) => {
+    if (!senderOrder.includes(msg.sender_hash)) senderOrder.push(msg.sender_hash);
+  });
 
   return (
     <>
@@ -139,6 +56,9 @@ export default function CasePage() {
         <title>{data.problem_title} | SupportBot</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="icon" type="image/png" href="/supportbot-logo.png" />
+        <meta property="og:title" content={data.problem_title} />
+        <meta property="og:description" content={data.solution_summary} />
+        <meta property="og:type" content="article" />
       </Head>
 
       <style jsx global>{`
@@ -280,7 +200,6 @@ export default function CasePage() {
           color: var(--green);
         }
 
-        /* Chat section */
         .chat-header {
           padding: 14px 20px;
           border-bottom: 1px solid var(--border);
@@ -302,18 +221,14 @@ export default function CasePage() {
           color: var(--signal-blue);
         }
 
-        .messages {
-          padding: 0;
-        }
+        .messages { padding: 0; }
 
         .message {
           padding: 16px 20px;
           border-bottom: 1px solid var(--border);
         }
 
-        .message:last-child {
-          border-bottom: none;
-        }
+        .message:last-child { border-bottom: none; }
 
         .message-header {
           display: flex;
@@ -336,10 +251,7 @@ export default function CasePage() {
           flex-shrink: 0;
         }
 
-        .sender-info {
-          flex: 1;
-          min-width: 0;
-        }
+        .sender-info { flex: 1; min-width: 0; }
 
         .sender-name {
           font-size: 13px;
@@ -430,10 +342,10 @@ export default function CasePage() {
       `}</style>
 
       <div className="shell">
-        {/* Header Card */}
         <div className="card">
           <header>
             <a href="/" className="header-left" style={{ textDecoration: 'none', color: 'inherit' }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/supportbot-logo.png" alt="SupportBot" className="logo" />
               <span className="brand">SupportBot</span>
             </a>
@@ -443,6 +355,7 @@ export default function CasePage() {
               </span>
             </div>
           </header>
+
           {data.status === 'archived' && (
             <div style={{
               background: '#fef3c7',
@@ -464,7 +377,6 @@ export default function CasePage() {
 
           <main>
             <h1>{data.problem_title}</h1>
-            
             <p className="meta">
               {data.created_at ? format(new Date(data.created_at), 'd MMM yyyy, HH:mm') : ''}
             </p>
@@ -501,7 +413,6 @@ export default function CasePage() {
           </main>
         </div>
 
-        {/* Chat History Card */}
         <div className="card">
           <div className="chat-header">
             <h2>
@@ -511,51 +422,40 @@ export default function CasePage() {
               Історія переписки
             </h2>
           </div>
-          
+
           {data.evidence && data.evidence.length > 0 ? (
             <div className="messages">
-              {(() => {
-                const senderOrder: string[] = [];
-                data.evidence.forEach((msg) => {
-                  if (!senderOrder.includes(msg.sender_hash)) senderOrder.push(msg.sender_hash);
-                });
-                return data.evidence.map((msg) => {
-                  const participantNum = senderOrder.indexOf(msg.sender_hash) + 1;
-                  const label = msg.sender_name || `Учасник ${participantNum}`;
-                  const initials = msg.sender_name
-                    ? msg.sender_name.split(' ').map((w: string) => w[0]).join('').substring(0, 2).toUpperCase()
-                    : `У${participantNum}`;
-                  return (
-                <div key={msg.message_id} className="message">
-                  <div className="message-header">
-                    <div className="avatar">
-                      {initials}
+              {data.evidence.map((msg) => {
+                const participantNum = senderOrder.indexOf(msg.sender_hash) + 1;
+                const label = msg.sender_name || `Учасник ${participantNum}`;
+                const initials = msg.sender_name
+                  ? msg.sender_name.split(' ').map((w: string) => w[0]).join('').substring(0, 2).toUpperCase()
+                  : `У${participantNum}`;
+                return (
+                  <div key={msg.message_id} className="message">
+                    <div className="message-header">
+                      <div className="avatar">{initials}</div>
+                      <div className="sender-info">
+                        <span className="sender-name">{label}</span>
+                        <span className="message-time">
+                          {' '}&middot; {format(new Date(msg.ts), 'd MMM, HH:mm')}
+                        </span>
+                      </div>
                     </div>
-                    <div className="sender-info">
-                      <span className="sender-name">
-                        {label}
-                      </span>
-                      <span className="message-time">
-                        {' '}&middot; {format(new Date(msg.ts), 'd MMM, HH:mm')}
-                      </span>
-                    </div>
+                    <p className="message-text">{msg.content_text}</p>
+                    {msg.images && msg.images.length > 0 && (
+                      <div className="message-images">
+                        {msg.images.map((img, idx) => (
+                          <a key={idx} href={`${publicApiUrl}${img}`} target="_blank" rel="noopener noreferrer">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={`${publicApiUrl}${img}`} alt="Attachment" />
+                          </a>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                  <p className="message-text">{msg.content_text}</p>
-                  
-                  {msg.images && msg.images.length > 0 && (
-                    <div className="message-images">
-                      {msg.images.map((img, idx) => (
-                        <a key={idx} href={`${apiUrl}${img}`} target="_blank" rel="noopener noreferrer">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={`${apiUrl}${img}`} alt="Attachment" />
-                        </a>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                  );
-                });
-              })()}
+                );
+              })}
               {data.closed_emoji && data.status === 'solved' && (
                 <div className="emoji-confirmation">
                   <span className="emoji-bubble">{data.closed_emoji}</span>
