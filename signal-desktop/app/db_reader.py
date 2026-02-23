@@ -41,19 +41,38 @@ class SignalMessage:
 
 
 def _get_db_key(signal_data_dir: str) -> str:
-    """Extract the SQLCipher key from Signal Desktop's config.json."""
+    """Extract the SQLCipher key from Signal Desktop's config.json.
+
+    Newer Signal Desktop (5.x+) stores the key encrypted with the OS keychain
+    under the field 'encryptedKey'.  In that case we fall back to the
+    SIGNAL_DESKTOP_KEY_HEX environment variable which should hold the raw
+    hex key (set once after manually decrypting via the OS keychain tool).
+    """
+    import os
+
     config_path = Path(signal_data_dir) / "config.json"
-    if not config_path.exists():
-        raise RuntimeError(f"Signal Desktop config not found: {config_path}")
-    
-    with open(config_path) as f:
-        config = json.load(f)
-    
-    key = config.get("key")
-    if not key:
-        raise RuntimeError("No 'key' field in Signal Desktop config.json")
-    
-    return key
+    if config_path.exists():
+        with open(config_path) as f:
+            config = json.load(f)
+        key = config.get("key")
+        if key:
+            return key
+        if config.get("encryptedKey"):
+            log.info(
+                "config.json uses encryptedKey (OS-keychain protected). "
+                "Falling back to SIGNAL_DESKTOP_KEY_HEX env var."
+            )
+
+    # Fall back to env var (required when key is OS-keychain encrypted)
+    env_key = os.environ.get("SIGNAL_DESKTOP_KEY_HEX", "").strip()
+    if env_key:
+        return env_key
+
+    raise RuntimeError(
+        "Cannot read Signal Desktop DB key. "
+        "config.json has no plain 'key' field and SIGNAL_DESKTOP_KEY_HEX is not set. "
+        "Set SIGNAL_DESKTOP_KEY_HEX to the raw hex key from the OS keychain."
+    )
 
 
 def _open_db(signal_data_dir: str):
