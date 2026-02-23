@@ -152,8 +152,8 @@ class SignalDesktopAdapter:
         quote_author: str | None = None,
         quote_message: str | None = None,
         mention_recipients: List[str] | None = None,
-    ) -> None:
-        """Send text message to a group."""
+    ) -> int | None:
+        """Send text message to a group. Returns sent message timestamp if the API provides it."""
         with self._lock:
             try:
                 # Note: Signal Desktop API doesn't support quotes/mentions yet
@@ -169,6 +169,8 @@ class SignalDesktopAdapter:
                     if not result.get("success"):
                         raise RuntimeError(f"Failed to send group message: {result}")
                     log.info("Sent message to group %s via Signal Desktop", group_id)
+                    ts = result.get("timestamp") or result.get("ts")
+                    return int(ts) if ts is not None else None
             except Exception as e:
                 log.exception("Failed to send group message via Signal Desktop")
                 raise RuntimeError(f"Signal Desktop send failed: {e}")

@@ -599,20 +599,17 @@ def _handle_reaction(r: InboundReaction) -> None:
         # Positive emoji → close open case linked to this message AND confirm solved cases
         if r.emoji in POSITIVE_EMOJI:
             from app.db import close_case_by_message_ts
-            # Directly close any open case whose evidence includes this message
-            closed_id = close_case_by_message_ts(
-                db, group_id=r.group_id, target_ts=r.target_ts, emoji=r.emoji
-            )
-            if closed_id:
+
+            # Helper: close + SCRAG-index a case
+            def _close_and_index(case_id: str, source_label: str) -> None:
                 log.info(
-                    "Case %s CLOSED via emoji %s on ts=%s (group=%s)",
-                    closed_id, r.emoji, r.target_ts, r.group_id,
+                    "Case %s CLOSED via emoji %s on ts=%s (%s, group=%s)",
+                    case_id, r.emoji, r.target_ts, source_label, r.group_id,
                 )
-                # Index the now-solved case in SCRAG so it's immediately searchable
                 try:
                     from app.db.queries_mysql import get_case
                     from app.db import mark_case_in_rag
-                    c = get_case(db, closed_id)
+                    c = get_case(db, case_id)
                     if c and c.get("solution_summary", "").strip():
                         doc_text = "\n".join([
                             f"[SOLVED] {(c.get('problem_title') or '').strip()}",
@@ -622,15 +619,22 @@ def _handle_reaction(r: InboundReaction) -> None:
                         ]).strip()
                         rag_emb = llm.embed(text=doc_text)
                         rag.upsert_case(
-                            case_id=closed_id,
+                            case_id=case_id,
                             document=doc_text,
                             embedding=rag_emb,
                             metadata={"group_id": r.group_id, "status": "solved"},
                         )
-                        mark_case_in_rag(db, closed_id)
-                        log.info("Emoji-closed case %s indexed in SCRAG (group=%s)", closed_id, r.group_id[:20])
+                        mark_case_in_rag(db, case_id)
+                        log.info("Emoji-closed case %s indexed in SCRAG (group=%s)", case_id, r.group_id[:20])
                 except Exception:
-                    log.exception("Failed to index emoji-closed case %s in SCRAG", closed_id)
+                    log.exception("Failed to index emoji-closed case %s in SCRAG", case_id)
+
+            # Directly close any open case whose evidence includes this message
+            closed_id = close_case_by_message_ts(
+                db, group_id=r.group_id, target_ts=r.target_ts, emoji=r.emoji
+            )
+            if closed_id:
+                _close_and_index(closed_id, "user-message")
 
             # Also set closed_emoji on already-solved cases linked to this message
             n = confirm_cases_by_evidence_ts(
@@ -641,6 +645,32 @@ def _handle_reaction(r: InboundReaction) -> None:
                     "Case confirmation via emoji %s on ts=%s in group=%s: %d case(s) updated",
                     r.emoji, r.target_ts, r.group_id, n,
                 )
+
+            # Fallback: user may have reacted to the BOT's reply message rather than
+            # their own question.  Look up the original user message ts via the
+            # in-memory bot-reply map maintained by the worker.
+            if closed_id is None and n == 0:
+                from app.jobs.worker import _bot_reply_map, _bot_reply_map_lock
+                with _bot_reply_map_lock:
+                    orig_user_ts = _bot_reply_map.get((r.group_id, r.target_ts))
+                if orig_user_ts is not None:
+                    log.info(
+                        "Emoji %s on bot reply ts=%s → resolving to orig user ts=%s (group=%s)",
+                        r.emoji, r.target_ts, orig_user_ts, r.group_id,
+                    )
+                    closed_via_bot_reply = close_case_by_message_ts(
+                        db, group_id=r.group_id, target_ts=orig_user_ts, emoji=r.emoji
+                    )
+                    if closed_via_bot_reply:
+                        _close_and_index(closed_via_bot_reply, "bot-reply-lookup")
+                    n2 = confirm_cases_by_evidence_ts(
+                        db, group_id=r.group_id, target_ts=orig_user_ts, emoji=r.emoji
+                    )
+                    if n2:
+                        log.info(
+                            "Bot-reply emoji confirmation: %d case(s) updated (group=%s)",
+                            n2, r.group_id,
+                        )
 
 
 def _send_direct_or_cleanup(admin_id: str, text: str) -> bool:
@@ -1592,18 +1622,23 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
             log.exception("Failed to process history case block")
             continue
 
-    # Re-index ALL cases for this group that have a solution into SCRAG.
-    # This includes cases from previous ingests that were just archived above — their
-    # knowledge is still valid and must remain searchable.
+    # Index only the cases extracted in THIS ingest run that are solved.
+    # We do NOT re-index archived cases from previous ingests: they were just wiped from
+    # SCRAG by delete_cases_by_group above and should stay out — their status means a human
+    # decided they're superseded.  Putting them back would resurface unapproved or stale
+    # knowledge (exactly the bug that caused the archived IMX-114 case to keep appearing).
     reindexed = 0
     try:
-        from app.db.queries_mysql import get_cases_for_group
-        all_group_cases = get_cases_for_group(db, req.group_id, include_archived=True)
-        for gc in all_group_cases:
+        from app.db.queries_mysql import get_case
+        for cid in final_case_ids:
+            gc = get_case(db, cid)
+            if not gc:
+                continue
+            if gc.get("status") == "archived":
+                continue
             sol = (gc.get("solution_summary") or "").strip()
             if not sol:
                 continue
-            cid = gc["case_id"]
             doc_text = "\n".join([
                 f"[SOLVED] {(gc.get('problem_title') or '').strip()}",
                 f"Проблема: {(gc.get('problem_summary') or '').strip()}",
@@ -1615,14 +1650,12 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
                 case_id=cid,
                 document=doc_text,
                 embedding=rag_emb,
-                # Always mark as "solved" in SCRAG — presence in SCRAG means a solution exists.
-                # The MySQL status (archived/solved) is not relevant here.
                 metadata={"group_id": req.group_id, "status": "solved"},
             )
             mark_case_in_rag(db, cid)
             reindexed += 1
     except Exception:
-        log.exception("Failed to re-index archived cases for group %s", req.group_id[:20])
+        log.exception("Failed to index ingest cases for group %s", req.group_id[:20])
     log.info("History cases done: inserted=%d re-indexed_to_scrag=%d group=%s", kept, reindexed, req.group_id[:20])
     return kept, final_case_ids
 

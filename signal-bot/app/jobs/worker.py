@@ -4,6 +4,7 @@ import json
 import logging
 import mimetypes
 import re
+import threading
 import time
 from dataclasses import dataclass
 from typing import Any, Dict, List, TYPE_CHECKING
@@ -39,6 +40,15 @@ from app.signal.adapter import SignalAdapter
 from app.agent.ultimate_agent import UltimateAgent
 
 log = logging.getLogger(__name__)
+
+# Maps (group_id, bot_sent_ts) → original user message ts.
+# When a user reacts with 👍 to the BOT's reply (not their own question), the
+# reaction handler can resolve the underlying user message and close the case.
+# Lost on restart but that's acceptable — long-lived cases are still closeable
+# by reacting to the user's own original question message.
+_bot_reply_map: dict[tuple[str, int], int] = {}
+_bot_reply_map_lock = threading.Lock()
+_BOT_REPLY_MAP_MAX = 1000  # prevent unbounded growth
 
 
 @dataclass(frozen=True)
@@ -801,7 +811,7 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         quote_ts = int(quote_ts_raw) if quote_ts_raw is not None else int(msg.ts)
         quote_msg = str(payload.get("text") or "").strip()
         
-        deps.signal.send_group_text(
+        sent_ts = deps.signal.send_group_text(
             group_id=group_id,
             text=answer,
             quote_timestamp=quote_ts,
@@ -809,6 +819,20 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
             quote_message=quote_msg,
             mention_recipients=mention_recipients,
         )
+
+        # Record (group_id, bot_reply_ts) → user_question_ts so that a 👍 on the
+        # bot's reply can still resolve to the original user message and close the case.
+        if sent_ts is not None:
+            with _bot_reply_map_lock:
+                if len(_bot_reply_map) >= _BOT_REPLY_MAP_MAX:
+                    # evict the oldest entry (Python dicts are ordered)
+                    try:
+                        next(iter(_bot_reply_map))  # peek
+                        del _bot_reply_map[next(iter(_bot_reply_map))]
+                    except StopIteration:
+                        pass
+                _bot_reply_map[(group_id, sent_ts)] = quote_ts
+            log.debug("Stored bot reply mapping: (%s, %s) → %s", group_id[:16], sent_ts, quote_ts)
         
     except Exception as e:
         log.exception("Ultimate Agent failed: %s", e)

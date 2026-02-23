@@ -17,7 +17,7 @@ class SignalAdapter(Protocol):
         quote_timestamp: int | None = None,
         quote_author: str | None = None,
         quote_message: str | None = None,
-    ) -> None: ...
+    ) -> int | None: ...
     
     def send_direct_text(self, *, recipient: str, text: str) -> None: ...
     
@@ -50,8 +50,8 @@ class NoopSignalAdapter:
         quote_timestamp: int | None = None,
         quote_author: str | None = None,
         quote_message: str | None = None,
-    ) -> None:
-        return
+    ) -> int | None:
+        return None
     
     def send_direct_text(self, *, recipient: str, text: str) -> None:
         return
