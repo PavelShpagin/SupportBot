@@ -41,14 +41,13 @@ from app.agent.ultimate_agent import UltimateAgent
 
 log = logging.getLogger(__name__)
 
-# Maps (group_id, bot_sent_ts) → original user message ts.
-# When a user reacts with 👍 to the BOT's reply (not their own question), the
-# reaction handler can resolve the underlying user message and close the case.
-# Lost on restart but that's acceptable — long-lived cases are still closeable
-# by reacting to the user's own original question message.
-_bot_reply_map: dict[tuple[str, int], int] = {}
-_bot_reply_map_lock = threading.Lock()
-_BOT_REPLY_MAP_MAX = 1000  # prevent unbounded growth
+# message_id set: messages for which the bot sent a real RAG answer (not a pure
+# [[TAG_ADMIN]] escalation).  When BUFFER_UPDATE processes the buffer afterwards,
+# it skips these messages so no B1 open case is created for an already-answered
+# question.  Uses an ordered dict so we can do FIFO eviction.
+_rag_answered_messages: dict[str, None] = {}
+_rag_answered_lock = threading.Lock()
+_RAG_ANSWERED_MAX = 2000
 
 
 @dataclass(frozen=True)
@@ -451,9 +450,16 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         set_buffer(deps.db, group_id=group_id, buffer_text=buf2)
         return
 
-    # Build extraction view: exclude bot messages so the LLM never creates cases
-    # from bot-answered interactions.  Bot blocks are still kept in buf2 for context.
-    non_bot_blocks = [b for b in blocks if "[BOT]" not in b.raw_text.splitlines()[0]]
+    # Build extraction view: exclude bot messages AND messages the bot already
+    # answered via RAG — both are kept in buf2 for context but must not generate
+    # new open B1 cases.
+    with _rag_answered_lock:
+        local_rag_answered = set(_rag_answered_messages.keys())
+    non_bot_blocks = [
+        b for b in blocks
+        if "[BOT]" not in b.raw_text.splitlines()[0]
+        and b.message_id not in local_rag_answered
+    ]
     if not non_bot_blocks:
         set_buffer(deps.db, group_id=group_id, buffer_text=buf2)
         return
@@ -776,13 +782,22 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         except Exception as _gate_err:
             log.warning("Gate failed, proceeding without filter: %s", _gate_err)
 
-        answer = deps.ultimate_agent.answer(msg.content_text, group_id=group_id, db=deps.db, lang=group_lang)
-        
+        raw_answer = deps.ultimate_agent.answer(msg.content_text, group_id=group_id, db=deps.db, lang=group_lang)
+        answer = raw_answer
+
         if answer == "SKIP":
             if force:
                 answer = "Вибачте, я не зрозумів запитання або це не стосується моєї компетенції." if group_lang == "uk" else "Sorry, I didn't understand the question or it's outside my expertise."
             else:
                 return
+
+        # A "real" RAG answer means the agent found something useful in SCRAG/B1
+        # and is not purely escalating to admin.  In that case, suppress B1 case
+        # creation for this message in the subsequent BUFFER_UPDATE job.
+        rag_answered = (
+            raw_answer != "SKIP"
+            and raw_answer.strip() != "[[TAG_ADMIN]]"
+        )
 
         mention_recipients = []
 
@@ -811,7 +826,7 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         quote_ts = int(quote_ts_raw) if quote_ts_raw is not None else int(msg.ts)
         quote_msg = str(payload.get("text") or "").strip()
         
-        sent_ts = deps.signal.send_group_text(
+        deps.signal.send_group_text(
             group_id=group_id,
             text=answer,
             quote_timestamp=quote_ts,
@@ -820,19 +835,17 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
             mention_recipients=mention_recipients,
         )
 
-        # Record (group_id, bot_reply_ts) → user_question_ts so that a 👍 on the
-        # bot's reply can still resolve to the original user message and close the case.
-        if sent_ts is not None:
-            with _bot_reply_map_lock:
-                if len(_bot_reply_map) >= _BOT_REPLY_MAP_MAX:
-                    # evict the oldest entry (Python dicts are ordered)
+        # If the bot gave a real RAG answer, mark the user message so the
+        # subsequent BUFFER_UPDATE job won't create a B1 open case for it.
+        if rag_answered:
+            with _rag_answered_lock:
+                if len(_rag_answered_messages) >= _RAG_ANSWERED_MAX:
                     try:
-                        next(iter(_bot_reply_map))  # peek
-                        del _bot_reply_map[next(iter(_bot_reply_map))]
+                        del _rag_answered_messages[next(iter(_rag_answered_messages))]
                     except StopIteration:
                         pass
-                _bot_reply_map[(group_id, sent_ts)] = quote_ts
-            log.debug("Stored bot reply mapping: (%s, %s) → %s", group_id[:16], sent_ts, quote_ts)
+                _rag_answered_messages[message_id] = None
+            log.debug("Marked message %s as RAG-answered (B1 case creation suppressed)", message_id)
         
     except Exception as e:
         log.exception("Ultimate Agent failed: %s", e)

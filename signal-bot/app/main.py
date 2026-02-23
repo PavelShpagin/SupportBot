@@ -646,32 +646,6 @@ def _handle_reaction(r: InboundReaction) -> None:
                     r.emoji, r.target_ts, r.group_id, n,
                 )
 
-            # Fallback: user may have reacted to the BOT's reply message rather than
-            # their own question.  Look up the original user message ts via the
-            # in-memory bot-reply map maintained by the worker.
-            if closed_id is None and n == 0:
-                from app.jobs.worker import _bot_reply_map, _bot_reply_map_lock
-                with _bot_reply_map_lock:
-                    orig_user_ts = _bot_reply_map.get((r.group_id, r.target_ts))
-                if orig_user_ts is not None:
-                    log.info(
-                        "Emoji %s on bot reply ts=%s → resolving to orig user ts=%s (group=%s)",
-                        r.emoji, r.target_ts, orig_user_ts, r.group_id,
-                    )
-                    closed_via_bot_reply = close_case_by_message_ts(
-                        db, group_id=r.group_id, target_ts=orig_user_ts, emoji=r.emoji
-                    )
-                    if closed_via_bot_reply:
-                        _close_and_index(closed_via_bot_reply, "bot-reply-lookup")
-                    n2 = confirm_cases_by_evidence_ts(
-                        db, group_id=r.group_id, target_ts=orig_user_ts, emoji=r.emoji
-                    )
-                    if n2:
-                        log.info(
-                            "Bot-reply emoji confirmation: %d case(s) updated (group=%s)",
-                            n2, r.group_id,
-                        )
-
 
 def _send_direct_or_cleanup(admin_id: str, text: str) -> bool:
     """Send a direct message to an admin; trigger contact-removed cleanup on failure.

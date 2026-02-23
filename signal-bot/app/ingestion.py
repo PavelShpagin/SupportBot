@@ -89,6 +89,9 @@ def ingest_message(
         "ts": ts,
         "text": text or "",
     }
-    enqueue_job(db, BUFFER_UPDATE, job_payload)
+    # MAYBE_RESPOND must be enqueued first so it runs before BUFFER_UPDATE.
+    # When the bot finds a RAG answer it marks the message as rag-answered;
+    # BUFFER_UPDATE then skips B1 case creation for that message.
     enqueue_job(db, MAYBE_RESPOND, job_payload)
+    enqueue_job(db, BUFFER_UPDATE, job_payload)
 
