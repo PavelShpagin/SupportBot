@@ -90,30 +90,27 @@ Answer:"""
                 return "[[TAG_ADMIN]]"
 
         # Solved cases found (SCRAG / B3) → synthesize direct answer
-        prompt = f"""You are a concise support bot. Answer directly.
+        prompt = f"""You are a concise support bot. Answer ONLY if you are confident the retrieved case directly answers the question.
 
 Question: "{question}"
 
-Relevant solved cases:
+Retrieved cases:
 {case_ans}
 
-RULES:
-1. NO greeting, NO "Based on...", NO "According to...".
-2. State the ACTUAL solution from the most relevant case in 1-2 sentences. ALWAYS end with the case link.
-3. Respond in {lang_instruction}.
-4. ALWAYS use the case context above — never ignore it. The cases were selected semantically so at least one is relevant.
-5. NO bullet points, NO lists, NO multiple links. Solution + one link only.
-6. Do NOT copy example text — write the solution from the case context above.
-7. CRITICAL: If the solution requires the user to provide something (a log, a file, a screenshot,
-   send something to someone) — that means admin follow-up is needed. In that case add [[TAG_ADMIN]]
-   BEFORE the case link so the admin is notified.
-   Format: "<instruction to user> [[TAG_ADMIN]] <case link>"
-8. Even when tagging admin, ALWAYS include the case link at the end.
+DECISION RULES — apply in order:
+1. Read the question carefully. Check whether the retrieved case solution ACTUALLY answers the specific question asked.
+2. If the case is about a DIFFERENT problem (even if the same product/topic area) → output ONLY "[[TAG_ADMIN]]". Do NOT improvise or guess.
+3. If the case directly answers the question:
+   a. Self-service fix: state the solution in 1-2 sentences + case link. No admin tag.
+   b. Needs admin action (user must send a log, file, screenshot, etc.): "<instruction> [[TAG_ADMIN]] <case link>".
+4. NO greeting, NO "Based on...", NO "According to...", NO bullet points.
+5. Respond in {lang_instruction}.
+6. NEVER invent information not in the retrieved case.
 
-GOOD (self-service fix): "Перейдіть у Налаштування → Оновлення та натисніть 'Перевстановити'. https://supportbot.info/case/xxx"
-GOOD (needs admin): "Надайте лог з папки /var/log/app/ [[TAG_ADMIN]] https://supportbot.info/case/xxx"
-BAD: bare "[[TAG_ADMIN]]" without any instruction or case link.
-BAD: "Вітаю! На основі знайдених кейсів, ось що ми знайшли..."
+GOOD: "Зайдіть у «налаштування» → «tracking» → «on». https://supportbot.info/case/xxx"
+GOOD: "Надайте лог з /var/log/app/ [[TAG_ADMIN]] https://supportbot.info/case/xxx"
+BAD: answer about drone freezing when user asked about drone assembly.
+BAD: bare "[[TAG_ADMIN]]" when the case does answer the question.
 
 Answer:"""
 

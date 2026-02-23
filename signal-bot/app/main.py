@@ -596,14 +596,49 @@ def _handle_reaction(r: InboundReaction) -> None:
         )
         log.info("Reaction added: group=%s ts=%s emoji=%s", r.group_id, r.target_ts, r.emoji)
 
-        # Positive emoji on a message that is evidence for a case → confirm that case
+        # Positive emoji → close open case linked to this message AND confirm solved cases
         if r.emoji in POSITIVE_EMOJI:
+            from app.db import close_case_by_message_ts
+            # Directly close any open case whose evidence includes this message
+            closed_id = close_case_by_message_ts(
+                db, group_id=r.group_id, target_ts=r.target_ts, emoji=r.emoji
+            )
+            if closed_id:
+                log.info(
+                    "Case %s CLOSED via emoji %s on ts=%s (group=%s)",
+                    closed_id, r.emoji, r.target_ts, r.group_id,
+                )
+                # Index the now-solved case in SCRAG so it's immediately searchable
+                try:
+                    from app.db.queries_mysql import get_case
+                    from app.db import mark_case_in_rag
+                    c = get_case(db, closed_id)
+                    if c and c.get("solution_summary", "").strip():
+                        doc_text = "\n".join([
+                            f"[SOLVED] {(c.get('problem_title') or '').strip()}",
+                            f"Проблема: {(c.get('problem_summary') or '').strip()}",
+                            f"Рішення: {c['solution_summary'].strip()}",
+                            "tags: " + ", ".join(c.get("tags") or []),
+                        ]).strip()
+                        rag_emb = llm.embed(text=doc_text)
+                        rag.upsert_case(
+                            case_id=closed_id,
+                            document=doc_text,
+                            embedding=rag_emb,
+                            metadata={"group_id": r.group_id, "status": "solved"},
+                        )
+                        mark_case_in_rag(db, closed_id)
+                        log.info("Emoji-closed case %s indexed in SCRAG (group=%s)", closed_id, r.group_id[:20])
+                except Exception:
+                    log.exception("Failed to index emoji-closed case %s in SCRAG", closed_id)
+
+            # Also set closed_emoji on already-solved cases linked to this message
             n = confirm_cases_by_evidence_ts(
                 db, group_id=r.group_id, target_ts=r.target_ts, emoji=r.emoji
             )
             if n:
                 log.info(
-                    "Case confirmation via emoji %s on ts=%s in group=%s: %d case(s) confirmed",
+                    "Case confirmation via emoji %s on ts=%s in group=%s: %d case(s) updated",
                     r.emoji, r.target_ts, r.group_id, n,
                 )
 

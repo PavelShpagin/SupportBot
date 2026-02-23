@@ -96,6 +96,10 @@ SCENARIOS = [
     ("(c) unrelated VPN question",
      "як налаштувати VPN через Cisco ASA?",
      False),
+    # Hallucination test: drone assembly ≠ frozen drone — must NOT answer with thermal bag tip
+    ("(c) drone assembly — no matching case",
+     "є інструкції, як збирати літачок?",
+     False),
 ]
 
 
