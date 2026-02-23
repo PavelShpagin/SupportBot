@@ -192,4 +192,24 @@ if case_ids:
             print(f"  ERROR for {cid}: {e}")
     print("=" * 65)
 else:
-    print("\nNo case_ids returned (old server version). Check supportbot.info manually.")
+    # Try the new group cases endpoint (available after deploying this commit)
+    print(f"\nNo case_ids returned (old server). Trying GET /api/groups/{{group_id}}/cases...")
+    import urllib.parse
+    encoded_gid = urllib.parse.quote(GROUP_ID, safe="")
+    try:
+        resp = urllib.request.urlopen(
+            f"{API_BASE}/api/groups/{encoded_gid}/cases", timeout=15
+        )
+        data = json.loads(resp.read())
+        cases = data.get("cases", [])
+        print(f"Found {len(cases)} active cases for this group:")
+        print("=" * 65)
+        for c in cases:
+            cid = c["case_id"]
+            emoji = f" [{c['closed_emoji']}]" if c.get("closed_emoji") else ""
+            print(f"  [{c['status']}{emoji}] {c['problem_title']}")
+            print(f"  https://supportbot.info/case/{cid}")
+            print()
+        print("=" * 65)
+    except Exception as e:
+        print(f"  ERROR: {e} — deploy the latest code first")
