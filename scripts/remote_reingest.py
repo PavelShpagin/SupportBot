@@ -75,20 +75,28 @@ Return ONLY valid JSON with key:
   - case_block: string (the EXACT messages from the chunk that form this case, problem through resolution, preserving all header lines with msg_id)
 
 Rules:
-- Extract ONLY solved cases with a confirmed working solution.
+- Extract ONLY solved cases with a HUMAN-CONFIRMED working solution.
 - Do NOT extract open/unresolved issues, greetings, or off-topic messages.
-- Each case_block must include both the problem and the confirmed solution.
+- Each case_block must include both the problem AND a human confirmation that it was resolved.
 - Preserve the original message headers (sender_hash ts=... msg_id=...) verbatim inside case_block.
 - Do not paraphrase or summarize; copy the exact message lines.
 - If there are no solved cases, return {"cases": []}.
 
-Resolution signals (from strongest to weakest):
-- reactions=N (N > 0) on a technical answer message -- STRONG signal
-- Text confirmation: "thanks", "working", "works", "ok", "solved", "дякую", "працює", "заробило"
-- Thread ends after a technical answer with no follow-up questions
+CRITICAL — valid resolution signals (at least one REQUIRED):
+- reactions=N (N > 0) on a message — STRONGEST signal, always treat as confirmed resolved
+- Explicit human text confirmation AFTER a technical answer:
+  English: "thanks", "working", "works", "ok", "solved", "it worked", "fixed"
+  Ukrainian: "дякую", "працює", "вирішено", "ок", "заробило", "допомогло"
+  Russian: "спасибо", "заработало", "помогло"
 
-Be generous: if a technical answer has any positive reaction OR brief confirmation, treat as solved.
+CRITICAL — what does NOT count as resolution:
+- Silence or end of thread — a question with no follow-up is NOT solved
+- A person answering their own question without the questioner confirming it worked
+- One person suggesting a solution with no acknowledgement from the person who had the problem
 """
+
+def _is_bot_message(body: str) -> bool:
+    return "supportbot.info/case/" in (body or "")
 
 def _chunk_messages(msgs, max_chars=12000, overlap=3):
     formatted = []
@@ -96,6 +104,8 @@ def _chunk_messages(msgs, max_chars=12000, overlap=3):
         body = (m.get("body") or "").strip()
         if not body:
             continue
+        if _is_bot_message(body):
+            continue  # Never include bot auto-responses in extraction
         sender   = m.get("sender", "?")
         ts       = m.get("ts", 0)
         mid      = m.get("id", str(ts))
@@ -141,11 +151,13 @@ for i, chunk in enumerate(chunks):
             raw_blocks.append(b)
 print(f"  Raw blocks (deduplicated): {len(raw_blocks)}")
 
-# ── 4. Build history messages payload ────────────────────────────────────────
+# ── 4. Build history messages payload (exclude bot messages from evidence) ───
 hist_messages = []
 for m in messages:
     mid  = m.get("id") or str(uuid.uuid4())
     body = m.get("body") or ""
+    if _is_bot_message(body):
+        continue  # Bot messages must not appear in case evidence
     hist_messages.append({
         "message_id":    mid,
         "sender_hash":   m.get("sender") or "unknown",

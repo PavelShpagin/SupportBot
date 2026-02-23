@@ -181,7 +181,9 @@ class TestPipelineE2E:
         db     = FakeDB()
 
         # ── Phase 1: extract raw case blocks ──────────────────────────────
-        chunks = _chunk_messages(messages=messages, max_chars=12000, overlap_messages=3)
+        # Exclude bot messages (identified by supportbot.info links) from extraction
+        chunks = _chunk_messages(messages=messages, max_chars=12000, overlap_messages=3,
+                                 bot_e164="")
         raw_blocks: List[str] = []
         seen_keys: set = set()
         for chunk in chunks:

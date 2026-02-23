@@ -41,22 +41,24 @@ Return ONLY valid JSON with key:
   - case_block: string (the EXACT messages from the chunk that form this case, problem through resolution, preserving all header lines with msg_id)
 
 Rules:
-- Extract ONLY solved cases with a confirmed working solution.
+- Extract ONLY solved cases with a HUMAN-CONFIRMED working solution.
 - Do NOT extract open/unresolved issues, greetings, or off-topic messages.
-- Each case_block must include both the problem and the confirmed solution.
-- Preserve the original message headers (sender_hash ts=... msg_id=...) verbatim inside case_block ? they are needed for evidence linking.
+- Each case_block must include both the problem AND a human confirmation that it was resolved.
+- Preserve the original message headers (sender_hash ts=... msg_id=...) verbatim inside case_block — they are needed for evidence linking.
 - Do not paraphrase or summarize; copy the exact message lines.
 - If there are no solved cases, return {"cases": []}.
 
-Resolution signals (from strongest to weakest):
-- reactions=N (N > 0) on a technical answer message -- STRONG signal, treat as confirmed resolved
-- Text confirmation after a technical answer (any language):
+CRITICAL — valid resolution signals (at least one REQUIRED):
+- reactions=N (N > 0) on a message — STRONGEST signal, always treat as confirmed resolved
+- Explicit human text confirmation AFTER a technical answer:
   English: "thanks", "working", "works", "ok", "solved", "it worked", "fixed"
-  Ukrainian: "\u0434\u044f\u043a\u0443\u044e", "\u043f\u0440\u0430\u0446\u044e\u0454", "\u0432\u0438\u0440\u0456\u0448\u0435\u043d\u043e", "\u043e\u043a", "\u0437\u0430\u0440\u0430\u0431\u043e\u0442\u0430\u043b\u043e"
-  Russian: "\u0441\u043f\u0430\u0441\u0438\u0431\u043e", "\u0437\u0430\u0440\u0430\u0431\u043e\u0442\u0430\u043b\u043e", "\u043f\u043e\u043c\u043e\u0433\u043b\u043e"
-- The conversation thread ends after a technical answer (no follow-up questions)
+  Ukrainian: "дякую", "працює", "вирішено", "ок", "заробило", "допомогло"
+  Russian: "спасибо", "заработало", "помогло"
 
-Be generous: if a technical answer has any positive reaction OR brief confirmation, treat as solved.
+CRITICAL — what does NOT count as resolution:
+- Silence or end of thread — a question with no follow-up is NOT solved
+- A person answering their own question without the questioner confirming it worked
+- One person suggesting a solution with no acknowledgement from the person who had the problem
 """
 
 log = logging.getLogger(__name__)
@@ -287,8 +289,19 @@ def _enrich_messages_with_attachments(
     return enriched
 
 
-def _chunk_messages(*, messages: List[dict], max_chars: int, overlap_messages: int) -> List[str]:
-    """Split messages into chunks for LLM processing."""
+def _is_bot_message(text: str, sender: str, bot_e164: str) -> bool:
+    """Return True if this message was sent by the bot (should be excluded from extraction)."""
+    if bot_e164 and sender == bot_e164:
+        return True
+    # Detect bot messages by their content: they always include a supportbot.info case link
+    if "supportbot.info/case/" in (text or ""):
+        return True
+    return False
+
+
+def _chunk_messages(*, messages: List[dict], max_chars: int, overlap_messages: int,
+                    bot_e164: str = "") -> List[str]:
+    """Split messages into chunks for LLM processing. Bot messages are excluded."""
     formatted = []
     for m in messages:
         # Prefer enriched_body which includes OCR text for images
@@ -296,6 +309,8 @@ def _chunk_messages(*, messages: List[dict], max_chars: int, overlap_messages: i
         if not text:
             continue
         sender = m.get("sender") or m.get("source") or "unknown"
+        if _is_bot_message(text, sender, bot_e164):
+            continue  # Never feed bot auto-responses to the extraction LLM
         ts = m.get("ts") or m.get("timestamp") or 0
         msg_id = m.get("id") or m.get("message_id") or str(ts)
         reactions = int(m.get("reactions") or 0)
@@ -681,6 +696,7 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
             messages=msgs,
             max_chars=settings.chunk_max_chars,
             overlap_messages=settings.chunk_overlap_messages,
+            bot_e164=settings.signal_bot_e164 or "",
         )
         log.info("Split into %d chunks for processing", len(chunks))
 
