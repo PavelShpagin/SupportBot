@@ -73,6 +73,7 @@ class LLMClient:
                     messages=messages,
                     response_format={"type": "json_object"},
                     temperature=0,
+                    timeout=60.0,
                 )
 
                 raw = resp.choices[0].message.content or "{}"
@@ -95,13 +96,14 @@ class LLMClient:
 
         raise RuntimeError(f"LLM JSON call failed after retries: {last_exc}")
 
-    def chat(self, *, prompt: str, model: str | None = None) -> str:
+    def chat(self, *, prompt: str, model: str | None = None, timeout: float = 30.0) -> str:
         """Free-text (non-JSON) completion. Returns the raw text response."""
         m = model or self.settings.model_respond
         resp = self.client.chat.completions.create(
             model=m,
             messages=[{"role": "user", "content": prompt}],
             temperature=0,
+            timeout=timeout,
         )
         return (resp.choices[0].message.content or "").strip()
 

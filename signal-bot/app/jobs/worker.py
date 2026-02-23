@@ -41,6 +41,53 @@ from app.agent.ultimate_agent import UltimateAgent
 
 log = logging.getLogger(__name__)
 
+# ── Worker heartbeat ──────────────────────────────────────────────────────────
+# Updated every loop iteration so /healthz can detect a stalled worker.
+_worker_last_tick: float = time.time()
+_worker_tick_lock = threading.Lock()
+
+
+def _touch_heartbeat() -> None:
+    global _worker_last_tick
+    with _worker_tick_lock:
+        _worker_last_tick = time.time()
+
+
+def get_worker_heartbeat_age() -> float:
+    """Seconds since the worker loop last ticked. Large value = worker is stalled."""
+    with _worker_tick_lock:
+        return time.time() - _worker_last_tick
+
+
+# ── Per-job hard timeout ──────────────────────────────────────────────────────
+# Any job that does not finish within this window is abandoned (the thread keeps
+# running in the background but the main loop moves on and marks the job failed).
+# LLM call timeouts (30 s / 60 s) mean the orphaned thread usually terminates
+# shortly after the main loop moves on.
+_JOB_TIMEOUT_SECONDS = 90.0
+
+
+def _run_with_timeout(fn, *args, timeout: float) -> tuple[bool, Exception | None]:
+    """Run fn(*args) in a daemon thread with a hard wall-clock timeout.
+
+    Returns (completed, exception_or_None).
+    completed=False means the thread is still running (timed out).
+    """
+    result: dict = {"exc": None}
+
+    def _target() -> None:
+        try:
+            fn(*args)
+        except Exception as exc:  # noqa: BLE001
+            result["exc"] = exc
+
+    t = threading.Thread(target=_target, daemon=True)
+    t.start()
+    t.join(timeout=timeout)
+    return not t.is_alive(), result["exc"]
+
+
+# ── RAG-answered message tracking ────────────────────────────────────────────
 # message_id set: messages for which the bot sent a real RAG answer (not a pure
 # [[TAG_ADMIN]] escalation).  When BUFFER_UPDATE processes the buffer afterwards,
 # it skips these messages so no B1 open case is created for an already-answered
@@ -405,21 +452,36 @@ def worker_loop_forever(deps: WorkerDeps) -> None:
             allowed_types=[job_types.BUFFER_UPDATE, job_types.MAYBE_RESPOND],
         )
         if job is None:
+            _touch_heartbeat()
             time.sleep(deps.settings.worker_poll_seconds)
             continue
 
-        try:
-            if job.type == job_types.BUFFER_UPDATE:
-                _handle_buffer_update(deps, job.payload)
-            elif job.type == job_types.MAYBE_RESPOND:
-                _handle_maybe_respond(deps, job.payload)
-            else:
-                log.warning("Unknown job type=%s job_id=%s (marking done)", job.type, job.job_id)
+        _touch_heartbeat()
 
+        if job.type == job_types.BUFFER_UPDATE:
+            handler = _handle_buffer_update
+        elif job.type == job_types.MAYBE_RESPOND:
+            handler = _handle_maybe_respond
+        else:
+            log.warning("Unknown job type=%s job_id=%s (marking done)", job.type, job.job_id)
             complete_job(deps.db, job_id=job.job_id)
-        except Exception:
-            log.exception("Job failed: id=%s type=%s", job.job_id, job.type)
+            continue
+
+        completed, exc = _run_with_timeout(
+            handler, deps, job.payload, timeout=_JOB_TIMEOUT_SECONDS
+        )
+
+        if not completed:
+            log.error(
+                "Job timed out after %.0fs: id=%s type=%s — marking failed, worker continues",
+                _JOB_TIMEOUT_SECONDS, job.job_id, job.type,
+            )
             fail_job(deps.db, job_id=job.job_id, attempts=job.attempts)
+        elif exc is not None:
+            log.exception("Job failed: id=%s type=%s", job.job_id, job.type, exc_info=exc)
+            fail_job(deps.db, job_id=job.job_id, attempts=job.attempts)
+        else:
+            complete_job(deps.db, job_id=job.job_id)
 
 
 def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:

@@ -35,6 +35,13 @@ services:
     networks:
       - default
       - supportbot-network
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8000/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
 
   signal-desktop:
     build:

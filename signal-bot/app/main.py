@@ -43,7 +43,7 @@ from app.db import (
     delete_reaction,
 )
 from app.jobs.types import BUFFER_UPDATE, HISTORY_LINK, MAYBE_RESPOND
-from app.jobs.worker import WorkerDeps, worker_loop_forever
+from app.jobs.worker import WorkerDeps, worker_loop_forever, get_worker_heartbeat_age
 from app.llm.client import LLMClient
 from app.logging_config import configure_logging
 from app.rag.chroma import create_chroma
@@ -980,9 +980,18 @@ def view_case(case_id: str):
     return HTMLResponse(content=html)
 
 
+_WORKER_STALL_THRESHOLD_S = 120  # seconds before we consider the worker stalled
+
+
 @app.get("/healthz")
 def healthz() -> dict:
-    return {"ok": True}
+    age = get_worker_heartbeat_age()
+    if age > _WORKER_STALL_THRESHOLD_S:
+        raise HTTPException(
+            status_code=503,
+            detail=f"Worker stalled: no heartbeat for {age:.0f}s",
+        )
+    return {"ok": True, "worker_heartbeat_age_s": round(age, 1)}
 
 
 class HistoryTokenRequest(BaseModel):
