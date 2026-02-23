@@ -820,6 +820,19 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
             else:
                 answer = answer.replace("[[MENTION_PLACEHOLDER]]", "@admin")
 
+        # Mark as RAG-answered BEFORE sending so that even if delivery fails the
+        # subsequent BUFFER_UPDATE job still skips B1 case creation: the answer
+        # exists in SCRAG regardless of transient delivery issues.
+        if rag_answered:
+            with _rag_answered_lock:
+                if len(_rag_answered_messages) >= _RAG_ANSWERED_MAX:
+                    try:
+                        del _rag_answered_messages[next(iter(_rag_answered_messages))]
+                    except StopIteration:
+                        pass
+                _rag_answered_messages[message_id] = None
+            log.debug("Marked message %s as RAG-answered (B1 case creation suppressed)", message_id)
+
         # Send response
         quote_author = str(payload.get("sender") or "").strip()
         quote_ts_raw = payload.get("ts")
@@ -834,18 +847,6 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
             quote_message=quote_msg,
             mention_recipients=mention_recipients,
         )
-
-        # If the bot gave a real RAG answer, mark the user message so the
-        # subsequent BUFFER_UPDATE job won't create a B1 open case for it.
-        if rag_answered:
-            with _rag_answered_lock:
-                if len(_rag_answered_messages) >= _RAG_ANSWERED_MAX:
-                    try:
-                        del _rag_answered_messages[next(iter(_rag_answered_messages))]
-                    except StopIteration:
-                        pass
-                _rag_answered_messages[message_id] = None
-            log.debug("Marked message %s as RAG-answered (B1 case creation suppressed)", message_id)
         
     except Exception as e:
         log.exception("Ultimate Agent failed: %s", e)
