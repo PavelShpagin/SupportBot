@@ -774,12 +774,10 @@ def get_case_endpoint(case_id: str):
     return case
 
 
-@app.get("/api/groups/{group_id}/cases")
+@app.get("/api/group-cases")
 def list_group_cases(group_id: str, include_archived: bool = False):
-    """List cases for a group (non-archived by default)."""
+    """List cases for a group (non-archived by default). Pass group_id as query param."""
     from app.db import get_cases_for_group
-    import urllib.parse
-    group_id = urllib.parse.unquote(group_id)
     cases = get_cases_for_group(db, group_id, include_archived=include_archived)
     return {"group_id": group_id, "cases": cases}
 

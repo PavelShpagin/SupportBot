@@ -193,12 +193,12 @@ if case_ids:
     print("=" * 65)
 else:
     # Try the new group cases endpoint (available after deploying this commit)
-    print(f"\nNo case_ids returned (old server). Trying GET /api/groups/{{group_id}}/cases...")
+    print(f"\nNo case_ids returned (old server). Trying GET /api/group-cases...")
     import urllib.parse
     encoded_gid = urllib.parse.quote(GROUP_ID, safe="")
     try:
         resp = urllib.request.urlopen(
-            f"{API_BASE}/api/groups/{encoded_gid}/cases", timeout=15
+            f"{API_BASE}/api/group-cases?group_id={encoded_gid}", timeout=15
         )
         data = json.loads(resp.read())
         cases = data.get("cases", [])
