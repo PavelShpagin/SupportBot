@@ -1749,3 +1749,17 @@ def debug_answer(req: DebugAnswerRequest) -> dict:
         "is_admin_tag": "[[TAG_ADMIN]]" in (response or ""),
         "has_case_link": "supportbot.info/case/" in (response or ""),
     }
+
+
+class DebugGateRequest(BaseModel):
+    message: str
+    context: str = ""
+
+
+@app.post("/debug/gate")
+def debug_gate(req: DebugGateRequest) -> dict:
+    """Test the gating LLM directly. Returns consider + tag without any side effects."""
+    if not settings.http_debug_endpoints_enabled:
+        raise HTTPException(status_code=404, detail="Not found")
+    result = llm.decide_consider(message=req.message, context=req.context)
+    return {"consider": result.consider, "tag": result.tag}
