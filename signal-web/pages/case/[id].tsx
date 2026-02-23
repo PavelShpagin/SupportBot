@@ -438,15 +438,6 @@ export default function CasePage() {
               <span className="brand">SupportBot</span>
             </a>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              {data.closed_emoji && data.status === 'solved' && (
-                <span title="Підтверджено реакцією" style={{
-                  fontSize: 22,
-                  lineHeight: 1,
-                  filter: 'drop-shadow(0 1px 2px rgba(0,0,0,.15))',
-                }}>
-                  {data.closed_emoji}
-                </span>
-              )}
               <span className={`status-badge ${data.status === 'solved' ? 'status-solved' : data.status === 'archived' ? 'status-archived' : 'status-open'}`}>
                 {data.status === 'solved' ? 'Вирішено' : data.status === 'archived' ? 'Архів' : 'Відкрито'}
               </span>
