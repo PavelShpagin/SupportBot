@@ -27,10 +27,15 @@ T = TypeVar("T", bound=BaseModel)
 class LLMClient:
     def __init__(self, settings: Settings):
         self.settings = settings
-        # Use Google's OpenAI-compatible endpoint for Gemini models
+        # Use Google's OpenAI-compatible endpoint for Gemini models.
+        # max_retries=0: the OpenAI library must not retry internally — each call
+        # should fail fast within its own timeout so the job-level 90s watchdog
+        # in worker.py stays effective. Retries at the job level are handled by
+        # fail_job / claim_next_job (DB-backed, visible in logs).
         self.client = OpenAI(
             api_key=settings.openai_api_key,
             base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
+            max_retries=0,
         )
 
     def _json_call(
