@@ -474,6 +474,17 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         if not case.keep:
             continue
 
+        # Require at least one positive emoji reaction in the span before accepting
+        # the LLM's "solved" verdict for live cases. Without emoji, the "solution"
+        # might just be the user's own continued narrative (no human confirmation).
+        span_has_reaction = bool(re.search(r'\breactions=[1-9]', case_block_text))
+        effective_status = case.status if span_has_reaction else "open"
+        if case.status == "solved" and not span_has_reaction:
+            log.info(
+                "Case span %s..%s: LLM said solved but no emoji reaction → stored as open (pending confirmation)",
+                span.start_idx, span.end_idx,
+            )
+
         # Extract evidence_ids directly from non-bot blocks
         evidence_ids = [
             non_bot_blocks[i].message_id
@@ -481,8 +492,8 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
             if non_bot_blocks[i].message_id
         ]
         log.info(
-            "Case span %s..%s status=%s evidence_ids=%d",
-            span.start_idx, span.end_idx, case.status, len(evidence_ids),
+            "Case span %s..%s llm_status=%s effective_status=%s evidence_ids=%d",
+            span.start_idx, span.end_idx, case.status, effective_status, len(evidence_ids),
         )
 
         evidence_image_paths = _collect_evidence_image_paths(deps, evidence_ids)
@@ -495,7 +506,7 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
             merge_case(
                 deps.db,
                 target_case_id=similar_id,
-                status=case.status,
+                status=effective_status,
                 problem_summary=case.problem_summary,
                 solution_summary=case.solution_summary,
                 tags=case.tags,
@@ -511,7 +522,7 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
                 deps.db,
                 case_id=case_id,
                 group_id=group_id,
-                status=case.status,
+                status=effective_status,
                 problem_title=case.problem_title,
                 problem_summary=case.problem_summary,
                 solution_summary=case.solution_summary,
@@ -521,8 +532,8 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
             )
             store_case_embedding(deps.db, case_id, dedup_embedding)
 
-        if case.status == "solved" and case.solution_summary.strip():
-            # Solved case → index in SCRAG immediately (B3)
+        if effective_status == "solved" and case.solution_summary.strip():
+            # Solved case (emoji-confirmed) → index in SCRAG immediately
             doc_text = "\n".join(
                 [
                     f"[SOLVED] {case.problem_title.strip()}",
@@ -534,7 +545,7 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
             embedding = deps.llm.embed(text=doc_text)
             rag_meta: dict = {
                 "group_id": group_id,
-                "status": case.status,
+                "status": "solved",  # in SCRAG, presence means solved
             }
             # Chroma rejects empty list metadata values — only include if non-empty
             if evidence_ids:
