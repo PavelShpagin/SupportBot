@@ -29,9 +29,15 @@ class UltimateAgent:
         print("Agents loaded.", flush=True)
 
     def load_agents(self):
-        """Reload agents (called on refresh interval)."""
+        """Reload agents (called on refresh interval).
+
+        Only the Chroma client is refreshed — it needs a new connection so it
+        picks up any cases added since startup.  The LLMClient is intentionally
+        kept alive: it holds a warm httpx connection pool to the Gemini API and
+        re-creating it every 10 minutes causes a cold-start TCP connection that
+        is disproportionately vulnerable to transient API hangs.
+        """
         self.rag = create_chroma(self.settings)
-        self.llm = LLMClient(self.settings)
         self.case_agent = CaseSearchAgent(rag=self.rag, llm=self.llm, public_url=self.public_url)
         self.last_load_time = time.time()
 
