@@ -885,10 +885,44 @@ def view_chat_context(message_id: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+def _path_to_url(p: str) -> str:
+    """Convert an absolute storage path to a /static/ URL."""
+    if p.startswith("/var/lib/signal/"):
+        return p.replace("/var/lib/signal/", "/static/", 1)
+    return p
+
+
+def _media_html(paths: list) -> str:
+    """Return HTML for a list of media file paths (images / video / fallback download)."""
+    import html as _html
+    parts = []
+    for p in paths:
+        url = _path_to_url(p)
+        url_esc = _html.escape(url)
+        ext = Path(p).suffix.lower()
+        if ext in (".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp"):
+            parts.append(
+                f'<a href="{url_esc}" target="_blank">'
+                f'<img src="{url_esc}" loading="lazy" class="media-img" alt="attachment" /></a>'
+            )
+        elif ext in (".mp4", ".webm", ".ogg", ".mov"):
+            parts.append(
+                f'<video controls class="media-video">'
+                f'<source src="{url_esc}"><a href="{url_esc}" target="_blank">Download video</a>'
+                f'</video>'
+            )
+        else:
+            name = _html.escape(Path(p).name)
+            parts.append(f'<a href="{url_esc}" class="media-download" download>⬇ {name}</a>')
+    return "\n".join(parts)
+
+
 @app.get("/case/{case_id}", response_class=HTMLResponse)
 def view_case(case_id: str):
+    import html as _html
+
     case = get_case(db, case_id)
-    
+
     # Fallback: Check static JSON if not in DB
     if not case:
         try:
@@ -897,20 +931,16 @@ def view_case(case_id: str):
             if cases_path.exists():
                 with open(cases_path, "r", encoding="utf-8") as f:
                     data = json.load(f)
-                    # Check if case_id matches "idx" (integer)
                     if case_id.isdigit():
                         idx = int(case_id)
                         for c in data.get("cases", []):
                             if c.get("idx") == idx:
-                                # Adapt to expected format
                                 case = {
                                     "problem_title": "Case #" + str(idx),
                                     "status": "solved",
                                     "problem_summary": c.get("problem_summary"),
                                     "solution_summary": c.get("solution_summary"),
                                 }
-                                # Static cases don't have detailed message evidence in the JSON usually, 
-                                # or it's in a different format. We'll just show the summary.
                                 break
         except Exception as e:
             log.warning(f"Failed to lookup static case: {e}")
@@ -924,59 +954,87 @@ def view_case(case_id: str):
         <p class="note">Якщо ви бачите це посилання у відповіді бота — це тимчасова проблема. Новий кейс буде доступний після наступного запиту.</p>
         </body></html>"""
         return HTMLResponse(content=html, status_code=404)
-    
+
     evidence = get_case_evidence(db, case_id)
-    
-    # Simple HTML template
-    html = f"""
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Case {case_id}</title>
-        <style>
-            body {{ font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }}
-            .case-header {{ border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-bottom: 20px; }}
-            .status {{ display: inline-block; padding: 5px 10px; border-radius: 5px; background: #eee; }}
-            .status.solved {{ background: #d4edda; color: #155724; }}
-            .message {{ border: 1px solid #eee; padding: 10px; margin-bottom: 10px; border-radius: 5px; }}
-            .meta {{ color: #666; font-size: 0.9em; margin-bottom: 5px; }}
-            img {{ max-width: 100%; height: auto; margin-top: 10px; }}
-        </style>
-    </head>
-    <body>
-        <div class="case-header">
-            <h1>{case.get('problem_title', 'Case ' + case_id)}</h1>
-            <div class="status {case.get('status', 'open')}">{case.get('status', 'open')}</div>
-            <p><strong>Problem:</strong> {case.get('problem_summary', '')}</p>
-            <p><strong>Solution:</strong> {case.get('solution_summary', '')}</p>
-        </div>
-        
-        <h2>Evidence</h2>
-        <div class="evidence-list">
-    """
-    
+
+    status = case.get("status", "open")
+    title = _html.escape(case.get("problem_title") or f"Case {case_id}")
+    problem = _html.escape(case.get("problem_summary") or "")
+    solution = _html.escape(case.get("solution_summary") or "")
+    tags = case.get("tags") or []
+    tags_html = " ".join(f'<span class="tag">{_html.escape(t)}</span>' for t in tags) if tags else ""
+
+    html = f"""<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <style>
+    *, *::before, *::after {{ box-sizing: border-box; }}
+    body {{ font-family: system-ui, -apple-system, sans-serif; background: #f0f2f5;
+           color: #1a1a1a; margin: 0; padding: 16px; }}
+    .card {{ background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,.10);
+             max-width: 860px; margin: 0 auto 20px; padding: 24px; }}
+    h1 {{ font-size: 1.4rem; margin: 0 0 12px; }}
+    .badge {{ display: inline-block; padding: 3px 10px; border-radius: 20px;
+              font-size: .8rem; font-weight: 600; text-transform: uppercase;
+              background: #e2e8f0; color: #4a5568; margin-bottom: 16px; }}
+    .badge.solved {{ background: #c6f6d5; color: #276749; }}
+    .badge.archived {{ background: #feebc8; color: #744210; }}
+    .section-label {{ font-size: .75rem; text-transform: uppercase; letter-spacing: .05em;
+                      color: #718096; margin: 0 0 4px; }}
+    .section-text {{ margin: 0 0 16px; line-height: 1.6; white-space: pre-wrap; }}
+    .tag {{ display: inline-block; background: #ebf4ff; color: #2b6cb0;
+            border-radius: 4px; padding: 1px 7px; font-size: .78rem; margin: 2px; }}
+    h2 {{ font-size: 1.1rem; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;
+          margin: 0 0 16px; }}
+    .message {{ border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px;
+                margin-bottom: 12px; background: #fafafa; }}
+    .msg-meta {{ font-size: .78rem; color: #718096; margin-bottom: 6px; }}
+    .msg-sender {{ font-weight: 600; color: #2d3748; }}
+    .msg-body {{ line-height: 1.55; white-space: pre-wrap; word-break: break-word; }}
+    .media-img {{ max-width: 100%; max-height: 400px; border-radius: 6px;
+                  margin-top: 8px; display: block; border: 1px solid #e2e8f0; }}
+    .media-video {{ max-width: 100%; margin-top: 8px; border-radius: 6px; display: block; }}
+    .media-download {{ display: inline-block; margin-top: 8px; padding: 5px 12px;
+                       background: #ebf4ff; color: #2b6cb0; border-radius: 6px;
+                       text-decoration: none; font-size: .85rem; }}
+    .media-download:hover {{ background: #bee3f8; }}
+    .no-evidence {{ color: #718096; font-style: italic; }}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>{title}</h1>
+    <div class="badge {status}">{status}</div>
+    <p class="section-label">Problem</p>
+    <p class="section-text">{problem}</p>
+    <p class="section-label">Solution</p>
+    <p class="section-text">{solution}</p>
+    {f'<p class="section-label">Tags</p><p>{tags_html}</p>' if tags_html else ""}
+  </div>
+
+  <div class="card">
+    <h2>Conversation history</h2>
+"""
+
     if evidence:
         for msg in evidence:
-            ts_str = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(msg.ts / 1000))
-            html += f"""
-                <div class="message">
-                    <div class="meta">{msg.sender_hash[:8]} at {ts_str}</div>
-                    <div class="content">{msg.content_text}</div>
-            """
-            for p in msg.image_paths:
-                # Serve images via /static if possible, or just show path
-                if p.startswith("/var/lib/signal/"):
-                    url = p.replace("/var/lib/signal/", "/static/")
-                    html += f'<img src="{url}" loading="lazy" />'
-            html += "</div>"
+            ts_str = time.strftime("%Y-%m-%d %H:%M", time.localtime(msg.ts / 1000))
+            sender_label = _html.escape(msg.sender_name or msg.sender_hash[:10])
+            content = _html.escape(msg.content_text or "")
+            media = _media_html(msg.image_paths) if msg.image_paths else ""
+            html += f"""    <div class="message">
+      <div class="msg-meta"><span class="msg-sender">{sender_label}</span> &bull; {ts_str}</div>
+      <div class="msg-body">{content}</div>
+      {media}
+    </div>
+"""
     else:
-        html += "<p><em>No detailed message evidence available for this case.</em></p>"
-        
-    html += """
-        </div>
-    </body>
-    </html>
-    """
+        html += '    <p class="no-evidence">No message evidence stored for this case.</p>\n'
+
+    html += "  </div>\n</body>\n</html>\n"
     return HTMLResponse(content=html)
 
 
@@ -1652,11 +1710,18 @@ def history_cases(req: HistoryCasesRequest) -> dict:
     # If signal adapter can't list groups (e.g. signal-cli not yet linked), we log a warning
     # and allow through — the ingest service already verified admin group membership via
     # Signal Desktop QR, and the one-time token provides authentication.
+    # When debug endpoints are enabled a fake/test group_id is allowed through (for testing).
     try:
         current_group_ids = {g.group_id for g in signal.list_groups()}
         if req.group_id not in current_group_ids:
-            log.warning("History ingest BLOCKED: bot not in group %s", req.group_id[:20])
-            raise HTTPException(status_code=403, detail="Bot is not in this group")
+            if settings.http_debug_endpoints_enabled:
+                log.warning(
+                    "History ingest: bot not in group %s — allowing because debug mode is on",
+                    req.group_id[:20],
+                )
+            else:
+                log.warning("History ingest BLOCKED: bot not in group %s", req.group_id[:20])
+                raise HTTPException(status_code=403, detail="Bot is not in this group")
     except HTTPException:
         raise
     except Exception as e:
@@ -1779,3 +1844,77 @@ def debug_gate(req: DebugGateRequest) -> dict:
         raise HTTPException(status_code=404, detail="Not found")
     result = llm.decide_consider(message=req.message, context=req.context)
     return {"consider": result.consider, "tag": result.tag}
+
+
+class DebugReindexRequest(BaseModel):
+    group_id: str
+    unarchive: bool = False  # if true, change archived→solved before re-indexing
+
+
+@app.post("/debug/reindex-group")
+def debug_reindex_group(req: DebugReindexRequest) -> dict:
+    """Re-index all solved cases for a group into SCRAG (ChromaDB).
+
+    Useful to restore SCRAG after accidental wipe or after manually fixing DB records.
+    Pass unarchive=true to first flip archived→solved for cases that still have a solution.
+    """
+    if not settings.http_debug_endpoints_enabled:
+        raise HTTPException(status_code=404, detail="Not found")
+
+    from app.db.queries_mysql import get_case
+    from app.db import mark_case_in_rag
+
+    with db.connection() as conn:
+        cur = conn.cursor()
+
+        if req.unarchive:
+            cur.execute(
+                """UPDATE cases SET status='solved'
+                   WHERE group_id=%s AND status='archived'
+                   AND solution_summary IS NOT NULL AND solution_summary != ''""",
+                (req.group_id,),
+            )
+            unarchived = cur.rowcount
+            conn.commit()
+        else:
+            unarchived = 0
+
+        cur.execute(
+            "SELECT case_id FROM cases WHERE group_id=%s AND status='solved'",
+            (req.group_id,),
+        )
+        rows = cur.fetchall()
+
+    case_ids = [r[0] for r in rows]
+    indexed = 0
+    for cid in case_ids:
+        c = get_case(db, cid)
+        if not c:
+            continue
+        sol = (c.get("solution_summary") or "").strip()
+        if not sol:
+            continue
+        doc_text = "\n".join([
+            f"[SOLVED] {(c.get('problem_title') or '').strip()}",
+            f"Проблема: {(c.get('problem_summary') or '').strip()}",
+            f"Рішення: {sol}",
+            "tags: " + ", ".join(c.get("tags") or []),
+        ]).strip()
+        try:
+            emb = llm.embed(text=doc_text)
+            rag.upsert_case(
+                case_id=cid,
+                document=doc_text,
+                embedding=emb,
+                metadata={"group_id": req.group_id, "status": "solved"},
+            )
+            mark_case_in_rag(db, cid)
+            indexed += 1
+        except Exception as exc:
+            log.warning("Failed to re-index case %s: %s", cid, exc)
+
+    log.info(
+        "debug/reindex-group: group=%s unarchived=%d indexed=%d",
+        req.group_id[:20], unarchived, indexed,
+    )
+    return {"ok": True, "unarchived": unarchived, "reindexed": indexed, "case_ids": case_ids}

@@ -32,6 +32,24 @@ supportbot.info {
         reverse_proxy signal-bot:8000
     }
 
+    # Debug endpoints (protected server-side by HTTP_DEBUG_ENDPOINTS_ENABLED)
+    handle /debug/* {
+        reverse_proxy signal-bot:8000
+    }
+
+    handle /retrieve {
+        reverse_proxy signal-bot:8000
+    }
+
+    # Case & chat view pages
+    handle /case/* {
+        reverse_proxy signal-bot:8000
+    }
+
+    handle /chat/* {
+        reverse_proxy signal-bot:8000
+    }
+
     # Health check
     handle /healthz {
         reverse_proxy signal-bot:8000
