@@ -828,24 +828,37 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
             if not gate_images:
                 gate_images = None
 
+        gate_tag = ""  # populated below if gate succeeds
         try:
             gate = deps.llm.decide_consider(
                 message=msg.content_text,
                 context=context_text,
                 images=gate_images,
             )
+            gate_tag = gate.tag or ""
             log.info(
                 "Gate: consider=%s tag=%s force=%s group=%s",
-                gate.consider, gate.tag, force, group_id,
+                gate.consider, gate_tag, force, group_id,
             )
             if not gate.consider and not force:
-                log.info("MAYBE_RESPOND: gate filtered message (tag=%s)", gate.tag)
+                log.info("MAYBE_RESPOND: gate filtered message (tag=%s)", gate_tag)
                 return
         except Exception as _gate_err:
             log.warning("Gate failed, proceeding without filter: %s", _gate_err)
 
         raw_answer = deps.ultimate_agent.answer(msg.content_text, group_id=group_id, db=deps.db, lang=group_lang, context=context_text)
         answer = raw_answer
+
+        # If gate classified this as an ongoing human-to-human discussion and the
+        # bot found no relevant case (bare TAG_ADMIN), skip silently — humans are
+        # already handling it and pinging the admin adds noise.
+        if (
+            not force
+            and gate_tag == "ongoing_discussion"
+            and raw_answer.strip() == "[[TAG_ADMIN]]"
+        ):
+            log.info("MAYBE_RESPOND: skipping TAG_ADMIN for ongoing_discussion (humans already handling)")
+            return
 
         if answer == "SKIP":
             if force:
