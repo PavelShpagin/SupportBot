@@ -105,11 +105,17 @@ def get_raw_message(db: MySQL, message_id: str) -> Optional[RawMessage]:
 
 
 def get_last_messages_text(db: MySQL, group_id: str, n: int) -> List[str]:
+    """Return last n messages as plain text strings (oldest-first).
+
+    Includes sender label so the gate model can distinguish user-to-user
+    conversations from isolated support requests directed at the bot.
+    Format: "[UserXXXX]: message text"
+    """
     with db.connection() as conn:
         cur = conn.cursor()
         cur.execute(
             """
-            SELECT content_text
+            SELECT sender_hash, content_text
             FROM raw_messages
             WHERE group_id = %s
             ORDER BY ts DESC
@@ -119,7 +125,11 @@ def get_last_messages_text(db: MySQL, group_id: str, n: int) -> List[str]:
         )
         rows = cur.fetchall()
         # rows are newest-first; reverse for natural reading order
-        return [r[0] or "" for r in reversed(rows)]
+        result = []
+        for sender_hash, content_text in reversed(rows):
+            label = f"[User{(sender_hash or 'unknown')[:6]}]"
+            result.append(f"{label}: {content_text or ''}")
+        return result
 
 
 def get_buffer(db: MySQL, group_id: str) -> str:

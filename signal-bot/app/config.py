@@ -125,7 +125,7 @@ def load_settings() -> Settings:
         oracle_wallet_dir=_env("ORACLE_WALLET_DIR", default=_env("TNS_ADMIN", default="")),
         openai_api_key=_env("GOOGLE_API_KEY", required=True),
         model_img=_env("MODEL_IMG", default="gemini-3-pro-preview"),
-        model_decision=_env("MODEL_DECISION", default="gemini-2.5-flash-lite"),
+        model_decision=_env("MODEL_DECISION", default="gemini-2.0-flash"),
         model_extract=_env("MODEL_EXTRACT", default="gemini-3-pro-preview"),
         model_case=_env("MODEL_CASE", default="gemini-3-pro-preview"),
         model_respond=_env("MODEL_RESPOND", default="gemini-3-pro-preview"),

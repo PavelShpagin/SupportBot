@@ -844,7 +844,7 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         except Exception as _gate_err:
             log.warning("Gate failed, proceeding without filter: %s", _gate_err)
 
-        raw_answer = deps.ultimate_agent.answer(msg.content_text, group_id=group_id, db=deps.db, lang=group_lang)
+        raw_answer = deps.ultimate_agent.answer(msg.content_text, group_id=group_id, db=deps.db, lang=group_lang, context=context_text)
         answer = raw_answer
 
         if answer == "SKIP":

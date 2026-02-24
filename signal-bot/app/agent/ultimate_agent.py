@@ -41,7 +41,7 @@ class UltimateAgent:
         self.case_agent = CaseSearchAgent(rag=self.rag, llm=self.llm, public_url=self.public_url)
         self.last_load_time = time.time()
 
-    def answer(self, question, group_id=None, db=None, lang="uk"):
+    def answer(self, question, group_id=None, db=None, lang="uk", context: str = ""):
         # Refresh agents every 10 minutes
         if time.time() - self.last_load_time > 600:
             print("Refreshing agents...", flush=True)
@@ -65,11 +65,13 @@ class UltimateAgent:
         if "No relevant cases" in case_ans:
             return "[[TAG_ADMIN]]"
 
+        context_block = f"\nRecent chat context (for reference):\n{context}\n" if context.strip() else ""
+
         # Only open (B1) cases found → escalate but mention the case is being tracked
         if case_ans.startswith("B1_ONLY:"):
             b1_context = case_ans[len("B1_ONLY:"):]
             prompt = f"""You are a concise support bot. A user asked a question. There is a tracked open case for this issue but no solution yet.
-
+{context_block}
 Question: "{question}"
 
 Tracked open cases:
@@ -97,7 +99,7 @@ Answer:"""
 
         # Solved cases found (SCRAG / B3) → synthesize direct answer
         prompt = f"""You are a concise support bot. Answer using the retrieved case if it covers the same core issue.
-
+{context_block}
 Question: "{question}"
 
 Retrieved cases:
@@ -107,7 +109,8 @@ DECISION RULES — apply in order:
 1. Check: does the retrieved case cover the same core issue as the question?
    - "Same core issue" = the underlying problem is the same, even if the user's phrasing is shorter/less detailed.
    - The case may contain more context (e.g. additional troubleshooting steps the previous user took) — that detail does NOT make it a different problem.
-2. If the case covers a COMPLETELY DIFFERENT TOPIC (e.g. user asked about battery, case is about GPS settings) → output ONLY "[[TAG_ADMIN]]".
+   - Use the chat context above to resolve any ambiguities in the question (e.g. "this", "that model", "the same issue").
+2. If the case covers a COMPLETELY DIFFERENT TOPIC (e.g. user asked about connectivity, case is about a display setting) → output ONLY "[[TAG_ADMIN]]".
 3. If the case covers the same core issue:
    a. Self-service fix (replace a part, change a setting, install software): state the solution in 1-2 sentences + case link. No admin tag.
    b. Needs admin action (user must send a log, file, screenshot, or admin must perform the fix): "<instruction> [[TAG_ADMIN]] <case link>".
@@ -115,10 +118,10 @@ DECISION RULES — apply in order:
 5. Respond in {lang_instruction}.
 6. NEVER invent information not in the retrieved case.
 
-GOOD: user asks "burned battery", case is about "battery burned, RadioMaster 5000mah works" → same issue → give the solution.
-GOOD: "Зайдіть у «налаштування» → «tracking» → «on». https://supportbot.info/case/xxx"
-GOOD: "Надайте лог з /var/log/app/ [[TAG_ADMIN]] https://supportbot.info/case/xxx"
-BAD: answer about GPS when user asked about battery.
+GOOD: user asks about an error on startup, case is about the same startup error with a fix → same issue → give the solution.
+GOOD: "Зайдіть у налаштування та увімкніть відповідну опцію. https://supportbot.info/case/xxx"
+GOOD: "Надайте лог з пристрою [[TAG_ADMIN]] https://supportbot.info/case/xxx"
+BAD: answer about a network issue when user asked about a software crash.
 BAD: bare "[[TAG_ADMIN]]" when the retrieved case covers the same core issue.
 
 Answer:"""
