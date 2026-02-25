@@ -55,12 +55,22 @@ def ingest_message(
         image_bytes = img_path.read_bytes()
         try:
             j = llm.image_to_text_json(image_bytes=image_bytes, context_text=context_text)
-            content_text = content_text + "\n\n[image]\n" + json.dumps(j.model_dump(), ensure_ascii=False)
+            # Store the OCR text without appending the raw JSON to the message content visible to users
+            # The RAG pipeline will still embed this content_text. But we should make it readable.
+            extracted_text = j.extracted_text or ""
+            observations = ", ".join(j.observations) if j.observations else ""
+            
+            ocr_summary = []
+            if extracted_text:
+                ocr_summary.append(f"Текст на зображенні: {extracted_text}")
+            if observations:
+                ocr_summary.append(f"Елементи на зображенні: {observations}")
+                
+            if ocr_summary:
+                content_text = content_text + "\n\n[Зображення: " + " | ".join(ocr_summary) + "]"
         except Exception:
-            log.exception("Image extraction failed (path=%s). Storing placeholder JSON.", img_path)
-            content_text = content_text + "\n\n[image]\n" + json.dumps(
-                {"observations": [], "extracted_text": ""}, ensure_ascii=False
-            )
+            log.exception("Image extraction failed (path=%s).", img_path)
+            content_text = content_text + "\n\n[Зображення]"
 
     inserted = insert_raw_message(
         db,

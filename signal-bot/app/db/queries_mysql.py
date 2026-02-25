@@ -634,13 +634,25 @@ def archive_cases_for_group(db: MySQL, group_id: str) -> int:
 def clear_group_runtime_data(db: MySQL, group_id: str) -> None:
     """Delete transient per-group data before re-ingest.
 
-    Removes raw messages, the conversation buffer, and reactions so re-ingest
-    starts from a clean slate. Does NOT touch cases (use archive_cases_for_group
-    for that) or admin/group config.
+    Removes raw messages (except those referenced by case_evidence), the
+    conversation buffer, and reactions so re-ingest starts from a clean slate.
+    Does NOT touch cases (use archive_cases_for_group for that) or admin/group
+    config.
     """
     with db.connection() as conn:
         cur = conn.cursor()
-        cur.execute("DELETE FROM raw_messages WHERE group_id = %s", (group_id,))
+        # Preserve messages that are evidence for existing cases — they are
+        # needed to display conversation history on case pages.
+        cur.execute(
+            """DELETE FROM raw_messages
+               WHERE group_id = %s
+               AND message_id NOT IN (
+                   SELECT ce.message_id FROM case_evidence ce
+                   JOIN cases c ON ce.case_id = c.case_id
+                   WHERE c.group_id = %s
+               )""",
+            (group_id, group_id),
+        )
         cur.execute("DELETE FROM buffers WHERE group_id = %s", (group_id,))
         cur.execute("DELETE FROM reactions WHERE group_id = %s", (group_id,))
         conn.commit()
