@@ -41,15 +41,6 @@ supportbot.info {
         reverse_proxy signal-bot:8000
     }
 
-    # Case & chat view pages
-    handle /case/* {
-        reverse_proxy signal-bot:8000
-    }
-
-    handle /chat/* {
-        reverse_proxy signal-bot:8000
-    }
-
     # Health check
     handle /healthz {
         reverse_proxy signal-bot:8000
