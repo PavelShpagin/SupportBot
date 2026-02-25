@@ -442,7 +442,11 @@ export default function CasePage({ data, publicApiUrl }: Props) {
                         </span>
                       </div>
                     </div>
-                    <p className="message-text">{msg.content_text}</p>
+                    <p className="message-text">{
+                      msg.images && msg.images.length > 0
+                        ? msg.content_text.replace(/\n*\[Зображення[^\]]*\]|\n*\[image\]\s*\{[\s\S]*?\}/g, '').trim()
+                        : msg.content_text
+                    }</p>
                     {msg.images && msg.images.length > 0 && (
                       <div className="message-images">
                         {msg.images.map((img, idx) => (
