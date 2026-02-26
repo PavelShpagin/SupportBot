@@ -495,7 +495,7 @@ def _dedup_cases_llm(
                 raise
     raw = resp.choices[0].message.content or "{}"
     data = json.loads(raw)
-    merged = data.get("cases", [])
+    merged = data.get("cases", []) if isinstance(data, dict) else (data if isinstance(data, list) else [])
     if isinstance(merged, list) and merged:
         return [c for c in merged if isinstance(c, dict) and c.get("case_block")]
     return cases

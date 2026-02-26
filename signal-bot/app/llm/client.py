@@ -121,7 +121,7 @@ class LLMClient:
         if not texts:
             return []
         resp = self.client.embeddings.create(model=self.settings.embedding_model, input=texts)
-        ordered = sorted(resp.data, key=lambda d: d.index)
+        ordered = sorted(resp.data, key=lambda d: d.index if d.index is not None else 999999)
         return [d.embedding for d in ordered]
 
     def image_to_text_json(self, *, image_bytes: bytes, context_text: str) -> ImgExtract:

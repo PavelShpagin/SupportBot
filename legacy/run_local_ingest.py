@@ -16,6 +16,7 @@ import base64
 import hashlib
 import json
 import os
+import time
 import re
 import struct
 import sys
@@ -216,6 +217,8 @@ print("\n>> Extracting structured cases (LLM)...")
 all_structured: List[dict] = []
 worker_script = ROOT / "extract_chunk_worker.py"
 for i in range(len(chunks)):
+    if i > 0:
+        time.sleep(5)  # Pause between chunks to avoid API connection reuse hangs
     print(f"  chunk {i+1}/{len(chunks)}...", end=" ", flush=True)
     with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False, encoding="utf-8") as tf:
         json.dump({"chunk_text": chunks[i], "api_key": API_KEY, "model": MODEL, "structured": True}, tf, ensure_ascii=False)
@@ -226,7 +229,7 @@ for i in range(len(chunks)):
             capture_output=True,
             text=True,
             cwd=str(REPO_ROOT),
-            timeout=300,
+            timeout=600,
             env={**os.environ, "GOOGLE_API_KEY": API_KEY},
         )
         if result.returncode != 0:
@@ -409,15 +412,16 @@ print(f">> Posting {len(deduped)} structured cases + {len(messages_payload)} mes
 history_req = json.dumps({
     "token": token,
     "group_id": group_id,
+    "cases": [],  # Empty when using cases_structured (satisfies older prod schema)
     "cases_structured": [
         {
-            "case_block": c.get("case_block", ""),
-            "problem_title": c.get("problem_title", ""),
-            "problem_summary": c.get("problem_summary", ""),
-            "solution_summary": c.get("solution_summary", ""),
-            "status": c.get("status", "solved"),
-            "tags": c.get("tags") or [],
-            "evidence_ids": c.get("evidence_ids") or [],
+            "case_block": str(c.get("case_block") or ""),
+            "problem_title": str(c.get("problem_title") or ""),
+            "problem_summary": str(c.get("problem_summary") or ""),
+            "solution_summary": str(c.get("solution_summary") or ""),
+            "status": str(c.get("status") or "solved"),
+            "tags": list(c.get("tags") or []) if isinstance(c.get("tags"), list) else [],
+            "evidence_ids": list(c.get("evidence_ids") or []) if isinstance(c.get("evidence_ids"), list) else [],
         }
         for c in deduped
     ],
@@ -427,8 +431,14 @@ req2 = urllib.request.Request(
     f"{PROD_URL}/history/cases",
     data=history_req, headers={"Content-Type": "application/json"}, method="POST",
 )
-with urllib.request.urlopen(req2) as r:
-    result = json.load(r)
+try:
+    with urllib.request.urlopen(req2, timeout=120) as r:
+        result = json.load(r)
+except urllib.error.HTTPError as e:
+    body = e.fp.read().decode() if e.fp else ""
+    print(f"  HTTP {e.code}: {e.reason}")
+    print(f"  Response: {body[:500]}")
+    raise
 
 print(f"  inserted: {result.get('cases_inserted')} / case_ids: {len(result.get('case_ids', []))}")
 
