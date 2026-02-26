@@ -494,7 +494,32 @@ def _dedup_cases_llm(
             else:
                 raise
     raw = resp.choices[0].message.content or "{}"
-    data = json.loads(raw)
+    try:
+        data = json.loads(raw)
+    except json.JSONDecodeError:
+        # Attempt to extract partial valid JSON array from truncated response
+        import re as _re
+        match = _re.search(r'"cases"\s*:\s*(\[.*)', raw, _re.DOTALL)
+        if match:
+            arr_str = match.group(1)
+            # Truncate at last complete object
+            depth = 0
+            end = 0
+            for i, ch in enumerate(arr_str):
+                if ch == '{':
+                    depth += 1
+                elif ch == '}':
+                    depth -= 1
+                    if depth == 0:
+                        end = i + 1
+            try:
+                data = {"cases": json.loads(arr_str[:end] + "]")}
+            except Exception:
+                log.warning("Dedup JSON repair failed, returning original cases")
+                return cases
+        else:
+            log.warning("Dedup returned unparseable JSON, returning original cases")
+            return cases
     merged = data.get("cases", []) if isinstance(data, dict) else (data if isinstance(data, list) else [])
     if isinstance(merged, list) and merged:
         return [c for c in merged if isinstance(c, dict) and c.get("case_block")]

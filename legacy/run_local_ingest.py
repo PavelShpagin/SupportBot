@@ -97,59 +97,77 @@ _PNG_B64   = base64.b64encode(_PNG_BYTES).decode()
 print(f"Generated PNG: {len(_PNG_BYTES)} bytes")
 
 # ── load fixture ──────────────────────────────────────────────────────────────
-fixture_path = REPO_ROOT / "tests" / "fixtures" / "sample_chat.json"
-data     = json.loads(fixture_path.read_text(encoding="utf-8"))
-messages = data["messages"]
+# Use FIXTURE env var, or prod_chat.json if it exists, else sample_chat.json
+_prod_fixture = REPO_ROOT / "tests" / "fixtures" / "prod_chat.json"
+_sample_fixture = REPO_ROOT / "tests" / "fixtures" / "sample_chat.json"
+_fixture_env = os.environ.get("FIXTURE")
+
+if _fixture_env:
+    fixture_path = Path(_fixture_env)
+elif _prod_fixture.exists():
+    fixture_path = _prod_fixture
+    print(f"Using prod fixture: {fixture_path}")
+else:
+    fixture_path = _sample_fixture
+
+data = json.loads(fixture_path.read_text(encoding="utf-8"))
+messages = data if isinstance(data, list) else data.get("messages", [])
+
 # Use GROUP_ID env or "group-x" for test runs (avoids long fixture group_id)
 group_id = os.environ.get("GROUP_ID", "group-x")
 
-# ── inject synthetic image conversation ───────────────────────────────────────
-_base_ts    = messages[-1]["ts"] + 10_000
-_img_sender = messages[0]["sender"]
-_adm_sender = messages[1]["sender"]
+_has_real_images = any(m.get("_image_payloads") for m in messages)
 
-_img_id = "local-img-" + uuid.uuid4().hex[:8]
-_adm_id = "local-adm-" + uuid.uuid4().hex[:8]
-_cnf_id = "local-cnf-" + uuid.uuid4().hex[:8]
+if not _has_real_images:
+    # ── inject synthetic image conversation (only when no real images in fixture) ──
+    _base_ts    = messages[-1]["ts"] + 10_000
+    _img_sender = messages[0]["sender"]
+    _adm_sender = messages[1]["sender"]
 
-_img_msg = {
-    "ts": _base_ts,
-    "sender": _img_sender,
-    "sender_name": "Alpha User",
-    "body": "Screensharing issues – black screen on startup [image]",
-    "id": _img_id,
-    "reactions": 0,
-    "attachments": [{"path": "attachments.noindex/local/error_screen.png",
-                     "contentType": "image/png", "fileName": "error_screen.png"}],
-    "_image_payload": {"filename": "error_screen.png",
-                       "content_type": "image/png", "data_b64": _PNG_B64},
-}
-_adm_msg = {
-    "ts": _base_ts + 3_000,
-    "sender": _adm_sender,
-    "sender_name": "Beta Admin",
-    "body": "Restart the display service: sudo systemctl restart display-manager. This clears the init error.",
-    "id": _adm_id,
-    "reactions": 1,
-    "reaction_emoji": "👍",
-}
-_cnf_msg = {
-    "ts": _base_ts + 6_000,
-    "sender": _img_sender,
-    "sender_name": "Alpha User",
-    "body": "Worked! Thanks.",
-    "id": _cnf_id,
-    "reactions": 0,
-}
+    _img_id = "local-img-" + uuid.uuid4().hex[:8]
+    _adm_id = "local-adm-" + uuid.uuid4().hex[:8]
+    _cnf_id = "local-cnf-" + uuid.uuid4().hex[:8]
+
+    _img_msg = {
+        "ts": _base_ts,
+        "sender": _img_sender,
+        "sender_name": "Alpha User",
+        "body": "Screensharing issues – black screen on startup [image]",
+        "id": _img_id,
+        "reactions": 0,
+        "attachments": [{"path": "attachments.noindex/local/error_screen.png",
+                         "contentType": "image/png", "fileName": "error_screen.png"}],
+        "_image_payload": {"filename": "error_screen.png",
+                           "content_type": "image/png", "data_b64": _PNG_B64},
+    }
+    _adm_msg = {
+        "ts": _base_ts + 3_000,
+        "sender": _adm_sender,
+        "sender_name": "Beta Admin",
+        "body": "Restart the display service: sudo systemctl restart display-manager. This clears the init error.",
+        "id": _adm_id,
+        "reactions": 1,
+        "reaction_emoji": "👍",
+    }
+    _cnf_msg = {
+        "ts": _base_ts + 6_000,
+        "sender": _img_sender,
+        "sender_name": "Alpha User",
+        "body": "Worked! Thanks.",
+        "id": _cnf_id,
+        "reactions": 0,
+    }
+    messages = messages + [_img_msg, _adm_msg, _cnf_msg]
 
 # Optionally pad to ~N messages (e.g. TARGET_MESSAGES=180 for larger ingest test)
 _target = int(os.environ.get("TARGET_MESSAGES", "0"))
 if _target == 0 and "--local" in sys.argv:
     _target = 180  # default for local run
-_pad = messages + [_img_msg, _adm_msg, _cnf_msg]
+_pad = list(messages)
 if _target > len(_pad):
+    _base_msgs = [m for m in messages if not m.get("_image_payloads") and not m.get("_image_payload")]
     while len(_pad) < _target:
-        for m in messages[:20]:  # cycle through first 20 to add variety
+        for m in _base_msgs[:20]:
             if len(_pad) >= _target:
                 break
             clone = dict(m)
@@ -180,30 +198,46 @@ llm = LLMClient(_s)
 
 from ingest.main import _chunk_messages, _ocr_attachment, _extract_structured_cases, _dedup_cases_llm
 
-# ── OCR the image ─────────────────────────────────────────────────────────────
-print("\n>> OCR-ing image message...")
-ocr_json = _ocr_attachment(
-    openai_client=oc, model=MODEL_IMG,
-    image_bytes=_PNG_BYTES, content_type="image/png",
-    context_text=_img_msg["body"],
-)
-print(f"  OCR: {ocr_json[:120]}")
+# ── OCR all image messages ─────────────────────────────────────────────────────
+def _enrich_with_ocr(msg: dict) -> None:
+    """OCR all images in a message and append observations to body."""
+    payloads = msg.get("_image_payloads") or []
+    # Also support legacy singular _image_payload
+    if not payloads and msg.get("_image_payload"):
+        payloads = [msg["_image_payload"]]
+    if not payloads:
+        return
+    for p in payloads:
+        try:
+            img_bytes = base64.b64decode(p["data_b64"])
+        except Exception:
+            continue
+        ocr_json = _ocr_attachment(
+            openai_client=oc, model=MODEL_IMG,
+            image_bytes=img_bytes, content_type=p.get("content_type", "image/png"),
+            context_text=msg.get("body") or "",
+        )
+        if ocr_json:
+            try:
+                ocr_data = json.loads(ocr_json)
+                extracted_text = ocr_data.get("extracted_text") or ""
+                observations   = ocr_data.get("observations") or []
+                parts = []
+                if extracted_text:
+                    parts.append(f"Текст на зображенні: {extracted_text}")
+                if observations:
+                    parts.append(f"Елементи на зображенні: {', '.join(observations)}")
+                if parts:
+                    msg["body"] = (msg.get("body") or "") + "\n\n[Зображення: " + " | ".join(parts) + "]"
+            except Exception:
+                pass
 
-# Enrich body with OCR result — same format as ingestion.py (human-readable, not raw JSON)
-if ocr_json:
-    try:
-        ocr_data = json.loads(ocr_json)
-        extracted_text = ocr_data.get("extracted_text") or ""
-        observations   = ocr_data.get("observations") or []
-        parts = []
-        if extracted_text:
-            parts.append(f"Текст на зображенні: {extracted_text}")
-        if observations:
-            parts.append(f"Елементи на зображенні: {', '.join(observations)}")
-        if parts:
-            _img_msg["body"] = _img_msg["body"] + "\n\n[Зображення: " + " | ".join(parts) + "]"
-    except Exception:
-        pass  # OCR parse failed — keep body as-is
+img_msgs = [m for m in messages_augmented if m.get("_image_payloads") or m.get("_image_payload")]
+print(f"\n>> OCR-ing {len(img_msgs)} image message(s)...")
+for i, msg in enumerate(img_msgs, 1):
+    print(f"  [{i}/{len(img_msgs)}] msg_id={msg['id']} ...", end=" ", flush=True)
+    _enrich_with_ocr(msg)
+    print(f"body now {len(msg.get('body',''))} chars")
 
 # ── Phase 1: chunk + extract structured cases (8x fewer API calls) ────────────
 _chunk_max = int(os.environ.get("HISTORY_CHUNK_MAX_CHARS", "45000"))
@@ -245,30 +279,31 @@ print("  dedup (LLM)...", end=" ", flush=True)
 deduped = _dedup_cases_llm(openai_client=oc, model=MODEL, cases=all_structured)
 print(f"{len(deduped)} case(s)")
 
-# If the image case wasn't extracted, inject it manually
-img_found = any(_img_id in c.get("case_block", "") or "display-manager" in (c.get("solution_summary") or "") for c in deduped)
-if not img_found:
-    print("  ⚠ Image case not extracted — injecting manually")
-    _img_hash = hashlib.sha256(_img_sender.encode()).hexdigest()[:16]
-    _adm_hash = hashlib.sha256(_adm_sender.encode()).hexdigest()[:16]
-    manual_case = {
-        "keep": True,
-        "status": "solved",
-        "problem_title": "Чорний екран під час запуску демонстрації екрана",
-        "problem_summary": "Screensharing issues – black screen on startup.",
-        "solution_summary": "Restart the display service: sudo systemctl restart display-manager.",
-        "tags": ["display-manager", "screenshare", "black-screen"],
-        "evidence_ids": [_img_id, _adm_id, _cnf_id],
-        "case_block": (
-            f"{_img_hash} ts={_base_ts} msg_id={_img_id} reactions=0\n"
-            f"{_img_msg['body']}\n\n"
-            f"{_adm_hash} ts={_base_ts+3000} msg_id={_adm_id} reactions=1 reaction_emoji=👍\n"
-            f"{_adm_msg['body']}\n\n"
-            f"{_img_hash} ts={_base_ts+6000} msg_id={_cnf_id} reactions=0\n"
-            f"{_cnf_msg['body']}"
-        ),
-    }
-    deduped.append(manual_case)
+# If using synthetic fixture and the image case wasn't extracted, inject it manually
+if not _has_real_images:
+    img_found = any(_img_id in c.get("case_block", "") or "display-manager" in (c.get("solution_summary") or "") for c in deduped)
+    if not img_found:
+        print("  ⚠ Image case not extracted — injecting manually")
+        _img_hash = hashlib.sha256(_img_sender.encode()).hexdigest()[:16]
+        _adm_hash = hashlib.sha256(_adm_sender.encode()).hexdigest()[:16]
+        manual_case = {
+            "keep": True,
+            "status": "solved",
+            "problem_title": "Чорний екран під час запуску демонстрації екрана",
+            "problem_summary": "Screensharing issues – black screen on startup.",
+            "solution_summary": "Restart the display service: sudo systemctl restart display-manager.",
+            "tags": ["display-manager", "screenshare", "black-screen"],
+            "evidence_ids": [_img_id, _adm_id, _cnf_id],
+            "case_block": (
+                f"{_img_hash} ts={_base_ts} msg_id={_img_id} reactions=0\n"
+                f"{_img_msg['body']}\n\n"
+                f"{_adm_hash} ts={_base_ts+3000} msg_id={_adm_id} reactions=1 reaction_emoji=👍\n"
+                f"{_adm_msg['body']}\n\n"
+                f"{_img_hash} ts={_base_ts+6000} msg_id={_cnf_id} reactions=0\n"
+                f"{_cnf_msg['body']}"
+            ),
+        }
+        deduped.append(manual_case)
 
 print(f"  → {len(deduped)} structured cases total")
 
@@ -359,11 +394,12 @@ if "--local" in sys.argv:
     print(f"  Inserted: {inserted}  Merged: {updated}")
     print(f"  FINAL CASES: {len(final_cases)}")
     print(f"{'='*65}")
+    for i, c in enumerate(final_cases, 1):
+        emoji = f" [{c.get('closed_emoji')}]" if c.get("closed_emoji") else ""
+        cid = c.get("case_id", "")
+        print(f"  [{i}] {PROD_URL}/case/{cid}  [{c.get('status','')}{emoji}] {c.get('problem_title','')[:45]}")
     if "--post-to-prod" not in sys.argv:
-        for i, c in enumerate(final_cases, 1):
-            emoji = f" [{c.get('closed_emoji')}]" if c.get("closed_emoji") else ""
-            print(f"  [{i}] [{c.get('status','')}{emoji}] {c.get('problem_title','')[:55]}")
-            print(f"       (local ID, not on prod — add --post-to-prod for working links)")
+        print(f"       (local IDs — add --post-to-prod for working prod links)")
         print(f"{'='*65}\n")
         sys.exit(0)
     print("  Posting to prod for working links...")
@@ -377,8 +413,11 @@ messages_payload = []
 for msg in messages_augmented:
     text = msg.get("body") or ""
     img_payloads = []
-    if msg.get("_image_payload"):
-        p = msg["_image_payload"]
+    # Support both plural (_image_payloads) and legacy singular (_image_payload)
+    raw_payloads = msg.get("_image_payloads") or []
+    if not raw_payloads and msg.get("_image_payload"):
+        raw_payloads = [msg["_image_payload"]]
+    for p in raw_payloads:
         img_payloads.append({
             "filename": p["filename"],
             "content_type": p["content_type"],
