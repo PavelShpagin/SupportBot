@@ -1395,10 +1395,22 @@ class CaseBlock(BaseModel):
     case_block: str
 
 
+class StructuredCaseBlock(BaseModel):
+    """Pre-structured case from optimized ingest pipeline (skips make_case)."""
+    case_block: str
+    problem_title: str = ""
+    problem_summary: str = ""
+    solution_summary: str = ""
+    status: str = "solved"
+    tags: List[str] = []
+    evidence_ids: List[str] = []
+
+
 class HistoryCasesRequest(BaseModel):
     token: str
     group_id: str
-    cases: List[CaseBlock]
+    cases: List[CaseBlock] = []
+    cases_structured: List[StructuredCaseBlock] = []  # When present, used instead of cases (8x fewer API calls)
     messages: List[HistoryMessage] = []  # Optional: raw messages for evidence linking
 
 
@@ -1513,18 +1525,49 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
     if messages_stored > 0:
         log.info("Stored %d raw messages (group=%s)", messages_stored, req.group_id[:20])
 
+    # Support both legacy (cases + make_case per item) and optimized (cases_structured + batch embed)
+    use_structured = bool(req.cases_structured)
+    case_items = req.cases_structured if use_structured else [{"case_block": c.case_block} for c in req.cases]
+
+    if not case_items:
+        log.info("No cases to process")
+        return 0, []
+
+    # Batch embed for structured pipeline (8x fewer API calls)
+    dedup_embeddings: List[List[float]] = []
+    if use_structured:
+        dedup_texts = [f"{c.problem_title}\n{c.problem_summary}" for c in req.cases_structured]
+        dedup_embeddings = llm.embed_batch(texts=dedup_texts)
+
     kept = 0
     final_case_ids: List[str] = []
-    for c in req.cases:
+    for idx, c in enumerate(case_items):
         try:
-            case = llm.make_case(case_block_text=c.case_block)
-            if not case.keep:
-                continue
+            if use_structured:
+                sc = req.cases_structured[idx]
+                case = type("Case", (), {
+                    "keep": True,
+                    "status": sc.status or "solved",
+                    "problem_title": sc.problem_title or "",
+                    "problem_summary": sc.problem_summary or "",
+                    "solution_summary": sc.solution_summary or "",
+                    "tags": list(sc.tags) if sc.tags else [],
+                    "evidence_ids": list(sc.evidence_ids) if sc.evidence_ids else [],
+                })()
+                case_block = sc.case_block
+                dedup_embedding = dedup_embeddings[idx]
+            else:
+                case = llm.make_case(case_block_text=c["case_block"])
+                if not case.keep:
+                    continue
+                case_block = c["case_block"]
+                embed_text = f"{case.problem_title}\n{case.problem_summary}"
+                dedup_embedding = llm.embed(text=embed_text)
 
             # Build evidence_ids: prefer LLM-extracted, fallback to content matching
-            evidence_ids = list(case.evidence_ids)
+            evidence_ids = list(case.evidence_ids) if hasattr(case, "evidence_ids") else []
             if not evidence_ids:
-                for line in c.case_block.split('\n'):
+                for line in case_block.split('\n'):
                     line = line.strip()
                     if not line:
                         continue
@@ -1545,9 +1588,9 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
                                 evidence_ids.append(mid)
 
             # Detect emoji-confirmed cases: case_block header lines contain reactions=N
-            emoji_confirmed = bool(re.search(r'\breactions=\d+', c.case_block))
+            emoji_confirmed = bool(re.search(r'\breactions=\d+', case_block))
             # Extract the actual reaction emoji if present in header (reaction_emoji=<emoji>)
-            rxn_emoji_match = re.search(r'\breaction_emoji=(\S+)', c.case_block)
+            rxn_emoji_match = re.search(r'\breaction_emoji=(\S+)', case_block)
             confirmed_emoji = rxn_emoji_match.group(1) if rxn_emoji_match else "👍"
 
             evidence_image_paths: List[str] = []
@@ -1555,10 +1598,6 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
                 msg = get_raw_message(db, message_id=mid)
                 if msg:
                     evidence_image_paths.extend(p for p in msg.image_paths if p)
-
-            # Compute embedding for semantic dedup (problem only — match on problem, not solution)
-            embed_text = f"{case.problem_title}\n{case.problem_summary}"
-            dedup_embedding = llm.embed(text=embed_text)
 
             # Semantic dedup: find existing case with cosine similarity > 0.85
             similar_id = find_similar_case(db, group_id=req.group_id, embedding=dedup_embedding)
@@ -1704,7 +1743,10 @@ def history_cases(req: HistoryCasesRequest) -> dict:
     # cannot pass validation and trigger a second parallel ingest for the same session.
     mark_history_token_used(db, token=req.token)
 
-    n_cases = len(req.cases)
+    if not req.cases_structured and not req.cases:
+        raise HTTPException(status_code=400, detail="Either cases or cases_structured must be non-empty")
+
+    n_cases = len(req.cases_structured) if req.cases_structured else len(req.cases)
     n_messages = len(req.messages)
     log.info("History ingest started: %d cases, %d messages (group=%s)", n_cases, n_messages, req.group_id[:20])
     inserted, case_ids = _process_history_cases_bg(req)
