@@ -4,6 +4,11 @@ import os
 from dataclasses import dataclass
 
 
+def _parse_model_list(raw: str) -> list:
+    """Parse a comma-separated model list, filtering empty strings."""
+    return [m.strip() for m in raw.split(",") if m.strip()]
+
+
 def _env(name: str, *, default: str | None = None, required: bool = False) -> str:
     val = os.getenv(name, default)
     if required and (val is None or val.strip() == ""):
@@ -56,6 +61,7 @@ class Settings:
 
     openai_api_key: str
     model_blocks: str
+    model_blocks_fallback: list  # ordered fallback models tried on 503/timeout
     model_img: str
 
     signal_cli: str
@@ -94,6 +100,9 @@ def load_settings() -> Settings:
         oracle_wallet_dir=_env("ORACLE_WALLET_DIR", default=_env("TNS_ADMIN", default="")),
         openai_api_key=_env("GOOGLE_API_KEY", required=True),
         model_blocks=_env("MODEL_BLOCKS", default="gemini-3.1-pro-preview"),
+        model_blocks_fallback=_parse_model_list(
+            _env("MODEL_BLOCKS_FALLBACK", default="gemini-3-pro-preview,gemini-2.5-flash")
+        ),
         model_img=_env("MODEL_IMG", default="gemini-3.1-pro-preview"),
         signal_cli=_env("SIGNAL_CLI", default="signal-cli"),
         signal_ingest_storage=_env("SIGNAL_INGEST_STORAGE", default="/var/lib/signal/ingest"),

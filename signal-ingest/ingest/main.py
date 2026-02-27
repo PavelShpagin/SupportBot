@@ -369,6 +369,38 @@ def _chunk_messages(*, messages: List[dict], max_chars: int, overlap_messages: i
     return chunks
 
 
+def _llm_call_with_fallback(
+    *,
+    openai_client: OpenAI,
+    model: str,
+    fallback_models: list,
+    timeout: float,
+    **kwargs,
+):
+    """Call openai_client.chat.completions.create with model cascade on 503/timeout.
+
+    Tries `model` first, then each entry in `fallback_models` in order.
+    Only falls back on transient errors (503 Service Unavailable, timeout).
+    Raises the last exception if all models are exhausted.
+    """
+    import openai as _openai
+
+    models_to_try = [model] + list(fallback_models)
+    last_exc: Exception | None = None
+    for m in models_to_try:
+        try:
+            return openai_client.chat.completions.create(model=m, timeout=timeout, **kwargs)
+        except (_openai.APITimeoutError, _openai.InternalServerError) as e:
+            is_503 = isinstance(e, _openai.InternalServerError) and getattr(e, "status_code", None) == 503
+            if isinstance(e, _openai.APITimeoutError) or is_503:
+                log.warning("Model %s failed (%s), trying next fallback...", m, type(e).__name__)
+                last_exc = e
+                time.sleep(2)
+            else:
+                raise
+    raise last_exc
+
+
 def _extract_case_blocks(
     *,
     openai_client: OpenAI,
@@ -415,29 +447,23 @@ def _extract_structured_cases(
     *,
     openai_client: OpenAI,
     model: str,
+    fallback_models: list,
     chunk_text: str,
     timeout: float = 120.0,
 ) -> List[dict]:
     """Extract solved support cases with full structured fields in one pass."""
-    for attempt in range(2):
-        try:
-            resp = openai_client.chat.completions.create(
-                model=model,
-                messages=[
-                    {"role": "system", "content": P_BLOCKS_STRUCTURED},
-                    {"role": "user", "content": f"HISTORY_CHUNK:\n{chunk_text}"},
-                ],
-                response_format={"type": "json_object"},
-                temperature=0,
-                timeout=timeout,
-            )
-            break
-        except Exception as e:
-            if attempt == 0:
-                log.warning("Chunk extract attempt 1 failed: %s, retrying in 5s...", e)
-                time.sleep(5)
-            else:
-                raise
+    resp = _llm_call_with_fallback(
+        openai_client=openai_client,
+        model=model,
+        fallback_models=fallback_models,
+        timeout=timeout,
+        messages=[
+            {"role": "system", "content": P_BLOCKS_STRUCTURED},
+            {"role": "user", "content": f"HISTORY_CHUNK:\n{chunk_text}"},
+        ],
+        response_format={"type": "json_object"},
+        temperature=0,
+    )
     raw = resp.choices[0].message.content or "{}"
     data = json.loads(raw)
     out: List[dict] = []
@@ -467,6 +493,7 @@ def _dedup_cases_llm(
     *,
     openai_client: OpenAI,
     model: str,
+    fallback_models: list,
     cases: List[dict],
     timeout: float = 120.0,
 ) -> List[dict]:
@@ -474,25 +501,18 @@ def _dedup_cases_llm(
     if len(cases) <= 1:
         return cases
     cases_json = json.dumps([{k: c.get(k) for k in ("keep", "status", "problem_title", "problem_summary", "solution_summary", "tags", "evidence_ids", "case_block")} for c in cases], ensure_ascii=False)
-    for attempt in range(2):
-        try:
-            resp = openai_client.chat.completions.create(
-                model=model,
-                messages=[
-                    {"role": "system", "content": P_DEDUP_CASES},
-                    {"role": "user", "content": f"CASES:\n{cases_json}"},
-                ],
-                response_format={"type": "json_object"},
-                temperature=0,
-                timeout=timeout,
-            )
-            break
-        except Exception as e:
-            if attempt == 0:
-                log.warning("Dedup attempt 1 failed: %s, retrying in 5s...", e)
-                time.sleep(5)
-            else:
-                raise
+    resp = _llm_call_with_fallback(
+        openai_client=openai_client,
+        model=model,
+        fallback_models=fallback_models,
+        timeout=timeout,
+        messages=[
+            {"role": "system", "content": P_DEDUP_CASES},
+            {"role": "user", "content": f"CASES:\n{cases_json}"},
+        ],
+        response_format={"type": "json_object"},
+        temperature=0,
+    )
     raw = resp.choices[0].message.content or "{}"
     try:
         data = json.loads(raw)
@@ -937,6 +957,7 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
                 _extract_structured_cases(
                     openai_client=openai_client_early,
                     model=settings.model_blocks,
+                    fallback_models=settings.model_blocks_fallback,
                     chunk_text=ch,
                 )
             )
@@ -944,6 +965,7 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
         deduped = _dedup_cases_llm(
             openai_client=openai_client_early,
             model=settings.model_blocks,
+            fallback_models=settings.model_blocks_fallback,
             cases=all_structured,
         )
 
