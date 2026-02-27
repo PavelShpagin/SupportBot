@@ -159,22 +159,7 @@ if not _has_real_images:
     }
     messages = messages + [_img_msg, _adm_msg, _cnf_msg]
 
-# Optionally pad to ~N messages (e.g. TARGET_MESSAGES=180 for larger ingest test)
-_target = int(os.environ.get("TARGET_MESSAGES", "0"))
-if _target == 0 and "--local" in sys.argv:
-    _target = 180  # default for local run
-_pad = list(messages)
-if _target > len(_pad):
-    _base_msgs = [m for m in messages if not m.get("_image_payloads") and not m.get("_image_payload")]
-    while len(_pad) < _target:
-        for m in _base_msgs[:20]:
-            if len(_pad) >= _target:
-                break
-            clone = dict(m)
-            clone["id"] = "pad-" + uuid.uuid4().hex[:12]
-            clone["ts"] = clone["ts"] + len(_pad) * 10000
-            _pad.append(clone)
-messages_augmented = _pad
+messages_augmented = list(messages)
 
 # ── LLM clients ───────────────────────────────────────────────────────────────
 os.environ.setdefault("SIGNAL_BOT_E164", "+10000000000")
