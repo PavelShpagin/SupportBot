@@ -182,21 +182,28 @@ def _ocr_attachment(
     content_type: str,
     context_text: str = "",
 ) -> str:
-    """Run multimodal OCR on an image and return a compact JSON description.
+    """Run multimodal OCR on an image and return a structured description.
 
+    Extracts all visible text verbatim and a concise functional description
+    of what the image shows in the context of the support conversation.
     Returns an empty string on failure (the message is still stored without OCR).
     """
     try:
         import base64 as _b64
         b64 = _b64.b64encode(image_bytes).decode("utf-8")
+        context_hint = f'\nThe message this image was attached to says: "{context_text}"' if context_text else ""
         prompt = (
-            "You are an assistant that extracts all visible text and key observations "
-            "from an image shared in a technical support chat. "
-            "Return a JSON object with two keys:\n"
-            '  "extracted_text": all text visible in the image,\n'
-            '  "observations": a brief list of key visual elements.\n'
-            "Return only valid JSON, no markdown."
-        )
+            "You are analyzing a screenshot or photo shared in a technical support chat.{context_hint}\n\n"
+            "Your job:\n"
+            "1. Extract ALL visible text verbatim (error messages, settings values, labels, numbers, "
+            "filenames, log lines — everything readable). Do not paraphrase.\n"
+            "2. Write a concise functional description: what screen/state is shown, what problem or "
+            "information it illustrates, and how it relates to the support conversation.\n\n"
+            "Return a JSON object with exactly two keys:\n"
+            '  "extracted_text": string with all visible text copied verbatim (empty string if none),\n'
+            '  "description": one or two sentences describing what the image shows and its relevance.\n'
+            "Return only valid JSON, no markdown fences."
+        ).format(context_hint=context_hint)
         messages: List[Dict] = [
             {
                 "role": "user",
@@ -212,7 +219,7 @@ def _ocr_attachment(
         resp = openai_client.chat.completions.create(
             model=model,
             messages=messages,
-            max_tokens=512,
+            max_tokens=1024,
             temperature=0,
         )
         return resp.choices[0].message.content or ""
