@@ -48,6 +48,7 @@ from app.llm.client import LLMClient
 from app.logging_config import configure_logging
 from app.rag.chroma import create_chroma
 from app.signal.adapter import NoopSignalAdapter, SignalAdapter
+from app import r2 as _r2
 from app.signal.signal_cli import SignalCliAdapter, InboundGroupMessage, InboundDirectMessage, InboundReaction
 from app.signal.link_device import LinkDeviceManager, is_account_registered
 
@@ -712,6 +713,8 @@ def _handle_contact_removed(phone_number: str) -> None:
 
 @app.on_event("startup")
 def _startup() -> None:
+    _r2.init_r2()
+
     t = threading.Thread(target=worker_loop_forever, args=(deps,), daemon=True)
     t.start()
 
@@ -886,7 +889,9 @@ def view_chat_context(message_id: str):
 
 
 def _path_to_url(p: str) -> str:
-    """Convert an absolute storage path to a /static/ URL."""
+    """Convert a storage path to a URL. R2 URLs are returned as-is."""
+    if p.startswith("https://") or p.startswith("http://"):
+        return p
     if p.startswith("/var/lib/signal/"):
         return p.replace("/var/lib/signal/", "/static/", 1)
     return p
@@ -1420,52 +1425,68 @@ def _save_history_images(
     image_payloads: list,
     storage_root: str,
 ) -> list:
-    """Decode base64 image payloads and save to disk.
+    """Decode base64 attachment payloads and store them.
 
-    Files are stored under ``<storage_root>/history/<group_id>/``.
-    Returns a list of absolute paths for successfully saved files.
+    If R2 is configured, uploads to R2 and returns public URLs.
+    Otherwise saves to disk under ``<storage_root>/history/<group_id>/``
+    and returns absolute paths.
     """
-    import base64
-    import os
+    import base64 as _b64
 
     if not image_payloads:
         return []
 
-    dest_dir = Path(storage_root) / "history" / group_id
-    try:
-        dest_dir.mkdir(parents=True, exist_ok=True)
-    except OSError as e:
-        log.warning("Cannot create history image dir %s: %s", dest_dir, e)
-        return []
+    def _ext_for(filename: str, content_type: str) -> str:
+        ext = Path(filename).suffix if filename else ""
+        if ext:
+            return ext
+        ct = (content_type or "").split(";")[0].strip().lower()
+        return {
+            "image/jpeg": ".jpg",
+            "image/png": ".png",
+            "image/gif": ".gif",
+            "image/webp": ".webp",
+            "image/bmp": ".bmp",
+            "video/mp4": ".mp4",
+            "video/webm": ".webm",
+            "application/zip": ".zip",
+            "application/x-zip-compressed": ".zip",
+            "application/octet-stream": ".bin",
+        }.get(ct, ".bin")
 
-    paths: list = []
+    results: list = []
+
     for i, img in enumerate(image_payloads):
         try:
-            raw_bytes = base64.b64decode(img.data_b64)
+            raw_bytes = _b64.b64decode(img.data_b64)
         except Exception as e:
-            log.warning("Failed to decode image payload for %s[%d]: %s", message_id, i, e)
+            log.warning("Failed to decode payload for %s[%d]: %s", message_id, i, e)
             continue
 
-        filename = img.filename or ""
-        ext = Path(filename).suffix if filename else ""
-        if not ext:
-            ct = (img.content_type or "").split(";")[0].strip().lower()
-            ext_map = {
-                "image/jpeg": ".jpg",
-                "image/png": ".png",
-                "image/gif": ".gif",
-                "image/webp": ".webp",
-            }
-            ext = ext_map.get(ct, ".jpg")
+        ext = _ext_for(img.filename or "", img.content_type or "")
+        content_type = (img.content_type or "application/octet-stream").split(";")[0].strip()
+        safe_msg_id = message_id.replace("/", "_").replace(":", "_")
+        filename = f"{safe_msg_id}_{i}{ext}"
 
-        dest_file = dest_dir / f"{message_id}_{i}{ext}"
+        if _r2.is_enabled():
+            key = f"history/{group_id}/{filename}"
+            url = _r2.upload(key, raw_bytes, content_type)
+            if url:
+                results.append(url)
+                continue
+            log.warning("R2 upload failed for %s, falling back to disk", key)
+
+        # Local disk fallback
+        dest_dir = Path(storage_root) / "history" / group_id
         try:
+            dest_dir.mkdir(parents=True, exist_ok=True)
+            dest_file = dest_dir / filename
             dest_file.write_bytes(raw_bytes)
-            paths.append(str(dest_file))
+            results.append(str(dest_file))
         except OSError as e:
-            log.warning("Failed to write history image %s: %s", dest_file, e)
+            log.warning("Failed to write attachment %s: %s", filename, e)
 
-    return paths
+    return results
 
 
 def _process_history_cases_bg(req: HistoryCasesRequest) -> int:

@@ -291,29 +291,34 @@ def _enrich_messages_with_attachments(
             rel_path = att.get("path", "")
             if not rel_path:
                 continue
-            content_type = att.get("contentType") or "image/jpeg"
-            if not content_type.startswith("image/"):
-                continue  # only OCR images for now
+            content_type = att.get("contentType") or "application/octet-stream"
 
-            img_bytes = _fetch_attachment(settings, rel_path)
-            if img_bytes is None:
+            att_bytes = _fetch_attachment(settings, rel_path)
+            if att_bytes is None:
                 continue
 
             att_count += 1
-            ocr_json = _ocr_attachment(
-                openai_client=openai_client,
-                model=settings.model_img,
-                image_bytes=img_bytes,
-                content_type=content_type,
-                context_text=body,
-            )
-            if ocr_json:
-                ocr_texts.append(ocr_json)
+
+            # OCR only for images
+            if content_type.startswith("image/"):
+                ocr_json = _ocr_attachment(
+                    openai_client=openai_client,
+                    model=settings.model_img,
+                    image_bytes=att_bytes,
+                    content_type=content_type,
+                    context_text=body,
+                )
+                if ocr_json:
+                    ocr_texts.append(ocr_json)
+            else:
+                # Non-image: note the filename in the enriched body so LLM knows it exists
+                fname = att.get("fileName") or rel_path.split("/")[-1] or "attachment"
+                ocr_texts.append(f'[attachment: {fname} ({content_type})]')
 
             payloads.append({
                 "filename": att.get("fileName") or "",
                 "content_type": content_type,
-                "data_b64": base64.b64encode(img_bytes).decode("utf-8"),
+                "data_b64": base64.b64encode(att_bytes).decode("utf-8"),
             })
 
         enriched_body = body
