@@ -582,6 +582,30 @@ async def get_attachment(path: str = Query(..., description="Relative attachment
     return Response(content=content, media_type=mime_type or "application/octet-stream")
 
 
+@app.get("/attachments/files")
+async def count_attachment_files():
+    """
+    Count files currently in Signal Desktop's ``attachments.noindex`` directory.
+
+    Signal Desktop writes attachment files here as they finish downloading.
+    Polling this count (instead of the SQLite DB) avoids issues where the DB
+    attachment metadata shows ``size=null`` or missing ``cdnKey`` for pending
+    downloads.  When the count stops increasing, all in-flight downloads have
+    finished.
+
+    Response: ``{count, dir_exists}``
+    """
+    att_dir = Path(settings.signal_data_dir) / "attachments.noindex"
+    if not att_dir.exists():
+        return {"count": 0, "dir_exists": False}
+    try:
+        count = sum(1 for _ in att_dir.rglob("*") if _.is_file())
+        return {"count": count, "dir_exists": True}
+    except Exception as e:
+        log.warning("Failed to count attachment files: %s", e)
+        return {"count": 0, "dir_exists": False, "error": str(e)}
+
+
 @app.post("/attachments/trigger")
 async def trigger_attachments(
     group_id: str = Query(..., description="Signal group ID"),

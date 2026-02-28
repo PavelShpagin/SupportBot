@@ -508,8 +508,11 @@ def get_attachment_stats(
                 for att in msg_json.get("attachments") or []:
                     if not isinstance(att, dict):
                         continue
-                    # Only count real media attachments (skip 0-byte entries)
-                    if not (att.get("size") or 0):
+                    # Count any attachment that has CDN metadata or a content type —
+                    # including those whose size is not yet known (pending download).
+                    has_cdn = bool(att.get("cdnKey") or att.get("cdnId") or att.get("cdnNumber") is not None)
+                    has_type = bool(att.get("contentType"))
+                    if not (has_cdn or has_type):
                         continue
                     total += 1
                     if att.get("path"):

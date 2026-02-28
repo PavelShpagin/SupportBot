@@ -260,77 +260,96 @@ def _wait_for_attachments(
     group_name: str,
     max_wait: int = 180,
     poll_interval: int = 10,
-    stable_rounds: int = 2,
+    stable_rounds: int = 3,
 ) -> dict:
-    """Poll signal-desktop until all group attachment files are downloaded.
+    """Wait for Signal Desktop to finish downloading attachment files.
 
-    Signal Desktop downloads attachment binaries in the background after syncing
-    historical messages.  The ``path`` field in each attachment's JSON is only
-    populated once the file is written to ``attachments.noindex/``.
+    Uses two complementary signals (no CDP needed):
 
-    We poll ``/attachments/status`` and wait until ``pending`` reaches 0, or
-    until the count hasn't changed for ``stable_rounds`` consecutive polls
-    (meaning downloads have stalled — proceed anyway with whatever is ready).
+    1. **Filesystem count** (``/attachments/files``): counts files in
+       ``attachments.noindex/``.  Signal Desktop writes files here as they
+       download.  When the count stops increasing for ``stable_rounds``
+       consecutive polls, all in-flight downloads have finished.
 
-    Returns the last status dict.
+    2. **DB pending count** (``/attachments/status``): counts attachment
+       entries whose ``path`` field is still empty in the SQLite DB.  Used as
+       a secondary confirmation: if pending==0 we are definitely done.
+
+    Returns the last status dict from ``/attachments/status``.
     """
-    url = settings.signal_desktop_url.rstrip("/") + "/attachments/status"
+    files_url = settings.signal_desktop_url.rstrip("/") + "/attachments/files"
+    status_url = settings.signal_desktop_url.rstrip("/") + "/attachments/status"
     params = {"group_id": group_id, "group_name": group_name}
+
     waited = 0
-    last_pending: Optional[int] = None
+    last_file_count: Optional[int] = None
     stable_count = 0
+    last_status: dict = {}
 
     while waited < max_wait:
+        # --- filesystem probe ---
+        file_count: Optional[int] = None
         try:
             with httpx.Client(timeout=15) as client:
-                r = client.get(url, params=params)
+                r = client.get(files_url)
                 r.raise_for_status()
-                stats = r.json()
+                file_count = r.json().get("count", 0)
+        except Exception as e:
+            log.warning("Attachment file-count poll failed: %s", e)
+
+        # --- DB probe ---
+        try:
+            with httpx.Client(timeout=15) as client:
+                r = client.get(status_url, params=params)
+                r.raise_for_status()
+                last_status = r.json()
         except Exception as e:
             log.warning("Attachment status poll failed: %s", e)
-            time.sleep(poll_interval)
-            waited += poll_interval
-            continue
 
-        total = stats.get("total_attachments", 0)
-        pending = stats.get("pending", 0)
-        ready = stats.get("ready", 0)
+        total_db = last_status.get("total_attachments", 0)
+        pending_db = last_status.get("pending", 0)
+        ready_db = last_status.get("ready", 0)
 
-        if total > 0:
+        log.info(
+            "Attachments: files_on_disk=%s db_total=%d db_ready=%d db_pending=%d (waited %ds)",
+            file_count, total_db, ready_db, pending_db, waited,
+        )
+
+        # Done if DB says all ready
+        if total_db > 0 and pending_db == 0:
+            log.info("All %d attachment(s) ready in DB after %ds", total_db, waited)
+            return last_status
+
+        # Check if file count has stabilised (no new files for stable_rounds polls)
+        if file_count is not None:
+            if file_count == last_file_count:
+                stable_count += 1
+                if stable_count >= stable_rounds:
+                    log.info(
+                        "File count stable at %d for %ds — downloads done",
+                        file_count, stable_count * poll_interval,
+                    )
+                    return last_status
+            else:
+                stable_count = 0  # count is still growing
+            last_file_count = file_count
+
+        # Bail early if no attachment metadata AND no files after initial grace period
+        if waited >= 30 and total_db == 0 and (file_count or 0) == 0:
             log.info(
-                "Attachment downloads: %d/%d ready, %d pending (waited %ds)",
-                ready, total, pending, waited,
+                "No attachments found in DB or filesystem after %ds — group has no media",
+                waited,
             )
-        elif waited >= 20:
-            # No attachment metadata found after 20s — group has no media
-            log.info("No media attachments in group after %ds, proceeding", waited)
-            return stats
+            return last_status
 
-        if total > 0 and pending == 0:
-            log.info("All %d attachment(s) downloaded after %ds", total, waited)
-            return stats
-
-        # Stability check: if pending hasn't changed, downloads may have stalled
-        if pending == last_pending and total > 0:
-            stable_count += 1
-            if stable_count >= stable_rounds:
-                log.info(
-                    "Attachment count stable at %d pending for %ds — proceeding",
-                    pending, stable_count * poll_interval,
-                )
-                return stats
-        else:
-            stable_count = 0
-
-        last_pending = pending
         time.sleep(poll_interval)
         waited += poll_interval
 
     log.warning(
-        "Attachment wait timed out after %ds, proceeding with %d pending",
-        max_wait, last_pending or 0,
+        "Attachment wait timed out after %ds (files=%s db_pending=%d)",
+        max_wait, last_file_count, last_status.get("pending", -1),
     )
-    return {}
+    return last_status
 
 
 def _get_desktop_messages(settings, group_id: str, group_name: str, limit: int = 800) -> List[dict]:
@@ -1023,13 +1042,17 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
         # populated and we can fetch / OCR the real images.
         # ?????????????????????????????????????????????????????????????????
         check_cancelled()
-        # Ask Signal Desktop's JS runtime to enqueue downloads for all pending
-        # attachments in this group.  Signal Desktop does not start the background
-        # downloader automatically for historical messages in headless mode.
-        log.info("Triggering attachment downloads via CDP for group %s...", group_name or group_id)
+        # Best-effort: ask Signal Desktop's CDP runtime to enqueue any pending
+        # attachment downloads explicitly.  This is NOT required — Signal Desktop
+        # downloads attachments in the background automatically; we include this
+        # only to speed things up for older historical messages that may not have
+        # been enqueued yet.  Failures here are logged and ignored.
+        log.info("Triggering attachment downloads (best-effort CDP) for group %s...", group_name or group_id)
         _trigger_attachment_downloads(settings, group_id=group_id, group_name=group_name)
 
-        # Now poll until files appear on disk (path fields populated in DB).
+        # Wait for Signal Desktop to write attachment files to attachments.noindex/.
+        # Uses filesystem file-count polling (primary) + DB pending count (secondary).
+        # No CDP required for this step.
         log.info("Waiting for Signal Desktop to finish downloading group attachments...")
         _notify_progress(settings=settings, token=token, progress_key="syncing")
         _wait_for_attachments(settings, group_id=group_id, group_name=group_name)
