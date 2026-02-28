@@ -16,6 +16,7 @@ from __future__ import annotations
 import base64
 import json
 import logging
+import re
 import time
 import urllib.parse
 from pathlib import Path
@@ -29,6 +30,50 @@ from ingest.db import claim_next_job, complete_job, create_db, fail_job, is_job_
 
 HISTORY_LINK = "HISTORY_LINK"
 HISTORY_SYNC = "HISTORY_SYNC"
+
+
+# ---------------------------------------------------------------------------
+# JSON helpers
+# ---------------------------------------------------------------------------
+
+# Valid single-character escape sequences in JSON
+_VALID_ESCAPES = set('"\\' + "/bfnrtu")
+
+def _safe_json_loads(raw: str) -> dict:
+    """Parse a JSON string from an LLM, tolerating invalid backslash escapes.
+
+    LLM responses (especially for Cyrillic text with file paths, regex patterns,
+    or Windows-style paths) occasionally contain bare backslashes that aren't
+    valid JSON escape sequences (e.g. ``\d``, ``\p``, ``\U`` without proper
+    Unicode digits).  ``json.loads`` raises ``JSONDecodeError`` on these.
+
+    This function retries with a two-stage repair:
+    1. Replace invalid ``\\X`` sequences with ``\\\\X`` (escaped backslash).
+    2. If that still fails, strip control characters and retry.
+    """
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError:
+        pass
+
+    # Stage 1: fix invalid escape sequences
+    def _fix_escapes(m: re.Match) -> str:
+        char = m.group(1)
+        return "\\\\" + char if char not in _VALID_ESCAPES else m.group(0)
+
+    fixed = re.sub(r"\\(.)", _fix_escapes, raw)
+    try:
+        return json.loads(fixed)
+    except json.JSONDecodeError:
+        pass
+
+    # Stage 2: strip non-printable ASCII control characters (except tab/newline)
+    cleaned = re.sub(r"[\x00-\x08\x0b\x0c\x0e-\x1f]", "", fixed)
+    try:
+        return json.loads(cleaned)
+    except json.JSONDecodeError as e:
+        log.warning("LLM JSON parse failed even after repair: %s", e)
+        return {}
 
 P_BLOCKS_SYSTEM = """You analyze a chunk of support chat history and extract FULLY RESOLVED support cases.
 
@@ -506,7 +551,7 @@ def _extract_case_blocks(
             else:
                 raise
     raw = resp.choices[0].message.content or "{}"
-    data = json.loads(raw)
+    data = _safe_json_loads(raw)
     out: List[str] = []
     cases = data.get("cases", [])
     if isinstance(cases, list):
@@ -538,7 +583,7 @@ def _extract_structured_cases(
         temperature=0,
     )
     raw = resp.choices[0].message.content or "{}"
-    data = json.loads(raw)
+    data = _safe_json_loads(raw)
     out: List[dict] = []
     cases = data.get("cases", [])
     if isinstance(cases, list):
@@ -587,32 +632,9 @@ def _dedup_cases_llm(
         temperature=0,
     )
     raw = resp.choices[0].message.content or "{}"
-    try:
-        data = json.loads(raw)
-    except json.JSONDecodeError:
-        # Attempt to extract partial valid JSON array from truncated response
-        import re as _re
-        match = _re.search(r'"cases"\s*:\s*(\[.*)', raw, _re.DOTALL)
-        if match:
-            arr_str = match.group(1)
-            # Truncate at last complete object
-            depth = 0
-            end = 0
-            for i, ch in enumerate(arr_str):
-                if ch == '{':
-                    depth += 1
-                elif ch == '}':
-                    depth -= 1
-                    if depth == 0:
-                        end = i + 1
-            try:
-                data = {"cases": json.loads(arr_str[:end] + "]")}
-            except Exception:
-                log.warning("Dedup JSON repair failed, returning original cases")
-                return cases
-        else:
-            log.warning("Dedup returned unparseable JSON, returning original cases")
-            return cases
+    data = _safe_json_loads(raw)
+    if not data:
+        return cases
     merged = data.get("cases", []) if isinstance(data, dict) else (data if isinstance(data, list) else [])
     if isinstance(merged, list) and merged:
         return [c for c in merged if isinstance(c, dict) and c.get("case_block")]
