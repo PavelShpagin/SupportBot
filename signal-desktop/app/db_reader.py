@@ -469,6 +469,61 @@ def get_group_messages(
         conn.close()
 
 
+def get_attachment_stats(
+    signal_data_dir: str,
+    conversation_id: Optional[str] = None,
+) -> dict:
+    """Count attachment download progress for a conversation.
+
+    Scans the ``attachments`` array in each message's JSON column and
+    classifies each entry as either *ready* (has a local ``path``) or
+    *pending* (has CDN/size metadata but no path yet — not yet downloaded
+    by Signal Desktop's background downloader).
+
+    Returns a dict with keys: ``total_attachments``, ``ready``, ``pending``.
+    """
+    conn = _open_db(signal_data_dir)
+    try:
+        msg_cols = _get_table_columns(conn, "messages")
+        if "json" not in msg_cols:
+            return {"total_attachments": 0, "ready": 0, "pending": 0}
+
+        conv_id_col = "conversationId" if "conversationId" in msg_cols else "conversation_id"
+
+        q = "SELECT json FROM messages WHERE json LIKE '%\"attachments\":[{%'"
+        params: list = []
+        if conversation_id:
+            q += f" AND {conv_id_col} = ?"
+            params.append(conversation_id)
+
+        rows = conn.execute(q, params).fetchall()
+
+        total = 0
+        ready = 0
+        pending = 0
+
+        for (raw_json,) in rows:
+            try:
+                msg_json = json.loads(raw_json) if raw_json else {}
+                for att in msg_json.get("attachments") or []:
+                    if not isinstance(att, dict):
+                        continue
+                    # Only count real media attachments (skip 0-byte entries)
+                    if not (att.get("size") or 0):
+                        continue
+                    total += 1
+                    if att.get("path"):
+                        ready += 1
+                    else:
+                        pending += 1
+            except (json.JSONDecodeError, TypeError):
+                continue
+
+        return {"total_attachments": total, "ready": ready, "pending": pending}
+    finally:
+        conn.close()
+
+
 def is_db_available(signal_data_dir: str) -> bool:
     """Check if Signal Desktop DB is available and can be opened."""
     try:

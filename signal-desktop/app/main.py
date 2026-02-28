@@ -30,6 +30,7 @@ from pydantic import BaseModel, Field
 from app.config import load_settings
 from app.db_reader import (
     SignalMessage as DBSignalMessage,
+    get_attachment_stats,
     get_conversations,
     get_contacts_from_db,
     get_group_messages,
@@ -579,6 +580,51 @@ async def get_attachment(path: str = Query(..., description="Relative attachment
     mime_type, _ = mimetypes.guess_type(str(full_path))
     content = full_path.read_bytes()
     return Response(content=content, media_type=mime_type or "application/octet-stream")
+
+
+@app.get("/attachments/status")
+async def get_attachments_status(
+    group_id: Optional[str] = Query(None, description="Signal group ID"),
+    group_name: Optional[str] = Query(None, description="Group name (fallback)"),
+):
+    """
+    Return attachment download progress for a group.
+
+    Signal Desktop downloads attachment files in the background after linking.
+    Poll this endpoint to know when all attachment files are on disk (``pending == 0``).
+
+    Response fields:
+    - ``total_attachments``: total media attachments found in message JSON
+    - ``ready``: attachments with a local file path (downloaded)
+    - ``pending``: attachments with CDN metadata but no local path yet
+    - ``db_available``: whether the Signal Desktop DB could be opened
+    """
+    db_ok = is_db_available(settings.signal_data_dir)
+    if not db_ok:
+        return {"total_attachments": 0, "ready": 0, "pending": 0, "db_available": False}
+
+    # Resolve conversation_id from group_id or group_name
+    conversation_id: Optional[str] = None
+    if group_id or group_name:
+        try:
+            convs = get_conversations(settings.signal_data_dir)
+            group_name_lower = (group_name or "").lower().strip()
+            for c in convs:
+                if group_id and (c.get("groupId") == group_id or c.get("id") == group_id):
+                    conversation_id = c["id"]
+                    break
+                if group_name_lower and (c.get("name") or "").lower().strip() == group_name_lower:
+                    conversation_id = c["id"]
+                    break
+        except Exception as e:
+            log.warning("Could not resolve conversation for attachment status: %s", e)
+
+    try:
+        stats = get_attachment_stats(settings.signal_data_dir, conversation_id)
+        return {**stats, "db_available": True, "conversation_id": conversation_id}
+    except Exception as e:
+        log.exception("Failed to get attachment stats")
+        return {"total_attachments": 0, "ready": 0, "pending": 0, "db_available": True, "error": str(e)}
 
 
 @app.post("/refresh-qr")
