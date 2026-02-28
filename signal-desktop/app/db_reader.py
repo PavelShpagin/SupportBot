@@ -364,7 +364,10 @@ def get_messages(
                 # row[9] is raw_json only when has_json_col is True (added last)
                 raw_json_str = str(row[9]) if (has_json_col and len(row) > 9 and row[9]) else None
 
-                # Parse attachments from the raw json column
+                # Parse attachments from the raw json column.
+                # Include BOTH downloaded (path set) and pending (path empty)
+                # attachments.  Pending ones expose CDN metadata so the caller
+                # can download them directly without CDP.
                 attachments: list = []
                 if raw_json_str:
                     try:
@@ -372,15 +375,23 @@ def get_messages(
                         for att in msg_json.get("attachments") or []:
                             if not isinstance(att, dict):
                                 continue
-                            att_path = att.get("path") or ""
                             content_type = att.get("contentType") or ""
-                            file_name = att.get("fileName") or ""
-                            if att_path:
-                                attachments.append({
-                                    "path": att_path,
-                                    "fileName": file_name,
-                                    "contentType": content_type,
-                                })
+                            cdn_key = att.get("cdnKey") or ""
+                            # Skip entries with no content type AND no CDN key
+                            # (e.g. sticker placeholders, empty slots)
+                            if not content_type and not cdn_key:
+                                continue
+                            attachments.append({
+                                "path": att.get("path") or "",
+                                "fileName": att.get("fileName") or "",
+                                "contentType": content_type,
+                                # CDN download metadata (present even for pending attachments)
+                                "cdnKey": cdn_key,
+                                "cdnNumber": att.get("cdnNumber"),
+                                "key": att.get("key") or "",      # base64, 64 bytes
+                                "digest": att.get("digest") or "",
+                                "size": att.get("size") or 0,
+                            })
                     except (json.JSONDecodeError, TypeError):
                         pass
 

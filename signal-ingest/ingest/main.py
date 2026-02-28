@@ -150,29 +150,56 @@ def _get_desktop_screenshot(settings) -> bytes:
 
 
 
-def _fetch_attachment(settings, rel_path: str, max_bytes: int = 5_000_000) -> Optional[bytes]:
-    """Fetch raw bytes for a Signal Desktop attachment by its relative path.
+def _fetch_attachment(
+    settings,
+    rel_path: str,
+    cdn_key: str = "",
+    max_bytes: int = 5_000_000,
+) -> Optional[bytes]:
+    """Fetch raw bytes for a Signal Desktop attachment.
 
-    Returns None if the fetch fails or the file is too large.
+    Tries two sources in order:
+    1. ``GET /attachment?path=...`` — for attachments already on disk in
+       Signal Desktop's ``attachments.noindex/`` directory.
+    2. ``GET /attachment/by-cdn/{cdn_key}`` — for attachments downloaded
+       directly from Signal's CDN via ``POST /attachments/fetch-all``.
+
+    Returns None if both sources fail or the file is too large.
     """
-    url = settings.signal_desktop_url.rstrip("/") + "/attachment"
-    try:
-        with httpx.Client(timeout=30) as client:
-            r = client.get(url, params={"path": rel_path})
-            if r.status_code == 404:
-                log.warning("Attachment not found on signal-desktop: %s", rel_path)
-                return None
-            r.raise_for_status()
-            if len(r.content) > max_bytes:
-                log.warning(
-                    "Attachment %s too large (%d bytes), skipping",
-                    rel_path, len(r.content),
-                )
-                return None
-            return r.content
-    except Exception as e:
-        log.warning("Failed to fetch attachment %s: %s", rel_path, e)
-        return None
+    base = settings.signal_desktop_url.rstrip("/")
+
+    def _get(url: str, **kw) -> Optional[bytes]:
+        try:
+            with httpx.Client(timeout=30) as client:
+                r = client.get(url, **kw)
+                if r.status_code == 404:
+                    return None
+                r.raise_for_status()
+                if len(r.content) > max_bytes:
+                    log.warning("Attachment too large (%d bytes), skipping", len(r.content))
+                    return None
+                return r.content
+        except Exception as e:
+            log.warning("Failed to fetch attachment from %s: %s", url, e)
+            return None
+
+    if rel_path:
+        data = _get(f"{base}/attachment", params={"path": rel_path})
+        if data is not None:
+            return data
+        # Fall through to CDN cache if the disk file isn't there yet
+
+    if cdn_key:
+        data = _get(f"{base}/attachment/by-cdn/{cdn_key}")
+        if data is not None:
+            return data
+
+    if rel_path or cdn_key:
+        log.warning(
+            "Attachment not found via path=%r cdn_key=%s",
+            rel_path or "(none)", cdn_key or "(none)",
+        )
+    return None
 
 
 def _ocr_attachment(
@@ -228,128 +255,37 @@ def _ocr_attachment(
         return ""
 
 
-def _trigger_attachment_downloads(settings, group_id: str, group_name: str) -> dict:
-    """Ask signal-desktop's CDP runtime to enqueue pending attachment downloads.
+def _fetch_attachments_direct(
+    settings,
+    group_id: str,
+    group_name: str,
+    timeout: int = 120,
+) -> dict:
+    """Download all pending group attachments directly from Signal's CDN.
 
-    Signal Desktop does not auto-download historical attachment binaries in
-    headless mode.  This sends a single CDP-backed POST to signal-desktop which
-    calls ``AttachmentDownloads.addJob()`` for every attachment that has CDN
-    metadata but no local path yet.  Should be called once after group sync,
-    before the polling wait loop.
+    Calls ``POST /attachments/fetch-all`` on signal-desktop, which reads
+    attachment CDN metadata from the SQLite DB, downloads each encrypted blob
+    from ``cdn{N}.signal.org``, decrypts it (AES-256-CBC + HMAC-SHA256), and
+    caches the plaintext at ``{signal_data_dir}/cdn-cache/{cdnKey}``.
+
+    This replaces the old CDP-trigger + polling-wait approach entirely.
+    Returns the response dict: ``{downloaded, failed, skipped}``.
     """
-    url = settings.signal_desktop_url.rstrip("/") + "/attachments/trigger"
+    url = settings.signal_desktop_url.rstrip("/") + "/attachments/fetch-all"
     params = {"group_id": group_id, "group_name": group_name}
     try:
-        with httpx.Client(timeout=30) as client:
+        with httpx.Client(timeout=timeout) as client:
             r = client.post(url, params=params)
             r.raise_for_status()
             result = r.json()
             log.info(
-                "Attachment trigger result: ok=%s triggered=%s method=%s",
-                result.get("ok"), result.get("triggered"), result.get("method"),
+                "Direct CDN fetch: downloaded=%s failed=%s skipped=%s",
+                result.get("downloaded"), result.get("failed"), result.get("skipped"),
             )
             return result
     except Exception as e:
-        log.warning("Attachment trigger failed (non-fatal): %s", e)
-        return {"ok": False, "error": str(e)}
-
-
-def _wait_for_attachments(
-    settings,
-    group_id: str,
-    group_name: str,
-    max_wait: int = 180,
-    poll_interval: int = 10,
-    stable_rounds: int = 3,
-) -> dict:
-    """Wait for Signal Desktop to finish downloading attachment files.
-
-    Uses two complementary signals (no CDP needed):
-
-    1. **Filesystem count** (``/attachments/files``): counts files in
-       ``attachments.noindex/``.  Signal Desktop writes files here as they
-       download.  When the count stops increasing for ``stable_rounds``
-       consecutive polls, all in-flight downloads have finished.
-
-    2. **DB pending count** (``/attachments/status``): counts attachment
-       entries whose ``path`` field is still empty in the SQLite DB.  Used as
-       a secondary confirmation: if pending==0 we are definitely done.
-
-    Returns the last status dict from ``/attachments/status``.
-    """
-    files_url = settings.signal_desktop_url.rstrip("/") + "/attachments/files"
-    status_url = settings.signal_desktop_url.rstrip("/") + "/attachments/status"
-    params = {"group_id": group_id, "group_name": group_name}
-
-    waited = 0
-    last_file_count: Optional[int] = None
-    stable_count = 0
-    last_status: dict = {}
-
-    while waited < max_wait:
-        # --- filesystem probe ---
-        file_count: Optional[int] = None
-        try:
-            with httpx.Client(timeout=15) as client:
-                r = client.get(files_url)
-                r.raise_for_status()
-                file_count = r.json().get("count", 0)
-        except Exception as e:
-            log.warning("Attachment file-count poll failed: %s", e)
-
-        # --- DB probe ---
-        try:
-            with httpx.Client(timeout=15) as client:
-                r = client.get(status_url, params=params)
-                r.raise_for_status()
-                last_status = r.json()
-        except Exception as e:
-            log.warning("Attachment status poll failed: %s", e)
-
-        total_db = last_status.get("total_attachments", 0)
-        pending_db = last_status.get("pending", 0)
-        ready_db = last_status.get("ready", 0)
-
-        log.info(
-            "Attachments: files_on_disk=%s db_total=%d db_ready=%d db_pending=%d (waited %ds)",
-            file_count, total_db, ready_db, pending_db, waited,
-        )
-
-        # Done if DB says all ready
-        if total_db > 0 and pending_db == 0:
-            log.info("All %d attachment(s) ready in DB after %ds", total_db, waited)
-            return last_status
-
-        # Check if file count has stabilised (no new files for stable_rounds polls)
-        if file_count is not None:
-            if file_count == last_file_count:
-                stable_count += 1
-                if stable_count >= stable_rounds:
-                    log.info(
-                        "File count stable at %d for %ds — downloads done",
-                        file_count, stable_count * poll_interval,
-                    )
-                    return last_status
-            else:
-                stable_count = 0  # count is still growing
-            last_file_count = file_count
-
-        # Bail early if no attachment metadata AND no files after initial grace period
-        if waited >= 30 and total_db == 0 and (file_count or 0) == 0:
-            log.info(
-                "No attachments found in DB or filesystem after %ds — group has no media",
-                waited,
-            )
-            return last_status
-
-        time.sleep(poll_interval)
-        waited += poll_interval
-
-    log.warning(
-        "Attachment wait timed out after %ds (files=%s db_pending=%d)",
-        max_wait, last_file_count, last_status.get("pending", -1),
-    )
-    return last_status
+        log.warning("Direct CDN fetch failed (non-fatal): %s", e)
+        return {"downloaded": 0, "failed": 0, "skipped": 0, "error": str(e)}
 
 
 def _get_desktop_messages(settings, group_id: str, group_name: str, limit: int = 800) -> List[dict]:
@@ -412,12 +348,13 @@ def _enrich_messages_with_attachments(
         ocr_texts: List[str] = []
 
         for att in atts[:max_att_per_message]:
-            rel_path = att.get("path", "")
-            if not rel_path:
+            rel_path = att.get("path") or ""
+            cdn_key = att.get("cdnKey") or ""
+            if not rel_path and not cdn_key:
                 continue
             content_type = att.get("contentType") or "application/octet-stream"
 
-            att_bytes = _fetch_attachment(settings, rel_path)
+            att_bytes = _fetch_attachment(settings, rel_path, cdn_key=cdn_key)
             if att_bytes is None:
                 continue
 
@@ -1033,29 +970,17 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
             )
             return
 
-        # ?????????????????????????????????????????????????????????????????
-        # Step 3: Wait for Signal Desktop to download attachment files
+        # ────────────────────────────────────────────────────────────────────────
+        # Step 3: Download group attachments directly from Signal's CDN
         #
-        # Signal Desktop downloads attachment binaries to attachments.noindex/
-        # in the background after syncing messages.  We poll until all files
-        # are on disk before reading messages so that attachment paths are
-        # populated and we can fetch / OCR the real images.
-        # ?????????????????????????????????????????????????????????????????
+        # Signal Desktop stores cdnKey + encryption key in its SQLite DB for
+        # every attachment, even ones it hasn't downloaded yet.  We use these to
+        # fetch and decrypt files ourselves, with no CDP or JS involved.
+        # ────────────────────────────────────────────────────────────────────────
         check_cancelled()
-        # Best-effort: ask Signal Desktop's CDP runtime to enqueue any pending
-        # attachment downloads explicitly.  This is NOT required — Signal Desktop
-        # downloads attachments in the background automatically; we include this
-        # only to speed things up for older historical messages that may not have
-        # been enqueued yet.  Failures here are logged and ignored.
-        log.info("Triggering attachment downloads (best-effort CDP) for group %s...", group_name or group_id)
-        _trigger_attachment_downloads(settings, group_id=group_id, group_name=group_name)
-
-        # Wait for Signal Desktop to write attachment files to attachments.noindex/.
-        # Uses filesystem file-count polling (primary) + DB pending count (secondary).
-        # No CDP required for this step.
-        log.info("Waiting for Signal Desktop to finish downloading group attachments...")
+        log.info("Downloading group attachments from Signal CDN for group %s...", group_name or group_id)
         _notify_progress(settings=settings, token=token, progress_key="syncing")
-        _wait_for_attachments(settings, group_id=group_id, group_name=group_name)
+        _fetch_attachments_direct(settings, group_id=group_id, group_name=group_name)
         check_cancelled()
 
         # ?????????????????????????????????????????????????????????????????

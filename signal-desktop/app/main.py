@@ -36,8 +36,10 @@ from app.db_reader import (
     get_group_messages,
     get_messages,
     is_db_available,
+    _open_db,
 )
 from app.devtools import DevToolsClient, get_devtools_client, SignalConversation
+from app.cdn_download import download_and_decrypt, get_signal_credentials
 
 logging.basicConfig(
     level=logging.INFO,
@@ -580,6 +582,149 @@ async def get_attachment(path: str = Query(..., description="Relative attachment
     mime_type, _ = mimetypes.guess_type(str(full_path))
     content = full_path.read_bytes()
     return Response(content=content, media_type=mime_type or "application/octet-stream")
+
+
+@app.get("/attachment/by-cdn/{cdn_key:path}")
+async def get_attachment_by_cdn(cdn_key: str):
+    """
+    Serve a Signal attachment that was downloaded directly from the CDN.
+
+    Files are cached at ``{signal_data_dir}/cdn-cache/{cdn_key}`` by the
+    ``POST /attachments/fetch-all`` endpoint.  Returns 404 if the file has
+    not been downloaded yet.
+    """
+    cache_file = Path(settings.signal_data_dir) / "cdn-cache" / cdn_key
+    if not cache_file.exists():
+        raise HTTPException(status_code=404, detail=f"CDN-cached attachment not found: {cdn_key}")
+    mime_type, _ = mimetypes.guess_type(str(cache_file))
+    return Response(
+        content=cache_file.read_bytes(),
+        media_type=mime_type or "application/octet-stream",
+    )
+
+
+@app.post("/attachments/fetch-all")
+async def fetch_all_pending_attachments(
+    group_id: Optional[str] = Query(None, description="Signal group ID"),
+    group_name: Optional[str] = Query(None, description="Group name (fallback)"),
+):
+    """
+    Download all pending attachments for a group directly from Signal's CDN.
+
+    For every attachment in the group's messages that has CDN metadata
+    (``cdnKey``, ``key``) but no local ``path`` yet, this endpoint:
+
+    1. Reads account credentials from the Signal Desktop SQLite ``items`` table.
+    2. Issues a GET to ``cdn{N}.signal.org`` with Basic auth.
+    3. Decrypts the blob (AES-256-CBC + HMAC-SHA256).
+    4. Caches the plaintext at ``{signal_data_dir}/cdn-cache/{cdnKey}``.
+
+    Files already cached are skipped.  Returns ``{downloaded, failed, skipped}``.
+    """
+    if not is_db_available(settings.signal_data_dir):
+        return {"downloaded": 0, "failed": 0, "skipped": 0, "error": "DB not available"}
+
+    # Resolve conversation_id
+    conversation_id: Optional[str] = None
+    try:
+        convs = get_conversations(settings.signal_data_dir)
+        group_name_lower = (group_name or "").lower().strip()
+        for c in convs:
+            if group_id and (c.get("groupId") == group_id or c.get("id") == group_id):
+                conversation_id = c["id"]
+                break
+            if group_name_lower and (c.get("name") or "").lower().strip() == group_name_lower:
+                conversation_id = c["id"]
+                break
+    except Exception as e:
+        log.warning("fetch-all: could not resolve conversation: %s", e)
+
+    # Collect all pending attachments
+    import json as _json
+
+    pending: list[dict] = []
+    try:
+        conn = _open_db(settings.signal_data_dir)
+        q = "SELECT json FROM messages WHERE json LIKE '%\"attachments\":[{%'"
+        params: list = []
+        if conversation_id:
+            q += " AND conversationId = ?"
+            params.append(conversation_id)
+        rows = conn.execute(q, params).fetchall()
+        conn.close()
+
+        for (raw_json,) in rows:
+            try:
+                msg = _json.loads(raw_json) if raw_json else {}
+                for att in msg.get("attachments") or []:
+                    if not isinstance(att, dict):
+                        continue
+                    cdn_key = att.get("cdnKey") or ""
+                    key_b64 = att.get("key") or ""
+                    if not cdn_key or not key_b64:
+                        continue
+                    # Skip if already cached or already on disk
+                    cache_file = Path(settings.signal_data_dir) / "cdn-cache" / cdn_key
+                    if cache_file.exists():
+                        continue
+                    if att.get("path"):
+                        continue
+                    pending.append({
+                        "cdnKey": cdn_key,
+                        "cdnNumber": att.get("cdnNumber"),
+                        "key": key_b64,
+                        "contentType": att.get("contentType") or "",
+                    })
+            except Exception:
+                continue
+    except Exception as e:
+        log.exception("fetch-all: failed to scan messages")
+        return {"downloaded": 0, "failed": 0, "skipped": 0, "error": str(e)}
+
+    if not pending:
+        log.info("fetch-all: no pending attachments for group %s", group_name or group_id)
+        return {"downloaded": 0, "failed": 0, "skipped": 0}
+
+    # Load credentials once
+    credentials: dict = {}
+    try:
+        conn = _open_db(settings.signal_data_dir)
+        credentials = get_signal_credentials(conn)
+        conn.close()
+        log.info(
+            "fetch-all: CDN credentials — uuid=%s... deviceId=%s",
+            (credentials.get("uuid") or "")[:8],
+            credentials.get("deviceId"),
+        )
+    except Exception as e:
+        log.warning("fetch-all: could not read credentials: %s", e)
+
+    downloaded = 0
+    failed = 0
+    skipped = 0
+
+    log.info("fetch-all: downloading %d pending attachment(s) for group %s", len(pending), group_name or group_id)
+    for att in pending:
+        cdn_key = att["cdnKey"]
+        try:
+            download_and_decrypt(
+                cdn_key=cdn_key,
+                cdn_number=att.get("cdnNumber"),
+                key_b64=att["key"],
+                signal_data_dir=settings.signal_data_dir,
+                credentials=credentials,
+            )
+            downloaded += 1
+            log.debug("fetch-all: downloaded %s", cdn_key)
+        except Exception as e:
+            failed += 1
+            log.warning("fetch-all: failed to download %s: %s", cdn_key, e)
+
+    log.info(
+        "fetch-all: done — downloaded=%d failed=%d skipped=%d",
+        downloaded, failed, skipped,
+    )
+    return {"downloaded": downloaded, "failed": failed, "skipped": skipped}
 
 
 @app.get("/attachments/files")
