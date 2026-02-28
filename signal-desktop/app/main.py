@@ -582,6 +582,39 @@ async def get_attachment(path: str = Query(..., description="Relative attachment
     return Response(content=content, media_type=mime_type or "application/octet-stream")
 
 
+@app.post("/attachments/trigger")
+async def trigger_attachments(
+    group_id: str = Query(..., description="Signal group ID"),
+    group_name: Optional[str] = Query(None, description="Group name (for logging)"),
+):
+    """
+    Ask Signal Desktop's JS runtime to enqueue pending attachment downloads.
+
+    Signal Desktop does not auto-download historical attachment files in headless
+    mode.  This endpoint injects a small JS snippet via CDP that calls the
+    internal ``AttachmentDownloads.addJob()`` service for every attachment that
+    has CDN metadata but no local ``path`` yet.
+
+    Call this once after QR-link + group sync, then poll ``/attachments/status``
+    until ``pending == 0``.
+
+    Response: ``{ok, triggered, method}``
+    """
+    try:
+        devtools = await get_devtools()
+        if not devtools.is_connected:
+            return {"ok": False, "error": "DevTools not connected", "triggered": 0}
+        result = await devtools.trigger_attachment_downloads(group_id)
+        log.info(
+            "Attachment trigger: group=%s result=%s",
+            (group_name or group_id)[:30], result,
+        )
+        return result
+    except Exception as e:
+        log.exception("trigger_attachments failed")
+        return {"ok": False, "error": str(e), "triggered": 0}
+
+
 @app.get("/attachments/status")
 async def get_attachments_status(
     group_id: Optional[str] = Query(None, description="Signal group ID"),

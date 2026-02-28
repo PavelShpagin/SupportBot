@@ -228,6 +228,32 @@ def _ocr_attachment(
         return ""
 
 
+def _trigger_attachment_downloads(settings, group_id: str, group_name: str) -> dict:
+    """Ask signal-desktop's CDP runtime to enqueue pending attachment downloads.
+
+    Signal Desktop does not auto-download historical attachment binaries in
+    headless mode.  This sends a single CDP-backed POST to signal-desktop which
+    calls ``AttachmentDownloads.addJob()`` for every attachment that has CDN
+    metadata but no local path yet.  Should be called once after group sync,
+    before the polling wait loop.
+    """
+    url = settings.signal_desktop_url.rstrip("/") + "/attachments/trigger"
+    params = {"group_id": group_id, "group_name": group_name}
+    try:
+        with httpx.Client(timeout=30) as client:
+            r = client.post(url, params=params)
+            r.raise_for_status()
+            result = r.json()
+            log.info(
+                "Attachment trigger result: ok=%s triggered=%s method=%s",
+                result.get("ok"), result.get("triggered"), result.get("method"),
+            )
+            return result
+    except Exception as e:
+        log.warning("Attachment trigger failed (non-fatal): %s", e)
+        return {"ok": False, "error": str(e)}
+
+
 def _wait_for_attachments(
     settings,
     group_id: str,
@@ -997,6 +1023,13 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
         # populated and we can fetch / OCR the real images.
         # ?????????????????????????????????????????????????????????????????
         check_cancelled()
+        # Ask Signal Desktop's JS runtime to enqueue downloads for all pending
+        # attachments in this group.  Signal Desktop does not start the background
+        # downloader automatically for historical messages in headless mode.
+        log.info("Triggering attachment downloads via CDP for group %s...", group_name or group_id)
+        _trigger_attachment_downloads(settings, group_id=group_id, group_name=group_name)
+
+        # Now poll until files appear on disk (path fields populated in DB).
         log.info("Waiting for Signal Desktop to finish downloading group attachments...")
         _notify_progress(settings=settings, token=token, progress_key="syncing")
         _wait_for_attachments(settings, group_id=group_id, group_name=group_name)

@@ -557,6 +557,109 @@ class DevToolsClient:
         
         return None
     
+    async def trigger_attachment_downloads(self, group_id: str) -> dict:
+        """Trigger Signal Desktop's background attachment downloader for a group.
+
+        Signal Desktop syncs message metadata immediately after QR-link but does
+        not auto-download historical attachment files in headless mode.  Calling
+        this method injects JavaScript into the renderer to:
+
+        1. Locate the conversation for ``group_id``.
+        2. Load its messages and iterate over pending attachments (no local path).
+        3. Enqueue each via ``window.Signal.Services.AttachmentDownloads.addJob()``.
+        4. Fall back to ``showConversation()`` / Whisper events if the service API
+           is not available in the running Signal Desktop version.
+
+        Returns a dict: ``{ok, triggered, method, error?}``
+        """
+        js = """
+(async function(groupIdStr) {
+    try {
+        // ── find conversation ────────────────────────────────────────────────
+        const convs = window.ConversationController.getAll();
+        let conv = null;
+        for (const c of convs) {
+            if (c.get('groupId') === groupIdStr) { conv = c; break; }
+        }
+        if (!conv) return {ok: false, error: 'conversation not found for group ' + groupIdStr};
+
+        const convId = conv.id;
+        let triggered = 0;
+
+        // ── approach 1: AttachmentDownloads.addJob (Signal 6+/7+) ───────────
+        const svc = window.Signal
+                 && window.Signal.Services
+                 && window.Signal.Services.AttachmentDownloads;
+        if (svc && typeof svc.addJob === 'function') {
+            let msgs = [];
+            try {
+                const col = await window.Signal.Data.getMessagesByConversation(
+                    convId, {limit: 500});
+                msgs = (col && col.models) ? col.models : [];
+            } catch(e) {}
+
+            for (const msg of msgs) {
+                const atts = msg.get('attachments') || [];
+                for (let i = 0; i < atts.length; i++) {
+                    const att = atts[i];
+                    // Only queue if has size metadata but no local path yet
+                    if (!att.path && att.size) {
+                        try {
+                            await svc.addJob(msg, {
+                                type: 'attachment',
+                                attachment: att,
+                                index: i,
+                                messageId: msg.id,
+                            });
+                            triggered++;
+                        } catch(e) { /* skip single failure, continue */ }
+                    }
+                }
+            }
+            if (triggered > 0) {
+                return {ok: true, triggered, method: 'AttachmentDownloads.addJob'};
+            }
+        }
+
+        // ── approach 2: showConversation Redux action ────────────────────────
+        try {
+            if (window.reduxActions
+                    && window.reduxActions.conversations
+                    && typeof window.reduxActions.conversations.showConversation === 'function') {
+                window.reduxActions.conversations.showConversation({conversationId: convId});
+                return {ok: true, triggered: -1, method: 'showConversation'};
+            }
+        } catch(e) {}
+
+        // ── approach 3: legacy Whisper events ────────────────────────────────
+        try {
+            if (window.Whisper && window.Whisper.events) {
+                window.Whisper.events.trigger('showConversation', conv);
+                return {ok: true, triggered: -1, method: 'WhisperEvents'};
+            }
+        } catch(e) {}
+
+        return {ok: false, error: 'no download API available', triggered: 0, method: 'none'};
+    } catch(err) {
+        return {ok: false, error: err.message || String(err), triggered: 0};
+    }
+})(%s);
+""" % json.dumps(group_id)
+
+        try:
+            result = await self.evaluate_js(js)
+            if isinstance(result, dict):
+                log.info(
+                    "Attachment trigger for group %s: ok=%s triggered=%s method=%s",
+                    group_id[:20], result.get("ok"), result.get("triggered"), result.get("method"),
+                )
+                return result
+            log.warning("Unexpected trigger result: %r", result)
+            return {"ok": False, "error": "unexpected result", "triggered": 0}
+        except Exception as e:
+            log.exception("trigger_attachment_downloads failed for group %s", group_id[:20])
+            return {"ok": False, "error": str(e), "triggered": 0}
+
     async def setup_message_hook(self):
         """
         Inject JavaScript to hook into Signal's message receive pipeline.
