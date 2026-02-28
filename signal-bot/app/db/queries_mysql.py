@@ -1210,7 +1210,11 @@ def wipe_all_data(db: MySQL) -> dict:
 
 
 def find_case_by_title(db: MySQL, *, group_id: str, problem_title: str) -> Optional[str]:
-    """Return the case_id of an existing non-archived case with the same title in this group, or None."""
+    """Return the case_id of an existing case with the same title in this group, or None.
+
+    Includes archived cases so re-ingest can reactivate them instead of creating duplicates.
+    Prefers non-archived cases, then most recently created.
+    """
     with db.connection() as conn:
         cur = conn.cursor()
         cur.execute(
@@ -1218,8 +1222,7 @@ def find_case_by_title(db: MySQL, *, group_id: str, problem_title: str) -> Optio
             SELECT case_id FROM cases
             WHERE group_id = %s
               AND problem_title = %s
-              AND status != 'archived'
-            ORDER BY created_at DESC
+            ORDER BY (status != 'archived') DESC, created_at DESC
             LIMIT 1
             """,
             (group_id, problem_title),
@@ -1409,7 +1412,6 @@ def find_similar_case(
                 """
                 SELECT case_id, embedding_json FROM cases
                 WHERE group_id = %s
-                  AND status != 'archived'
                   AND embedding_json IS NOT NULL
                 """,
                 (group_id,),
