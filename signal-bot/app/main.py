@@ -123,6 +123,25 @@ try:
 except Exception as e:
     log.warning(f"Could not mount /var/lib/signal: {e}")
 
+
+@app.get("/r2/{path:path}")
+def r2_proxy(path: str) -> Response:
+    """Proxy Cloudflare R2 object by key.
+
+    Serves R2-stored attachments without requiring the bucket to be public.
+    The bot fetches the object server-side using R2 credentials and streams
+    the bytes to the client with a long-lived cache header.
+    """
+    result = _r2.download(path)
+    if result is None:
+        raise HTTPException(status_code=404, detail="Attachment not found")
+    data, content_type = result
+    return Response(
+        content=data,
+        media_type=content_type,
+        headers={"Cache-Control": "public, max-age=31536000, immutable"},
+    )
+
 _signal_listener_started = False
 _signal_listener_lock = threading.Lock()
 

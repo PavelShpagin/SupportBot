@@ -6,12 +6,26 @@ import logging
 from pathlib import Path
 from typing import Iterable, Optional
 
+import app.r2 as _r2
 from app.config import Settings
 from app.db import insert_raw_message, enqueue_job, RawMessage
 from app.jobs.types import BUFFER_UPDATE, MAYBE_RESPOND
 from app.llm.client import LLMClient
 
 log = logging.getLogger(__name__)
+
+_EXT_TO_MIME: dict[str, str] = {
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+    ".png": "image/png",
+    ".gif": "image/gif",
+    ".webp": "image/webp",
+    ".bmp": "image/bmp",
+    ".mp4": "video/mp4",
+    ".webm": "video/webm",
+    ".mov": "video/quicktime",
+    ".heic": "image/heic",
+}
 
 
 def _sender_hash(sender: str) -> str:
@@ -51,8 +65,17 @@ def ingest_message(
         if not img_path.exists():
             log.warning("Attachment missing on disk: %s", img_path)
             continue
-        stored_image_paths.append(str(img_path))
         image_bytes = img_path.read_bytes()
+
+        # Upload to R2 when configured; fall back to local path on failure.
+        stored_path = str(img_path)
+        if _r2.is_enabled():
+            ct = _EXT_TO_MIME.get(img_path.suffix.lower(), "application/octet-stream")
+            r2_key = f"attachments/{group_id}/{img_path.name}"
+            r2_url = _r2.upload(r2_key, image_bytes, ct)
+            if r2_url:
+                stored_path = r2_url
+        stored_image_paths.append(stored_path)
         try:
             j = llm.image_to_text_json(image_bytes=image_bytes, context_text=context_text)
             # Store the OCR text without appending the raw JSON to the message content visible to users

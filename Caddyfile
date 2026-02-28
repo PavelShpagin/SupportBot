@@ -17,8 +17,13 @@ supportbot.info {
         reverse_proxy signal-bot:8000
     }
 
-    # Static files
+    # Static files (local disk)
     handle /static/* {
+        reverse_proxy signal-bot:8000
+    }
+
+    # R2 attachment proxy (images stored in Cloudflare R2)
+    handle /r2/* {
         reverse_proxy signal-bot:8000
     }
 
