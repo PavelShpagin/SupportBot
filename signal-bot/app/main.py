@@ -1639,8 +1639,12 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
                 if msg:
                     evidence_image_paths.extend(p for p in msg.image_paths if p)
 
-            # Semantic dedup: find existing case with cosine similarity > 0.85
+            # Semantic dedup: find existing case with cosine similarity > threshold
             similar_id = find_similar_case(db, group_id=req.group_id, embedding=dedup_embedding)
+            log.info(
+                "Dedup check for '%s': similar_id=%s",
+                getattr(case, "problem_title", "?")[:40], similar_id,
+            )
             if similar_id:
                 merge_case(
                     db,

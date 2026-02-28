@@ -1215,11 +1215,13 @@ def find_case_by_title(db: MySQL, *, group_id: str, problem_title: str) -> Optio
     Includes archived cases so re-ingest can reactivate them instead of creating duplicates.
     Prefers non-archived cases, then most recently created.
     """
+    import logging as _logging
+    _log = _logging.getLogger(__name__)
     with db.connection() as conn:
         cur = conn.cursor()
         cur.execute(
             """
-            SELECT case_id FROM cases
+            SELECT case_id, status FROM cases
             WHERE group_id = %s
               AND problem_title = %s
             ORDER BY (status != 'archived') DESC, created_at DESC
@@ -1228,7 +1230,12 @@ def find_case_by_title(db: MySQL, *, group_id: str, problem_title: str) -> Optio
             (group_id, problem_title),
         )
         row = cur.fetchone()
-        return row[0] if row else None
+        result = row[0] if row else None
+        _log.debug(
+            "find_case_by_title group=%s title=%r -> %s (status=%s)",
+            group_id[:20], problem_title[:40], result, row[1] if row else None,
+        )
+        return result
 
 
 def upsert_case(
@@ -1383,7 +1390,7 @@ def find_similar_case(
     *,
     group_id: str,
     embedding: List[float],
-    threshold: float = 0.85,
+    threshold: float = 0.70,
     exclude_case_id: Optional[str] = None,
     statuses: Optional[List[str]] = None,
 ) -> Optional[str]:
@@ -1418,8 +1425,12 @@ def find_similar_case(
             )
         rows = cur.fetchall()
 
+    import logging as _logging
+    _log = _logging.getLogger(__name__)
+
     best_id: Optional[str] = None
     best_sim = threshold  # strict: must *exceed* threshold
+    top3: list = []  # for debug logging
 
     for (cid, emb_json) in rows:
         if exclude_case_id and cid == exclude_case_id:
@@ -1429,10 +1440,17 @@ def find_similar_case(
         except Exception:
             continue
         sim = _cosine_similarity(embedding, stored)
+        top3.append((sim, cid))
         if sim > best_sim:
             best_sim = sim
             best_id = cid
 
+    top3.sort(reverse=True)
+    _log.debug(
+        "find_similar_case group=%s threshold=%.2f candidates=%d best=%s (sim=%.4f) top3=%s",
+        group_id[:20], threshold, len(rows), best_id, best_sim,
+        [(f"{s:.4f}", c[:8]) for s, c in top3[:3]],
+    )
     return best_id
 
 

@@ -557,7 +557,7 @@ class DevToolsClient:
         
         return None
     
-    async def trigger_attachment_downloads(self, group_id: str) -> dict:
+    async def trigger_attachment_downloads(self, group_id: str, group_name: str = "") -> dict:
         """Trigger Signal Desktop's background attachment downloader for a group.
 
         Signal Desktop syncs message metadata immediately after QR-link but does
@@ -573,15 +573,26 @@ class DevToolsClient:
         Returns a dict: ``{ok, triggered, method, error?}``
         """
         js = """
-(async function(groupIdStr) {
+(async function(groupIdStr, groupNameStr) {
     try {
-        // ── find conversation ────────────────────────────────────────────────
+        // ── find conversation by groupId OR name ─────────────────────────────
         const convs = window.ConversationController.getAll();
         let conv = null;
+        const nameLower = (groupNameStr || '').toLowerCase().trim();
         for (const c of convs) {
-            if (c.get('groupId') === groupIdStr) { conv = c; break; }
+            const gId = c.get('groupId') || '';
+            const cName = (c.get('name') || '').toLowerCase().trim();
+            if (gId === groupIdStr) { conv = c; break; }
+            if (nameLower && cName === nameLower) { conv = c; break; }
         }
-        if (!conv) return {ok: false, error: 'conversation not found for group ' + groupIdStr};
+        // Partial name match as last resort
+        if (!conv && nameLower) {
+            for (const c of convs) {
+                const cName = (c.get('name') || '').toLowerCase();
+                if (cName.includes(nameLower) || nameLower.includes(cName)) { conv = c; break; }
+            }
+        }
+        if (!conv) return {ok: false, error: 'conversation not found for group ' + groupIdStr + ' / ' + groupNameStr};
 
         const convId = conv.id;
         let triggered = 0;
@@ -644,14 +655,15 @@ class DevToolsClient:
         return {ok: false, error: err.message || String(err), triggered: 0};
     }
 })(%s);
-""" % json.dumps(group_id)
+""" % (json.dumps(group_id), json.dumps(group_name))
 
         try:
             result = await self.evaluate_js(js)
             if isinstance(result, dict):
                 log.info(
-                    "Attachment trigger for group %s: ok=%s triggered=%s method=%s",
-                    group_id[:20], result.get("ok"), result.get("triggered"), result.get("method"),
+                    "Attachment trigger for group %s/%s: ok=%s triggered=%s method=%s error=%s",
+                    group_id[:20], group_name, result.get("ok"), result.get("triggered"),
+                    result.get("method"), result.get("error"),
                 )
                 return result
             log.warning("Unexpected trigger result: %r", result)

@@ -604,7 +604,7 @@ async def trigger_attachments(
         devtools = await get_devtools()
         if not devtools.is_connected:
             return {"ok": False, "error": "DevTools not connected", "triggered": 0}
-        result = await devtools.trigger_attachment_downloads(group_id)
+        result = await devtools.trigger_attachment_downloads(group_id, group_name=group_name or "")
         log.info(
             "Attachment trigger: group=%s result=%s",
             (group_name or group_id)[:30], result,
