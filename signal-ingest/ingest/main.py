@@ -1002,6 +1002,30 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
         check_cancelled()
         log.info("Downloading group attachments from Signal CDN for group %s...", group_name or group_id)
         _notify_progress(settings=settings, token=token, progress_key="syncing")
+
+        # Log attachment stats before fetch so we know what's in the DB
+        try:
+            diag_url = settings.signal_desktop_url.rstrip("/") + "/attachments/diagnose"
+            with httpx.Client(timeout=30) as client:
+                dr = client.get(diag_url, params={"group_id": group_id, "group_name": group_name})
+                if dr.status_code == 200:
+                    diag = dr.json()
+                    log.info(
+                        "Attachment diagnosis: conv_id=%s non_empty_msgs=%s strict_pattern_msgs=%s "
+                        "has_cdn_key=%s has_key=%s has_path=%s content_type_only=%s",
+                        diag.get("conversation_id"),
+                        diag.get("messages_with_non_empty_attachments"),
+                        diag.get("messages_with_strict_bracket_pattern"),
+                        (diag.get("sample_attachments_breakdown") or {}).get("has_cdn_key"),
+                        (diag.get("sample_attachments_breakdown") or {}).get("has_decryption_key"),
+                        (diag.get("sample_attachments_breakdown") or {}).get("has_path_on_disk"),
+                        (diag.get("sample_attachments_breakdown") or {}).get("has_content_type_only"),
+                    )
+                    for s in diag.get("samples") or []:
+                        log.info("  sample: count=%s fields=%s first=%s", s.get("count"), s.get("fields"), s.get("first_att"))
+        except Exception as e:
+            log.warning("Could not get attachment diagnosis: %s", e)
+
         _fetch_attachments_direct(settings, group_id=group_id, group_name=group_name)
         check_cancelled()
 
@@ -1025,6 +1049,20 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
             return
 
         log.info("Fetched %d messages from Signal Desktop", len(msgs))
+        # Log how many messages have attachments and their format
+        msgs_with_atts = [m for m in msgs if m.get("attachments")]
+        log.info(
+            "Messages with attachments: %d/%d",
+            len(msgs_with_atts), len(msgs),
+        )
+        if msgs_with_atts:
+            for m in msgs_with_atts[:3]:
+                for att in (m.get("attachments") or [])[:2]:
+                    log.info(
+                        "  att sample: contentType=%s cdnKey=%r path=%r key_len=%d",
+                        att.get("contentType"), att.get("cdnKey") or "",
+                        att.get("path") or "", len(att.get("key") or ""),
+                    )
         _notify_progress(settings=settings, token=token, progress_key="found_messages", count=len(msgs))
 
         check_cancelled()
