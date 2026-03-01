@@ -369,30 +369,50 @@ def get_messages(
                 # Include BOTH downloaded (path set) and pending (path empty)
                 # attachments.  Pending ones expose CDN metadata so the caller
                 # can download them directly without CDP.
+                # Also include quote thumbnails: when someone replies to an
+                # image, the thumbnail is in quote.attachments[].thumbnail and
+                # is typically already cached on disk by Signal Desktop.
                 attachments: list = []
                 if raw_json_str:
                     try:
                         msg_json = json.loads(raw_json_str)
-                        for att in msg_json.get("attachments") or []:
+
+                        def _parse_att(att: dict) -> Optional[dict]:
                             if not isinstance(att, dict):
-                                continue
+                                return None
                             content_type = att.get("contentType") or ""
                             cdn_key = att.get("cdnKey") or ""
-                            # Skip entries with no content type AND no CDN key
-                            # (e.g. sticker placeholders, empty slots)
                             if not content_type and not cdn_key:
-                                continue
-                            attachments.append({
+                                return None
+                            return {
                                 "path": att.get("path") or "",
                                 "fileName": att.get("fileName") or "",
                                 "contentType": content_type,
-                                # CDN download metadata (present even for pending attachments)
                                 "cdnKey": cdn_key,
                                 "cdnNumber": att.get("cdnNumber"),
-                                "key": att.get("key") or "",      # base64, 64 bytes
+                                "key": att.get("key") or "",
                                 "digest": att.get("digest") or "",
                                 "size": att.get("size") or 0,
-                            })
+                            }
+
+                        for att in msg_json.get("attachments") or []:
+                            parsed = _parse_att(att)
+                            if parsed:
+                                attachments.append(parsed)
+
+                        # Quote thumbnails: reply-to-image messages store a small
+                        # locally-cached thumbnail in quote.attachments[].thumbnail
+                        quote = msg_json.get("quote") or {}
+                        for q_att in quote.get("attachments") or []:
+                            if not isinstance(q_att, dict):
+                                continue
+                            thumb = q_att.get("thumbnail")
+                            if isinstance(thumb, dict) and (thumb.get("path") or thumb.get("cdnKey")):
+                                parsed = _parse_att({**thumb, "contentType": thumb.get("contentType") or q_att.get("contentType") or ""})
+                                if parsed:
+                                    parsed["_source"] = "quote_thumbnail"
+                                    attachments.append(parsed)
+
                     except (json.JSONDecodeError, TypeError):
                         pass
 
