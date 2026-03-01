@@ -518,10 +518,16 @@ def _llm_call_with_fallback(
     for m in models_to_try:
         try:
             return openai_client.chat.completions.create(model=m, timeout=timeout, **kwargs)
-        except (_openai.APITimeoutError, _openai.InternalServerError) as e:
-            is_503 = isinstance(e, _openai.InternalServerError) and getattr(e, "status_code", None) == 503
-            if isinstance(e, _openai.APITimeoutError) or is_503:
-                log.warning("Model %s failed (%s), trying next fallback...", m, type(e).__name__)
+        except (_openai.APITimeoutError, _openai.APIStatusError) as e:
+            status_code = getattr(e, "status_code", None)
+            # Retry on: timeout, 503 Service Unavailable, 499 Cancelled (Gemini cancels
+            # long-running requests under load — treat as transient).
+            is_retryable = isinstance(e, _openai.APITimeoutError) or status_code in (499, 503)
+            if is_retryable:
+                log.warning(
+                    "Model %s failed (%s status=%s), trying next fallback...",
+                    m, type(e).__name__, status_code,
+                )
                 last_exc = e
                 time.sleep(2)
             else:
