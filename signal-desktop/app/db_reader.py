@@ -259,10 +259,11 @@ def get_messages(
 
         # Include messages that have either a text body OR at least one
         # attachment.  The post-filter below drops rows with neither.
+        # Use broad pattern (not just '[{') to handle arrays like `[ {` or `[null,{`.
         if has_json_col:
             body_cond = (
                 f"(m.{body_col} IS NOT NULL AND m.{body_col} != '')"
-                f" OR (m.json LIKE '%\"attachments\":[{{%')"
+                f" OR (m.json LIKE '%\"attachments\":[%' AND m.json NOT LIKE '%\"attachments\":[]%')"
             )
         else:
             body_cond = f"m.{body_col} IS NOT NULL AND m.{body_col} != ''"
@@ -501,7 +502,7 @@ def get_attachment_stats(
 
         conv_id_col = "conversationId" if "conversationId" in msg_cols else "conversation_id"
 
-        q = "SELECT json FROM messages WHERE json LIKE '%\"attachments\":[{%'"
+        q = "SELECT json FROM messages WHERE json LIKE '%\"attachments\":[%' AND json NOT LIKE '%\"attachments\":[]%'"
         params: list = []
         if conversation_id:
             q += f" AND {conv_id_col} = ?"

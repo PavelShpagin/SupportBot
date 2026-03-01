@@ -665,13 +665,15 @@ async def fetch_all_pending_attachments(
             broad_count,
         )
 
-        q = "SELECT json FROM messages WHERE json LIKE '%\"attachments\":[{%'"
+        # Use broad pattern to catch all non-empty attachment arrays, then
+        # filter in Python (handles `[{`, `[ {`, `[null,{` etc.)
+        q = "SELECT json FROM messages WHERE json LIKE '%\"attachments\":[%' AND json NOT LIKE '%\"attachments\":[]%'"
         params: list = []
         if conversation_id:
             q += " AND conversationId = ?"
             params.append(conversation_id)
         rows = conn.execute(q, params).fetchall()
-        log.info("fetch-all: messages matching strict '[{' pattern: %d", len(rows))
+        log.info("fetch-all: messages with non-empty attachments (broad pattern): %d", len(rows))
         conn.close()
 
         for (raw_json,) in rows:
