@@ -1035,8 +1035,10 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
             trigger_result.get("method"), trigger_result.get("error"),
         )
 
-        # Poll file count until stable (no new files for 15s) or 90s total
-        if trigger_result.get("ok") or trigger_result.get("triggered", 0) != 0:
+        # Poll file count until stable (no new files for 15s) or 90s total.
+        # Always poll even if trigger reported ok=False — showConversation
+        # fallback may still kick off downloads asynchronously.
+        if True:
             STABLE_SECS = 15
             MAX_WAIT = 90
             prev_count = _get_attachment_file_count()

@@ -679,7 +679,7 @@ class DevToolsClient:
     } catch(err) {
         return {ok: false, error: err.message || String(err), triggered: 0};
     }
-})(%s);
+})(%s, %s);
 """ % (json.dumps(group_id), json.dumps(group_name))
 
         try:
