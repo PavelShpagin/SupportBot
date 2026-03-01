@@ -380,6 +380,16 @@ def _enrich_messages_with_attachments(
 
     Messages without attachments pass through unchanged (but gain empty keys).
     """
+    msgs_with_atts = [m for m in messages if m.get("attachments")]
+    total_img = sum(
+        1 for m in messages for a in (m.get("attachments") or [])
+        if isinstance(a, dict) and (a.get("contentType") or "").startswith("image/")
+    )
+    log.info(
+        "Enriching %d messages — %d have attachments, %d image(s) to fetch+OCR",
+        len(messages), len(msgs_with_atts), total_img,
+    )
+
     enriched: List[dict] = []
     att_count = 0
     for m in messages:
@@ -993,18 +1003,18 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
             return
 
         # ────────────────────────────────────────────────────────────────────────
-        # Step 3: Trigger attachment downloads via CDP, then wait for them to land
+        # Step 3: Wait for Signal Desktop to download group attachments
         #
-        # Signal Desktop's SQLite JSON column only stores {contentType} for synced
-        # historical attachments — no cdnKey/key.  But the Backbone model in the
-        # JS runtime DOES have the full CDN pointer.  We call
-        # POST /attachments/trigger which injects JS to call
-        # AttachmentDownloads.addJob() for every pending attachment, then poll
-        # GET /attachments/files until the count on disk stops increasing.
-        # Also try direct CDN fetch in case some attachments DO have cdnKey/key.
+        # Signal Desktop downloads attachment files in the background after linking.
+        # CDP trigger is attempted as an optimization to prioritise this group but
+        # is NOT required — Signal Desktop downloads regardless.
+        # We poll /attachments/status specifically for this group until pending == 0
+        # (all attachment path fields written to DB by Signal Desktop) or timeout.
+        # Direct CDN fetch handles attachments that already have cdnKey+key in DB
+        # (messages received while this device was linked).
         # ────────────────────────────────────────────────────────────────────────
         check_cancelled()
-        log.info("Triggering attachment downloads for group %s...", group_name or group_id)
+        log.info("Waiting for attachment downloads for group %s...", group_name or group_id)
         _notify_progress(settings=settings, token=token, progress_key="syncing")
 
         def _trigger_attachments(gid: str, gname: str) -> dict:
@@ -1018,52 +1028,72 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
                 log.warning("CDP attachment trigger failed (non-fatal): %s", e)
                 return {"ok": False, "error": str(e)}
 
-        def _get_attachment_file_count() -> int:
-            url = settings.signal_desktop_url.rstrip("/") + "/attachments/files"
+        def _get_group_att_status() -> dict:
+            url = settings.signal_desktop_url.rstrip("/") + "/attachments/status"
             try:
-                with httpx.Client(timeout=10) as client:
-                    r = client.get(url)
+                with httpx.Client(timeout=15) as client:
+                    r = client.get(url, params={"group_id": group_id, "group_name": group_name})
                     r.raise_for_status()
-                    return int(r.json().get("count", 0))
-            except Exception:
-                return -1
+                    return r.json()
+            except Exception as e:
+                log.warning("Could not get attachment status: %s", e)
+                return {}
 
+        # Best-effort CDP trigger — nudges Signal Desktop to prioritise this group.
         trigger_result = _trigger_attachments(group_id, group_name)
         log.info(
-            "Attachment trigger: ok=%s triggered=%s method=%s error=%s",
+            "Attachment trigger (best-effort): ok=%s triggered=%s method=%s error=%s",
             trigger_result.get("ok"), trigger_result.get("triggered"),
             trigger_result.get("method"), trigger_result.get("error"),
         )
 
-        # Poll file count until stable (no new files for 15s) or 90s total.
-        # Always poll even if trigger reported ok=False — showConversation
-        # fallback may still kick off downloads asynchronously.
-        if True:
-            STABLE_SECS = 15
-            MAX_WAIT = 90
-            prev_count = _get_attachment_file_count()
-            last_change = time.time()
-            start = time.time()
-            log.info("Polling attachment file count (start=%d)...", prev_count)
-            while True:
-                check_cancelled()
-                time.sleep(3)
-                cur = _get_attachment_file_count()
-                elapsed = time.time() - start
-                if cur != prev_count:
-                    log.info("Attachment count: %d → %d (+%ds)", prev_count, cur, int(elapsed))
-                    prev_count = cur
-                    last_change = time.time()
-                stable_for = time.time() - last_change
-                if stable_for >= STABLE_SECS:
-                    log.info("Attachment count stable at %d after %.0fs", cur, elapsed)
-                    break
-                if elapsed >= MAX_WAIT:
-                    log.info("Attachment wait timeout (%ds), count=%d", MAX_WAIT, cur)
-                    break
-
-        # Also attempt direct CDN fetch in case some attachments have cdnKey/key in DB
+        # Direct CDN fetch for messages that already have cdnKey+key in DB.
         _fetch_attachments_direct(settings, group_id=group_id, group_name=group_name)
+
+        # Poll group-specific attachment status until pending == 0 or timeout.
+        # "pending" counts attachments with contentType but no path yet — it drops
+        # to 0 once Signal Desktop writes the path field for every downloaded file.
+        MAX_ATT_WAIT = 300  # 5 minutes; Signal Desktop processes all conversations
+        ATT_POLL = 5
+        MIN_INITIAL_WAIT = 10  # let Signal Desktop write attachment stubs to DB
+        att_start = time.time()
+        last_pending = -1
+        time.sleep(MIN_INITIAL_WAIT)
+        while True:
+            check_cancelled()
+            s = _get_group_att_status()
+            total_att = s.get("total_attachments", 0)
+            ready_att = s.get("ready", 0)
+            pending_att = s.get("pending", 0)
+            elapsed = time.time() - att_start
+
+            if pending_att != last_pending or elapsed < ATT_POLL + 1:
+                log.info(
+                    "Attachment status: total=%d ready=%d pending=%d (%.0fs elapsed)",
+                    total_att, ready_att, pending_att, elapsed,
+                )
+                last_pending = pending_att
+
+            if total_att == 0:
+                log.info("No attachments found for group %s — skipping wait", group_name or group_id)
+                break
+
+            if pending_att == 0:
+                log.info(
+                    "All %d attachment(s) ready for group %s (%.0fs)",
+                    total_att, group_name or group_id, elapsed,
+                )
+                break
+
+            if elapsed >= MAX_ATT_WAIT:
+                log.info(
+                    "Attachment wait timeout (%ds): %d ready, %d still pending",
+                    MAX_ATT_WAIT, ready_att, pending_att,
+                )
+                break
+
+            time.sleep(ATT_POLL)
+
         check_cancelled()
 
         # ?????????????????????????????????????????????????????????????????
@@ -1086,20 +1116,28 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
             return
 
         log.info("Fetched %d messages from Signal Desktop", len(msgs))
-        # Log how many messages have attachments and their format
+
+        # Tally image attachment readiness before enrichment
         msgs_with_atts = [m for m in msgs if m.get("attachments")]
+        all_atts = [att for m in msgs for att in (m.get("attachments") or []) if isinstance(att, dict)]
+        img_atts = [a for a in all_atts if (a.get("contentType") or "").startswith("image/")]
+        img_on_disk = [a for a in img_atts if a.get("path")]
+        img_cdn_ready = [a for a in img_atts if a.get("cdnKey") and not a.get("path")]
+        img_pending = [a for a in img_atts if not a.get("path") and not a.get("cdnKey")]
         log.info(
-            "Messages with attachments: %d/%d",
+            "Messages with attachments: %d/%d | Images: %d total"
+            " (%d on disk, %d CDN-ready, %d pending/no-key)",
             len(msgs_with_atts), len(msgs),
+            len(img_atts), len(img_on_disk), len(img_cdn_ready), len(img_pending),
         )
-        if msgs_with_atts:
-            for m in msgs_with_atts[:3]:
-                for att in (m.get("attachments") or [])[:2]:
-                    log.info(
-                        "  att sample: contentType=%s cdnKey=%r path=%r key_len=%d",
-                        att.get("contentType"), att.get("cdnKey") or "",
-                        att.get("path") or "", len(att.get("key") or ""),
-                    )
+        for m in msgs_with_atts[:3]:
+            for att in (m.get("attachments") or [])[:2]:
+                log.info(
+                    "  att sample: contentType=%s path=%r cdnKey=%r key_len=%d",
+                    att.get("contentType"), att.get("path") or "",
+                    (att.get("cdnKey") or "")[:20] or "(none)",
+                    len(att.get("key") or ""),
+                )
         _notify_progress(settings=settings, token=token, progress_key="found_messages", count=len(msgs))
 
         check_cancelled()
