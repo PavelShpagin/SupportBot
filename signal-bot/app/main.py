@@ -520,7 +520,7 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
         set_admin_awaiting_group_name(db, admin_id)
     
     # Try to find group by name
-    if not isinstance(signal, SignalCliAdapter):
+    if isinstance(signal, NoopSignalAdapter):
         log.warning("Signal adapter not available for group lookup")
         return
     
