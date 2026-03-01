@@ -993,68 +993,74 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
             return
 
         # ────────────────────────────────────────────────────────────────────────
-        # Step 3: Download group attachments directly from Signal's CDN
+        # Step 3: Trigger attachment downloads via CDP, then wait for them to land
         #
-        # Signal Desktop stores cdnKey + encryption key in its SQLite DB for
-        # every attachment, even ones it hasn't downloaded yet.  We use these to
-        # fetch and decrypt files ourselves, with no CDP or JS involved.
+        # Signal Desktop's SQLite JSON column only stores {contentType} for synced
+        # historical attachments — no cdnKey/key.  But the Backbone model in the
+        # JS runtime DOES have the full CDN pointer.  We call
+        # POST /attachments/trigger which injects JS to call
+        # AttachmentDownloads.addJob() for every pending attachment, then poll
+        # GET /attachments/files until the count on disk stops increasing.
+        # Also try direct CDN fetch in case some attachments DO have cdnKey/key.
         # ────────────────────────────────────────────────────────────────────────
         check_cancelled()
-        log.info("Downloading group attachments from Signal CDN for group %s...", group_name or group_id)
+        log.info("Triggering attachment downloads for group %s...", group_name or group_id)
         _notify_progress(settings=settings, token=token, progress_key="syncing")
 
-        # Poll until attachment metadata populates or timeout.
-        # After linking, Signal Desktop writes null placeholder entries for
-        # attachments, then gradually fills in cdnKey/key as the server sends
-        # the attachment metadata.  We poll /attachments/diagnose until we see
-        # real cdnKey values or the metadata stops changing.
-        ATTACH_POLL_INTERVAL = 10
-        ATTACH_POLL_MAX = 120  # wait up to 2 minutes for metadata to arrive
-        attach_waited = 0
-        last_has_cdn = -1
-        while attach_waited <= ATTACH_POLL_MAX:
+        def _trigger_attachments(gid: str, gname: str) -> dict:
+            url = settings.signal_desktop_url.rstrip("/") + "/attachments/trigger"
             try:
-                diag_url = settings.signal_desktop_url.rstrip("/") + "/attachments/diagnose"
                 with httpx.Client(timeout=30) as client:
-                    dr = client.get(diag_url, params={"group_id": group_id, "group_name": group_name})
-                    if dr.status_code == 200:
-                        diag = dr.json()
-                        breakdown = diag.get("sample_attachments_breakdown") or {}
-                        non_empty = diag.get("messages_with_non_empty_attachments") or 0
-                        has_cdn = breakdown.get("has_cdn_key") or 0
-                        log.info(
-                            "Attachment sync check (%ds): conv_id=%s non_empty_msgs=%s "
-                            "has_cdn_key=%s has_key=%s has_path=%s content_type_only=%s",
-                            attach_waited,
-                            diag.get("conversation_id"),
-                            non_empty,
-                            has_cdn,
-                            breakdown.get("has_decryption_key"),
-                            breakdown.get("has_path_on_disk"),
-                            breakdown.get("has_content_type_only"),
-                        )
-                        for s in diag.get("samples") or []:
-                            log.info(
-                                "  att sample: count=%s types=%s fields=%s snippet=%s",
-                                s.get("count"), s.get("item_types"),
-                                s.get("fields"), (s.get("raw_snippet") or "")[:120],
-                            )
-                        # Stop waiting if no attachments exist at all
-                        if non_empty == 0:
-                            log.info("No attachment-bearing messages found — skipping CDN fetch")
-                            break
-                        # Stop waiting if cdnKey is present (metadata ready) or stabilised
-                        if has_cdn > 0 or has_cdn == last_has_cdn:
-                            break
-                        last_has_cdn = has_cdn
+                    r = client.post(url, params={"group_id": gid, "group_name": gname})
+                    r.raise_for_status()
+                    return r.json()
             except Exception as e:
-                log.warning("Attachment sync check failed: %s", e)
-                break
-            check_cancelled()
-            if attach_waited < ATTACH_POLL_MAX:
-                time.sleep(ATTACH_POLL_INTERVAL)
-            attach_waited += ATTACH_POLL_INTERVAL
+                log.warning("CDP attachment trigger failed (non-fatal): %s", e)
+                return {"ok": False, "error": str(e)}
 
+        def _get_attachment_file_count() -> int:
+            url = settings.signal_desktop_url.rstrip("/") + "/attachments/files"
+            try:
+                with httpx.Client(timeout=10) as client:
+                    r = client.get(url)
+                    r.raise_for_status()
+                    return int(r.json().get("count", 0))
+            except Exception:
+                return -1
+
+        trigger_result = _trigger_attachments(group_id, group_name)
+        log.info(
+            "Attachment trigger: ok=%s triggered=%s method=%s error=%s",
+            trigger_result.get("ok"), trigger_result.get("triggered"),
+            trigger_result.get("method"), trigger_result.get("error"),
+        )
+
+        # Poll file count until stable (no new files for 15s) or 90s total
+        if trigger_result.get("ok") or trigger_result.get("triggered", 0) != 0:
+            STABLE_SECS = 15
+            MAX_WAIT = 90
+            prev_count = _get_attachment_file_count()
+            last_change = time.time()
+            start = time.time()
+            log.info("Polling attachment file count (start=%d)...", prev_count)
+            while True:
+                check_cancelled()
+                time.sleep(3)
+                cur = _get_attachment_file_count()
+                elapsed = time.time() - start
+                if cur != prev_count:
+                    log.info("Attachment count: %d → %d (+%ds)", prev_count, cur, int(elapsed))
+                    prev_count = cur
+                    last_change = time.time()
+                stable_for = time.time() - last_change
+                if stable_for >= STABLE_SECS:
+                    log.info("Attachment count stable at %d after %.0fs", cur, elapsed)
+                    break
+                if elapsed >= MAX_WAIT:
+                    log.info("Attachment wait timeout (%ds), count=%d", MAX_WAIT, cur)
+                    break
+
+        # Also attempt direct CDN fetch in case some attachments have cdnKey/key in DB
         _fetch_attachments_direct(settings, group_id=group_id, group_name=group_name)
         check_cancelled()
 

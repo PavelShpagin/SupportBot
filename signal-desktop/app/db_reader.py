@@ -257,13 +257,16 @@ def get_messages(
         if sender_col:
             sender_join = f"LEFT JOIN conversations sc ON m.{sender_col} = sc.id"
 
-        # Include messages that have either a text body OR at least one
-        # attachment.  The post-filter below drops rows with neither.
-        # Use broad pattern (not just '[{') to handle arrays like `[ {` or `[null,{`.
+        # Include messages that have a text body OR that have at least one
+        # attachment with a contentType (including image-only messages with no body).
+        # After Signal Desktop downloads an attachment it writes the local path
+        # into the json column — we use a broad LIKE pattern to capture all
+        # non-empty attachment arrays regardless of format ([{, [ {, [null,{…}).
         if has_json_col:
             body_cond = (
                 f"(m.{body_col} IS NOT NULL AND m.{body_col} != '')"
                 f" OR (m.json LIKE '%\"attachments\":[%' AND m.json NOT LIKE '%\"attachments\":[]%')"
+                f" OR (m.json LIKE '%\"path\":%' AND m.json LIKE '%\"contentType\":%')"
             )
         else:
             body_cond = f"m.{body_col} IS NOT NULL AND m.{body_col} != ''"

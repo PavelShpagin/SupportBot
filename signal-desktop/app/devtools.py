@@ -598,6 +598,11 @@ class DevToolsClient:
         let triggered = 0;
 
         // ── approach 1: AttachmentDownloads.addJob (Signal 6+/7+) ───────────
+        // NOTE: We intentionally do NOT require att.size — Signal Desktop stores
+        // synced historical attachments with only {contentType} in the SQLite JSON
+        // column, but the Backbone model may still have the full CDN pointer
+        // internally (cdnKey, key, etc.).  Queuing without size lets Signal
+        // Desktop attempt the download and populate the path if the pointer exists.
         const svc = window.Signal
                  && window.Signal.Services
                  && window.Signal.Services.AttachmentDownloads;
@@ -605,7 +610,7 @@ class DevToolsClient:
             let msgs = [];
             try {
                 const col = await window.Signal.Data.getMessagesByConversation(
-                    convId, {limit: 500});
+                    convId, {limit: 800});
                 msgs = (col && col.models) ? col.models : [];
             } catch(e) {}
 
@@ -613,8 +618,9 @@ class DevToolsClient:
                 const atts = msg.get('attachments') || [];
                 for (let i = 0; i < atts.length; i++) {
                     const att = atts[i];
-                    // Only queue if has size metadata but no local path yet
-                    if (!att.path && att.size) {
+                    // Queue any attachment that has no local path yet,
+                    // regardless of whether size or cdnKey is populated.
+                    if (!att.path && (att.contentType || att.cdnKey || att.size)) {
                         try {
                             await svc.addJob(msg, {
                                 type: 'attachment',
@@ -624,6 +630,25 @@ class DevToolsClient:
                             });
                             triggered++;
                         } catch(e) { /* skip single failure, continue */ }
+                    }
+                }
+                // Also trigger thumbnail downloads for quoted attachments
+                const quote = msg.get('quote');
+                if (quote && quote.attachments) {
+                    for (let i = 0; i < quote.attachments.length; i++) {
+                        const qatt = quote.attachments[i];
+                        const thumb = qatt && qatt.thumbnail;
+                        if (thumb && !thumb.path && (thumb.contentType || thumb.cdnKey)) {
+                            try {
+                                await svc.addJob(msg, {
+                                    type: 'quoteThumbnail',
+                                    attachment: thumb,
+                                    index: i,
+                                    messageId: msg.id,
+                                });
+                                triggered++;
+                            } catch(e) {}
+                        }
                     }
                 }
             }
