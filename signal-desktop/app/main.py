@@ -1020,14 +1020,20 @@ async def diagnose_attachments(
                     if att.get("contentType") and not att.get("cdnKey") and not att.get("path"):
                         has_content_type_only += 1
                 if len(samples) < 3:
+                    # Show raw types of items (null vs dict) and first dict's fields
+                    item_types = [type(a).__name__ for a in atts[:4]]
+                    first_dict = next((a for a in atts if isinstance(a, dict)), {})
                     samples.append({
                         "count": len(atts),
+                        "item_types": item_types,
                         "fields": [list(a.keys()) for a in atts[:2] if isinstance(a, dict)],
                         "first_att": {
                             k: (v[:30] if isinstance(v, str) else v)
-                            for k, v in (atts[0] if atts and isinstance(atts[0], dict) else {}).items()
+                            for k, v in first_dict.items()
                             if k in ("contentType", "cdnKey", "cdnNumber", "path", "fileName", "size")
-                        } if atts else {},
+                        },
+                        # Show raw JSON snippet around the attachments array for debugging
+                        "raw_snippet": (raw or "")[(raw or "").find('"attachments":'):(raw or "").find('"attachments":') + 200] if raw else "",
                     })
             except Exception:
                 pass

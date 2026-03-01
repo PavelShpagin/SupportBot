@@ -1003,28 +1003,57 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
         log.info("Downloading group attachments from Signal CDN for group %s...", group_name or group_id)
         _notify_progress(settings=settings, token=token, progress_key="syncing")
 
-        # Log attachment stats before fetch so we know what's in the DB
-        try:
-            diag_url = settings.signal_desktop_url.rstrip("/") + "/attachments/diagnose"
-            with httpx.Client(timeout=30) as client:
-                dr = client.get(diag_url, params={"group_id": group_id, "group_name": group_name})
-                if dr.status_code == 200:
-                    diag = dr.json()
-                    log.info(
-                        "Attachment diagnosis: conv_id=%s non_empty_msgs=%s strict_pattern_msgs=%s "
-                        "has_cdn_key=%s has_key=%s has_path=%s content_type_only=%s",
-                        diag.get("conversation_id"),
-                        diag.get("messages_with_non_empty_attachments"),
-                        diag.get("messages_with_strict_bracket_pattern"),
-                        (diag.get("sample_attachments_breakdown") or {}).get("has_cdn_key"),
-                        (diag.get("sample_attachments_breakdown") or {}).get("has_decryption_key"),
-                        (diag.get("sample_attachments_breakdown") or {}).get("has_path_on_disk"),
-                        (diag.get("sample_attachments_breakdown") or {}).get("has_content_type_only"),
-                    )
-                    for s in diag.get("samples") or []:
-                        log.info("  sample: count=%s fields=%s first=%s", s.get("count"), s.get("fields"), s.get("first_att"))
-        except Exception as e:
-            log.warning("Could not get attachment diagnosis: %s", e)
+        # Poll until attachment metadata populates or timeout.
+        # After linking, Signal Desktop writes null placeholder entries for
+        # attachments, then gradually fills in cdnKey/key as the server sends
+        # the attachment metadata.  We poll /attachments/diagnose until we see
+        # real cdnKey values or the metadata stops changing.
+        ATTACH_POLL_INTERVAL = 10
+        ATTACH_POLL_MAX = 120  # wait up to 2 minutes for metadata to arrive
+        attach_waited = 0
+        last_has_cdn = -1
+        while attach_waited <= ATTACH_POLL_MAX:
+            try:
+                diag_url = settings.signal_desktop_url.rstrip("/") + "/attachments/diagnose"
+                with httpx.Client(timeout=30) as client:
+                    dr = client.get(diag_url, params={"group_id": group_id, "group_name": group_name})
+                    if dr.status_code == 200:
+                        diag = dr.json()
+                        breakdown = diag.get("sample_attachments_breakdown") or {}
+                        non_empty = diag.get("messages_with_non_empty_attachments") or 0
+                        has_cdn = breakdown.get("has_cdn_key") or 0
+                        log.info(
+                            "Attachment sync check (%ds): conv_id=%s non_empty_msgs=%s "
+                            "has_cdn_key=%s has_key=%s has_path=%s content_type_only=%s",
+                            attach_waited,
+                            diag.get("conversation_id"),
+                            non_empty,
+                            has_cdn,
+                            breakdown.get("has_decryption_key"),
+                            breakdown.get("has_path_on_disk"),
+                            breakdown.get("has_content_type_only"),
+                        )
+                        for s in diag.get("samples") or []:
+                            log.info(
+                                "  att sample: count=%s types=%s fields=%s snippet=%s",
+                                s.get("count"), s.get("item_types"),
+                                s.get("fields"), (s.get("raw_snippet") or "")[:120],
+                            )
+                        # Stop waiting if no attachments exist at all
+                        if non_empty == 0:
+                            log.info("No attachment-bearing messages found — skipping CDN fetch")
+                            break
+                        # Stop waiting if cdnKey is present (metadata ready) or stabilised
+                        if has_cdn > 0 or has_cdn == last_has_cdn:
+                            break
+                        last_has_cdn = has_cdn
+            except Exception as e:
+                log.warning("Attachment sync check failed: %s", e)
+                break
+            check_cancelled()
+            if attach_waited < ATTACH_POLL_MAX:
+                time.sleep(ATTACH_POLL_INTERVAL)
+            attach_waited += ATTACH_POLL_INTERVAL
 
         _fetch_attachments_direct(settings, group_id=group_id, group_name=group_name)
         check_cancelled()
