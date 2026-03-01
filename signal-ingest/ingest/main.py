@@ -44,7 +44,7 @@ def _safe_json_loads(raw: str) -> dict:
 
     LLM responses (especially for Cyrillic text with file paths, regex patterns,
     or Windows-style paths) occasionally contain bare backslashes that aren't
-    valid JSON escape sequences (e.g. ``\d``, ``\p``, ``\U`` without proper
+    valid JSON escape sequences (e.g. ``\\d``, ``\\p``, ``\\U`` without proper
     Unicode digits).  ``json.loads`` raises ``JSONDecodeError`` on these.
 
     This function retries with a two-stage repair:
