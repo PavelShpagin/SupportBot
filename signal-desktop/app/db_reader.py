@@ -253,6 +253,79 @@ def _load_attachments_from_table(
     return result
 
 
+def _load_attachments_from_downloads(
+    conn,
+    tables: set[str],
+    message_ids: list[str],
+) -> dict[str, list[dict]]:
+    """Load attachment metadata from the attachment_downloads queue.
+
+    Signal Desktop queues downloads here before they appear in
+    ``message_attachments``.  The ``attachmentJson`` column carries the
+    full CDN / encryption metadata we need.
+    """
+    if "attachment_downloads" not in tables or not message_ids:
+        return {}
+
+    dl_cols = _get_table_columns(conn, "attachment_downloads")
+    placeholders = ",".join("?" for _ in message_ids)
+    q = (
+        "SELECT messageId, contentType, size, attachmentJson "
+        "FROM attachment_downloads "
+        f"WHERE messageId IN ({placeholders})"
+    )
+    rows = conn.execute(q, message_ids).fetchall()
+    result: dict[str, list[dict]] = {}
+    for r in rows:
+        msg_id = str(r[0])
+        content_type = str(r[1] or "")
+        size = r[2] or 0
+        att_json_str = r[3] or ""
+        att_meta: dict = {}
+        if att_json_str:
+            try:
+                att_meta = json.loads(att_json_str)
+            except (json.JSONDecodeError, TypeError):
+                pass
+        cdn_key = (
+            att_meta.get("cdnKey")
+            or att_meta.get("transitCdnKey")
+            or ""
+        )
+        cdn_number = (
+            att_meta.get("cdnNumber")
+            or att_meta.get("transitCdnNumber")
+        )
+        path = (
+            att_meta.get("path")
+            or att_meta.get("downloadPath")
+            or ""
+        )
+        ct = content_type or att_meta.get("contentType") or ""
+        if not ct and not cdn_key and not path:
+            continue
+        att = {
+            "path": path,
+            "fileName": att_meta.get("fileName") or "",
+            "contentType": ct,
+            "cdnKey": cdn_key,
+            "cdnNumber": cdn_number,
+            "key": att_meta.get("key") or "",
+            "digest": att_meta.get("digest") or "",
+            "size": size or att_meta.get("size") or 0,
+            "_source": "attachment_downloads",
+        }
+        result.setdefault(msg_id, []).append(att)
+
+    if result:
+        log.info(
+            "Loaded %d attachments for %d messages from attachment_downloads queue",
+            sum(len(v) for v in result.values()),
+            len(result),
+        )
+    return result
+
+
 def get_messages(
     signal_data_dir: str,
     conversation_id: Optional[str] = None,
@@ -361,10 +434,16 @@ def get_messages(
 
         # Pre-load attachments from the separate table (Signal Desktop 7+)
         att_from_table: dict[str, list[dict]] = {}
-        if has_att_table and rows:
+        att_from_downloads: dict[str, list[dict]] = {}
+        if rows:
             msg_ids = [str(r[0]) for r in rows]
-            att_from_table = _load_attachments_from_table(
-                conn, tables, conversation_id=conversation_id, message_ids=msg_ids,
+            if has_att_table:
+                att_from_table = _load_attachments_from_table(
+                    conn, tables, conversation_id=conversation_id, message_ids=msg_ids,
+                )
+            # Also check the downloads queue for messages not yet in table
+            att_from_downloads = _load_attachments_from_downloads(
+                conn, tables, message_ids=msg_ids,
             )
 
         # Build reactions maps
@@ -435,8 +514,10 @@ def get_messages(
                 sender_name = str(row[8]) if len(row) > 8 and row[8] else None
                 raw_json_str = str(row[9]) if (has_json_col and len(row) > 9 and row[9]) else None
 
-                # Prefer message_attachments table (v7+), fall back to JSON
+                # Prefer message_attachments table (v7+), then downloads queue, then JSON
                 attachments: list = att_from_table.get(msg_id, [])
+                if not attachments:
+                    attachments = att_from_downloads.get(msg_id, [])
 
                 if not attachments and raw_json_str:
                     try:
@@ -621,7 +702,23 @@ def get_attachment_stats(
             if total > 0:
                 return {"total_attachments": total, "ready": ready, "pending": pending}
 
-        # Method 2: Legacy json column
+        # Method 2: attachment_downloads queue (downloads in progress)
+        if "attachment_downloads" in tables and total == 0:
+            msg_cols_q = _get_table_columns(conn, "messages")
+            conv_id_col_dl = "conversationId" if "conversationId" in msg_cols_q else "conversation_id"
+            dl_q = (
+                "SELECT COUNT(*) FROM attachment_downloads ad "
+                "INNER JOIN messages m ON ad.messageId = m.id"
+            )
+            dl_params: list = []
+            if conversation_id:
+                dl_q += f" WHERE m.{conv_id_col_dl} = ?"
+                dl_params.append(conversation_id)
+            dl_count = conn.execute(dl_q, dl_params).fetchone()[0]
+            if dl_count > 0:
+                return {"total_attachments": dl_count, "ready": 0, "pending": dl_count}
+
+        # Method 3: Legacy json column
         if "json" not in msg_cols:
             return {"total_attachments": 0, "ready": 0, "pending": 0}
 

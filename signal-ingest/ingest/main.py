@@ -1115,81 +1115,99 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
         # Direct CDN fetch for messages that already have cdnKey+key in DB.
         _fetch_attachments_direct(settings, group_id=group_id, group_name=group_name)
 
-        # Poll group-specific attachment status until pending == 0 or timeout.
-        # Signal Desktop 7+ populates message_attachments asynchronously after
-        # initial message sync. We wait with exponential backoff for the first
-        # attachments to appear before giving up.
-        MAX_ATT_WAIT = 300  # 5 minutes
+        # Poll group-specific attachment status until ready or timeout.
+        # Signal Desktop 7+ processes attachments asynchronously: first
+        # hasAttachments flag is set, then entries appear in
+        # attachment_downloads queue, and finally in message_attachments.
+        # Our db_reader can extract metadata from attachment_downloads,
+        # so we just need to wait for EITHER table or downloads to appear.
+        MAX_ATT_WAIT = 120
         ATT_POLL = 5
-        MIN_INITIAL_WAIT = 15  # let Signal Desktop process synced messages
+        MIN_INITIAL_WAIT = 15
         att_start = time.time()
-        last_pending = -1
-        last_total = -1
         time.sleep(MIN_INITIAL_WAIT)
 
-        # First, check hasAttachments flag on messages — this tells us if
-        # attachments SHOULD exist even if the download table isn't populated yet
         has_att_flag_count = 0
-        try:
-            diag_url = settings.signal_desktop_url.rstrip("/") + "/attachments/diagnose"
-            with httpx.Client(timeout=30) as client:
-                diag_resp = client.get(diag_url, params={"group_id": group_id, "group_name": group_name})
-                if diag_resp.status_code == 200:
-                    diag = diag_resp.json()
-                    has_att_flag_count = diag.get("has_attachments_flag_count", 0) or 0
-                    log.info(
-                        "Messages with hasAttachments=1: %d (attachment_downloads queue: %s)",
-                        has_att_flag_count,
-                        diag.get("attachment_downloads_queue"),
-                    )
-        except Exception:
-            pass
+        group_dl_count = 0
+        diag = _run_diagnostics()
+        has_att_flag_count = diag.get("has_attachments_flag_count", 0) or 0
+        group_dl_count = diag.get("group_attachment_downloads", 0) or 0
+        table_count = (diag.get("message_attachments_table") or {}).get("total_attachments", 0) or 0
+        log.info(
+            "Attachment check: hasAttachments=%d table=%d group_downloads=%d global_queue=%s",
+            has_att_flag_count, table_count, group_dl_count,
+            diag.get("attachment_downloads_queue"),
+        )
+        if diag.get("group_download_samples"):
+            for s in diag["group_download_samples"]:
+                log.info("  Group download sample: %s", json.dumps(s, ensure_ascii=False)[:500])
 
-        while True:
-            check_cancelled()
-            s = _get_group_att_status()
-            total_att = s.get("total_attachments", 0)
-            ready_att = s.get("ready", 0)
-            pending_att = s.get("pending", 0)
+        # Wait for downloads to appear for our group when hasAttachments > 0
+        while has_att_flag_count > 0 and group_dl_count == 0 and table_count == 0:
             elapsed = time.time() - att_start
-
-            if total_att != last_total or pending_att != last_pending or elapsed < ATT_POLL + 1:
-                log.info(
-                    "Attachment status: total=%d ready=%d pending=%d (%.0fs elapsed, hasAttFlag=%d)",
-                    total_att, ready_att, pending_att, elapsed, has_att_flag_count,
-                )
-                last_pending = pending_att
-                last_total = total_att
-
-            if total_att == 0 and has_att_flag_count > 0 and elapsed < 60:
-                # Attachments expected but table not populated yet — keep waiting
-                log.info(
-                    "Waiting for message_attachments to be populated "
-                    "(hasAttachments=%d, table=%d, %.0fs)",
-                    has_att_flag_count, total_att, elapsed,
-                )
-                time.sleep(ATT_POLL)
-                continue
-
-            if total_att == 0:
-                log.info("No attachments found for group %s — skipping wait", group_name or group_id)
+            if elapsed >= 90:
+                log.info("Gave up waiting for group downloads after %.0fs", elapsed)
                 break
-
-            if pending_att == 0:
-                log.info(
-                    "All %d attachment(s) ready for group %s (%.0fs)",
-                    total_att, group_name or group_id, elapsed,
-                )
-                break
-
-            if elapsed >= MAX_ATT_WAIT:
-                log.info(
-                    "Attachment wait timeout (%ds): %d ready, %d still pending",
-                    MAX_ATT_WAIT, ready_att, pending_att,
-                )
-                break
-
+            log.info(
+                "Waiting for group attachment downloads (hasAtt=%d, groupDL=%d, table=%d, %.0fs)",
+                has_att_flag_count, group_dl_count, table_count, elapsed,
+            )
             time.sleep(ATT_POLL)
+            check_cancelled()
+            diag = _run_diagnostics()
+            has_att_flag_count = diag.get("has_attachments_flag_count", 0) or 0
+            group_dl_count = diag.get("group_attachment_downloads", 0) or 0
+            table_count = (diag.get("message_attachments_table") or {}).get("total_attachments", 0) or 0
+
+        # Once we have group downloads queued (or table populated), wait for
+        # them to complete (i.e. path appears on disk via message_attachments).
+        if group_dl_count > 0 or table_count > 0 or has_att_flag_count > 0:
+            log.info(
+                "Attachments found for group: table=%d downloads=%d hasFlag=%d — "
+                "waiting for Signal Desktop to finish downloading...",
+                table_count, group_dl_count, has_att_flag_count,
+            )
+            prev_dl = group_dl_count
+            stall_rounds = 0
+            while True:
+                elapsed = time.time() - att_start
+                if elapsed >= MAX_ATT_WAIT:
+                    log.info(
+                        "Attachment wait timeout (%.0fs): table=%d downloads=%d",
+                        elapsed, table_count, group_dl_count,
+                    )
+                    break
+                time.sleep(ATT_POLL)
+                check_cancelled()
+                s = _get_group_att_status()
+                total_att = s.get("total_attachments", 0)
+                ready_att = s.get("ready", 0)
+                pending_att = s.get("pending", 0)
+                diag = _run_diagnostics()
+                group_dl_count = diag.get("group_attachment_downloads", 0) or 0
+                table_count = (diag.get("message_attachments_table") or {}).get("total_attachments", 0) or 0
+                log.info(
+                    "  Download progress: table=%d(ready=%d) downloads_queue=%d (%.0fs)",
+                    total_att, ready_att, group_dl_count, elapsed,
+                )
+                if total_att > 0 and pending_att == 0:
+                    log.info("All %d attachment(s) ready", total_att)
+                    break
+                # If downloads queue is empty for our group but table still empty,
+                # downloads might have completed — proceed to let db_reader check
+                if group_dl_count == 0 and total_att == 0 and elapsed > 30:
+                    log.info("Group download queue empty, proceeding with what we have")
+                    break
+                if group_dl_count == prev_dl:
+                    stall_rounds += 1
+                    if stall_rounds >= 8:
+                        log.info("Download progress stalled for %d rounds, proceeding", stall_rounds)
+                        break
+                else:
+                    stall_rounds = 0
+                    prev_dl = group_dl_count
+        else:
+            log.info("No attachments found for group %s — skipping wait", group_name or group_id)
 
         check_cancelled()
 

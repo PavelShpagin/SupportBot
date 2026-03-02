@@ -1179,8 +1179,39 @@ async def diagnose_attachments(
         if "attachment_downloads" in tables:
             dl_count = conn.execute("SELECT COUNT(*) FROM attachment_downloads").fetchone()[0]
             result_data["attachment_downloads_queue"] = dl_count
-            if dl_count > 0:
-                dl_cols = _get_table_columns(conn, "attachment_downloads")
+
+            # Per-group: how many downloads are for messages in this conversation?
+            group_dl_count = 0
+            if conversation_id:
+                group_dl_count = conn.execute(
+                    "SELECT COUNT(*) FROM attachment_downloads ad "
+                    "INNER JOIN messages m ON ad.messageId = m.id "
+                    "WHERE m.conversationId = ?",
+                    (conversation_id,)
+                ).fetchone()[0]
+            result_data["group_attachment_downloads"] = group_dl_count
+
+            if group_dl_count > 0:
+                group_dl_samples = conn.execute(
+                    "SELECT ad.messageId, ad.contentType, ad.size, ad.active, "
+                    "ad.attachmentJson, ad.source "
+                    "FROM attachment_downloads ad "
+                    "INNER JOIN messages m ON ad.messageId = m.id "
+                    "WHERE m.conversationId = ? LIMIT 3",
+                    (conversation_id,)
+                ).fetchall()
+                result_data["group_download_samples"] = [
+                    {
+                        "messageId": str(r[0]),
+                        "contentType": r[1],
+                        "size": r[2],
+                        "active": r[3],
+                        "attachmentJson_preview": str(r[4] or "")[:300],
+                        "source": r[5],
+                    }
+                    for r in group_dl_samples
+                ]
+            elif dl_count > 0:
                 dl_sample = conn.execute(
                     "SELECT messageId, contentType, size, active, source FROM attachment_downloads LIMIT 3"
                 ).fetchall()
