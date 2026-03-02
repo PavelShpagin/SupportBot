@@ -446,24 +446,37 @@ def get_messages(
                             if not isinstance(att, dict):
                                 return None
                             content_type = att.get("contentType") or ""
-                            cdn_key = att.get("cdnKey") or ""
-                            if not content_type and not cdn_key:
+                            # Signal Desktop 7+ may use transitCdnKey instead of cdnKey
+                            cdn_key = att.get("cdnKey") or att.get("transitCdnKey") or ""
+                            cdn_number = att.get("cdnNumber") or att.get("transitCdnNumber")
+                            path = att.get("path") or att.get("downloadPath") or ""
+                            if not content_type and not cdn_key and not path:
                                 return None
                             return {
-                                "path": att.get("path") or "",
+                                "path": path,
                                 "fileName": att.get("fileName") or "",
                                 "contentType": content_type,
                                 "cdnKey": cdn_key,
-                                "cdnNumber": att.get("cdnNumber"),
+                                "cdnNumber": cdn_number,
                                 "key": att.get("key") or "",
                                 "digest": att.get("digest") or "",
                                 "size": att.get("size") or 0,
                             }
 
-                        for att in msg_json.get("attachments") or []:
+                        raw_atts = msg_json.get("attachments") or []
+                        for att in raw_atts:
                             parsed = _parse_att(att)
                             if parsed:
                                 attachments.append(parsed)
+
+                        if raw_atts and not attachments:
+                            log.warning(
+                                "Message %s has %d raw attachment(s) in JSON but all filtered out. "
+                                "Sample keys: %s",
+                                msg_id, len(raw_atts),
+                                [list(a.keys())[:8] if isinstance(a, dict) else type(a).__name__
+                                 for a in raw_atts[:2]],
+                            )
 
                         quote = msg_json.get("quote") or {}
                         for q_att in quote.get("attachments") or []:

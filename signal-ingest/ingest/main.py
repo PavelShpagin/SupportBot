@@ -1053,28 +1053,64 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
             trigger_result.get("method"), trigger_result.get("error"),
         )
 
-        # Run deep attachment diagnostics BEFORE trying to fetch
-        try:
-            diag_url = settings.signal_desktop_url.rstrip("/") + "/attachments/diagnose"
-            with httpx.Client(timeout=30) as client:
-                diag_resp = client.get(diag_url, params={"group_id": group_id, "group_name": group_name})
-                if diag_resp.status_code == 200:
-                    diag = diag_resp.json()
-                    log.info(
-                        "ATTACHMENT DIAGNOSTICS: has_table=%s table_total=%s "
-                        "hasAttachments_flag=%s legacy_json=%s downloads_queue=%s total_msgs=%s",
-                        diag.get("has_message_attachments_table"),
-                        (diag.get("message_attachments_table") or {}).get("total_attachments"),
-                        diag.get("has_attachments_flag_count"),
-                        (diag.get("legacy_json_column") or {}).get("messages_with_non_empty_attachments"),
-                        diag.get("attachment_downloads_queue"),
-                        diag.get("total_messages_in_group"),
-                    )
-                    if diag.get("messages_with_hasAttachments_samples"):
-                        for s in diag["messages_with_hasAttachments_samples"]:
-                            log.info("  hasAttachments sample: %s", json.dumps(s, ensure_ascii=False)[:500])
-        except Exception as e:
-            log.warning("Diagnostic call failed (non-fatal): %s", e)
+        # Run deep attachment diagnostics BEFORE trying to fetch.
+        # Signal Desktop processes attachment metadata asynchronously —
+        # wait for the downloads queue to include our group's attachments.
+        def _run_diagnostics() -> dict:
+            try:
+                diag_url = settings.signal_desktop_url.rstrip("/") + "/attachments/diagnose"
+                with httpx.Client(timeout=30) as client:
+                    resp = client.get(diag_url, params={"group_id": group_id, "group_name": group_name})
+                    if resp.status_code == 200:
+                        return resp.json()
+            except Exception as e:
+                log.warning("Diagnostic call failed: %s", e)
+            return {}
+
+        diag = _run_diagnostics()
+        log.info(
+            "ATTACHMENT DIAGNOSTICS: has_table=%s table_total=%s "
+            "hasAttachments_flag=%s legacy_json=%s downloads_queue=%s total_msgs=%s",
+            diag.get("has_message_attachments_table"),
+            (diag.get("message_attachments_table") or {}).get("total_attachments"),
+            diag.get("has_attachments_flag_count"),
+            (diag.get("legacy_json_column") or {}).get("messages_with_non_empty_attachments"),
+            diag.get("attachment_downloads_queue"),
+            diag.get("total_messages_in_group"),
+        )
+        legacy_json = diag.get("legacy_json_column") or {}
+        if legacy_json.get("samples"):
+            for s in legacy_json["samples"]:
+                log.info("  JSON attachment sample: %s", json.dumps(s, ensure_ascii=False)[:600])
+        if diag.get("messages_with_hasAttachments_samples"):
+            for s in diag["messages_with_hasAttachments_samples"]:
+                log.info("  hasAttachments sample: %s", json.dumps(s, ensure_ascii=False)[:500])
+
+        # If the legacy json shows attachments but the table doesn't, wait
+        # for Signal Desktop to process them (it moves json→table async)
+        legacy_att_count = legacy_json.get("messages_with_non_empty_attachments", 0) or 0
+        table_att_count = (diag.get("message_attachments_table") or {}).get("total_attachments", 0) or 0
+        if legacy_att_count > 0 and table_att_count == 0:
+            log.info(
+                "Found %d messages with JSON attachments but 0 in table — "
+                "waiting for Signal Desktop to process...",
+                legacy_att_count,
+            )
+            for wait_round in range(6):  # up to 60s extra
+                time.sleep(10)
+                check_cancelled()
+                diag = _run_diagnostics()
+                new_table = (diag.get("message_attachments_table") or {}).get("total_attachments", 0) or 0
+                new_flag = diag.get("has_attachments_flag_count", 0) or 0
+                new_legacy = (diag.get("legacy_json_column") or {}).get("messages_with_non_empty_attachments", 0)
+                log.info(
+                    "  Wait round %d: table=%d hasFlag=%d legacy_json=%d queue=%s",
+                    wait_round + 1, new_table, new_flag, new_legacy,
+                    diag.get("attachment_downloads_queue"),
+                )
+                if new_table > 0 or new_flag > 0:
+                    log.info("Attachments appeared in table/flag — proceeding")
+                    break
 
         # Direct CDN fetch for messages that already have cdnKey+key in DB.
         _fetch_attachments_direct(settings, group_id=group_id, group_name=group_name)

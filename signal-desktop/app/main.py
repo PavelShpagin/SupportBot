@@ -1106,9 +1106,34 @@ async def diagnose_attachments(
                 params
             ).fetchone()[0]
 
+            # Dump raw attachment JSON for messages with non-empty attachments
+            json_samples = []
+            if non_empty > 0:
+                sample_rows = conn.execute(
+                    f"SELECT id, json FROM messages WHERE json LIKE '%\"attachments\":[%' "
+                    f"AND json NOT LIKE '%\"attachments\":[]%'{conv_filter} LIMIT 3",
+                    params
+                ).fetchall()
+                for r in sample_rows:
+                    try:
+                        msg_obj = _json.loads(r[1]) if r[1] else {}
+                        att_list = msg_obj.get("attachments", [])
+                        json_samples.append({
+                            "msg_id": str(r[0]),
+                            "attachment_count": len(att_list),
+                            "attachment_keys": [
+                                list(a.keys()) if isinstance(a, dict) else type(a).__name__
+                                for a in att_list[:3]
+                            ],
+                            "first_attachment": _json.dumps(att_list[0])[:400] if att_list and isinstance(att_list[0], dict) else str(att_list[:1]),
+                        })
+                    except Exception:
+                        json_samples.append({"msg_id": str(r[0]), "parse_error": True})
+
             result_data["legacy_json_column"] = {
                 "messages_with_any_attachments_key": total_msgs,
                 "messages_with_non_empty_attachments": non_empty,
+                "samples": json_samples,
             }
 
         # Messages with hasAttachments flag
