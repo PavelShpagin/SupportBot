@@ -576,25 +576,47 @@ class DevToolsClient:
 (async function(groupIdStr, groupNameStr) {
     try {
         // ── find conversation by groupId OR name ─────────────────────────────
-        const convs = window.ConversationController.getAll();
-        let conv = null;
+        // Use Signal.Data.getAllConversations() (async, DB-backed) instead of
+        // ConversationController.getAll() which may be undefined immediately
+        // after link before the Backbone registry is fully initialised.
+        let convId = null;
         const nameLower = (groupNameStr || '').toLowerCase().trim();
-        for (const c of convs) {
-            const gId = c.get('groupId') || '';
-            const cName = (c.get('name') || '').toLowerCase().trim();
-            if (gId === groupIdStr) { conv = c; break; }
-            if (nameLower && cName === nameLower) { conv = c; break; }
-        }
-        // Partial name match as last resort
-        if (!conv && nameLower) {
-            for (const c of convs) {
-                const cName = (c.get('name') || '').toLowerCase();
-                if (cName.includes(nameLower) || nameLower.includes(cName)) { conv = c; break; }
+        try {
+            const allConvs = await window.Signal.Data.getAllConversations();
+            const convList = Array.isArray(allConvs) ? allConvs
+                : (allConvs && allConvs.models ? allConvs.models.map(m => m.attributes || m) : []);
+            for (const c of convList) {
+                const gId = c.groupId || c.get && c.get('groupId') || '';
+                const cName = (c.name || c.get && c.get('name') || '').toLowerCase().trim();
+                if (gId === groupIdStr) { convId = c.id; break; }
+                if (nameLower && cName === nameLower) { convId = c.id; break; }
             }
+            if (!convId && nameLower) {
+                for (const c of convList) {
+                    const cName = (c.name || c.get && c.get('name') || '').toLowerCase();
+                    if (cName.includes(nameLower) || nameLower.includes(cName)) { convId = c.id; break; }
+                }
+            }
+        } catch(dataErr) {
+            // Fallback to ConversationController if Data layer failed
+            try {
+                const convs = window.ConversationController.getAll();
+                for (const c of convs) {
+                    const gId = c.get('groupId') || '';
+                    const cName = (c.get('name') || '').toLowerCase().trim();
+                    if (gId === groupIdStr) { convId = c.id; break; }
+                    if (nameLower && cName === nameLower) { convId = c.id; break; }
+                }
+                if (!convId && nameLower) {
+                    const convs2 = window.ConversationController.getAll();
+                    for (const c of convs2) {
+                        const cName = (c.get('name') || '').toLowerCase();
+                        if (cName.includes(nameLower)) { convId = c.id; break; }
+                    }
+                }
+            } catch(e2) {}
         }
-        if (!conv) return {ok: false, error: 'conversation not found for group ' + groupIdStr + ' / ' + groupNameStr};
-
-        const convId = conv.id;
+        if (!convId) return {ok: false, error: 'conversation not found for group ' + groupIdStr + ' / ' + groupNameStr};
         let triggered = 0;
 
         // ── approach 1: AttachmentDownloads.addJob (Signal 6+/7+) ───────────
