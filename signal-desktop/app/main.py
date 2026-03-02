@@ -36,6 +36,8 @@ from app.db_reader import (
     get_group_messages,
     get_messages,
     is_db_available,
+    _get_all_tables,
+    _get_table_columns,
     _open_db,
 )
 from app.devtools import DevToolsClient, get_devtools_client, SignalConversation
@@ -639,7 +641,6 @@ async def fetch_all_pending_attachments(
     except Exception as e:
         log.warning("fetch-all: could not resolve conversation: %s", e)
 
-    # Collect all pending attachments
     import json as _json
 
     pending: list[dict] = []
@@ -649,66 +650,113 @@ async def fetch_all_pending_attachments(
     total_att_entries = 0
     try:
         conn = _open_db(settings.signal_data_dir)
+        tables = _get_all_tables(conn)
 
-        # Use a broader pattern to catch all non-empty attachment arrays,
-        # including `[{`, `[ {`, `[null`, etc.
-        q_broad = "SELECT COUNT(*) FROM messages WHERE json LIKE '%\"attachments\":[%' AND json NOT LIKE '%\"attachments\":[]%'"
-        if conversation_id:
-            q_broad += " AND conversationId = ?"
-            broad_count = conn.execute(q_broad, [conversation_id]).fetchone()[0]
+        # Signal Desktop 7+ stores attachments in a separate table
+        if "message_attachments" in tables:
+            ma_cols = _get_table_columns(conn, "message_attachments")
+            cdn_key_col = "transitCdnKey" if "transitCdnKey" in ma_cols else "cdnKey"
+            cdn_num_col = "transitCdnNumber" if "transitCdnNumber" in ma_cols else "cdnNumber"
+
+            q = f"SELECT {cdn_key_col}, {cdn_num_col}, key, contentType, path FROM message_attachments"
+            params: list = []
+            conditions: list[str] = []
+            if "attachmentType" in ma_cols:
+                conditions.append("(attachmentType = 'standard' OR attachmentType = 'long-message')")
+            if conversation_id and "conversationId" in ma_cols:
+                conditions.append("conversationId = ?")
+                params.append(conversation_id)
+            if conditions:
+                q += " WHERE " + " AND ".join(conditions)
+
+            rows = conn.execute(q, params).fetchall()
+            log.info(
+                "fetch-all: group=%s conv_id=%s — attachments in message_attachments table: %d",
+                group_name or group_id, conversation_id or "(all groups)", len(rows),
+            )
+            for r in rows:
+                total_att_entries += 1
+                cdn_key = str(r[0] or "")
+                cdn_number = r[1]
+                key_b64 = str(r[2] or "")
+                content_type = str(r[3] or "")
+                path = str(r[4] or "")
+                if not cdn_key or not key_b64:
+                    skip_no_cdn += 1
+                    if skip_no_cdn <= 3:
+                        log.info(
+                            "fetch-all: skip (no cdnKey/key): contentType=%s cdnKey=%r key_len=%d path=%r",
+                            content_type, cdn_key, len(key_b64), path,
+                        )
+                    continue
+                cache_file = Path(settings.signal_data_dir) / "cdn-cache" / cdn_key
+                if cache_file.exists():
+                    skip_cached += 1
+                    continue
+                if path:
+                    skip_on_disk += 1
+                    continue
+                pending.append({
+                    "cdnKey": cdn_key,
+                    "cdnNumber": cdn_number,
+                    "key": key_b64,
+                    "contentType": content_type,
+                })
         else:
-            broad_count = conn.execute(q_broad).fetchone()[0]
-        log.info(
-            "fetch-all: group=%s conv_id=%s — messages with non-empty attachments array: %d",
-            group_name or group_id,
-            conversation_id or "(all groups)",
-            broad_count,
-        )
+            # Legacy: parse from json column
+            q_broad = "SELECT COUNT(*) FROM messages WHERE json LIKE '%\"attachments\":[%' AND json NOT LIKE '%\"attachments\":[]%'"
+            if conversation_id:
+                q_broad += " AND conversationId = ?"
+                broad_count = conn.execute(q_broad, [conversation_id]).fetchone()[0]
+            else:
+                broad_count = conn.execute(q_broad).fetchone()[0]
+            log.info(
+                "fetch-all: group=%s conv_id=%s — messages with non-empty attachments array: %d",
+                group_name or group_id, conversation_id or "(all groups)", broad_count,
+            )
 
-        # Use broad pattern to catch all non-empty attachment arrays, then
-        # filter in Python (handles `[{`, `[ {`, `[null,{` etc.)
-        q = "SELECT json FROM messages WHERE json LIKE '%\"attachments\":[%' AND json NOT LIKE '%\"attachments\":[]%'"
-        params: list = []
-        if conversation_id:
-            q += " AND conversationId = ?"
-            params.append(conversation_id)
-        rows = conn.execute(q, params).fetchall()
-        log.info("fetch-all: messages with non-empty attachments (broad pattern): %d", len(rows))
+            q = "SELECT json FROM messages WHERE json LIKE '%\"attachments\":[%' AND json NOT LIKE '%\"attachments\":[]%'"
+            params = []
+            if conversation_id:
+                q += " AND conversationId = ?"
+                params.append(conversation_id)
+            rows = conn.execute(q, params).fetchall()
+            log.info("fetch-all: messages with non-empty attachments (broad pattern): %d", len(rows))
+
+            for (raw_json,) in rows:
+                try:
+                    msg = _json.loads(raw_json) if raw_json else {}
+                    for att in msg.get("attachments") or []:
+                        if not isinstance(att, dict):
+                            continue
+                        total_att_entries += 1
+                        cdn_key = att.get("cdnKey") or ""
+                        key_b64 = att.get("key") or ""
+                        if not cdn_key or not key_b64:
+                            skip_no_cdn += 1
+                            if skip_no_cdn <= 3:
+                                log.info(
+                                    "fetch-all: skip (no cdnKey/key): contentType=%s cdnKey=%r key_len=%d path=%r",
+                                    att.get("contentType"), cdn_key, len(key_b64), att.get("path"),
+                                )
+                            continue
+                        cache_file = Path(settings.signal_data_dir) / "cdn-cache" / cdn_key
+                        if cache_file.exists():
+                            skip_cached += 1
+                            continue
+                        if att.get("path"):
+                            skip_on_disk += 1
+                            continue
+                        pending.append({
+                            "cdnKey": cdn_key,
+                            "cdnNumber": att.get("cdnNumber"),
+                            "key": key_b64,
+                            "contentType": att.get("contentType") or "",
+                        })
+                except Exception:
+                    continue
+
         conn.close()
-
-        for (raw_json,) in rows:
-            try:
-                msg = _json.loads(raw_json) if raw_json else {}
-                for att in msg.get("attachments") or []:
-                    if not isinstance(att, dict):
-                        continue
-                    total_att_entries += 1
-                    cdn_key = att.get("cdnKey") or ""
-                    key_b64 = att.get("key") or ""
-                    if not cdn_key or not key_b64:
-                        skip_no_cdn += 1
-                        if skip_no_cdn <= 3:
-                            log.info(
-                                "fetch-all: skip (no cdnKey/key): contentType=%s cdnKey=%r key_len=%d path=%r",
-                                att.get("contentType"), cdn_key, len(key_b64), att.get("path"),
-                            )
-                        continue
-                    # Skip if already cached or already on disk
-                    cache_file = Path(settings.signal_data_dir) / "cdn-cache" / cdn_key
-                    if cache_file.exists():
-                        skip_cached += 1
-                        continue
-                    if att.get("path"):
-                        skip_on_disk += 1
-                        continue
-                    pending.append({
-                        "cdnKey": cdn_key,
-                        "cdnNumber": att.get("cdnNumber"),
-                        "key": key_b64,
-                        "contentType": att.get("contentType") or "",
-                    })
-            except Exception:
-                continue
     except Exception as e:
         log.exception("fetch-all: failed to scan messages")
         return {"downloaded": 0, "failed": 0, "skipped": 0, "error": str(e)}
@@ -969,91 +1017,111 @@ async def diagnose_attachments(
 
     try:
         conn = _open_db(settings.signal_data_dir)
+        tables = _get_all_tables(conn)
 
-        # Count messages with any attachment data
-        base_q = "FROM messages WHERE json LIKE '%\"attachments\":%'"
         conv_filter = ""
         params: list = []
         if conversation_id:
             conv_filter = " AND conversationId = ?"
             params = [conversation_id]
 
-        total_msgs = conn.execute(f"SELECT COUNT(*) {base_q}{conv_filter}", params).fetchone()[0]
-        non_empty = conn.execute(
-            f"SELECT COUNT(*) FROM messages WHERE json LIKE '%\"attachments\":[%' "
-            f"AND json NOT LIKE '%\"attachments\":[]%'{conv_filter}",
-            params
-        ).fetchone()[0]
-        strict_pattern = conn.execute(
-            f"SELECT COUNT(*) FROM messages WHERE json LIKE '%\"attachments\":[{{%'{conv_filter}",
-            params
-        ).fetchone()[0]
+        result_data: dict = {
+            "conversation_id": conversation_id,
+            "has_message_attachments_table": "message_attachments" in tables,
+        }
 
-        # Sample the actual attachment JSON
-        sample_rows = conn.execute(
-            f"SELECT json FROM messages WHERE json LIKE '%\"attachments\":[%' "
-            f"AND json NOT LIKE '%\"attachments\":[]%'{conv_filter} LIMIT 5",
-            params
-        ).fetchall()
+        # Method 1: Check message_attachments table (Signal Desktop 7+)
+        if "message_attachments" in tables:
+            ma_cols = _get_table_columns(conn, "message_attachments")
+            cdn_key_col = "transitCdnKey" if "transitCdnKey" in ma_cols else "cdnKey"
 
-        samples = []
-        has_cdn_key = 0
-        has_key_b64 = 0
-        has_path = 0
-        has_content_type_only = 0
-        total_att = 0
+            q_total = "SELECT COUNT(*) FROM message_attachments"
+            ma_params: list = []
+            ma_conditions: list[str] = []
+            if "attachmentType" in ma_cols:
+                ma_conditions.append("(attachmentType = 'standard' OR attachmentType = 'long-message')")
+            if conversation_id and "conversationId" in ma_cols:
+                ma_conditions.append("conversationId = ?")
+                ma_params.append(conversation_id)
+            if ma_conditions:
+                q_total += " WHERE " + " AND ".join(ma_conditions)
 
-        for (raw,) in sample_rows:
-            try:
-                msg = _json.loads(raw) if raw else {}
-                atts = msg.get("attachments") or []
-                for att in atts:
-                    if not isinstance(att, dict):
-                        continue
-                    total_att += 1
-                    if att.get("cdnKey"):
-                        has_cdn_key += 1
-                    if att.get("key"):
-                        has_key_b64 += 1
-                    if att.get("path"):
-                        has_path += 1
-                    if att.get("contentType") and not att.get("cdnKey") and not att.get("path"):
-                        has_content_type_only += 1
+            total_in_table = conn.execute(q_total, ma_params).fetchone()[0]
+
+            has_cdn_key = 0
+            has_key_b64 = 0
+            has_path = 0
+            has_content_type_only = 0
+            samples = []
+
+            sample_q = f"SELECT messageId, contentType, path, fileName, {cdn_key_col}, key, size FROM message_attachments"
+            if ma_conditions:
+                sample_q += " WHERE " + " AND ".join(ma_conditions)
+            sample_q += " LIMIT 10"
+            sample_rows = conn.execute(sample_q, ma_params).fetchall()
+
+            for r in sample_rows:
+                cdn_k = str(r[4] or "")
+                key_b = str(r[5] or "")
+                path_v = str(r[2] or "")
+                ct = str(r[1] or "")
+                if cdn_k:
+                    has_cdn_key += 1
+                if key_b:
+                    has_key_b64 += 1
+                if path_v:
+                    has_path += 1
+                if ct and not cdn_k and not path_v:
+                    has_content_type_only += 1
                 if len(samples) < 3:
-                    # Show raw types of items (null vs dict) and first dict's fields
-                    item_types = [type(a).__name__ for a in atts[:4]]
-                    first_dict = next((a for a in atts if isinstance(a, dict)), {})
                     samples.append({
-                        "count": len(atts),
-                        "item_types": item_types,
-                        "fields": [list(a.keys()) for a in atts[:2] if isinstance(a, dict)],
-                        "first_att": {
-                            k: (v[:30] if isinstance(v, str) else v)
-                            for k, v in first_dict.items()
-                            if k in ("contentType", "cdnKey", "cdnNumber", "path", "fileName", "size")
-                        },
-                        # Show raw JSON snippet around the attachments array for debugging
-                        "raw_snippet": (raw or "")[(raw or "").find('"attachments":'):(raw or "").find('"attachments":') + 200] if raw else "",
+                        "messageId": str(r[0]),
+                        "contentType": ct,
+                        "path": path_v[:60],
+                        "fileName": str(r[3] or ""),
+                        "cdnKey": cdn_k[:30] if cdn_k else "",
+                        "has_key": bool(key_b),
+                        "size": r[6],
                     })
-            except Exception:
-                pass
+
+            result_data["message_attachments_table"] = {
+                "total_attachments": total_in_table,
+                "columns": sorted(ma_cols),
+                "sample_breakdown": {
+                    "has_cdn_key": has_cdn_key,
+                    "has_decryption_key": has_key_b64,
+                    "has_path_on_disk": has_path,
+                    "has_content_type_only": has_content_type_only,
+                },
+                "samples": samples,
+            }
+
+        # Method 2: Legacy json column check
+        if "json" in _get_table_columns(conn, "messages"):
+            base_q = "FROM messages WHERE json LIKE '%\"attachments\":%'"
+            total_msgs = conn.execute(f"SELECT COUNT(*) {base_q}{conv_filter}", params).fetchone()[0]
+            non_empty = conn.execute(
+                f"SELECT COUNT(*) FROM messages WHERE json LIKE '%\"attachments\":[%' "
+                f"AND json NOT LIKE '%\"attachments\":[]%'{conv_filter}",
+                params
+            ).fetchone()[0]
+
+            result_data["legacy_json_column"] = {
+                "messages_with_any_attachments_key": total_msgs,
+                "messages_with_non_empty_attachments": non_empty,
+            }
+
+        # Messages with hasAttachments flag
+        msg_cols = _get_table_columns(conn, "messages")
+        if "hasAttachments" in msg_cols:
+            has_att_count = conn.execute(
+                f"SELECT COUNT(*) FROM messages WHERE hasAttachments = 1{conv_filter}",
+                params
+            ).fetchone()[0]
+            result_data["has_attachments_flag_count"] = has_att_count
 
         conn.close()
-
-        return {
-            "conversation_id": conversation_id,
-            "messages_with_any_attachments_key": total_msgs,
-            "messages_with_non_empty_attachments": non_empty,
-            "messages_with_strict_bracket_pattern": strict_pattern,
-            "sample_attachments_breakdown": {
-                "total_att_entries_in_samples": total_att,
-                "has_cdn_key": has_cdn_key,
-                "has_decryption_key": has_key_b64,
-                "has_path_on_disk": has_path,
-                "has_content_type_only": has_content_type_only,
-            },
-            "samples": samples,
-        }
+        return result_data
     except Exception as e:
         log.exception("diagnose_attachments failed")
         return {"error": str(e)}

@@ -4,6 +4,10 @@ Read messages from Signal Desktop's SQLCipher database.
 Signal Desktop stores its encryption key in a JSON config file.
 The DB is at: ~/.config/Signal/sql/db.sqlite
 The key is at: ~/.config/Signal/config.json (field: "key")
+
+Signal Desktop 7+ stores attachments in a separate `message_attachments`
+table instead of embedding them in the `json` column of the `messages` table.
+This module supports both schemas transparently.
 """
 from __future__ import annotations
 
@@ -30,25 +34,18 @@ class SignalMessage:
     reactions: int = 0  # count of emoji reactions on this message
     reaction_emoji: Optional[str] = None  # first/representative reaction emoji (if known)
     sender_name: Optional[str] = None  # display name from contacts
-    # Attachment metadata parsed from the json column.
+    # Attachment metadata parsed from the json column or message_attachments table.
     # Each entry is a dict with keys: path (relative to Signal data dir),
-    # fileName, contentType.  Only entries with a non-empty path are included.
+    # fileName, contentType, cdnKey, cdnNumber, key, digest, size.
     attachments: list = None  # list[dict]
 
     def __post_init__(self):
-        # dataclass frozen=True doesn't allow setattr, use object.__setattr__
         if self.attachments is None:
             object.__setattr__(self, "attachments", [])
 
 
 def _get_db_key(signal_data_dir: str) -> str:
-    """Extract the SQLCipher key from Signal Desktop's config.json.
-
-    Newer Signal Desktop (5.x+) stores the key encrypted with the OS keychain
-    under the field 'encryptedKey'.  In that case we fall back to the
-    SIGNAL_DESKTOP_KEY_HEX environment variable which should hold the raw
-    hex key (set once after manually decrypting via the OS keychain tool).
-    """
+    """Extract the SQLCipher key from Signal Desktop's config.json."""
     import os
 
     config_path = Path(signal_data_dir) / "config.json"
@@ -64,7 +61,6 @@ def _get_db_key(signal_data_dir: str) -> str:
                 "Falling back to SIGNAL_DESKTOP_KEY_HEX env var."
             )
 
-    # Fall back to env var (required when key is OS-keychain encrypted)
     env_key = os.environ.get("SIGNAL_DESKTOP_KEY_HEX", "").strip()
     if env_key:
         return env_key
@@ -78,7 +74,6 @@ def _get_db_key(signal_data_dir: str) -> str:
 
 def _open_db(signal_data_dir: str):
     """Open the Signal Desktop SQLCipher database."""
-    # Try sqlcipher3-binary first (better compatibility), then pysqlcipher3
     sqlcipher = None
     try:
         import sqlcipher3 as sqlcipher
@@ -98,21 +93,16 @@ def _open_db(signal_data_dir: str):
     
     conn = sqlcipher.connect(str(db_path))
     try:
-        # Signal Desktop uses SQLCipher 4 with specific settings
-        # Order matters: cipher_compatibility and cipher_page_size BEFORE key
         conn.execute("PRAGMA cipher_compatibility = 4;")
         conn.execute("PRAGMA cipher_page_size = 4096;")
         conn.execute(f"PRAGMA key = \"x'{key}'\";")
         
-        # Verify we can read
         tables = conn.execute("SELECT name FROM sqlite_master WHERE type='table' LIMIT 1;").fetchall()
         log.info("DB opened successfully, found tables")
         return conn
     except Exception as e:
         conn.close()
         raise RuntimeError(f"Failed to open Signal DB: {e}")
-    
-    return conn
 
 
 def _get_table_columns(conn, table: str) -> set[str]:
@@ -121,13 +111,18 @@ def _get_table_columns(conn, table: str) -> set[str]:
     return {r[1] for r in rows}
 
 
+def _get_all_tables(conn) -> set[str]:
+    """Get all table names in the database."""
+    rows = conn.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall()
+    return {r[0] for r in rows}
+
+
 def get_conversations(signal_data_dir: str) -> list[dict]:
     """Get all conversations from Signal Desktop DB."""
     conn = _open_db(signal_data_dir)
     try:
         cols = _get_table_columns(conn, "conversations")
         
-        # Build query based on available columns
         select_cols = ["id"]
         if "type" in cols:
             select_cols.append("type")
@@ -175,45 +170,123 @@ def get_contacts_from_db(signal_data_dir: str) -> set[str]:
         return set()
 
 
+def _load_attachments_from_table(
+    conn,
+    tables: set[str],
+    conversation_id: Optional[str] = None,
+    message_ids: Optional[list[str]] = None,
+) -> dict[str, list[dict]]:
+    """Load attachments from the separate message_attachments table (Signal Desktop 7+).
+
+    Returns a dict mapping messageId -> list of attachment dicts in the
+    normalised format used by the rest of the pipeline.
+    """
+    if "message_attachments" not in tables:
+        return {}
+
+    ma_cols = _get_table_columns(conn, "message_attachments")
+    cdn_key_col = "transitCdnKey" if "transitCdnKey" in ma_cols else "cdnKey"
+    cdn_num_col = "transitCdnNumber" if "transitCdnNumber" in ma_cols else "cdnNumber"
+
+    select_cols = [
+        "messageId",
+        "contentType" if "contentType" in ma_cols else "'' as contentType",
+        "path" if "path" in ma_cols else "'' as path",
+        "fileName" if "fileName" in ma_cols else "'' as fileName",
+        f"{cdn_key_col} as cdnKey",
+        f"{cdn_num_col} as cdnNumber",
+        "key" if "key" in ma_cols else "'' as key",
+        "digest" if "digest" in ma_cols else "'' as digest",
+        "size" if "size" in ma_cols else "0 as size",
+        "downloadPath" if "downloadPath" in ma_cols else "'' as downloadPath",
+    ]
+
+    q = f"SELECT {', '.join(select_cols)} FROM message_attachments"
+    params: list = []
+    conditions: list[str] = []
+
+    if "attachmentType" in ma_cols:
+        conditions.append("(attachmentType = 'standard' OR attachmentType = 'long-message')")
+
+    if conversation_id and "conversationId" in ma_cols:
+        conditions.append("conversationId = ?")
+        params.append(conversation_id)
+
+    if message_ids:
+        placeholders = ",".join("?" for _ in message_ids)
+        conditions.append(f"messageId IN ({placeholders})")
+        params.extend(message_ids)
+
+    if conditions:
+        q += " WHERE " + " AND ".join(conditions)
+
+    if "orderInMessage" in ma_cols:
+        q += " ORDER BY orderInMessage ASC"
+
+    rows = conn.execute(q, params).fetchall()
+    result: dict[str, list[dict]] = {}
+    for r in rows:
+        msg_id = str(r[0])
+        content_type = str(r[1] or "")
+        cdn_key = str(r[4] or "")
+        path = str(r[2] or "")
+        download_path = str(r[9] or "")
+        if not content_type and not cdn_key:
+            continue
+        att = {
+            "path": path or download_path,
+            "fileName": str(r[3] or ""),
+            "contentType": content_type,
+            "cdnKey": cdn_key,
+            "cdnNumber": r[5],
+            "key": str(r[6] or ""),
+            "digest": str(r[7] or ""),
+            "size": r[8] or 0,
+        }
+        result.setdefault(msg_id, []).append(att)
+
+    log.info(
+        "Loaded %d attachments for %d messages from message_attachments table",
+        sum(len(v) for v in result.values()),
+        len(result),
+    )
+    return result
+
+
 def get_messages(
     signal_data_dir: str,
     conversation_id: Optional[str] = None,
     since_timestamp: Optional[int] = None,
     limit: int = 100,
 ) -> list[SignalMessage]:
-    """
-    Get messages from Signal Desktop DB.
+    """Get messages from Signal Desktop DB.
     
-    Args:
-        signal_data_dir: Path to Signal Desktop data directory
-        conversation_id: Filter to specific conversation (optional)
-        since_timestamp: Only get messages after this timestamp (ms, optional)
-        limit: Maximum number of messages to return
-    
-    Returns:
-        List of SignalMessage objects, oldest first
+    Supports both legacy (json column) and modern (message_attachments table)
+    schemas for attachment data.
     """
     conn = _open_db(signal_data_dir)
     try:
         msg_cols = _get_table_columns(conn, "messages")
         conv_cols = _get_table_columns(conn, "conversations")
+        tables = _get_all_tables(conn)
+
+        has_att_table = "message_attachments" in tables
+        has_att_flag = "hasAttachments" in msg_cols
+        has_json_col = "json" in msg_cols
         
-        # Determine column names (Signal Desktop schema varies by version)
         ts_col = "sent_at" if "sent_at" in msg_cols else "timestamp"
         conv_id_col = "conversationId" if "conversationId" in msg_cols else "conversation_id"
         body_col = "body" if "body" in msg_cols else "message"
         type_col = "type" if "type" in msg_cols else None
         
-        # Sender column
         sender_col = None
         for candidate in ["sourceServiceId", "sourceUuid", "source"]:
             if candidate in msg_cols:
                 sender_col = candidate
                 break
         
-        # Build the query
         select_parts = [
-            f"m.id",
+            "m.id",
             f"m.{conv_id_col} as conversation_id",
             f"m.{ts_col} as timestamp",
             f"m.{body_col} as body",
@@ -229,7 +302,6 @@ def get_messages(
         else:
             select_parts.append("'unknown' as msg_type")
         
-        # Join with conversations to get group info
         if "groupId" in conv_cols:
             select_parts.append("c.groupId as group_id")
         else:
@@ -240,16 +312,11 @@ def get_messages(
         else:
             select_parts.append("NULL as group_name")
         
-        # Sender display name from contacts (sc = sender conversation)
         if sender_col and "profileName" in conv_cols:
             select_parts.append("COALESCE(sc.name, sc.profileName, sc.profileFullName) as sender_name")
         else:
             select_parts.append("NULL as sender_name")
 
-        # Include the raw JSON column so we can parse attachments (row[9]).
-        # The column is present in Signal Desktop 6+ and contains attachments,
-        # reactions, and other rich data.
-        has_json_col = "json" in msg_cols
         if has_json_col:
             select_parts.append("m.json as raw_json")
 
@@ -257,19 +324,17 @@ def get_messages(
         if sender_col:
             sender_join = f"LEFT JOIN conversations sc ON m.{sender_col} = sc.id"
 
-        # Include messages that have a text body OR that have at least one
-        # attachment with a contentType (including image-only messages with no body).
-        # After Signal Desktop downloads an attachment it writes the local path
-        # into the json column — we use a broad LIKE pattern to capture all
-        # non-empty attachment arrays regardless of format ([{, [ {, [null,{…}).
+        # Include messages with text body OR with attachments
+        body_conditions = [f"(m.{body_col} IS NOT NULL AND m.{body_col} != '')"]
+
+        if has_att_flag:
+            body_conditions.append("(m.hasAttachments = 1)")
         if has_json_col:
-            body_cond = (
-                f"(m.{body_col} IS NOT NULL AND m.{body_col} != '')"
-                f" OR (m.json LIKE '%\"attachments\":[%' AND m.json NOT LIKE '%\"attachments\":[]%')"
-                f" OR (m.json LIKE '%\"path\":%' AND m.json LIKE '%\"contentType\":%')"
+            body_conditions.append(
+                "(m.json LIKE '%\"attachments\":[%' AND m.json NOT LIKE '%\"attachments\":[]%')"
             )
-        else:
-            body_cond = f"m.{body_col} IS NOT NULL AND m.{body_col} != ''"
+
+        body_cond = " OR ".join(body_conditions)
 
         q = f"""
             SELECT {', '.join(select_parts)}
@@ -294,15 +359,18 @@ def get_messages(
         
         rows = conn.execute(q, params).fetchall()
 
-        # Build reactions maps: count and first emoji per message timestamp.
-        # Signal Desktop stores reactions either in a separate 'reactions' table
-        # OR embedded in the 'json' column of the messages table.
+        # Pre-load attachments from the separate table (Signal Desktop 7+)
+        att_from_table: dict[str, list[dict]] = {}
+        if has_att_table and rows:
+            msg_ids = [str(r[0]) for r in rows]
+            att_from_table = _load_attachments_from_table(
+                conn, tables, conversation_id=conversation_id, message_ids=msg_ids,
+            )
+
+        # Build reactions maps
         reactions_by_ts: dict[int, int] = {}
         emoji_by_ts: dict[int, str] = {}
         try:
-            tables = {r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall()}
-            
-            # Method 1: Try the reactions table (includes emoji column)
             if "reactions" in tables:
                 rxn_cols = _get_table_columns(conn, "reactions")
                 log.info("Reactions table columns: %s", rxn_cols)
@@ -327,8 +395,7 @@ def get_messages(
                             emoji_by_ts[ts_val] = str(r[2])
                     log.info("Found %d messages with reactions (from reactions table)", len(reactions_by_ts))
             
-            # Method 2: Try the json column in messages table (newer Signal Desktop versions)
-            if not reactions_by_ts and "json" in msg_cols:
+            if not reactions_by_ts and has_json_col:
                 log.info("Trying to extract reactions from messages.json column")
                 json_q = f"SELECT {ts_col}, json FROM messages WHERE json LIKE '%reactions%'"
                 if conversation_id:
@@ -362,21 +429,16 @@ def get_messages(
         result = []
         for row in rows:
             try:
+                msg_id = str(row[0])
                 ts = int(row[2]) if row[2] else 0
                 body = str(row[3] or "")
                 sender_name = str(row[8]) if len(row) > 8 and row[8] else None
-                # row[9] is raw_json only when has_json_col is True (added last)
                 raw_json_str = str(row[9]) if (has_json_col and len(row) > 9 and row[9]) else None
 
-                # Parse attachments from the raw json column.
-                # Include BOTH downloaded (path set) and pending (path empty)
-                # attachments.  Pending ones expose CDN metadata so the caller
-                # can download them directly without CDP.
-                # Also include quote thumbnails: when someone replies to an
-                # image, the thumbnail is in quote.attachments[].thumbnail and
-                # is typically already cached on disk by Signal Desktop.
-                attachments: list = []
-                if raw_json_str:
+                # Prefer message_attachments table (v7+), fall back to JSON
+                attachments: list = att_from_table.get(msg_id, [])
+
+                if not attachments and raw_json_str:
                     try:
                         msg_json = json.loads(raw_json_str)
 
@@ -403,8 +465,6 @@ def get_messages(
                             if parsed:
                                 attachments.append(parsed)
 
-                        # Quote thumbnails: reply-to-image messages store a small
-                        # locally-cached thumbnail in quote.attachments[].thumbnail
                         quote = msg_json.get("quote") or {}
                         for q_att in quote.get("attachments") or []:
                             if not isinstance(q_att, dict):
@@ -419,12 +479,11 @@ def get_messages(
                     except (json.JSONDecodeError, TypeError):
                         pass
 
-                # Skip messages with neither text nor attachments
                 if not body and not attachments:
                     continue
 
                 msg = SignalMessage(
-                    id=str(row[0]),
+                    id=msg_id,
                     conversation_id=str(row[1]) if row[1] else "",
                     timestamp=ts,
                     body=body,
@@ -453,17 +512,11 @@ def get_group_messages(
     group_name: Optional[str] = None,
     limit: int = 800,
 ) -> list[SignalMessage]:
-    """
-    Get messages for a specific group by ID or name.
-    
-    This is useful for history ingestion - getting all messages from a group.
-    """
+    """Get messages for a specific group by ID or name."""
     conn = _open_db(signal_data_dir)
     try:
-        msg_cols = _get_table_columns(conn, "messages")
         conv_cols = _get_table_columns(conn, "conversations")
         
-        # First, find the conversation ID for this group
         conv_id = None
         
         if group_id and "groupId" in conv_cols:
@@ -475,7 +528,6 @@ def get_group_messages(
                 conv_id = row[0]
         
         if not conv_id and group_name and "name" in conv_cols:
-            # Try exact match first
             row = conn.execute(
                 "SELECT id FROM conversations WHERE LOWER(name) = LOWER(?) LIMIT 1",
                 (group_name,)
@@ -483,7 +535,6 @@ def get_group_messages(
             if row:
                 conv_id = row[0]
             else:
-                # Partial match
                 row = conn.execute(
                     "SELECT id FROM conversations WHERE LOWER(name) LIKE LOWER(?) LIMIT 1",
                     (f"%{group_name}%",)
@@ -510,32 +561,66 @@ def get_attachment_stats(
 ) -> dict:
     """Count attachment download progress for a conversation.
 
-    Scans the ``attachments`` array in each message's JSON column and
-    classifies each entry as either *ready* (has a local ``path``) or
-    *pending* (has CDN/size metadata but no path yet — not yet downloaded
-    by Signal Desktop's background downloader).
-
+    Supports both the legacy json column and the modern message_attachments table.
     Returns a dict with keys: ``total_attachments``, ``ready``, ``pending``.
     """
     conn = _open_db(signal_data_dir)
     try:
+        tables = _get_all_tables(conn)
         msg_cols = _get_table_columns(conn, "messages")
+
+        total = 0
+        ready = 0
+        pending = 0
+
+        # Method 1: message_attachments table (Signal Desktop 7+)
+        if "message_attachments" in tables:
+            ma_cols = _get_table_columns(conn, "message_attachments")
+            cdn_key_col = "transitCdnKey" if "transitCdnKey" in ma_cols else "cdnKey"
+
+            q = "SELECT path, contentType, " + cdn_key_col + " FROM message_attachments"
+            params: list = []
+            conditions: list[str] = []
+
+            if "attachmentType" in ma_cols:
+                conditions.append("(attachmentType = 'standard' OR attachmentType = 'long-message')")
+
+            if conversation_id and "conversationId" in ma_cols:
+                conditions.append("conversationId = ?")
+                params.append(conversation_id)
+
+            if conditions:
+                q += " WHERE " + " AND ".join(conditions)
+
+            rows = conn.execute(q, params).fetchall()
+            for r in rows:
+                path = r[0] or ""
+                content_type = r[1] or ""
+                cdn_key = r[2] or ""
+                if not content_type and not cdn_key:
+                    continue
+                total += 1
+                if path:
+                    ready += 1
+                else:
+                    pending += 1
+
+            if total > 0:
+                return {"total_attachments": total, "ready": ready, "pending": pending}
+
+        # Method 2: Legacy json column
         if "json" not in msg_cols:
             return {"total_attachments": 0, "ready": 0, "pending": 0}
 
         conv_id_col = "conversationId" if "conversationId" in msg_cols else "conversation_id"
 
         q = "SELECT json FROM messages WHERE json LIKE '%\"attachments\":[%' AND json NOT LIKE '%\"attachments\":[]%'"
-        params: list = []
+        params = []
         if conversation_id:
             q += f" AND {conv_id_col} = ?"
             params.append(conversation_id)
 
         rows = conn.execute(q, params).fetchall()
-
-        total = 0
-        ready = 0
-        pending = 0
 
         for (raw_json,) in rows:
             try:
@@ -543,8 +628,6 @@ def get_attachment_stats(
                 for att in msg_json.get("attachments") or []:
                     if not isinstance(att, dict):
                         continue
-                    # Count any attachment that has CDN metadata or a content type —
-                    # including those whose size is not yet known (pending download).
                     has_cdn = bool(att.get("cdnKey") or att.get("cdnId") or att.get("cdnNumber") is not None)
                     has_type = bool(att.get("contentType"))
                     if not (has_cdn or has_type):
