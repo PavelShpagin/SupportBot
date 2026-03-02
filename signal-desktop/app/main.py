@@ -1120,6 +1120,56 @@ async def diagnose_attachments(
             ).fetchone()[0]
             result_data["has_attachments_flag_count"] = has_att_count
 
+            # For messages with hasAttachments=1, dump raw json samples
+            if has_att_count > 0:
+                att_msg_rows = conn.execute(
+                    f"SELECT id, json, hasAttachments, hasVisualMediaAttachments FROM messages "
+                    f"WHERE hasAttachments = 1{conv_filter} LIMIT 3",
+                    params
+                ).fetchall()
+                raw_samples = []
+                for r in att_msg_rows:
+                    raw_json = r[1] or ""
+                    try:
+                        msg_obj = _json.loads(raw_json) if raw_json else {}
+                        att_data = msg_obj.get("attachments", "MISSING_KEY")
+                        raw_samples.append({
+                            "msg_id": str(r[0]),
+                            "hasAttachments": r[2],
+                            "hasVisualMediaAttachments": r[3],
+                            "json_has_attachments_key": "attachments" in msg_obj,
+                            "attachments_value": _json.dumps(att_data)[:500] if att_data != "MISSING_KEY" else "MISSING_KEY",
+                            "json_keys": list(msg_obj.keys())[:20],
+                            "json_length": len(raw_json),
+                        })
+                    except Exception:
+                        raw_samples.append({
+                            "msg_id": str(r[0]),
+                            "json_length": len(raw_json),
+                            "json_snippet": raw_json[:300],
+                        })
+                result_data["messages_with_hasAttachments_samples"] = raw_samples
+
+        # Check attachment_downloads queue
+        if "attachment_downloads" in tables:
+            dl_count = conn.execute("SELECT COUNT(*) FROM attachment_downloads").fetchone()[0]
+            result_data["attachment_downloads_queue"] = dl_count
+            if dl_count > 0:
+                dl_cols = _get_table_columns(conn, "attachment_downloads")
+                dl_sample = conn.execute(
+                    "SELECT messageId, contentType, size, active, source FROM attachment_downloads LIMIT 3"
+                ).fetchall()
+                result_data["attachment_downloads_samples"] = [
+                    {"messageId": str(r[0]), "contentType": r[1], "size": r[2], "active": r[3], "source": r[4]}
+                    for r in dl_sample
+                ]
+
+        # Total messages in group
+        total_msgs_in_group = conn.execute(
+            f"SELECT COUNT(*) FROM messages WHERE 1=1{conv_filter}", params
+        ).fetchone()[0]
+        result_data["total_messages_in_group"] = total_msgs_in_group
+
         conn.close()
         return result_data
     except Exception as e:

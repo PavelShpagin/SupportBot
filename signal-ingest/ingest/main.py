@@ -1053,18 +1053,62 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
             trigger_result.get("method"), trigger_result.get("error"),
         )
 
+        # Run deep attachment diagnostics BEFORE trying to fetch
+        try:
+            diag_url = settings.signal_desktop_url.rstrip("/") + "/attachments/diagnose"
+            with httpx.Client(timeout=30) as client:
+                diag_resp = client.get(diag_url, params={"group_id": group_id, "group_name": group_name})
+                if diag_resp.status_code == 200:
+                    diag = diag_resp.json()
+                    log.info(
+                        "ATTACHMENT DIAGNOSTICS: has_table=%s table_total=%s "
+                        "hasAttachments_flag=%s legacy_json=%s downloads_queue=%s total_msgs=%s",
+                        diag.get("has_message_attachments_table"),
+                        (diag.get("message_attachments_table") or {}).get("total_attachments"),
+                        diag.get("has_attachments_flag_count"),
+                        (diag.get("legacy_json_column") or {}).get("messages_with_non_empty_attachments"),
+                        diag.get("attachment_downloads_queue"),
+                        diag.get("total_messages_in_group"),
+                    )
+                    if diag.get("messages_with_hasAttachments_samples"):
+                        for s in diag["messages_with_hasAttachments_samples"]:
+                            log.info("  hasAttachments sample: %s", json.dumps(s, ensure_ascii=False)[:500])
+        except Exception as e:
+            log.warning("Diagnostic call failed (non-fatal): %s", e)
+
         # Direct CDN fetch for messages that already have cdnKey+key in DB.
         _fetch_attachments_direct(settings, group_id=group_id, group_name=group_name)
 
         # Poll group-specific attachment status until pending == 0 or timeout.
-        # "pending" counts attachments with contentType but no path yet — it drops
-        # to 0 once Signal Desktop writes the path field for every downloaded file.
-        MAX_ATT_WAIT = 300  # 5 minutes; Signal Desktop processes all conversations
+        # Signal Desktop 7+ populates message_attachments asynchronously after
+        # initial message sync. We wait with exponential backoff for the first
+        # attachments to appear before giving up.
+        MAX_ATT_WAIT = 300  # 5 minutes
         ATT_POLL = 5
-        MIN_INITIAL_WAIT = 10  # let Signal Desktop write attachment stubs to DB
+        MIN_INITIAL_WAIT = 15  # let Signal Desktop process synced messages
         att_start = time.time()
         last_pending = -1
+        last_total = -1
         time.sleep(MIN_INITIAL_WAIT)
+
+        # First, check hasAttachments flag on messages — this tells us if
+        # attachments SHOULD exist even if the download table isn't populated yet
+        has_att_flag_count = 0
+        try:
+            diag_url = settings.signal_desktop_url.rstrip("/") + "/attachments/diagnose"
+            with httpx.Client(timeout=30) as client:
+                diag_resp = client.get(diag_url, params={"group_id": group_id, "group_name": group_name})
+                if diag_resp.status_code == 200:
+                    diag = diag_resp.json()
+                    has_att_flag_count = diag.get("has_attachments_flag_count", 0) or 0
+                    log.info(
+                        "Messages with hasAttachments=1: %d (attachment_downloads queue: %s)",
+                        has_att_flag_count,
+                        diag.get("attachment_downloads_queue"),
+                    )
+        except Exception:
+            pass
+
         while True:
             check_cancelled()
             s = _get_group_att_status()
@@ -1073,12 +1117,23 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
             pending_att = s.get("pending", 0)
             elapsed = time.time() - att_start
 
-            if pending_att != last_pending or elapsed < ATT_POLL + 1:
+            if total_att != last_total or pending_att != last_pending or elapsed < ATT_POLL + 1:
                 log.info(
-                    "Attachment status: total=%d ready=%d pending=%d (%.0fs elapsed)",
-                    total_att, ready_att, pending_att, elapsed,
+                    "Attachment status: total=%d ready=%d pending=%d (%.0fs elapsed, hasAttFlag=%d)",
+                    total_att, ready_att, pending_att, elapsed, has_att_flag_count,
                 )
                 last_pending = pending_att
+                last_total = total_att
+
+            if total_att == 0 and has_att_flag_count > 0 and elapsed < 60:
+                # Attachments expected but table not populated yet — keep waiting
+                log.info(
+                    "Waiting for message_attachments to be populated "
+                    "(hasAttachments=%d, table=%d, %.0fs)",
+                    has_att_flag_count, total_att, elapsed,
+                )
+                time.sleep(ATT_POLL)
+                continue
 
             if total_att == 0:
                 log.info("No attachments found for group %s — skipping wait", group_name or group_id)
