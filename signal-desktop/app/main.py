@@ -662,7 +662,7 @@ async def fetch_all_pending_attachments(
             params: list = []
             conditions: list[str] = []
             if "attachmentType" in ma_cols:
-                conditions.append("(attachmentType = 'standard' OR attachmentType = 'long-message')")
+                conditions.append("(attachmentType IN ('standard','attachment','long-message'))")
             if conversation_id and "conversationId" in ma_cols:
                 conditions.append("conversationId = ?")
                 params.append(conversation_id)
@@ -1039,7 +1039,7 @@ async def diagnose_attachments(
             ma_params: list = []
             ma_conditions: list[str] = []
             if "attachmentType" in ma_cols:
-                ma_conditions.append("(attachmentType = 'standard' OR attachmentType = 'long-message')")
+                ma_conditions.append("(attachmentType IN ('standard','attachment','long-message'))")
             if conversation_id and "conversationId" in ma_cols:
                 ma_conditions.append("conversationId = ?")
                 ma_params.append(conversation_id)

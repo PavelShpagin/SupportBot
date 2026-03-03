@@ -206,7 +206,7 @@ def _load_attachments_from_table(
     conditions: list[str] = []
 
     if "attachmentType" in ma_cols:
-        conditions.append("(attachmentType = 'standard' OR attachmentType = 'long-message')")
+        conditions.append("(attachmentType IN ('standard','attachment','long-message'))")
 
     if conversation_id and "conversationId" in ma_cols:
         conditions.append("conversationId = ?")
@@ -677,7 +677,7 @@ def get_attachment_stats(
             conditions: list[str] = []
 
             if "attachmentType" in ma_cols:
-                conditions.append("(attachmentType = 'standard' OR attachmentType = 'long-message')")
+                conditions.append("(attachmentType IN ('standard','attachment','long-message'))")
 
             if conversation_id and "conversationId" in ma_cols:
                 conditions.append("conversationId = ?")
