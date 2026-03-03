@@ -78,23 +78,46 @@ def is_enabled() -> bool:
     return _r2_enabled
 
 
-def upload(key: str, data: bytes, content_type: str = "application/octet-stream") -> str | None:
-    """Upload bytes to R2 under `key`. Returns the public URL or None on failure."""
+def upload(
+    key: str,
+    data: bytes,
+    content_type: str = "application/octet-stream",
+    *,
+    retries: int = 3,
+    retry_delay: float = 2.0,
+) -> str | None:
+    """Upload bytes to R2 under `key`. Retries on transient failures.
+
+    Returns the public URL or None if all attempts fail.
+    """
     if not _r2_enabled or _r2_client is None:
         return None
-    try:
-        _r2_client.put_object(
-            Bucket=_r2_bucket,
-            Key=key,
-            Body=data,
-            ContentType=content_type,
-        )
-        url = f"{_r2_public_url}/{key}"
-        log.info("Uploaded to R2: %s → %s", key, url)
-        return url
-    except Exception as e:
-        log.warning("R2 upload failed for key=%s: %s", key, e)
-        return None
+    import time as _time
+
+    last_exc: Exception | None = None
+    for attempt in range(1, retries + 1):
+        try:
+            _r2_client.put_object(
+                Bucket=_r2_bucket,
+                Key=key,
+                Body=data,
+                ContentType=content_type,
+            )
+            url = f"{_r2_public_url}/{key}"
+            log.info("Uploaded to R2: %s → %s", key, url)
+            return url
+        except Exception as e:
+            last_exc = e
+            if attempt < retries:
+                log.warning(
+                    "R2 upload attempt %d/%d failed for key=%s: %s — retrying in %.1fs",
+                    attempt, retries, key, e, retry_delay,
+                )
+                _time.sleep(retry_delay)
+                retry_delay *= 2
+            else:
+                log.error("R2 upload failed after %d attempts for key=%s: %s", retries, key, e)
+    return None
 
 
 def download(key: str) -> tuple[bytes, str] | None:

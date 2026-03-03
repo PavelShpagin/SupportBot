@@ -111,20 +111,43 @@ def download_from_cdn(
     credentials: dict,
     *,
     timeout: int = 60,
+    retries: int = 3,
 ) -> bytes:
     """Download raw (encrypted) attachment bytes from Signal's CDN.
 
-    Raises ``httpx.HTTPError`` on network / HTTP errors.
+    Retries on transient failures (timeouts, 5xx).
+    Raises ``httpx.HTTPError`` on non-transient HTTP errors.
     """
+    import time as _time
+
     cdn_number = cdn_number if cdn_number in _CDN_HOSTS else 2
     url = _CDN_HOSTS[cdn_number].format(key=cdn_key)
     auth = _make_auth_header(credentials)
 
-    log.debug("Downloading attachment from CDN %d: %s", cdn_number, url)
-    with httpx.Client(timeout=timeout) as client:
-        r = client.get(url, headers={"Authorization": auth})
-        r.raise_for_status()
-        return r.content
+    delay = 2.0
+    for attempt in range(1, retries + 1):
+        try:
+            log.debug("Downloading attachment from CDN %d (attempt %d): %s", cdn_number, attempt, url)
+            with httpx.Client(timeout=timeout) as client:
+                r = client.get(url, headers={"Authorization": auth})
+                r.raise_for_status()
+                return r.content
+        except httpx.HTTPStatusError as e:
+            if e.response.status_code >= 500 and attempt < retries:
+                log.warning("CDN download %s attempt %d/%d got %d, retrying in %.1fs",
+                            cdn_key[:20], attempt, retries, e.response.status_code, delay)
+                _time.sleep(delay)
+                delay *= 2
+            else:
+                raise
+        except (httpx.TimeoutException, httpx.ConnectError) as e:
+            if attempt < retries:
+                log.warning("CDN download %s attempt %d/%d failed: %s, retrying in %.1fs",
+                            cdn_key[:20], attempt, retries, e, delay)
+                _time.sleep(delay)
+                delay *= 2
+            else:
+                raise
 
 
 # ---------------------------------------------------------------------------

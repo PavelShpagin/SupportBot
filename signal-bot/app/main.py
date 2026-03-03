@@ -1016,10 +1016,7 @@ def view_case(case_id: str):
                     <div class="meta">{msg.sender_hash[:8]} at {ts_str}</div>
                     <div class="content">{_html.escape(msg.content_text or '')}</div>
             """
-            for p in msg.image_paths:
-                if p.startswith("/var/lib/signal/"):
-                    url = p.replace("/var/lib/signal/", "/static/")
-                    html += f'<img src="{_html.escape(url)}" loading="lazy" />'
+            html += _media_html(msg.image_paths)
             html += "</div>"
     else:
         html += "<p>No evidence stored for this case.</p>"
@@ -1796,6 +1793,74 @@ def history_cases(req: HistoryCasesRequest) -> dict:
     inserted, case_ids = _process_history_cases_bg(req)
     log.info("History ingest done: %d/%d cases inserted (group=%s)", inserted, n_cases, req.group_id[:20])
     return {"ok": True, "cases_inserted": inserted, "case_ids": case_ids}
+
+
+class BackfillImageItem(BaseModel):
+    """A single message's image data for backfill."""
+    message_id: str
+    image_payloads: List[HistoryImagePayload]
+
+
+class BackfillImagesRequest(BaseModel):
+    """Post-ingest image backfill: attach images to messages stored without them."""
+    token: str
+    group_id: str
+    items: List[BackfillImageItem]
+
+
+@app.post("/history/backfill-images")
+def history_backfill_images(req: BackfillImagesRequest) -> dict:
+    """Backfill images for raw_messages that were stored without image data.
+
+    Called by signal-ingest after the main ingest completes, when a second-pass
+    attachment fetch succeeds for messages that had no bytes on the first pass.
+    Updates both raw_messages.image_paths_json and any case evidence that
+    references those messages.
+    """
+    if not validate_history_token(db, token=req.token, group_id=req.group_id):
+        raise HTTPException(status_code=403, detail="Invalid/expired token")
+
+    updated = 0
+    for item in req.items:
+        image_paths = _save_history_images(
+            group_id=req.group_id,
+            message_id=item.message_id,
+            image_payloads=item.image_payloads,
+            storage_root=settings.signal_bot_storage,
+        )
+        if not image_paths:
+            continue
+
+        msg = get_raw_message(db, message_id=item.message_id)
+        if not msg:
+            log.warning("backfill-images: message %s not found in DB", item.message_id)
+            continue
+
+        existing = list(msg.image_paths or [])
+        merged = existing + [p for p in image_paths if p not in existing]
+        if merged == existing:
+            continue
+
+        import json as _json
+        with db.connection() as conn:
+            cur = conn.cursor()
+            cur.execute(
+                "UPDATE raw_messages SET image_paths_json = %s WHERE message_id = %s",
+                (_json.dumps(merged), item.message_id),
+            )
+            cur.execute(
+                "UPDATE cases SET evidence_image_paths_json = JSON_ARRAY_APPEND("
+                "  COALESCE(evidence_image_paths_json, JSON_ARRAY()),"
+                "  '$', %s"
+                ") WHERE JSON_CONTAINS(evidence_ids_json, %s)",
+                (merged[0], _json.dumps(item.message_id)),
+            )
+            conn.commit()
+        updated += 1
+        log.info("backfill-images: updated message %s with %d images", item.message_id, len(image_paths))
+
+    log.info("backfill-images: updated %d/%d messages for group %s", updated, len(req.items), req.group_id[:20])
+    return {"ok": True, "updated": updated}
 
 
 class RetrieveRequest(BaseModel):

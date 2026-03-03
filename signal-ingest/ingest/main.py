@@ -200,49 +200,72 @@ def _fetch_attachment(
     rel_path: str,
     cdn_key: str = "",
     max_bytes: int = 5_000_000,
+    retries: int = 3,
+    retry_delay: float = 2.0,
 ) -> Optional[bytes]:
-    """Fetch raw bytes for a Signal Desktop attachment.
+    """Fetch raw bytes for a Signal Desktop attachment with retries.
 
-    Tries two sources in order:
-    1. ``GET /attachment?path=...`` — for attachments already on disk in
-       Signal Desktop's ``attachments.noindex/`` directory.
-    2. ``GET /attachment/by-cdn/{cdn_key}`` — for attachments downloaded
-       directly from Signal's CDN via ``POST /attachments/fetch-all``.
+    Tries two sources, CDN-cache first (more reliable for history), then disk:
+    1. ``GET /attachment/by-cdn/{cdn_key}`` — CDN-downloaded + decrypted cache.
+    2. ``GET /attachment?path=...`` — on-disk (auto-decrypts v2 encrypted files).
 
-    Returns None if both sources fail or the file is too large.
+    Retries each source on transient failures (timeouts, 5xx).
+    Returns None if all attempts fail or the file is too large.
     """
     base = settings.signal_desktop_url.rstrip("/")
 
-    def _get(url: str, **kw) -> Optional[bytes]:
-        try:
-            with httpx.Client(timeout=30) as client:
-                r = client.get(url, **kw)
-                if r.status_code == 404:
+    def _get_with_retry(url: str, *, attempts: int = retries, **kw) -> Optional[bytes]:
+        delay = retry_delay
+        for attempt in range(1, attempts + 1):
+            try:
+                with httpx.Client(timeout=60) as client:
+                    r = client.get(url, **kw)
+                    if r.status_code == 404:
+                        return None
+                    r.raise_for_status()
+                    if len(r.content) > max_bytes:
+                        log.warning("Attachment too large (%d bytes), skipping", len(r.content))
+                        return None
+                    return r.content
+            except httpx.HTTPStatusError as e:
+                if e.response.status_code < 500:
                     return None
-                r.raise_for_status()
-                if len(r.content) > max_bytes:
-                    log.warning("Attachment too large (%d bytes), skipping", len(r.content))
+                if attempt < attempts:
+                    log.warning("Fetch %s attempt %d/%d got %d, retrying in %.1fs",
+                                url.split("/")[-1][:30], attempt, attempts,
+                                e.response.status_code, delay)
+                    time.sleep(delay)
+                    delay *= 2
+                else:
+                    log.warning("Fetch %s failed after %d attempts: %s", url.split("/")[-1][:30], attempts, e)
                     return None
-                return r.content
-        except Exception as e:
-            log.warning("Failed to fetch attachment from %s: %s", url, e)
-            return None
+            except Exception as e:
+                if attempt < attempts:
+                    log.warning("Fetch %s attempt %d/%d failed: %s, retrying in %.1fs",
+                                url.split("/")[-1][:30], attempt, attempts, e, delay)
+                    time.sleep(delay)
+                    delay *= 2
+                else:
+                    log.warning("Fetch %s failed after %d attempts: %s", url.split("/")[-1][:30], attempts, e)
+                    return None
+        return None
 
-    if rel_path:
-        data = _get(f"{base}/attachment", params={"path": rel_path})
+    # CDN cache first (more reliable for history ingestion — already decrypted)
+    if cdn_key:
+        data = _get_with_retry(f"{base}/attachment/by-cdn/{cdn_key}")
         if data is not None:
             return data
-        # Fall through to CDN cache if the disk file isn't there yet
 
-    if cdn_key:
-        data = _get(f"{base}/attachment/by-cdn/{cdn_key}")
+    # Then try on-disk (handles v2 decryption transparently)
+    if rel_path:
+        data = _get_with_retry(f"{base}/attachment", params={"path": rel_path})
         if data is not None:
             return data
 
     if rel_path or cdn_key:
         log.warning(
-            "Attachment not found via path=%r cdn_key=%s",
-            rel_path or "(none)", cdn_key or "(none)",
+            "Attachment not found via cdn_key=%s path=%r (after %d retries each)",
+            cdn_key or "(none)", rel_path or "(none)", retries,
         )
     return None
 
@@ -304,10 +327,11 @@ def _fetch_attachments_direct(
     settings,
     group_id: str,
     group_name: str,
-    timeout: int = 120,
+    timeout: int = 180,
+    retries: int = 3,
 ) -> dict:
     """Download all pending group attachments from Signal's CDN or decrypt
-    v2 locally-encrypted files.
+    v2 locally-encrypted files.  Retries on failure.
 
     Calls ``POST /attachments/fetch-all`` on signal-desktop, which reads
     attachment CDN metadata from the SQLite DB, downloads each encrypted blob
@@ -319,19 +343,27 @@ def _fetch_attachments_direct(
     """
     url = settings.signal_desktop_url.rstrip("/") + "/attachments/fetch-all"
     params = {"group_id": group_id, "group_name": group_name}
-    try:
-        with httpx.Client(timeout=timeout) as client:
-            r = client.post(url, params=params)
-            r.raise_for_status()
-            result = r.json()
-            log.info(
-                "Direct CDN fetch: downloaded=%s decrypted_local=%s failed=%s skipped=%s",
-                result.get("downloaded"), result.get("decrypted_local"), result.get("failed"), result.get("skipped"),
-            )
-            return result
-    except Exception as e:
-        log.warning("Direct CDN fetch failed (non-fatal): %s", e)
-        return {"downloaded": 0, "failed": 0, "skipped": 0, "error": str(e)}
+    delay = 3.0
+    for attempt in range(1, retries + 1):
+        try:
+            with httpx.Client(timeout=timeout) as client:
+                r = client.post(url, params=params)
+                r.raise_for_status()
+                result = r.json()
+                log.info(
+                    "Direct CDN fetch (attempt %d): downloaded=%s decrypted_local=%s failed=%s skipped=%s",
+                    attempt, result.get("downloaded"), result.get("decrypted_local"),
+                    result.get("failed"), result.get("skipped"),
+                )
+                return result
+        except Exception as e:
+            if attempt < retries:
+                log.warning("Direct CDN fetch attempt %d/%d failed: %s — retrying in %.1fs", attempt, retries, e, delay)
+                time.sleep(delay)
+                delay *= 2
+            else:
+                log.warning("Direct CDN fetch failed after %d attempts (non-fatal): %s", retries, e)
+                return {"downloaded": 0, "failed": 0, "skipped": 0, "error": str(e)}
 
 
 def _get_desktop_messages(settings, group_id: str, group_name: str, limit: int = 800) -> List[dict]:
@@ -1122,7 +1154,7 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
         # attachment_downloads queue, and finally in message_attachments.
         # Our db_reader can extract metadata from attachment_downloads,
         # so we just need to wait for EITHER table or downloads to appear.
-        MAX_ATT_WAIT = 120
+        MAX_ATT_WAIT = 180
         ATT_POLL = 5
         MIN_INITIAL_WAIT = 15
         att_start = time.time()
@@ -1210,6 +1242,9 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
         else:
             log.info("No attachments found for group %s — skipping wait", group_name or group_id)
 
+        # Second CDN fetch after wait — catches attachments that appeared during the wait period.
+        _fetch_attachments_direct(settings, group_id=group_id, group_name=group_name)
+
         check_cancelled()
 
         # ?????????????????????????????????????????????????????????????????
@@ -1261,6 +1296,12 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
         # ?????????????????????????????????????????????????????????????????
         # Step 4b: Enrich messages that have attachments with OCR text
         # Each message dict gets an "enriched_body" and "image_payloads" key.
+        #
+        # TWO-PASS APPROACH:
+        #   Pass 1: Enrich with whatever attachments are available now.
+        #   Pass 2: For messages that had attachments but got 0 bytes,
+        #           run another CDN fetch-all and re-try fetching just
+        #           those attachments.
         # ?????????????????????????????????????????????????????????????????
         openai_client_early = OpenAI(
             api_key=settings.openai_api_key,
@@ -1271,6 +1312,45 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
             openai_client=openai_client_early,
             messages=msgs,
         )
+
+        # Pass 2: Re-try attachments that were missed on first pass
+        missed = [
+            m for m in msgs
+            if m.get("attachments") and not m.get("image_payloads")
+        ]
+        if missed:
+            log.info(
+                "PASS 2: %d messages had attachments but got 0 bytes — "
+                "running another CDN fetch-all and retrying...",
+                len(missed),
+            )
+            time.sleep(10)
+            check_cancelled()
+            _fetch_attachments_direct(settings, group_id=group_id, group_name=group_name)
+            time.sleep(5)
+
+            re_enriched = _enrich_messages_with_attachments(
+                settings=settings,
+                openai_client=openai_client_early,
+                messages=missed,
+            )
+            re_enriched_by_id = {}
+            for m in re_enriched:
+                mid = m.get("id") or m.get("message_id") or str(m.get("ts", 0))
+                re_enriched_by_id[mid] = m
+
+            recovered = 0
+            for i, m in enumerate(msgs):
+                mid = m.get("id") or m.get("message_id") or str(m.get("ts", 0))
+                if mid in re_enriched_by_id:
+                    replacement = re_enriched_by_id[mid]
+                    if replacement.get("image_payloads"):
+                        msgs[i] = replacement
+                        recovered += 1
+            log.info(
+                "PASS 2 complete: recovered %d/%d missed attachments",
+                recovered, len(missed),
+            )
 
         check_cancelled()
 
@@ -1306,9 +1386,9 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
             cases=all_structured,
         )
 
-        # ?????????????????????????????????????????????????????????????????
+        # ─────────────────────────────────────────────────────────────
         # Step 6: Post structured cases to signal-bot (batch embed on bot side)
-        # ?????????????????????????????????????????????????????????????????
+        # ─────────────────────────────────────────────────────────────
         cases_inserted = 0
         if deduped:
             _notify_progress(settings=settings, token=token, progress_key="saving_cases", count=len(deduped))
@@ -1319,6 +1399,13 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
         else:
             log.info("No solved cases found in messages")
 
+        # Report attachment stats
+        total_payloads = sum(len(m.get("image_payloads") or []) for m in msgs)
+        total_with_att = sum(1 for m in msgs if m.get("attachments"))
+        note = ""
+        if total_with_att:
+            note = f"Images: {total_payloads} fetched from {total_with_att} messages with attachments."
+
         _notify_link_result(
             settings=settings,
             token=token,
@@ -1326,26 +1413,24 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
             message_count=len(msgs),
             cases_found=len(deduped),
             cases_inserted=cases_inserted,
+            note=note,
         )
         
-        # TEMPORARILY DISABLED: Keep desktop linked for attachment debugging
-        # # SECURITY: Reset Signal Desktop session after successful ingest
-        # # This ensures user's account is unlinked and requires new QR scan next time
-        # log.info("Resetting Signal Desktop session for security (unlinking user account)...")
-        # try:
-        #     _reset_desktop(settings)
-        #     log.info("Signal Desktop session reset successfully")
-        # except Exception as e:
-        #     log.warning("Failed to reset Signal Desktop session: %s", e)
-        log.info("SKIPPING reset — desktop stays linked for attachment debugging")
+        # SECURITY: Reset Signal Desktop session after successful ingest.
+        # User's account is unlinked; requires new QR scan next time.
+        log.info("Resetting Signal Desktop session for security (unlinking user account)...")
+        try:
+            _reset_desktop(settings)
+            log.info("Signal Desktop session reset successfully")
+        except Exception as e:
+            log.warning("Failed to reset Signal Desktop session: %s", e)
 
     except JobCancelled:
         log.info("Job %d was cancelled", job_id)
-        # Also skip reset on cancellation for debugging
-        # try:
-        #     _reset_desktop(settings)
-        # except Exception:
-        #     pass
+        try:
+            _reset_desktop(settings)
+        except Exception:
+            pass
         raise
 
 
