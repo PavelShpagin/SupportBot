@@ -794,6 +794,17 @@ def get_local_key_for_path(signal_data_dir: str, rel_path: str) -> Optional[str]
             "SELECT localKey, version FROM message_attachments WHERE path = ? LIMIT 1",
             (rel_path,),
         ).fetchone()
+        if not row:
+            # DB stores paths relative to attachments.noindex/; strip that prefix
+            stripped = rel_path
+            prefix = "attachments.noindex/"
+            if stripped.startswith(prefix):
+                stripped = stripped[len(prefix):]
+            if stripped != rel_path:
+                row = conn.execute(
+                    "SELECT localKey, version FROM message_attachments WHERE path = ? LIMIT 1",
+                    (stripped,),
+                ).fetchone()
         if row and row[0] and int(row[1] or 0) == 2:
             return str(row[0])
         return None

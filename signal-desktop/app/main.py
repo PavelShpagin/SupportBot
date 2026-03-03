@@ -54,6 +54,27 @@ log = logging.getLogger(__name__)
 app = FastAPI(title="Signal Desktop Service")
 settings = load_settings()
 
+_ATTACH_SUBDIR = "attachments.noindex"
+
+
+def _resolve_attachment_path(data_dir: str, rel_path: str) -> Optional[Path]:
+    """Resolve a DB attachment path to its full filesystem path.
+
+    Signal Desktop stores paths in the DB relative to ``attachments.noindex/``
+    (e.g. ``5e/5e62df3c…``).  This helper tries both ``<data_dir>/<rel_path>``
+    and ``<data_dir>/attachments.noindex/<rel_path>`` so callers don't need to
+    care which convention the incoming path uses.
+    """
+    base = Path(data_dir)
+    candidate = (base / rel_path).resolve()
+    if candidate.is_file():
+        return candidate
+    candidate = (base / _ATTACH_SUBDIR / rel_path).resolve()
+    if candidate.is_file():
+        return candidate
+    return None
+
+
 # Track the last message timestamp we've seen (for polling)
 _last_message_ts: int = 0
 _last_message_ts_lock = asyncio.Lock()
@@ -576,15 +597,17 @@ async def get_attachment(path: str = Query(..., description="Relative attachment
     data_dir = Path(settings.signal_data_dir).resolve()
     # Normalise the path and prevent traversal outside the data dir
     try:
-        full_path = (data_dir / path).resolve()
+        full_path = _resolve_attachment_path(settings.signal_data_dir, path)
+        if full_path is None:
+            raise HTTPException(status_code=404, detail=f"Attachment not found: {path}")
+        full_path = full_path.resolve()
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Invalid path: {e}")
 
     if not str(full_path).startswith(str(data_dir)):
         raise HTTPException(status_code=403, detail="Path traversal not allowed")
-
-    if not full_path.exists() or not full_path.is_file():
-        raise HTTPException(status_code=404, detail=f"Attachment not found: {path}")
 
     mime_type, _ = mimetypes.guess_type(str(full_path))
     content = full_path.read_bytes()
@@ -740,10 +763,10 @@ async def fetch_all_pending_attachments(
 
                 # v2 on-disk encrypted file → decrypt locally (no CDN needed)
                 if path and version == 2 and local_key:
-                    full_path = Path(settings.signal_data_dir) / path
-                    if full_path.exists():
+                    resolved = _resolve_attachment_path(settings.signal_data_dir, path)
+                    if resolved:
                         pending_local.append({
-                            "path": path,
+                            "path": str(resolved),
                             "localKey": local_key,
                             "cdnKey": cdn_key,
                             "contentType": content_type,
@@ -752,8 +775,8 @@ async def fetch_all_pending_attachments(
 
                 # File on disk but NOT encrypted (plaintext) → skip
                 if path:
-                    full_path = Path(settings.signal_data_dir) / path
-                    if full_path.exists():
+                    resolved = _resolve_attachment_path(settings.signal_data_dir, path)
+                    if resolved:
                         skip_on_disk_plain += 1
                         continue
 
@@ -867,9 +890,9 @@ async def fetch_all_pending_attachments(
         cache_dir.mkdir(parents=True, exist_ok=True)
         for att in pending_local:
             try:
-                full_path = Path(settings.signal_data_dir) / att["path"]
+                full_path = Path(att["path"])
                 plaintext = decrypt_local_attachment(full_path, att["localKey"])
-                cache_key = att["cdnKey"] or att["path"].replace("/", "_")
+                cache_key = att["cdnKey"] or Path(att["path"]).name
                 cache_file = cache_dir / cache_key
                 cache_file.write_bytes(plaintext)
                 decrypted_local += 1
