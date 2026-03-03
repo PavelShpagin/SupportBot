@@ -306,15 +306,16 @@ def _fetch_attachments_direct(
     group_name: str,
     timeout: int = 120,
 ) -> dict:
-    """Download all pending group attachments directly from Signal's CDN.
+    """Download all pending group attachments from Signal's CDN or decrypt
+    v2 locally-encrypted files.
 
     Calls ``POST /attachments/fetch-all`` on signal-desktop, which reads
     attachment CDN metadata from the SQLite DB, downloads each encrypted blob
     from ``cdn{N}.signal.org``, decrypts it (AES-256-CBC + HMAC-SHA256), and
     caches the plaintext at ``{signal_data_dir}/cdn-cache/{cdnKey}``.
+    Also decrypts v2 on-disk encrypted files using ``localKey``.
 
-    This replaces the old CDP-trigger + polling-wait approach entirely.
-    Returns the response dict: ``{downloaded, failed, skipped}``.
+    Returns the response dict: ``{downloaded, decrypted_local, failed, skipped}``.
     """
     url = settings.signal_desktop_url.rstrip("/") + "/attachments/fetch-all"
     params = {"group_id": group_id, "group_name": group_name}
@@ -324,8 +325,8 @@ def _fetch_attachments_direct(
             r.raise_for_status()
             result = r.json()
             log.info(
-                "Direct CDN fetch: downloaded=%s failed=%s skipped=%s",
-                result.get("downloaded"), result.get("failed"), result.get("skipped"),
+                "Direct CDN fetch: downloaded=%s decrypted_local=%s failed=%s skipped=%s",
+                result.get("downloaded"), result.get("decrypted_local"), result.get("failed"), result.get("skipped"),
             )
             return result
     except Exception as e:
@@ -1327,22 +1328,24 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
             cases_inserted=cases_inserted,
         )
         
-        # SECURITY: Reset Signal Desktop session after successful ingest
-        # This ensures user's account is unlinked and requires new QR scan next time
-        log.info("Resetting Signal Desktop session for security (unlinking user account)...")
-        try:
-            _reset_desktop(settings)
-            log.info("Signal Desktop session reset successfully")
-        except Exception as e:
-            log.warning("Failed to reset Signal Desktop session: %s", e)
+        # TEMPORARILY DISABLED: Keep desktop linked for attachment debugging
+        # # SECURITY: Reset Signal Desktop session after successful ingest
+        # # This ensures user's account is unlinked and requires new QR scan next time
+        # log.info("Resetting Signal Desktop session for security (unlinking user account)...")
+        # try:
+        #     _reset_desktop(settings)
+        #     log.info("Signal Desktop session reset successfully")
+        # except Exception as e:
+        #     log.warning("Failed to reset Signal Desktop session: %s", e)
+        log.info("SKIPPING reset — desktop stays linked for attachment debugging")
 
     except JobCancelled:
         log.info("Job %d was cancelled", job_id)
-        # Also reset on cancellation for security
-        try:
-            _reset_desktop(settings)
-        except Exception:
-            pass
+        # Also skip reset on cancellation for debugging
+        # try:
+        #     _reset_desktop(settings)
+        # except Exception:
+        #     pass
         raise
 
 

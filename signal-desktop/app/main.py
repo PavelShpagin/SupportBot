@@ -31,9 +31,11 @@ from app.config import load_settings
 from app.db_reader import (
     SignalMessage as DBSignalMessage,
     get_attachment_stats,
+    get_all_local_encrypted_attachments,
     get_conversations,
     get_contacts_from_db,
     get_group_messages,
+    get_local_key_for_path,
     get_messages,
     is_db_available,
     _get_all_tables,
@@ -41,7 +43,7 @@ from app.db_reader import (
     _open_db,
 )
 from app.devtools import DevToolsClient, get_devtools_client, SignalConversation
-from app.cdn_download import download_and_decrypt, get_signal_credentials
+from app.cdn_download import decrypt_local_attachment, download_and_decrypt, get_signal_credentials
 
 logging.basicConfig(
     level=logging.INFO,
@@ -565,6 +567,9 @@ async def get_attachment(path: str = Query(..., description="Relative attachment
     Attachment paths come from the ``path`` field in the ``attachments`` array
     of a message's JSON column (e.g. ``attachments.noindex/abc123/image.jpg``).
 
+    Signal Desktop 7+ (version=2) encrypts files on disk using a per-attachment
+    ``localKey``.  This endpoint transparently decrypts them before serving.
+
     Access is restricted to files inside the Signal data directory to prevent
     directory traversal attacks.
     """
@@ -583,6 +588,37 @@ async def get_attachment(path: str = Query(..., description="Relative attachment
 
     mime_type, _ = mimetypes.guess_type(str(full_path))
     content = full_path.read_bytes()
+
+    # v2 local encryption: if the file doesn't start with a known magic
+    # header, try to decrypt it using localKey from the DB.
+    _PLAINTEXT_MAGIC = {
+        b"\x89PNG",      # PNG
+        b"\xff\xd8\xff",  # JPEG
+        b"GIF8",          # GIF
+        b"RIFF",          # WEBP
+        b"%PDF",          # PDF
+        b"PK",            # ZIP / DOCX / etc.
+    }
+    is_plaintext = any(content[:4].startswith(m) for m in _PLAINTEXT_MAGIC)
+
+    if not is_plaintext and len(content) >= 64:
+        local_key = get_local_key_for_path(settings.signal_data_dir, path)
+        if local_key:
+            try:
+                content = decrypt_local_attachment(full_path, local_key)
+                # Re-detect mime type from decrypted content
+                if content[:4] == b"\x89PNG":
+                    mime_type = "image/png"
+                elif content[:3] == b"\xff\xd8\xff":
+                    mime_type = "image/jpeg"
+                elif content[:4] == b"GIF8":
+                    mime_type = "image/gif"
+                elif content[:4] == b"RIFF":
+                    mime_type = "image/webp"
+                log.debug("Decrypted v2 attachment: %s (%d bytes)", path, len(content))
+            except Exception as e:
+                log.warning("Failed to decrypt v2 attachment %s: %s", path, e)
+
     return Response(content=content, media_type=mime_type or "application/octet-stream")
 
 
@@ -611,17 +647,19 @@ async def fetch_all_pending_attachments(
     group_name: Optional[str] = Query(None, description="Group name (fallback)"),
 ):
     """
-    Download all pending attachments for a group directly from Signal's CDN.
+    Download all pending attachments for a group directly from Signal's CDN,
+    and decrypt any v2 locally-encrypted files using their ``localKey``.
 
-    For every attachment in the group's messages that has CDN metadata
-    (``cdnKey``, ``key``) but no local ``path`` yet, this endpoint:
+    For every attachment in the group's messages:
 
-    1. Reads account credentials from the Signal Desktop SQLite ``items`` table.
-    2. Issues a GET to ``cdn{N}.signal.org`` with Basic auth.
-    3. Decrypts the blob (AES-256-CBC + HMAC-SHA256).
-    4. Caches the plaintext at ``{signal_data_dir}/cdn-cache/{cdnKey}``.
+    - **v2 on-disk encrypted** (has ``path``, ``localKey``, ``version=2``):
+      Decrypted using AES-256-CBC + HMAC-SHA256 with ``localKey`` and cached
+      at ``{signal_data_dir}/cdn-cache/{cdnKey}``.
+    - **CDN-only** (has ``cdnKey``, ``key`` but no local ``path``):
+      Downloaded from ``cdn{N}.signal.org``, decrypted, and cached.
 
-    Files already cached are skipped.  Returns ``{downloaded, failed, skipped}``.
+    Files already cached are skipped.  Returns
+    ``{downloaded, decrypted_local, failed, skipped}``.
     """
     if not is_db_available(settings.signal_data_dir):
         return {"downloaded": 0, "failed": 0, "skipped": 0, "error": "DB not available"}
@@ -643,10 +681,11 @@ async def fetch_all_pending_attachments(
 
     import json as _json
 
-    pending: list[dict] = []
+    pending_cdn: list[dict] = []
+    pending_local: list[dict] = []
     skip_no_cdn = 0
     skip_cached = 0
-    skip_on_disk = 0
+    skip_on_disk_plain = 0
     total_att_entries = 0
     try:
         conn = _open_db(settings.signal_data_dir)
@@ -657,8 +696,16 @@ async def fetch_all_pending_attachments(
             ma_cols = _get_table_columns(conn, "message_attachments")
             cdn_key_col = "transitCdnKey" if "transitCdnKey" in ma_cols else "cdnKey"
             cdn_num_col = "transitCdnNumber" if "transitCdnNumber" in ma_cols else "cdnNumber"
+            has_local_key = "localKey" in ma_cols
+            has_version = "version" in ma_cols
 
-            q = f"SELECT {cdn_key_col}, {cdn_num_col}, key, contentType, path FROM message_attachments"
+            select_parts = [cdn_key_col, cdn_num_col, "key", "contentType", "path"]
+            if has_local_key:
+                select_parts.append("localKey")
+            if has_version:
+                select_parts.append("version")
+
+            q = f"SELECT {', '.join(select_parts)} FROM message_attachments"
             params: list = []
             conditions: list[str] = []
             if "attachmentType" in ma_cols:
@@ -681,6 +728,36 @@ async def fetch_all_pending_attachments(
                 key_b64 = str(r[2] or "")
                 content_type = str(r[3] or "")
                 path = str(r[4] or "")
+                local_key = str(r[5] or "") if has_local_key and len(r) > 5 else ""
+                version = int(r[6] or 0) if has_version and len(r) > 6 else 0
+
+                # Already cached → skip
+                if cdn_key:
+                    cache_file = Path(settings.signal_data_dir) / "cdn-cache" / cdn_key
+                    if cache_file.exists():
+                        skip_cached += 1
+                        continue
+
+                # v2 on-disk encrypted file → decrypt locally (no CDN needed)
+                if path and version == 2 and local_key:
+                    full_path = Path(settings.signal_data_dir) / path
+                    if full_path.exists():
+                        pending_local.append({
+                            "path": path,
+                            "localKey": local_key,
+                            "cdnKey": cdn_key,
+                            "contentType": content_type,
+                        })
+                        continue
+
+                # File on disk but NOT encrypted (plaintext) → skip
+                if path:
+                    full_path = Path(settings.signal_data_dir) / path
+                    if full_path.exists():
+                        skip_on_disk_plain += 1
+                        continue
+
+                # Need CDN download
                 if not cdn_key or not key_b64:
                     skip_no_cdn += 1
                     if skip_no_cdn <= 3:
@@ -689,14 +766,7 @@ async def fetch_all_pending_attachments(
                             content_type, cdn_key, len(key_b64), path,
                         )
                     continue
-                cache_file = Path(settings.signal_data_dir) / "cdn-cache" / cdn_key
-                if cache_file.exists():
-                    skip_cached += 1
-                    continue
-                if path:
-                    skip_on_disk += 1
-                    continue
-                pending.append({
+                pending_cdn.append({
                     "cdnKey": cdn_key,
                     "cdnNumber": cdn_number,
                     "key": key_b64,
@@ -732,6 +802,14 @@ async def fetch_all_pending_attachments(
                         total_att_entries += 1
                         cdn_key = att.get("cdnKey") or ""
                         key_b64 = att.get("key") or ""
+                        if cdn_key:
+                            cache_file = Path(settings.signal_data_dir) / "cdn-cache" / cdn_key
+                            if cache_file.exists():
+                                skip_cached += 1
+                                continue
+                        if att.get("path"):
+                            skip_on_disk_plain += 1
+                            continue
                         if not cdn_key or not key_b64:
                             skip_no_cdn += 1
                             if skip_no_cdn <= 3:
@@ -740,14 +818,7 @@ async def fetch_all_pending_attachments(
                                     att.get("contentType"), cdn_key, len(key_b64), att.get("path"),
                                 )
                             continue
-                        cache_file = Path(settings.signal_data_dir) / "cdn-cache" / cdn_key
-                        if cache_file.exists():
-                            skip_cached += 1
-                            continue
-                        if att.get("path"):
-                            skip_on_disk += 1
-                            continue
-                        pending.append({
+                        pending_cdn.append({
                             "cdnKey": cdn_key,
                             "cdnNumber": att.get("cdnNumber"),
                             "key": key_b64,
@@ -759,56 +830,78 @@ async def fetch_all_pending_attachments(
         conn.close()
     except Exception as e:
         log.exception("fetch-all: failed to scan messages")
-        return {"downloaded": 0, "failed": 0, "skipped": 0, "error": str(e)}
+        return {"downloaded": 0, "failed": 0, "skipped": 0, "decrypted_local": 0, "error": str(e)}
 
     log.info(
-        "fetch-all: total_att=%d pending=%d skip_no_cdn=%d skip_cached=%d skip_on_disk=%d",
-        total_att_entries, len(pending), skip_no_cdn, skip_cached, skip_on_disk,
+        "fetch-all: total_att=%d pending_cdn=%d pending_local=%d skip_no_cdn=%d skip_cached=%d skip_on_disk_plain=%d",
+        total_att_entries, len(pending_cdn), len(pending_local), skip_no_cdn, skip_cached, skip_on_disk_plain,
     )
-    if not pending:
+    if not pending_cdn and not pending_local:
         log.info("fetch-all: no pending attachments for group %s", group_name or group_id)
-        return {"downloaded": 0, "failed": 0, "skipped": 0}
+        return {"downloaded": 0, "failed": 0, "skipped": 0, "decrypted_local": 0}
 
-    # Load credentials once
+    # Load credentials once (only needed for CDN downloads)
     credentials: dict = {}
-    try:
-        conn = _open_db(settings.signal_data_dir)
-        credentials = get_signal_credentials(conn)
-        conn.close()
-        log.info(
-            "fetch-all: CDN credentials — uuid=%s... deviceId=%s",
-            (credentials.get("uuid") or "")[:8],
-            credentials.get("deviceId"),
-        )
-    except Exception as e:
-        log.warning("fetch-all: could not read credentials: %s", e)
+    if pending_cdn:
+        try:
+            conn = _open_db(settings.signal_data_dir)
+            credentials = get_signal_credentials(conn)
+            conn.close()
+            log.info(
+                "fetch-all: CDN credentials — uuid=%s... deviceId=%s",
+                (credentials.get("uuid") or "")[:8],
+                credentials.get("deviceId"),
+            )
+        except Exception as e:
+            log.warning("fetch-all: could not read credentials: %s", e)
 
     downloaded = 0
     failed = 0
     skipped = 0
+    decrypted_local = 0
 
-    log.info("fetch-all: downloading %d pending attachment(s) for group %s", len(pending), group_name or group_id)
-    for att in pending:
-        cdn_key = att["cdnKey"]
-        try:
-            download_and_decrypt(
-                cdn_key=cdn_key,
-                cdn_number=att.get("cdnNumber"),
-                key_b64=att["key"],
-                signal_data_dir=settings.signal_data_dir,
-                credentials=credentials,
-            )
-            downloaded += 1
-            log.debug("fetch-all: downloaded %s", cdn_key)
-        except Exception as e:
-            failed += 1
-            log.warning("fetch-all: failed to download %s: %s", cdn_key, e)
+    # Phase 1: Decrypt v2 on-disk encrypted files using localKey
+    if pending_local:
+        log.info("fetch-all: decrypting %d v2 local attachment(s) for group %s", len(pending_local), group_name or group_id)
+        cache_dir = Path(settings.signal_data_dir) / "cdn-cache"
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        for att in pending_local:
+            try:
+                full_path = Path(settings.signal_data_dir) / att["path"]
+                plaintext = decrypt_local_attachment(full_path, att["localKey"])
+                cache_key = att["cdnKey"] or att["path"].replace("/", "_")
+                cache_file = cache_dir / cache_key
+                cache_file.write_bytes(plaintext)
+                decrypted_local += 1
+                log.debug("fetch-all: decrypted local v2 %s → %s (%d bytes)", att["path"], cache_key, len(plaintext))
+            except Exception as e:
+                failed += 1
+                log.warning("fetch-all: failed to decrypt local v2 %s: %s", att["path"], e)
+
+    # Phase 2: Download from CDN
+    if pending_cdn:
+        log.info("fetch-all: downloading %d pending CDN attachment(s) for group %s", len(pending_cdn), group_name or group_id)
+        for att in pending_cdn:
+            cdn_key = att["cdnKey"]
+            try:
+                download_and_decrypt(
+                    cdn_key=cdn_key,
+                    cdn_number=att.get("cdnNumber"),
+                    key_b64=att["key"],
+                    signal_data_dir=settings.signal_data_dir,
+                    credentials=credentials,
+                )
+                downloaded += 1
+                log.debug("fetch-all: downloaded %s", cdn_key)
+            except Exception as e:
+                failed += 1
+                log.warning("fetch-all: failed to download %s: %s", cdn_key, e)
 
     log.info(
-        "fetch-all: done — downloaded=%d failed=%d skipped=%d",
-        downloaded, failed, skipped,
+        "fetch-all: done — downloaded=%d decrypted_local=%d failed=%d skipped=%d",
+        downloaded, decrypted_local, failed, skipped,
     )
-    return {"downloaded": downloaded, "failed": failed, "skipped": skipped}
+    return {"downloaded": downloaded, "decrypted_local": decrypted_local, "failed": failed, "skipped": skipped}
 
 
 @app.get("/attachments/files")

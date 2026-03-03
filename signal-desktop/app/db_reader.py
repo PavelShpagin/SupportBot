@@ -199,6 +199,8 @@ def _load_attachments_from_table(
         "digest" if "digest" in ma_cols else "'' as digest",
         "size" if "size" in ma_cols else "0 as size",
         "downloadPath" if "downloadPath" in ma_cols else "'' as downloadPath",
+        "localKey" if "localKey" in ma_cols else "'' as localKey",
+        "version" if "version" in ma_cols else "0 as version",
     ]
 
     q = f"SELECT {', '.join(select_cols)} FROM message_attachments"
@@ -231,6 +233,8 @@ def _load_attachments_from_table(
         cdn_key = str(r[4] or "")
         path = str(r[2] or "")
         download_path = str(r[9] or "")
+        local_key = str(r[10] or "")
+        version = int(r[11] or 0)
         if not content_type and not cdn_key:
             continue
         att = {
@@ -242,6 +246,8 @@ def _load_attachments_from_table(
             "key": str(r[6] or ""),
             "digest": str(r[7] or ""),
             "size": r[8] or 0,
+            "localKey": local_key,
+            "version": version,
         }
         result.setdefault(msg_id, []).append(att)
 
@@ -764,3 +770,93 @@ def is_db_available(signal_data_dir: str) -> bool:
     except Exception as e:
         log.debug("Signal Desktop DB not available: %s", e)
         return False
+
+
+def get_local_key_for_path(signal_data_dir: str, rel_path: str) -> Optional[str]:
+    """Look up the localKey for an on-disk attachment by its relative path.
+
+    Signal Desktop 7+ (version=2) encrypts files in ``attachments.noindex/``
+    using a per-attachment ``localKey``.  Returns the base64-encoded localKey
+    if found, or None if the attachment doesn't use local encryption.
+    """
+    if not rel_path:
+        return None
+    conn = _open_db(signal_data_dir)
+    try:
+        tables = _get_all_tables(conn)
+        if "message_attachments" not in tables:
+            return None
+        ma_cols = _get_table_columns(conn, "message_attachments")
+        if "localKey" not in ma_cols or "path" not in ma_cols:
+            return None
+
+        row = conn.execute(
+            "SELECT localKey, version FROM message_attachments WHERE path = ? LIMIT 1",
+            (rel_path,),
+        ).fetchone()
+        if row and row[0] and int(row[1] or 0) == 2:
+            return str(row[0])
+        return None
+    except Exception as e:
+        log.warning("Failed to look up localKey for path %r: %s", rel_path, e)
+        return None
+    finally:
+        conn.close()
+
+
+def get_all_local_encrypted_attachments(
+    signal_data_dir: str,
+    conversation_id: Optional[str] = None,
+) -> list[dict]:
+    """Get all v2 locally-encrypted attachments that have a path and localKey.
+
+    Returns a list of dicts with keys: path, localKey, contentType, size,
+    messageId, cdnKey.
+    """
+    conn = _open_db(signal_data_dir)
+    try:
+        tables = _get_all_tables(conn)
+        if "message_attachments" not in tables:
+            return []
+        ma_cols = _get_table_columns(conn, "message_attachments")
+        if "localKey" not in ma_cols or "path" not in ma_cols:
+            return []
+
+        cdn_key_col = "transitCdnKey" if "transitCdnKey" in ma_cols else "cdnKey"
+
+        q = (
+            f"SELECT messageId, path, localKey, contentType, size, {cdn_key_col} "
+            "FROM message_attachments "
+            "WHERE localKey IS NOT NULL AND localKey != '' "
+            "AND path IS NOT NULL AND path != '' "
+            "AND version = 2"
+        )
+        params: list = []
+        conditions: list[str] = []
+
+        if "attachmentType" in ma_cols:
+            conditions.append("(attachmentType IN ('standard','attachment','long-message'))")
+        if conversation_id and "conversationId" in ma_cols:
+            conditions.append("conversationId = ?")
+            params.append(conversation_id)
+
+        if conditions:
+            q += " AND " + " AND ".join(conditions)
+
+        rows = conn.execute(q, params).fetchall()
+        result = []
+        for r in rows:
+            result.append({
+                "messageId": str(r[0]),
+                "path": str(r[1]),
+                "localKey": str(r[2]),
+                "contentType": str(r[3] or ""),
+                "size": r[4] or 0,
+                "cdnKey": str(r[5] or ""),
+            })
+        return result
+    except Exception as e:
+        log.warning("Failed to get local encrypted attachments: %s", e)
+        return []
+    finally:
+        conn.close()

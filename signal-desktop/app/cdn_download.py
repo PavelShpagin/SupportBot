@@ -132,7 +132,7 @@ def download_from_cdn(
 # ---------------------------------------------------------------------------
 
 def decrypt_attachment(encrypted_data: bytes, key_b64: str) -> bytes:
-    """Decrypt a Signal attachment.
+    """Decrypt a Signal attachment (CDN or local v2).
 
     Wire format: [IV:16][AES-256-CBC ciphertext][HMAC-SHA256:32]
     Key layout (64 bytes): [AES key:32][HMAC key:32]
@@ -169,6 +169,26 @@ def decrypt_attachment(encrypted_data: bytes, key_b64: str) -> bytes:
 
     unpadder = _padding.PKCS7(128).unpadder()
     return unpadder.update(padded) + unpadder.finalize()
+
+
+def decrypt_local_attachment(file_path: str | Path, local_key_b64: str) -> bytes:
+    """Decrypt a Signal Desktop v2 on-disk attachment using its ``localKey``.
+
+    Signal Desktop 7+ encrypts attachment files stored in
+    ``attachments.noindex/`` using a per-attachment ``localKey`` (stored in the
+    ``message_attachments`` table).  The wire format is identical to CDN
+    attachments: ``[IV:16][AES-256-CBC ciphertext][HMAC-SHA256:32]`` with a
+    64-byte key split into ``[AES:32][HMAC:32]``.
+
+    Returns the decrypted plaintext bytes.
+    Raises ``ValueError`` on HMAC mismatch, bad padding, or missing file.
+    """
+    fp = Path(file_path)
+    if not fp.exists():
+        raise ValueError(f"Attachment file not found: {fp}")
+
+    encrypted = fp.read_bytes()
+    return decrypt_attachment(encrypted, local_key_b64)
 
 
 # ---------------------------------------------------------------------------
