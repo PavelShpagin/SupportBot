@@ -3,6 +3,7 @@ from __future__ import annotations
 import base64
 import json
 import logging
+import re
 from typing import Any, Optional, Type, TypeVar
 
 from openai import OpenAI
@@ -25,6 +26,67 @@ T = TypeVar("T", bound=BaseModel)
 
 SUBAGENT_CASCADE = ["gemini-3.1-pro-preview", "gemini-2.5-pro", "gemini-2.5-flash"]
 GATE_CASCADE = ["gemini-2.5-flash", "gemini-2.0-flash"]
+
+_IMG_MARKER_RE = re.compile(r"\[\[IMG:(\d+)\]\]")
+
+
+def _build_interleaved_parts(
+    text: str, images: list[tuple[bytes, str]] | None
+) -> list[dict[str, Any]]:
+    """Build OpenAI content parts with images interleaved at [[IMG:N]] marker positions.
+
+    If the text contains markers like [[IMG:0]], [[IMG:1]], etc., each marker is
+    replaced with the corresponding image from the images list. Any images not
+    referenced by markers are appended at the end (backwards-compatible).
+
+    If no markers are present, falls back to text-first then all images (legacy).
+    """
+    if not images:
+        return [{"type": "text", "text": text}]
+
+    markers_found = set(int(m) for m in _IMG_MARKER_RE.findall(text))
+
+    if not markers_found:
+        parts: list[dict[str, Any]] = [{"type": "text", "text": text}]
+        for img_bytes, img_mime in images:
+            b64 = base64.b64encode(img_bytes).decode("ascii")
+            parts.append({
+                "type": "image_url",
+                "image_url": {"url": f"data:{img_mime};base64,{b64}"},
+            })
+        return parts
+
+    parts = []
+    segments = _IMG_MARKER_RE.split(text)
+    # segments alternates: [text, idx_str, text, idx_str, ...]
+    referenced: set[int] = set()
+    for i, seg in enumerate(segments):
+        if i % 2 == 0:
+            if seg:
+                parts.append({"type": "text", "text": seg})
+        else:
+            idx = int(seg)
+            referenced.add(idx)
+            if idx < len(images):
+                img_bytes, img_mime = images[idx]
+                b64 = base64.b64encode(img_bytes).decode("ascii")
+                parts.append({
+                    "type": "image_url",
+                    "image_url": {"url": f"data:{img_mime};base64,{b64}"},
+                })
+
+    # Append unreferenced images at end
+    for idx, (img_bytes, img_mime) in enumerate(images):
+        if idx not in referenced:
+            b64 = base64.b64encode(img_bytes).decode("ascii")
+            parts.append({
+                "type": "image_url",
+                "image_url": {"url": f"data:{img_mime};base64,{b64}"},
+            })
+
+    if not parts:
+        parts.append({"type": "text", "text": text})
+    return parts
 
 
 class LLMClient:
@@ -86,21 +148,8 @@ class LLMClient:
                 if not images:
                     messages.append({"role": "user", "content": user})
                 else:
-                    parts: list[dict[str, Any]] = [{"type": "text", "text": user}]
-                    for image_bytes, image_mime in images:
-                        b64 = base64.b64encode(image_bytes).decode("ascii")
-                        parts.append(
-                            {
-                                "type": "image_url",
-                                "image_url": {"url": f"data:{image_mime};base64,{b64}"},
-                            }
-                        )
-                    messages.append(
-                        {
-                            "role": "user",
-                            "content": parts,
-                        }
-                    )
+                    parts = _build_interleaved_parts(user, images)
+                    messages.append({"role": "user", "content": parts})
 
                 resp = self.client.chat.completions.create(
                     model=model,
@@ -130,16 +179,28 @@ class LLMClient:
 
         raise RuntimeError(f"LLM JSON call failed after retries: {last_exc}")
 
-    def chat(self, *, prompt: str, model: str | None = None, timeout: float = 30.0, cascade: list[str] | None = None) -> str:
-        """Free-text (non-JSON) completion with optional model cascade."""
+    def chat(
+        self,
+        *,
+        prompt: str,
+        model: str | None = None,
+        timeout: float = 30.0,
+        cascade: list[str] | None = None,
+        images: list[tuple[bytes, str]] | None = None,
+    ) -> str:
+        """Free-text (non-JSON) completion with optional model cascade and interleaved images."""
         models_to_try = cascade or [model or self.settings.model_respond]
         last_exc: Exception | None = None
 
         for m in models_to_try:
             try:
+                if images:
+                    content = _build_interleaved_parts(prompt, images)
+                else:
+                    content = prompt
                 resp = self.client.chat.completions.create(
                     model=m,
-                    messages=[{"role": "user", "content": prompt}],
+                    messages=[{"role": "user", "content": content}],
                     temperature=0,
                     timeout=timeout,
                 )

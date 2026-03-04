@@ -545,8 +545,9 @@ def _chunk_messages(*, messages: List[dict], max_chars: int, overlap_messages: i
                     bot_e164: str = "") -> List[tuple[str, list[tuple[bytes, str]]]]:
     """Split messages into chunks for LLM processing. Bot messages are excluded.
 
-    Returns list of (chunk_text, chunk_images) tuples. Images are collected from
-    image_payloads of messages in each chunk (only images, capped at 5 per chunk).
+    Returns list of (chunk_text, chunk_images) tuples. Images are interleaved
+    with text via [[IMG:N]] markers so the LLM sees each image at its natural
+    position in the conversation.
     """
     formatted: list[tuple[str, list[dict]]] = []
     for m in messages:
@@ -578,38 +579,52 @@ def _chunk_messages(*, messages: List[dict], max_chars: int, overlap_messages: i
     for line_text, line_payloads in formatted:
         candidate = "".join(cur_texts) + line_text
         if len(candidate) > max_chars and cur_texts:
-            chunk_imgs = _collect_chunk_images(cur_payloads)
-            chunks.append(("".join(cur_texts), chunk_imgs))
+            chunk_text, chunk_imgs = _build_interleaved_chunk(cur_texts, cur_payloads)
+            chunks.append((chunk_text, chunk_imgs))
             cur_texts = cur_texts[-overlap_messages:] if overlap_messages > 0 else []
             cur_payloads = cur_payloads[-overlap_messages:] if overlap_messages > 0 else []
         cur_texts.append(line_text)
         cur_payloads.append(line_payloads)
 
     if cur_texts:
-        chunk_imgs = _collect_chunk_images(cur_payloads)
-        chunks.append(("".join(cur_texts), chunk_imgs))
+        chunk_text, chunk_imgs = _build_interleaved_chunk(cur_texts, cur_payloads)
+        chunks.append((chunk_text, chunk_imgs))
 
     return chunks
 
 
-def _collect_chunk_images(
-    payloads_per_msg: list[list[dict]], max_images: int = 5,
-) -> list[tuple[bytes, str]]:
-    """Decode image payloads from chunk messages, return (bytes, mime) tuples."""
+def _build_interleaved_chunk(
+    texts: list[str], payloads_per_msg: list[list[dict]], max_images: int = 5,
+) -> tuple[str, list[tuple[bytes, str]]]:
+    """Build chunk text with [[IMG:N]] markers and collect images in order."""
     images: list[tuple[bytes, str]] = []
-    for msg_payloads in payloads_per_msg:
+    result_texts: list[str] = []
+    img_idx = 0
+
+    for msg_text, msg_payloads in zip(texts, payloads_per_msg):
+        msg_images: list[tuple[bytes, str]] = []
         for p in msg_payloads:
             ct = p.get("content_type") or ""
             if not ct.startswith("image/"):
                 continue
             try:
                 raw = base64.b64decode(p["data_b64"])
-                images.append((raw, ct))
+                msg_images.append((raw, ct))
             except Exception:
                 continue
-            if len(images) >= max_images:
-                return images
-    return images
+            if img_idx + len(msg_images) >= max_images:
+                break
+
+        if msg_images and img_idx < max_images:
+            markers = " ".join(f"[[IMG:{img_idx + j}]]" for j in range(len(msg_images)))
+            result_texts.append(msg_text.rstrip("\n") + f"\n{markers}\n")
+            images.extend(msg_images)
+            img_idx += len(msg_images)
+        else:
+            result_texts.append(msg_text)
+
+    return "".join(result_texts), images
+
 
 
 def _llm_call_with_fallback(
@@ -708,15 +723,41 @@ def _extract_structured_cases(
     images: list[tuple[bytes, str]] | None = None,
     timeout: float = 60.0,
 ) -> List[dict]:
-    """Extract solved support cases with full structured fields in one pass."""
-    user_parts: list = [{"type": "text", "text": f"HISTORY_CHUNK:\n{chunk_text}"}]
+    """Extract solved support cases with full structured fields in one pass.
+
+    Images are interleaved via [[IMG:N]] markers already present in chunk_text.
+    """
     if images:
-        for img_bytes, img_mime in images[:5]:
-            b64 = base64.b64encode(img_bytes).decode("ascii")
-            user_parts.append({
-                "type": "image_url",
-                "image_url": {"url": f"data:{img_mime};base64,{b64}"},
-            })
+        # Build interleaved parts: split text on [[IMG:N]] markers
+        import re
+        marker_re = re.compile(r"\[\[IMG:(\d+)\]\]")
+        segments = marker_re.split(f"HISTORY_CHUNK:\n{chunk_text}")
+        user_parts: list = []
+        referenced: set[int] = set()
+        for i, seg in enumerate(segments):
+            if i % 2 == 0:
+                if seg:
+                    user_parts.append({"type": "text", "text": seg})
+            else:
+                idx = int(seg)
+                referenced.add(idx)
+                if idx < len(images):
+                    img_bytes, img_mime = images[idx]
+                    b64 = base64.b64encode(img_bytes).decode("ascii")
+                    user_parts.append({
+                        "type": "image_url",
+                        "image_url": {"url": f"data:{img_mime};base64,{b64}"},
+                    })
+        # Append unreferenced images at end
+        for idx, (img_bytes, img_mime) in enumerate(images):
+            if idx not in referenced:
+                b64 = base64.b64encode(img_bytes).decode("ascii")
+                user_parts.append({
+                    "type": "image_url",
+                    "image_url": {"url": f"data:{img_mime};base64,{b64}"},
+                })
+    else:
+        user_parts = None
 
     resp = _llm_call_with_fallback(
         openai_client=openai_client,
@@ -725,7 +766,7 @@ def _extract_structured_cases(
         timeout=timeout,
         messages=[
             {"role": "system", "content": P_BLOCKS_STRUCTURED},
-            {"role": "user", "content": user_parts if images else f"HISTORY_CHUNK:\n{chunk_text}"},
+            {"role": "user", "content": user_parts if user_parts else f"HISTORY_CHUNK:\n{chunk_text}"},
         ],
         response_format={"type": "json_object"},
         temperature=0,
@@ -943,7 +984,7 @@ def _post_structured_cases_to_bot(
         "messages": formatted_messages,
     }
     url = settings.signal_bot_url.rstrip("/") + "/history/cases"
-    with httpx.Client(timeout=300) as client:
+    with httpx.Client(timeout=120) as client:
         r = client.post(url, json=payload)
         r.raise_for_status()
         data = r.json()

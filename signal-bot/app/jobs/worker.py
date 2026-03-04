@@ -591,22 +591,30 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
     # ── Phase 1: Extract new cases from the current buffer spans ────────────
     accepted_ranges: List[tuple[int, int]] = []  # solved ranges (indices in non_bot_blocks) to remove
     for span in extract.cases:
-        # Build exact case block from non-bot indexed message slice.
-        case_block_text = "".join(non_bot_blocks[i].raw_text for i in range(span.start_idx, span.end_idx + 1))
+        # Build case block with interleaved [[IMG:N]] markers
+        case_block_parts: list[str] = []
+        all_images: list[tuple[bytes, str]] = []
+        img_idx = 0
+        for i in range(span.start_idx, span.end_idx + 1):
+            block = non_bot_blocks[i]
+            msg_obj = get_raw_message(deps.db, message_id=block.message_id) if block.message_id else None
+            block_text = block.raw_text
+            if msg_obj and msg_obj.image_paths:
+                msg_images = _load_images(
+                    settings=deps.settings,
+                    image_paths=[p for p in msg_obj.image_paths if _is_image_path(p)],
+                    max_images=3,
+                    total_budget_bytes=3 * 1024 * 1024,
+                )
+                if msg_images:
+                    markers = " ".join(f"[[IMG:{img_idx + j}]]" for j in range(len(msg_images)))
+                    block_text = block_text.rstrip("\n") + f"\n{markers}\n\n"
+                    all_images.extend(msg_images)
+                    img_idx += len(msg_images)
+            case_block_parts.append(block_text)
 
-        # Collect images from evidence messages for multimodal case extraction
-        span_evidence_ids = [
-            non_bot_blocks[i].message_id
-            for i in range(span.start_idx, span.end_idx + 1)
-            if non_bot_blocks[i].message_id
-        ]
-        span_image_paths = _collect_evidence_image_paths(deps, span_evidence_ids)
-        span_images = _load_images(
-            settings=deps.settings,
-            image_paths=[p for p in span_image_paths if _is_image_path(p)],
-            max_images=5,
-            total_budget_bytes=5 * 1024 * 1024,
-        ) or None
+        case_block_text = "".join(case_block_parts)
+        span_images = all_images if all_images else None
 
         case = deps.llm.make_case(case_block_text=case_block_text, images=span_images)
         if not case.keep:
@@ -876,25 +884,28 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         # context_msgs are newest-last; current message is the last item
         context_text = "\n".join(context_msgs[:-1]) if len(context_msgs) > 1 else ""
 
-        # Load images attached to the current message
+        # Load images attached to the current message and embed markers in message text
         gate_images: list[tuple[bytes, str]] | None = None
+        gate_message_text = msg.content_text
         if msg.image_paths:
-            gate_images = []
+            loaded = []
             for img_path in msg.image_paths[:2]:
                 try:
                     mime, _ = mimetypes.guess_type(img_path)
                     mime = mime or "image/jpeg"
                     with open(img_path, "rb") as fh:
-                        gate_images.append((fh.read(), mime))
+                        loaded.append((fh.read(), mime))
                 except Exception as _img_err:
                     log.debug("Gate: could not load image %s: %s", img_path, _img_err)
-            if not gate_images:
-                gate_images = None
+            if loaded:
+                gate_images = loaded
+                markers = " ".join(f"[[IMG:{j}]]" for j in range(len(loaded)))
+                gate_message_text = f"{msg.content_text}\n{markers}"
 
         gate_tag = ""  # populated below if gate succeeds
         try:
             gate = deps.llm.decide_consider(
-                message=msg.content_text,
+                message=gate_message_text,
                 context=context_text,
                 images=gate_images,
             )
@@ -909,7 +920,10 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         except Exception as _gate_err:
             log.warning("Gate failed, proceeding without filter: %s", _gate_err)
 
-        raw_answer = deps.ultimate_agent.answer(msg.content_text, group_id=group_id, db=deps.db, lang=group_lang, context=context_text)
+        raw_answer = deps.ultimate_agent.answer(
+            gate_message_text, group_id=group_id, db=deps.db, lang=group_lang,
+            context=context_text, images=gate_images,
+        )
         answer_text = raw_answer.text
         attachment_urls = raw_answer.attachment_urls
 

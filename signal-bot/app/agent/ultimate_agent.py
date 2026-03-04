@@ -61,7 +61,7 @@ class UltimateAgent:
         self.case_agent = CaseSearchAgent(rag=self.rag, llm=self.llm, public_url=self.public_url)
         self.last_load_time = time.time()
 
-    def answer(self, question, group_id=None, db=None, lang="uk", context: str = "") -> AgentResponse:
+    def answer(self, question, group_id=None, db=None, lang="uk", context: str = "", images: list[tuple[bytes, str]] | None = None) -> AgentResponse:
         if time.time() - self.last_load_time > 600:
             try:
                 self.load_agents()
@@ -104,7 +104,7 @@ class UltimateAgent:
         )
 
         return self._synthesize(
-            question, case_ans, docs_ans, lang_instruction, context, db
+            question, case_ans, docs_ans, lang_instruction, context, db, images
         )
 
     def _synthesize(
@@ -115,6 +115,7 @@ class UltimateAgent:
         lang_instruction: str,
         context: str,
         db,
+        images: list[tuple[bytes, str]] | None = None,
     ) -> AgentResponse:
         """Synthesize a final answer from both agents' outputs."""
         case_has_results = (
@@ -153,9 +154,15 @@ class UltimateAgent:
         if docs_has_results:
             docs_block = f"\nDOCS AGENT (from documentation):\n{docs_ans}"
 
+        # Embed image markers in the question text if images are present
+        question_with_images = question
+        if images:
+            markers = " ".join(f"[[IMG:{j}]]" for j in range(len(images)))
+            question_with_images = f"{question}\n{markers}"
+
         prompt = f"""You are a concise support bot. Synthesize a final answer using the information from the sub-agents below.
 {context_block}
-Question: "{question}"
+Question: "{question_with_images}"
 {case_block}
 {docs_block}
 {file_list_block}
@@ -178,7 +185,7 @@ DECISION RULES — apply in order:
 Answer:"""
 
         try:
-            raw_text = self.llm.chat(prompt=prompt, cascade=SUBAGENT_CASCADE, timeout=45.0)
+            raw_text = self.llm.chat(prompt=prompt, cascade=SUBAGENT_CASCADE, timeout=45.0, images=images)
             attachment_urls = _ATTACH_PATTERN.findall(raw_text)
             clean_text = _ATTACH_PATTERN.sub("", raw_text).strip()
             return AgentResponse(text=clean_text, attachment_urls=attachment_urls)
