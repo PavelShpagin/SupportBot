@@ -1017,8 +1017,13 @@ def view_case(case_id: str):
     """
 
     if evidence:
-        from datetime import datetime, timezone, timedelta
-        _tz_kyiv = timezone(timedelta(hours=2))
+        from datetime import datetime, timezone
+        try:
+            from zoneinfo import ZoneInfo
+            _tz_kyiv = ZoneInfo("Europe/Kyiv")
+        except ImportError:
+            from datetime import timedelta
+            _tz_kyiv = timezone(timedelta(hours=2))
         for msg in evidence:
             dt = datetime.fromtimestamp(msg.ts / 1000, tz=_tz_kyiv)
             ts_str = dt.strftime('%Y-%m-%d %H:%M:%S')
