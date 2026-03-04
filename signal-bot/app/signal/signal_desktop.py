@@ -466,6 +466,7 @@ class SignalDesktopAdapter:
         on_direct_message: Callable[[InboundDirectMessage], None],
         on_reaction: Callable[[InboundReaction], None] | None = None,
         on_contact_removed: Callable[[str], None] | None = None,
+        on_group_update: Callable[[str], None] | None = None,
     ) -> None:
         """
         Signal receive loop. Polls Signal Desktop for new messages and dispatches:

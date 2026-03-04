@@ -695,6 +695,8 @@ def _handle_group_update(group_id: str) -> None:
     log.info("Group update event for %s — re-syncing docs from description", group_id[:20])
     try:
         sync_docs_from_description(deps, group_id, force=True)
+        if hasattr(deps, "ultimate_agent") and hasattr(deps.ultimate_agent, "docs_agent"):
+            deps.ultimate_agent.docs_agent.invalidate_cache(group_id)
     except Exception:
         log.exception("Failed to sync docs on group update for %s", group_id[:20])
 

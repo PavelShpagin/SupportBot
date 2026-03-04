@@ -68,6 +68,10 @@ class DocsAgent:
     def _urls_hash(self, urls: list[str]) -> str:
         return hashlib.sha256(json.dumps(sorted(urls)).encode()).hexdigest()[:16]
 
+    def invalidate_cache(self, group_id: str) -> None:
+        """Force next query for this group to re-fetch docs."""
+        self._cache.pop(group_id, None)
+
     def _get_or_refresh_docs(self, group_id: str, urls: list[str]) -> list[Any]:
         h = self._urls_hash(urls)
         entry = self._cache.get(group_id)
