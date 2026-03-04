@@ -78,7 +78,7 @@ class DocsAgent:
 
         log.info("Fetching docs for group %s (%d URLs)", group_id[:20], len(urls))
         try:
-            parts = fetch_doc_recursive(urls, max_depth=1, max_docs=20)
+            parts = fetch_doc_recursive(urls, max_docs=50)
         except Exception as exc:
             log.error("Failed to fetch docs for group %s: %s", group_id[:20], exc)
             if entry:

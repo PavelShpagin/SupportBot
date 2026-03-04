@@ -21,112 +21,104 @@ def extract_doc_id(url):
     match = re.search(r"/document/d/([a-zA-Z0-9-_]+)", url)
     return match.group(1) if match else None
 
-def fetch_doc_recursive(start_urls, max_depth=1, max_docs=10):
-    """
-    Recursively fetches Google Docs content and images.
-    Returns a list of content parts compatible with Gemini API.
+def fetch_doc_recursive(start_urls, max_docs=50):
+    """Recursively fetch Google Docs content and images (BFS by depth).
+
+    Follows all Google Doc links found in each document with no depth limit.
+    BFS ensures shallow (directly linked) docs are fetched first; if
+    max_docs is hit, only the deepest docs are dropped.
     """
     queue = [(url, 0) for url in start_urls]
-    visited = set()
-    content_parts = []
-    
+    visited: set[str] = set()
+    content_parts: list = []
     docs_processed = 0
-    
+
     while queue and docs_processed < max_docs:
         url, depth = queue.pop(0)
         doc_id = extract_doc_id(url)
-        
+
         if not doc_id or doc_id in visited:
             continue
-            
+
         visited.add(doc_id)
         docs_processed += 1
-        
+
         print(f"Fetching (depth={depth}): {url}", flush=True)
-        
-        # Export as HTML to get structure and images
+
         export_url = f"https://docs.google.com/document/d/{doc_id}/export?format=html"
-        
+
         try:
             response = requests.get(export_url, timeout=15)
             response.raise_for_status()
-            html_content = response.text
-            
-            soup = BeautifulSoup(html_content, 'html.parser')
-            
-            # Start a new section in context
+
+            soup = BeautifulSoup(response.text, 'html.parser')
+
             content_parts.append(f"\n\n--- DOCUMENT START: {url} ---\n")
-            
-            # Extract text and images in order
-            # We walk the body
+
             body = soup.body
             if not body:
                 continue
-                
+
             current_text = ""
-            
+
             for element in body.descendants:
                 if element.name == 'img':
-                    # Flush text buffer
                     if current_text.strip():
                         content_parts.append(current_text)
                         current_text = ""
-                    
-                    # Handle image
+
                     img_src = element.get('src')
                     if img_src:
                         try:
-                            # Google Docs export images are usually accessible directly
                             img_resp = requests.get(img_src, timeout=10)
                             if img_resp.status_code == 200:
                                 mime_type = img_resp.headers.get('Content-Type', 'image/jpeg')
                                 content_parts.append({
                                     "mime_type": mime_type,
-                                    "data": img_resp.content
+                                    "data": img_resp.content,
                                 })
                                 print(f"  - Captured image ({len(img_resp.content)} bytes)", flush=True)
                         except Exception as e:
                             print(f"  - Failed to fetch image: {e}", flush=True)
-                            
+
                 elif isinstance(element, str):
                     text = element.strip()
                     if text:
                         current_text += text + " "
-                
+
                 elif element.name in ['p', 'h1', 'h2', 'h3', 'li', 'br']:
                     current_text += "\n"
-            
-            # Flush remaining text
+
             if current_text.strip():
                 content_parts.append(current_text)
-                
+
             content_parts.append(f"\n--- DOCUMENT END: {url} ---\n")
-            
-            # Find links for recursion
-            if depth < max_depth:
-                for link in soup.find_all('a', href=True):
-                    href = link['href']
-                    # Google redirects links via google.com/url?q=...
-                    if "google.com/url" in href:
-                        parsed = urlparse(href)
-                        query = dict(q.split('=') for q in parsed.query.split('&') if '=' in q)
-                        real_url = query.get('q')
-                        if real_url and "docs.google.com/document/d/" in real_url:
-                            if extract_doc_id(real_url) not in visited:
-                                queue.append((real_url, depth + 1))
-                    elif "docs.google.com/document/d/" in href:
-                         if extract_doc_id(href) not in visited:
-                                queue.append((href, depth + 1))
+
+            for link in soup.find_all('a', href=True):
+                href = link['href']
+                if "google.com/url" in href:
+                    parsed = urlparse(href)
+                    query = dict(q.split('=') for q in parsed.query.split('&') if '=' in q)
+                    real_url = query.get('q')
+                    if real_url and "docs.google.com/document/d/" in real_url:
+                        if extract_doc_id(real_url) not in visited:
+                            queue.append((real_url, depth + 1))
+                elif "docs.google.com/document/d/" in href:
+                    if extract_doc_id(href) not in visited:
+                        queue.append((href, depth + 1))
 
         except Exception as e:
             print(f"Error fetching {url}: {e}", flush=True)
             content_parts.append(f"[Error fetching {url}: {e}]")
-            
+
+    if queue:
+        print(f"  - Stopped at {docs_processed} docs, {len(queue)} links not followed (max_docs={max_docs})", flush=True)
+
     return content_parts
 
 def build_context_from_urls(urls):
     """Fetches docs recursively and builds multimodal context."""
-    return fetch_doc_recursive(urls, max_depth=1)
+    return fetch_doc_recursive(urls)
 
 def build_context_from_description(description_path):
     """Reads description.txt and fetches docs recursively."""
