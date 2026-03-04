@@ -991,7 +991,6 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
         max_wait_seconds = 270
         poll_interval = 3
         waited = 0
-        qr_refreshed = False
 
         while waited < max_wait_seconds:
             check_cancelled()
@@ -1002,26 +1001,6 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
             if status.get("has_user_conversations"):
                 log.info("User linked! Found %d conversations", status.get("conversations_count", 0))
                 break
-
-            # At 120s mark, try to refresh the QR via Signal Desktop's refresh-qr endpoint
-            # and re-send to the user. This gives them a fresh QR if the first expired.
-            if waited >= 120 and not qr_refreshed:
-                qr_refreshed = True
-                log.info("No scan after 120s — attempting QR refresh and re-send...")
-                try:
-                    refresh_url = settings.signal_desktop_url.rstrip("/") + "/refresh-qr"
-                    with httpx.Client(timeout=30) as client:
-                        resp = client.post(refresh_url)
-                        if resp.status_code == 200 and len(resp.content) > 2000:
-                            log.info("Got refreshed QR (%d bytes), re-sending to user", len(resp.content))
-                            _send_qr_to_user(settings=settings, token=token, qr_image=resp.content)
-                        else:
-                            fresh = _get_desktop_screenshot(settings)
-                            if len(fresh) > 2000:
-                                log.info("Re-screenshotted QR (%d bytes), re-sending", len(fresh))
-                                _send_qr_to_user(settings=settings, token=token, qr_image=fresh)
-                except Exception as e:
-                    log.warning("QR refresh failed (non-critical): %s", e)
         else:
             log.warning("QR code expired without a successful scan")
             _notify_link_result(
@@ -1124,7 +1103,7 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
         # ────────────────────────────────────────────────────────────────────────
         check_cancelled()
         log.info("Waiting for attachment downloads for group %s...", group_name or group_id)
-        _notify_progress(settings=settings, token=token, progress_key="syncing")
+        # (syncing progress already sent during group verification above)
 
         def _trigger_attachments(gid: str, gname: str) -> dict:
             url = settings.signal_desktop_url.rstrip("/") + "/attachments/trigger"

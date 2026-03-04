@@ -1306,6 +1306,7 @@ def history_qr_code(req: HistoryQrCodeRequest) -> dict:
                 "1. Відкрийте Signal на телефоні\n"
                 "2. Налаштування → Пов'язані пристрої → Додати пристрій\n"
                 "3. Відскануйте QR-код\n\n"
+                "Примітка: макс. 5 пристроїв. Видаліть один при ліміті.\n\n"
                 "Очікую сканування (5 хв)..."
             )
         else:
@@ -1314,6 +1315,7 @@ def history_qr_code(req: HistoryQrCodeRequest) -> dict:
                 "1. Open Signal on your phone\n"
                 "2. Settings → Linked Devices → Link New Device\n"
                 "3. Scan the QR code\n\n"
+                "Note: max 5 devices. Remove one if limit reached.\n\n"
                 "Waiting for scan (5 min)..."
             )
         
