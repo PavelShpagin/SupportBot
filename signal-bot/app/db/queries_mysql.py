@@ -561,6 +561,17 @@ def link_admin_to_group(db: MySQL, *, admin_id: str, group_id: str) -> None:
             raise
 
 
+def admin_has_linked_groups(db: MySQL, admin_id: str) -> bool:
+    """Check if an admin has any linked groups (was previously onboarded)."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            "SELECT 1 FROM admins_groups WHERE admin_id = %s LIMIT 1",
+            (admin_id,),
+        )
+        return cur.fetchone() is not None
+
+
 def get_group_admins(db: MySQL, group_id: str) -> List[str]:
     """Get list of admin IDs (phone numbers) for a group."""
     with db.connection() as conn:
