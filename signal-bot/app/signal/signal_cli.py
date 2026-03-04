@@ -43,7 +43,7 @@ Which group would you like to connect?"""
 
 QR_MESSAGE_UK = """Відскануйте цей QR-код у Signal протягом 10 хвилин (Налаштування -> Пов'язані пристрої -> Додати пристрій).
 
-⚠️ Signal дозволяє максимум 5 пов'язаних пристроїв. Якщо ліміт вичерпано — видаліть непотрібний пристрій зі списку.
+Signal дозволяє максимум 5 пов'язаних пристроїв. Якщо ліміт вичерпано — видаліть непотрібний пристрій зі списку.
 
 Після сканування я зможу обробити історію групи "{group_name}" та почати відповідати на питання.
 
@@ -63,7 +63,7 @@ SUCCESS_MESSAGE_UK = """Успішно підключено до групи "{gr
 
 Бот тепер відстежує нові повідомлення в групі та навчатиметься з них.
 
-🔒 Тимчасовий пристрій було автоматично відключено з вашого акаунту для безпеки.
+Тимчасовий пристрій було автоматично відключено з вашого акаунту для безпеки.
 
 Хочете підключити ще одну групу? Напишіть її назву."""
 
@@ -71,7 +71,7 @@ SUCCESS_MESSAGE_EN = """Successfully connected to group "{group_name}"!
 
 The bot now monitors new messages in the group and will learn from them.
 
-🔒 The temporary device has been automatically unlinked from your account for security.
+The temporary device has been automatically unlinked from your account for security.
 
 Want to connect another group? Send its name."""
 
