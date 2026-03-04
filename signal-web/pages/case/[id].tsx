@@ -2,6 +2,11 @@ import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { format } from 'date-fns';
 
+interface Attachment {
+  url: string;
+  content_type: string;
+}
+
 interface EvidenceMessage {
   message_id: string;
   ts: number;
@@ -9,6 +14,7 @@ interface EvidenceMessage {
   sender_name: string | null;
   content_text: string;
   images: string[];
+  attachments?: Attachment[];
 }
 
 interface CaseData {
@@ -301,6 +307,40 @@ export default function CasePage({ data, publicApiUrl }: Props) {
           object-fit: cover;
         }
 
+        .message-images video {
+          display: block;
+          width: 100%;
+          max-width: 320px;
+          max-height: 240px;
+          border-radius: 8px;
+          border: 1px solid var(--border);
+        }
+
+        .file-download {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: 8px 14px;
+          background: var(--page-bg);
+          border: 1px solid var(--border);
+          border-radius: 8px;
+          font-size: 13px;
+          color: var(--signal-blue);
+          text-decoration: none;
+          font-weight: 500;
+          transition: background 0.15s;
+        }
+
+        .file-download:hover {
+          background: #ebedf0;
+        }
+
+        .file-download svg {
+          width: 16px;
+          height: 16px;
+          flex-shrink: 0;
+        }
+
         .empty-chat {
           padding: 32px 20px;
           text-align: center;
@@ -449,23 +489,65 @@ export default function CasePage({ data, publicApiUrl }: Props) {
                       </div>
                     </div>
                     <p className="message-text">{
-                      msg.images && msg.images.length > 0
-                        ? msg.content_text.replace(/\n*\[Зображення[^\]]*\]|\n*\[image\]\s*\{[\s\S]*?\}/g, '').trim()
+                      (msg.attachments?.length || msg.images?.length)
+                        ? msg.content_text.replace(/\n*\[Зображення[^\]]*\]|\n*\[image\]\s*\{[\s\S]*?\}|\n*\[attachment:[^\]]*\]/g, '').trim()
                         : msg.content_text
                     }</p>
-                    {msg.images && msg.images.length > 0 && (
-                      <div className="message-images">
-                        {msg.images.map((img, idx) => {
-                          const imgSrc = img.startsWith('http://') || img.startsWith('https://') ? img : `${publicApiUrl}${img}`;
-                          return (
-                            <a key={idx} href={imgSrc} target="_blank" rel="noopener noreferrer">
-                              {/* eslint-disable-next-line @next/next/no-img-element */}
-                              <img src={imgSrc} alt="Attachment" />
-                            </a>
-                          );
-                        })}
-                      </div>
-                    )}
+                    {(() => {
+                      const items = msg.attachments?.length
+                        ? msg.attachments
+                        : (msg.images || []).map((u: string) => ({ url: u, content_type: '' }));
+                      if (!items.length) return null;
+
+                      const IMAGE_EXTS = /\.(jpe?g|png|gif|webp|bmp|heic|svg)$/i;
+                      const VIDEO_EXTS = /\.(mp4|webm|mov|avi|mkv)$/i;
+
+                      const isImage = (att: Attachment) =>
+                        att.content_type?.startsWith('image/') || IMAGE_EXTS.test(att.url);
+                      const isVideo = (att: Attachment) =>
+                        att.content_type?.startsWith('video/') || VIDEO_EXTS.test(att.url);
+
+                      const resolveUrl = (u: string) =>
+                        u.startsWith('http://') || u.startsWith('https://') ? u : `${publicApiUrl}${u}`;
+
+                      const fileName = (u: string) => {
+                        const parts = u.split('/');
+                        return decodeURIComponent(parts[parts.length - 1] || 'file');
+                      };
+
+                      return (
+                        <div className="message-images">
+                          {items.map((att: Attachment, idx: number) => {
+                            const src = resolveUrl(att.url);
+                            if (isImage(att)) {
+                              return (
+                                <a key={idx} href={src} target="_blank" rel="noopener noreferrer">
+                                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                                  <img src={src} alt="Attachment" />
+                                </a>
+                              );
+                            }
+                            if (isVideo(att)) {
+                              return (
+                                <video key={idx} controls preload="metadata">
+                                  <source src={src} type={att.content_type || 'video/mp4'} />
+                                </video>
+                              );
+                            }
+                            return (
+                              <a key={idx} href={src} target="_blank" rel="noopener noreferrer" className="file-download">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                  <polyline points="7 10 12 15 17 10"/>
+                                  <line x1="12" y1="15" x2="12" y2="3"/>
+                                </svg>
+                                {fileName(att.url)}
+                              </a>
+                            );
+                          })}
+                        </div>
+                      );
+                    })()}
                   </div>
                 );
               })}

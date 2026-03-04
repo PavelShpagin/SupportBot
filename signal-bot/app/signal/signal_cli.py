@@ -43,6 +43,8 @@ Which group would you like to connect?"""
 
 QR_MESSAGE_UK = """Відскануйте цей QR-код у Signal протягом 10 хвилин (Налаштування -> Пов'язані пристрої -> Додати пристрій).
 
+⚠️ Signal дозволяє максимум 5 пов'язаних пристроїв. Якщо ліміт вичерпано — видаліть непотрібний пристрій зі списку.
+
 Після сканування я зможу обробити історію групи "{group_name}" та почати відповідати на питання.
 
 Під час підключення на телефоні виберіть «Перенести історію повідомлень» (якщо зʼявиться).
@@ -61,11 +63,15 @@ SUCCESS_MESSAGE_UK = """Успішно підключено до групи "{gr
 
 Бот тепер відстежує нові повідомлення в групі та навчатиметься з них.
 
+🔒 Тимчасовий пристрій було автоматично відключено з вашого акаунту для безпеки.
+
 Хочете підключити ще одну групу? Напишіть її назву."""
 
 SUCCESS_MESSAGE_EN = """Successfully connected to group "{group_name}"!
 
 The bot now monitors new messages in the group and will learn from them.
+
+🔒 The temporary device has been automatically unlinked from your account for security.
 
 Want to connect another group? Send its name."""
 
@@ -334,6 +340,40 @@ class SignalCliAdapter:
             last_err = RuntimeError(f"signal-cli send image failed (exit {proc.returncode})")
             if attempt < retries:
                 log.warning("send_direct_image failed (exit %d), retrying in %.0fs...", proc.returncode, retry_delay)
+                time.sleep(retry_delay)
+        raise last_err
+
+    def send_group_attachment(
+        self,
+        *,
+        group_id: str,
+        file_path: str,
+        caption: str = "",
+        retries: int = 3,
+        retry_delay: float = 5.0,
+    ) -> None:
+        """Send a file attachment to a group chat. Works with any file type."""
+        import time
+        self.assert_available()
+        cmd = [
+            self._bin(), "--config", self._config(), "-u", self._user(),
+            "send", "-g", group_id, "-a", file_path,
+        ]
+        if caption:
+            cmd.extend(["-m", caption])
+        last_err = None
+        for attempt in range(1, retries + 1):
+            log.info("signal-cli send group attachment group=%s path=%s (attempt %d/%d)", group_id[:20], file_path, attempt, retries)
+            proc = self._run(cmd)
+            if proc.stdout:
+                log.info("signal-cli stdout: %s", proc.stdout.strip())
+            if proc.stderr:
+                log.info("signal-cli stderr: %s", proc.stderr.strip())
+            if proc.returncode == 0:
+                return
+            last_err = RuntimeError(f"signal-cli send group attachment failed (exit {proc.returncode})")
+            if attempt < retries:
+                log.warning("send_group_attachment failed (exit %d), retrying in %.0fs...", proc.returncode, retry_delay)
                 time.sleep(retry_delay)
         raise last_err
 
@@ -711,9 +751,6 @@ def _parse_group_message(obj: dict) -> Optional[InboundGroupMessage]:
         for a in attachments:
             if not isinstance(a, dict):
                 continue
-            ct = (a.get("contentType") or "").lower()
-            if not ct.startswith("image/"):
-                continue
             stored = a.get("storedFilename") or a.get("path") or a.get("file") or a.get("filename")
             if stored:
                 image_paths.append(str(stored))
@@ -770,9 +807,6 @@ def _parse_direct_message(obj: dict) -> Optional[InboundDirectMessage]:
     if isinstance(attachments, list):
         for a in attachments:
             if not isinstance(a, dict):
-                continue
-            ct = (a.get("contentType") or "").lower()
-            if not ct.startswith("image/"):
                 continue
             stored = a.get("storedFilename") or a.get("path") or a.get("file") or a.get("filename")
             if stored:

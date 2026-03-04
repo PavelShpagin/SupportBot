@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import mimetypes
 import threading
 import time
 import uuid
@@ -812,14 +813,17 @@ def get_case_endpoint(case_id: str):
     
     evidence_data = []
     for msg in evidence:
-        # Transform image paths to static URLs
-        # Assuming paths are like /var/lib/signal/...
-        images = []
+        attachments = []
         for p in msg.image_paths:
             if p.startswith("/var/lib/signal/"):
-                images.append(p.replace("/var/lib/signal/", "/static/"))
+                url = p.replace("/var/lib/signal/", "/static/")
             else:
-                images.append(p)
+                url = p
+            mime, _ = mimetypes.guess_type(url)
+            attachments.append({"url": url, "content_type": mime or "application/octet-stream"})
+
+        # backward-compat: keep flat "images" list of URLs
+        flat_urls = [a["url"] for a in attachments]
 
         evidence_data.append({
             "message_id": msg.message_id,
@@ -827,7 +831,8 @@ def get_case_endpoint(case_id: str):
             "sender_hash": msg.sender_hash,
             "sender_name": msg.sender_name,
             "content_text": msg.content_text,
-            "images": images,
+            "images": flat_urls,
+            "attachments": attachments,
             "reply_to_id": msg.reply_to_id,
         })
 
@@ -1457,18 +1462,10 @@ def _save_history_images(
         if ext:
             return ext
         ct = (content_type or "").split(";")[0].strip().lower()
-        return {
-            "image/jpeg": ".jpg",
-            "image/png": ".png",
-            "image/gif": ".gif",
-            "image/webp": ".webp",
-            "image/bmp": ".bmp",
-            "video/mp4": ".mp4",
-            "video/webm": ".webm",
-            "application/zip": ".zip",
-            "application/x-zip-compressed": ".zip",
-            "application/octet-stream": ".bin",
-        }.get(ct, ".bin")
+        guessed = mimetypes.guess_extension(ct)
+        if guessed:
+            return guessed
+        return ".bin"
 
     results: list = []
 

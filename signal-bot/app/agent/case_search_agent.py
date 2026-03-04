@@ -215,3 +215,37 @@ class CaseSearchAgent:
             return f"B1_ONLY:{b1_text}"
 
         return "No relevant cases found."
+
+    def get_evidence_files(self, case_answer: str, db=None) -> list[str]:
+        """Extract non-image evidence file URLs from cases referenced in the answer.
+
+        Parses case IDs from the answer text and looks up their evidence
+        attachment URLs, filtering out images to return only files (pdf, zip, etc.).
+        """
+        if db is None or "No relevant cases" in case_answer:
+            return []
+
+        IMAGE_EXTS = {'.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.heic', '.svg'}
+
+        import re
+        case_ids = re.findall(r'/case/([a-zA-Z0-9_-]+)', case_answer)
+        if not case_ids:
+            return []
+
+        files: list[str] = []
+        try:
+            from app.db import get_case_evidence
+            seen: set[str] = set()
+            for cid in case_ids[:5]:
+                msgs = get_case_evidence(db, cid)
+                for msg in msgs:
+                    for p in msg.image_paths:
+                        if not p or p in seen:
+                            continue
+                        seen.add(p)
+                        ext = p.rsplit('.', 1)[-1].lower() if '.' in p else ''
+                        if f'.{ext}' not in IMAGE_EXTS:
+                            files.append(p)
+        except Exception:
+            log.exception("get_evidence_files failed")
+        return files

@@ -110,6 +110,8 @@ Each message in the chunk is formatted as:
   sender_hash ts=TIMESTAMP msg_id=MESSAGE_ID [reactions=N] [reaction_emoji=X]
   message text
 
+Images may be attached alongside the text. Use them to better understand the problem and solution context.
+
 Return ONLY valid JSON with key:
 - cases: array of objects, each with:
   - keep: boolean (true for real support cases)
@@ -498,17 +500,20 @@ def _is_bot_message(text: str, sender: str, bot_e164: str) -> bool:
 
 
 def _chunk_messages(*, messages: List[dict], max_chars: int, overlap_messages: int,
-                    bot_e164: str = "") -> List[str]:
-    """Split messages into chunks for LLM processing. Bot messages are excluded."""
-    formatted = []
+                    bot_e164: str = "") -> List[tuple[str, list[tuple[bytes, str]]]]:
+    """Split messages into chunks for LLM processing. Bot messages are excluded.
+
+    Returns list of (chunk_text, chunk_images) tuples. Images are collected from
+    image_payloads of messages in each chunk (only images, capped at 5 per chunk).
+    """
+    formatted: list[tuple[str, list[dict]]] = []
     for m in messages:
-        # Prefer enriched_body which includes OCR text for images
         text = m.get("enriched_body") or m.get("text") or m.get("body") or ""
         if not text:
             continue
         sender = m.get("sender") or m.get("source") or "unknown"
         if _is_bot_message(text, sender, bot_e164):
-            continue  # Never feed bot auto-responses to the extraction LLM
+            continue
         ts = m.get("ts") or m.get("timestamp") or 0
         msg_id = m.get("id") or m.get("message_id") or str(ts)
         reactions = int(m.get("reactions") or 0)
@@ -518,22 +523,48 @@ def _chunk_messages(*, messages: List[dict], max_chars: int, overlap_messages: i
             rxn_emoji = m.get("reaction_emoji") or ""
             if rxn_emoji:
                 header += f' reaction_emoji={rxn_emoji}'
-        formatted.append(f'{header}\n{text}\n')
-    
-    chunks: List[str] = []
-    cur: List[str] = []
-    
-    for line in formatted:
-        candidate = "".join(cur) + line
-        if len(candidate) > max_chars and cur:
-            chunks.append("".join(cur))
-            cur = cur[-overlap_messages:] if overlap_messages > 0 else []
-        cur.append(line)
-    
-    if cur:
-        chunks.append("".join(cur))
-    
+        payloads = m.get("image_payloads") or []
+        formatted.append((f'{header}\n{text}\n', payloads))
+
+    chunks: list[tuple[str, list[tuple[bytes, str]]]] = []
+    cur_texts: list[str] = []
+    cur_payloads: list[list[dict]] = []
+
+    for line_text, line_payloads in formatted:
+        candidate = "".join(cur_texts) + line_text
+        if len(candidate) > max_chars and cur_texts:
+            chunk_imgs = _collect_chunk_images(cur_payloads)
+            chunks.append(("".join(cur_texts), chunk_imgs))
+            cur_texts = cur_texts[-overlap_messages:] if overlap_messages > 0 else []
+            cur_payloads = cur_payloads[-overlap_messages:] if overlap_messages > 0 else []
+        cur_texts.append(line_text)
+        cur_payloads.append(line_payloads)
+
+    if cur_texts:
+        chunk_imgs = _collect_chunk_images(cur_payloads)
+        chunks.append(("".join(cur_texts), chunk_imgs))
+
     return chunks
+
+
+def _collect_chunk_images(
+    payloads_per_msg: list[list[dict]], max_images: int = 5,
+) -> list[tuple[bytes, str]]:
+    """Decode image payloads from chunk messages, return (bytes, mime) tuples."""
+    images: list[tuple[bytes, str]] = []
+    for msg_payloads in payloads_per_msg:
+        for p in msg_payloads:
+            ct = p.get("content_type") or ""
+            if not ct.startswith("image/"):
+                continue
+            try:
+                raw = base64.b64decode(p["data_b64"])
+                images.append((raw, ct))
+            except Exception:
+                continue
+            if len(images) >= max_images:
+                return images
+    return images
 
 
 def _llm_call_with_fallback(
@@ -622,9 +653,19 @@ def _extract_structured_cases(
     model: str,
     fallback_models: list,
     chunk_text: str,
+    images: list[tuple[bytes, str]] | None = None,
     timeout: float = 120.0,
 ) -> List[dict]:
     """Extract solved support cases with full structured fields in one pass."""
+    user_parts: list = [{"type": "text", "text": f"HISTORY_CHUNK:\n{chunk_text}"}]
+    if images:
+        for img_bytes, img_mime in images[:5]:
+            b64 = base64.b64encode(img_bytes).decode("ascii")
+            user_parts.append({
+                "type": "image_url",
+                "image_url": {"url": f"data:{img_mime};base64,{b64}"},
+            })
+
     resp = _llm_call_with_fallback(
         openai_client=openai_client,
         model=model,
@@ -632,7 +673,7 @@ def _extract_structured_cases(
         timeout=timeout,
         messages=[
             {"role": "system", "content": P_BLOCKS_STRUCTURED},
-            {"role": "user", "content": f"HISTORY_CHUNK:\n{chunk_text}"},
+            {"role": "user", "content": user_parts if images else f"HISTORY_CHUNK:\n{chunk_text}"},
         ],
         response_format={"type": "json_object"},
         temperature=0,
@@ -885,44 +926,46 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
         check_cancelled()
 
         # Always reset and show QR for every group link (user requirement: ask for QR every time)
-        # ?????????????????????????????????????????????????????????????????
+        # ─────────────────────────────────────────────────────────────
         # Step 1: Reset Signal Desktop and get QR code
-        # ?????????????????????????????????????????????????????????????????
+        # ─────────────────────────────────────────────────────────────
         log.info("Resetting Signal Desktop for new user link...")
         _reset_desktop(settings)
 
+        # Give Signal Desktop extra time for cold boot before polling
+        time.sleep(10)
+
         # Poll /status until Signal Desktop is unlinked AND DevTools is connected
-        # (DevTools connected = Electron renderer is up = QR code is rendered on screen)
         log.info("Waiting for Signal Desktop to show QR code (polling status)...")
         qr_image = b""
-        for attempt in range(40):  # up to 120 seconds
+        for attempt in range(50):  # up to 150 seconds
             time.sleep(3)
             try:
                 status = _check_desktop_status(settings)
                 is_unlinked = not status.get("linked", True)
                 devtools_ready = status.get("devtools_connected", False)
                 log.info(
-                    "Desktop status: linked=%s devtools=%s (%d/40)",
+                    "Desktop status: linked=%s devtools=%s (%d/50)",
                     status.get("linked"), devtools_ready, attempt + 1,
                 )
                 if is_unlinked and devtools_ready:
                     log.info("Signal Desktop is unlinked and DevTools ready — QR visible, taking screenshot")
-                    # Wait for QR to fully render; retry up to 3 times if screenshot is blank
-                    for sc_attempt in range(3):
+                    # Wait for QR to fully render; retry up to 5 times if screenshot is blank
+                    for sc_attempt in range(5):
                         time.sleep(5)
                         qr_image = _get_desktop_screenshot(settings)
                         log.info("Screenshot attempt %d size: %d bytes", sc_attempt + 1, len(qr_image))
-                        if len(qr_image) > 2000:  # valid QR is at least a few KB
+                        if len(qr_image) > 2000:
                             break
                         log.info("Screenshot looks blank, waiting longer...")
                     break
                 elif is_unlinked:
                     log.info("Unlinked but DevTools not ready yet, waiting...")
             except Exception as e:
-                log.info("Status not ready yet: %s (%d/40)", e, attempt + 1)
+                log.info("Status not ready yet: %s (%d/50)", e, attempt + 1)
 
         if not qr_image:
-            log.error("Signal Desktop never showed QR after 72s")
+            log.error("Signal Desktop never showed QR after ~160s")
             _notify_link_result(
                 settings=settings,
                 token=token,
@@ -945,9 +988,10 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
 
         # Step 2: Wait for user to scan QR code (QR expires after ~5 minutes)
         log.info("Waiting for user to scan QR code...")
-        max_wait_seconds = 270  # slightly under the ~5-min QR expiry so we detect it in time
+        max_wait_seconds = 270
         poll_interval = 3
         waited = 0
+        qr_refreshed = False
 
         while waited < max_wait_seconds:
             check_cancelled()
@@ -958,6 +1002,26 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
             if status.get("has_user_conversations"):
                 log.info("User linked! Found %d conversations", status.get("conversations_count", 0))
                 break
+
+            # At 120s mark, try to refresh the QR via Signal Desktop's refresh-qr endpoint
+            # and re-send to the user. This gives them a fresh QR if the first expired.
+            if waited >= 120 and not qr_refreshed:
+                qr_refreshed = True
+                log.info("No scan after 120s — attempting QR refresh and re-send...")
+                try:
+                    refresh_url = settings.signal_desktop_url.rstrip("/") + "/refresh-qr"
+                    with httpx.Client(timeout=30) as client:
+                        resp = client.post(refresh_url)
+                        if resp.status_code == 200 and len(resp.content) > 2000:
+                            log.info("Got refreshed QR (%d bytes), re-sending to user", len(resp.content))
+                            _send_qr_to_user(settings=settings, token=token, qr_image=resp.content)
+                        else:
+                            fresh = _get_desktop_screenshot(settings)
+                            if len(fresh) > 2000:
+                                log.info("Re-screenshotted QR (%d bytes), re-sending", len(fresh))
+                                _send_qr_to_user(settings=settings, token=token, qr_image=fresh)
+                except Exception as e:
+                    log.warning("QR refresh failed (non-critical): %s", e)
         else:
             log.warning("QR code expired without a successful scan")
             _notify_link_result(
@@ -1372,7 +1436,7 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
         log.info("Split into %d chunks for processing", len(chunks))
 
         all_structured: List[dict] = []
-        for i, ch in enumerate(chunks):
+        for i, (ch, ch_images) in enumerate(chunks):
             check_cancelled()
             if len(chunks) > 1:
                 _notify_progress(settings=settings, token=token, progress_key="processing_chunk", current=i+1, total=len(chunks))
@@ -1382,6 +1446,7 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
                     model=settings.model_blocks,
                     fallback_models=settings.model_blocks_fallback,
                     chunk_text=ch,
+                    images=ch_images or None,
                 )
             )
 

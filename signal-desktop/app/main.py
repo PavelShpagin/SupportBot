@@ -1404,7 +1404,7 @@ async def reset_signal_desktop():
         log.exception("Failed to start Signal Desktop")
         raise HTTPException(status_code=500, detail=f"Failed to start Signal Desktop: {e}")
     
-    await asyncio.sleep(5)
+    await asyncio.sleep(8)
     
     return {"status": "reset", "message": "Signal Desktop reset. Use /screenshot to get QR code."}
 

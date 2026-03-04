@@ -243,6 +243,12 @@ def _guess_mime(path: str) -> str:
     return mime or "image/png"
 
 
+def _is_image_path(path: str) -> bool:
+    """Return True if path looks like an image based on MIME type guess."""
+    mime, _ = mimetypes.guess_type(path)
+    return (mime or "").startswith("image/")
+
+
 def _load_images(
     *,
     settings: Settings,
@@ -548,7 +554,22 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
     for span in extract.cases:
         # Build exact case block from non-bot indexed message slice.
         case_block_text = "".join(non_bot_blocks[i].raw_text for i in range(span.start_idx, span.end_idx + 1))
-        case = deps.llm.make_case(case_block_text=case_block_text)
+
+        # Collect images from evidence messages for multimodal case extraction
+        span_evidence_ids = [
+            non_bot_blocks[i].message_id
+            for i in range(span.start_idx, span.end_idx + 1)
+            if non_bot_blocks[i].message_id
+        ]
+        span_image_paths = _collect_evidence_image_paths(deps, span_evidence_ids)
+        span_images = _load_images(
+            settings=deps.settings,
+            image_paths=[p for p in span_image_paths if _is_image_path(p)],
+            max_images=5,
+            total_budget_bytes=5 * 1024 * 1024,
+        ) or None
+
+        case = deps.llm.make_case(case_block_text=case_block_text, images=span_images)
         if not case.keep:
             continue
 
@@ -847,57 +868,47 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
             log.warning("Gate failed, proceeding without filter: %s", _gate_err)
 
         raw_answer = deps.ultimate_agent.answer(msg.content_text, group_id=group_id, db=deps.db, lang=group_lang, context=context_text)
-        answer = raw_answer
+        answer_text = raw_answer.text
+        attachment_urls = raw_answer.attachment_urls
 
-        # If gate classified this as an ongoing human-to-human discussion and the
-        # bot found no relevant case (bare TAG_ADMIN), skip silently — humans are
-        # already handling it and pinging the admin adds noise.
         if (
             not force
             and gate_tag == "ongoing_discussion"
-            and raw_answer.strip() == "[[TAG_ADMIN]]"
+            and answer_text.strip() == "[[TAG_ADMIN]]"
         ):
             log.info("MAYBE_RESPOND: skipping TAG_ADMIN for ongoing_discussion (humans already handling)")
             return
 
-        if answer == "SKIP":
+        if answer_text == "SKIP":
             if force:
-                answer = "Вибачте, я не зрозумів запитання або це не стосується моєї компетенції." if group_lang == "uk" else "Sorry, I didn't understand the question or it's outside my expertise."
+                answer_text = "Вибачте, я не зрозумів запитання або це не стосується моєї компетенції." if group_lang == "uk" else "Sorry, I didn't understand the question or it's outside my expertise."
             else:
                 return
 
-        # A "real" RAG answer means the agent found something useful in SCRAG/B1
-        # and is not purely escalating to admin.  In that case, suppress B1 case
-        # creation for this message in the subsequent BUFFER_UPDATE job.
         rag_answered = (
-            raw_answer != "SKIP"
-            and raw_answer.strip() != "[[TAG_ADMIN]]"
+            answer_text != "SKIP"
+            and answer_text.strip() != "[[TAG_ADMIN]]"
         )
 
         mention_recipients = []
 
-        # [[TAG_ADMIN]]: escalate to admin with a notification message
-        if answer == "[[TAG_ADMIN]]" or answer.strip() == "[[TAG_ADMIN]]":
+        if answer_text == "[[TAG_ADMIN]]" or answer_text.strip() == "[[TAG_ADMIN]]":
             from app.agent.ultimate_agent import detect_lang
             msg_lang = detect_lang(msg.content_text)
             tag_msg = "Потребує уваги адміністратора." if msg_lang == "uk" else "Needs admin attention."
-            answer = f"[[MENTION_PLACEHOLDER]] {tag_msg}"
+            answer_text = f"[[MENTION_PLACEHOLDER]] {tag_msg}"
             if active_admins:
                 mention_recipients.extend(active_admins)
             else:
-                answer = f"@admin {tag_msg}"
+                answer_text = f"@admin {tag_msg}"
 
-        # [[TAG_ADMIN]] embedded inside a longer answer (e.g. from synthesizer)
-        elif "[[TAG_ADMIN]]" in answer or "@admin" in answer:
-            answer = answer.replace("[[TAG_ADMIN]]", "[[MENTION_PLACEHOLDER]]").replace("@admin", "[[MENTION_PLACEHOLDER]]").strip()
+        elif "[[TAG_ADMIN]]" in answer_text or "@admin" in answer_text:
+            answer_text = answer_text.replace("[[TAG_ADMIN]]", "[[MENTION_PLACEHOLDER]]").replace("@admin", "[[MENTION_PLACEHOLDER]]").strip()
             if active_admins:
                 mention_recipients.extend(active_admins)
             else:
-                answer = answer.replace("[[MENTION_PLACEHOLDER]]", "@admin")
+                answer_text = answer_text.replace("[[MENTION_PLACEHOLDER]]", "@admin")
 
-        # Mark as RAG-answered BEFORE sending so that even if delivery fails the
-        # subsequent BUFFER_UPDATE job still skips B1 case creation: the answer
-        # exists in SCRAG regardless of transient delivery issues.
         if rag_answered:
             with _rag_answered_lock:
                 if len(_rag_answered_messages) >= _RAG_ANSWERED_MAX:
@@ -908,7 +919,7 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
                 _rag_answered_messages[message_id] = None
             log.debug("Marked message %s as RAG-answered (B1 case creation suppressed)", message_id)
 
-        # Send response
+        # Send text response
         quote_author = str(payload.get("sender") or "").strip()
         quote_ts_raw = payload.get("ts")
         quote_ts = int(quote_ts_raw) if quote_ts_raw is not None else int(msg.ts)
@@ -916,12 +927,40 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         
         deps.signal.send_group_text(
             group_id=group_id,
-            text=answer,
+            text=answer_text,
             quote_timestamp=quote_ts,
             quote_author=quote_author,
             quote_message=quote_msg,
             mention_recipients=mention_recipients,
         )
+
+        # Send file attachments if any
+        if attachment_urls:
+            import tempfile
+            import app.r2 as _r2
+            for att_url in attachment_urls[:3]:
+                try:
+                    r2_key = _r2.key_from_url(att_url)
+                    if r2_key:
+                        result = _r2.download(r2_key)
+                        att_bytes = result[0] if result else None
+                    else:
+                        att_bytes = None
+                    if att_bytes is None:
+                        log.warning("Could not download attachment for sharing: %s", att_url)
+                        continue
+                    fname = att_url.rsplit('/', 1)[-1] if '/' in att_url else "attachment"
+                    with tempfile.NamedTemporaryFile(delete=False, suffix=f"_{fname}") as tmp:
+                        tmp.write(att_bytes)
+                        tmp_path = tmp.name
+                    deps.signal.send_group_attachment(group_id=group_id, file_path=tmp_path)
+                    try:
+                        import os
+                        os.unlink(tmp_path)
+                    except OSError:
+                        pass
+                except Exception:
+                    log.exception("Failed to send attachment %s", att_url)
         
     except Exception as e:
         log.exception("Ultimate Agent failed: %s", e)

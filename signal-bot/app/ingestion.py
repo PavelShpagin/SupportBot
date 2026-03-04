@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import hashlib
-import json
 import logging
+import mimetypes
 from pathlib import Path
-from typing import Iterable, Optional
+from typing import Iterable
 
 import app.r2 as _r2
 from app.config import Settings
@@ -14,18 +14,15 @@ from app.llm.client import LLMClient
 
 log = logging.getLogger(__name__)
 
-_EXT_TO_MIME: dict[str, str] = {
-    ".jpg": "image/jpeg",
-    ".jpeg": "image/jpeg",
-    ".png": "image/png",
-    ".gif": "image/gif",
-    ".webp": "image/webp",
-    ".bmp": "image/bmp",
-    ".mp4": "video/mp4",
-    ".webm": "video/webm",
-    ".mov": "video/quicktime",
-    ".heic": "image/heic",
-}
+
+def _guess_mime(path: str) -> str:
+    """Accept-all MIME guessing: stdlib first, fallback to application/octet-stream."""
+    mime, _ = mimetypes.guess_type(path)
+    return mime or "application/octet-stream"
+
+
+def _is_image(content_type: str) -> bool:
+    return content_type.startswith("image/")
 
 
 def _sender_hash(sender: str) -> str:
@@ -56,7 +53,6 @@ def ingest_message(
     for p in image_paths:
         img_path = Path(p)
         if not img_path.is_absolute():
-            # signal-cli often reports stored filenames relative to the config dir.
             img_path = Path(settings.signal_bot_storage) / img_path
         try:
             img_path = img_path.resolve()
@@ -65,35 +61,38 @@ def ingest_message(
         if not img_path.exists():
             log.warning("Attachment missing on disk: %s", img_path)
             continue
-        image_bytes = img_path.read_bytes()
+        file_bytes = img_path.read_bytes()
 
-        # Upload to R2 when configured; fall back to local path on failure.
+        ct = _guess_mime(str(img_path))
+
         stored_path = str(img_path)
         if _r2.is_enabled():
-            ct = _EXT_TO_MIME.get(img_path.suffix.lower(), "application/octet-stream")
             r2_key = f"attachments/{group_id}/{img_path.name}"
-            r2_url = _r2.upload(r2_key, image_bytes, ct)
+            r2_url = _r2.upload(r2_key, file_bytes, ct)
             if r2_url:
                 stored_path = r2_url
         stored_image_paths.append(stored_path)
-        try:
-            j = llm.image_to_text_json(image_bytes=image_bytes, context_text=context_text)
-            # Store the OCR text without appending the raw JSON to the message content visible to users
-            # The RAG pipeline will still embed this content_text. But we should make it readable.
-            extracted_text = j.extracted_text or ""
-            observations = ", ".join(j.observations) if j.observations else ""
-            
-            ocr_summary = []
-            if extracted_text:
-                ocr_summary.append(f"Текст на зображенні: {extracted_text}")
-            if observations:
-                ocr_summary.append(f"Елементи на зображенні: {observations}")
+
+        if _is_image(ct):
+            try:
+                j = llm.image_to_text_json(image_bytes=file_bytes, context_text=context_text)
+                extracted_text = j.extracted_text or ""
+                observations = ", ".join(j.observations) if j.observations else ""
                 
-            if ocr_summary:
-                content_text = content_text + "\n\n[Зображення: " + " | ".join(ocr_summary) + "]"
-        except Exception:
-            log.exception("Image extraction failed (path=%s).", img_path)
-            content_text = content_text + "\n\n[Зображення]"
+                ocr_summary = []
+                if extracted_text:
+                    ocr_summary.append(f"Текст на зображенні: {extracted_text}")
+                if observations:
+                    ocr_summary.append(f"Елементи на зображенні: {observations}")
+                    
+                if ocr_summary:
+                    content_text = content_text + "\n\n[Зображення: " + " | ".join(ocr_summary) + "]"
+            except Exception:
+                log.exception("Image extraction failed (path=%s).", img_path)
+                content_text = content_text + "\n\n[Зображення]"
+        else:
+            fname = img_path.name
+            content_text = content_text + f"\n\n[attachment: {fname} ({ct})]"
 
     inserted = insert_raw_message(
         db,
@@ -112,9 +111,6 @@ def ingest_message(
         log.info("Message %s already exists, skipping response generation", message_id)
         return
 
-    # Include original sender/text in job payload so the responder can:
-    # - reply/quote the exact asker (Signal "quote" feature)
-    # - keep user-facing quotes free of internal [image] JSON expansions
     job_payload = {
         "group_id": group_id,
         "message_id": message_id,
@@ -122,9 +118,6 @@ def ingest_message(
         "ts": ts,
         "text": text or "",
     }
-    # MAYBE_RESPOND must be enqueued first so it runs before BUFFER_UPDATE.
-    # When the bot finds a RAG answer it marks the message as rag-answered;
-    # BUFFER_UPDATE then skips B1 case creation for that message.
     enqueue_job(db, MAYBE_RESPOND, job_payload)
     enqueue_job(db, BUFFER_UPDATE, job_payload)
 

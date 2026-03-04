@@ -1,6 +1,7 @@
 import re
 import sys
 import time
+from dataclasses import dataclass, field
 
 from .case_search_agent import CaseSearchAgent
 from app.config import load_settings
@@ -9,12 +10,20 @@ from app.llm.client import LLMClient
 
 sys.stdout.reconfigure(encoding='utf-8')
 
+_ATTACH_PATTERN = re.compile(r'\[\[ATTACH:(.*?)\]\]')
+
 
 def detect_lang(text: str) -> str:
     """Return 'uk' if Cyrillic characters are present, else 'en'."""
     if re.search(r'[а-яіїєґА-ЯІЇЄҐ]', text):
         return "uk"
     return "en"
+
+
+@dataclass
+class AgentResponse:
+    text: str
+    attachment_urls: list[str] = field(default_factory=list)
 
 
 class UltimateAgent:
@@ -41,7 +50,7 @@ class UltimateAgent:
         self.case_agent = CaseSearchAgent(rag=self.rag, llm=self.llm, public_url=self.public_url)
         self.last_load_time = time.time()
 
-    def answer(self, question, group_id=None, db=None, lang="uk", context: str = ""):
+    def answer(self, question, group_id=None, db=None, lang="uk", context: str = "") -> AgentResponse:
         # Refresh agents every 10 minutes
         if time.time() - self.last_load_time > 600:
             print("Refreshing agents...", flush=True)
@@ -63,7 +72,7 @@ class UltimateAgent:
 
         # No matching cases at all → escalate to admin
         if "No relevant cases" in case_ans:
-            return "[[TAG_ADMIN]]"
+            return AgentResponse(text="[[TAG_ADMIN]]")
 
         context_block = f"\nRecent chat context (for reference):\n{context}\n" if context.strip() else ""
 
@@ -92,19 +101,28 @@ Answer:"""
                 text = self.llm.chat(prompt=prompt)
                 if "[[TAG_ADMIN]]" not in text:
                     text = text + " [[TAG_ADMIN]]"
-                return text
+                return AgentResponse(text=text)
             except Exception as e:
                 print(f"Synthesizer error (B1 path): {e}", flush=True)
-                return "[[TAG_ADMIN]]"
+                return AgentResponse(text="[[TAG_ADMIN]]")
 
         # Solved cases found (SCRAG / B3) → synthesize direct answer
+        # Collect evidence attachment URLs from case context for potential file sharing
+        evidence_files = self.case_agent.get_evidence_files(case_ans, db=db)
+
+        file_list_block = ""
+        if evidence_files:
+            file_list_block = "\n\nAvailable evidence files (use [[ATTACH:url]] to share a file with the user):\n"
+            for ef in evidence_files:
+                file_list_block += f"- {ef}\n"
+
         prompt = f"""You are a concise support bot. Answer using the retrieved case if it covers the same core issue.
 {context_block}
 Question: "{question}"
 
 Retrieved cases:
 {case_ans}
-
+{file_list_block}
 DECISION RULES — apply in order:
 1. Check: does the retrieved case cover the same core issue as the question?
    - "Same core issue" = the underlying problem is the same, even if the user's phrasing is shorter/less detailed.
@@ -117,9 +135,11 @@ DECISION RULES — apply in order:
 4. NO greeting, NO "Based on...", NO "According to...", NO bullet points.
 5. Respond in {lang_instruction}.
 6. NEVER invent information not in the retrieved case.
+7. If a relevant evidence file (PDF, zip, config, etc.) would help the user, include [[ATTACH:url]] for that file. Do NOT attach images.
 
 GOOD: user asks about an error on startup, case is about the same startup error with a fix → same issue → give the solution.
 GOOD: "Зайдіть у налаштування та увімкніть відповідну опцію. https://supportbot.info/case/xxx"
+GOOD: "Ось конфігураційний файл: [[ATTACH:https://r2.example.com/file.apj]] https://supportbot.info/case/xxx"
 GOOD: "Надайте лог з пристрою [[TAG_ADMIN]] https://supportbot.info/case/xxx"
 BAD: answer about a network issue when user asked about a software crash.
 BAD: bare "[[TAG_ADMIN]]" when the retrieved case covers the same core issue.
@@ -127,7 +147,11 @@ BAD: bare "[[TAG_ADMIN]]" when the retrieved case covers the same core issue.
 Answer:"""
 
         try:
-            return self.llm.chat(prompt=prompt)
+            raw_text = self.llm.chat(prompt=prompt)
+            # Extract [[ATTACH:url]] markers from the response
+            attachment_urls = _ATTACH_PATTERN.findall(raw_text)
+            clean_text = _ATTACH_PATTERN.sub('', raw_text).strip()
+            return AgentResponse(text=clean_text, attachment_urls=attachment_urls)
         except Exception as e:
             print(f"Synthesizer error: {e}", flush=True)
-            return "[[TAG_ADMIN]]"
+            return AgentResponse(text="[[TAG_ADMIN]]")

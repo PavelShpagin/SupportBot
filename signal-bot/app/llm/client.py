@@ -160,13 +160,14 @@ class LLMClient:
             schema=ResolutionResult,
         )
 
-    def make_case(self, *, case_block_text: str) -> CaseResult:
+    def make_case(self, *, case_block_text: str, images: list[tuple[bytes, str]] | None = None) -> CaseResult:
         user = f"CASE_BLOCK:\n{case_block_text}"
         return self._json_call(
             model=self.settings.model_case,
             system=P.P_CASE_SYSTEM,
             user=user,
             schema=CaseResult,
+            images=images,
         )
 
     def decide_consider(
