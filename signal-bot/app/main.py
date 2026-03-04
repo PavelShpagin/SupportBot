@@ -179,6 +179,7 @@ def _maybe_start_signal_listener() -> None:
                     "on_direct_message": _handle_direct_message,
                     "on_reaction": _handle_reaction,
                     "on_contact_removed": _handle_contact_removed,
+                    "on_group_update": _handle_group_update,
                 },
                 daemon=True,
             ).start()
@@ -682,6 +683,20 @@ def _send_direct_or_cleanup(admin_id: str, text: str) -> bool:
         log.info("send_direct_text to %s failed — triggering contact-removed cleanup", admin_id)
         _handle_contact_removed(admin_id)
     return sent
+
+
+def _handle_group_update(group_id: str) -> None:
+    """Handle group metadata changes (description, name, avatar).
+
+    Immediately re-syncs docs URLs from the group description so the
+    DocsAgent picks up newly added documentation within seconds.
+    """
+    from app.jobs.worker import sync_docs_from_description
+    log.info("Group update event for %s — re-syncing docs from description", group_id[:20])
+    try:
+        sync_docs_from_description(deps, group_id, force=True)
+    except Exception:
+        log.exception("Failed to sync docs on group update for %s", group_id[:20])
 
 
 def _handle_contact_removed(phone_number: str) -> None:

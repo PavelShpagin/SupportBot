@@ -583,8 +583,9 @@ class SignalCliAdapter:
                         continue
                     gid = g.get("id") or g.get("groupId") or ""
                     gname = g.get("name") or g.get("groupName") or ""
+                    gdesc = g.get("description")
                     if gid:
-                        groups.append(GroupInfo(group_id=str(gid), group_name=str(gname)))
+                        groups.append(GroupInfo(group_id=str(gid), group_name=str(gname), description=gdesc))
         except json.JSONDecodeError:
             log.warning("Failed to parse listGroups output")
         return groups
@@ -616,12 +617,14 @@ class SignalCliAdapter:
         on_direct_message: Callable[[InboundDirectMessage], None],
         on_reaction: Callable[[InboundReaction], None] | None = None,
         on_contact_removed: Callable[[str], None] | None = None,
+        on_group_update: Callable[[str], None] | None = None,
     ) -> None:
         """
         Signal receive loop. Dispatches:
         - Group messages -> on_group_message
         - Direct (1:1) messages -> on_direct_message
         - Contact removed/blocked -> on_contact_removed(phone_number)
+        - Group metadata update (description, name, etc.) -> on_group_update(group_id)
         """
         log.info("Starting Signal receive loop...")
         self.assert_available()
@@ -694,6 +697,16 @@ class SignalCliAdapter:
                             on_contact_removed(removed_contact)
                         except Exception:
                             log.exception("on_contact_removed handler failed")
+                        continue
+
+                # Detect group metadata updates (description/name change)
+                if on_group_update is not None:
+                    updated_group_id = _parse_group_update(obj)
+                    if updated_group_id is not None:
+                        try:
+                            on_group_update(updated_group_id)
+                        except Exception:
+                            log.exception("on_group_update handler failed")
                         continue
             # Normal (timeout) exit: loop again.
             # Small pause to avoid starving other signal-cli commands that need the config lock.
@@ -965,5 +978,40 @@ def _parse_contact_removed(obj: dict) -> Optional[str]:
             if sender:
                 log.info("Received end session from %s - they may have removed us", sender)
                 return str(sender)
+
+    return None
+
+
+def _parse_group_update(obj: dict) -> Optional[str]:
+    """Detect group metadata updates (description/name/avatar change).
+
+    signal-cli emits these as dataMessage with groupInfo but no message body,
+    or as a dataMessage.groupV2 with a new revision. Returns the group_id
+    if this looks like a group metadata change, else None.
+    """
+    env = obj.get("envelope") if isinstance(obj, dict) else None
+    if not isinstance(env, dict):
+        return None
+
+    dm = env.get("dataMessage")
+    if not isinstance(dm, dict):
+        return None
+
+    group_info = dm.get("groupInfo")
+    if not isinstance(group_info, dict):
+        return None
+
+    group_id = group_info.get("groupId")
+    if not group_id:
+        return None
+
+    has_text = bool((dm.get("message") or dm.get("body") or "").strip())
+    if has_text:
+        return None
+
+    gtype = group_info.get("type", "")
+    if gtype == "UPDATE" or "revision" in str(group_info):
+        log.info("Group metadata update detected for %s (type=%s)", str(group_id)[:20], gtype)
+        return str(group_id)
 
     return None

@@ -235,21 +235,24 @@ def _trim_buffer(buffer_text: str, max_age_hours: int, max_messages: int) -> str
 
 _DOC_URL_RE = re.compile(r"https?://docs\.google\.com/document/d/[a-zA-Z0-9_-]+[^\s]*")
 
-# Track which groups we've already tried to sync docs for (avoids repeated API calls)
-_docs_synced_groups: set[str] = set()
+_docs_last_checked: dict[str, float] = {}
+_DOCS_RECHECK_INTERVAL = 600  # 10 minutes
 
 
-def _maybe_sync_docs_from_description(deps: "WorkerDeps", group_id: str) -> None:
-    """If group has no docs_urls yet, try extracting Google Docs links from its Signal description."""
-    if group_id in _docs_synced_groups:
-        return
-    _docs_synced_groups.add(group_id)
+def sync_docs_from_description(deps: "WorkerDeps", group_id: str, *, force: bool = False) -> None:
+    """Extract Google Docs URLs from the group's Signal description and store them.
+
+    Called on every message (throttled to every 10min) and immediately on
+    group description change events (force=True).
+    """
+    now = time.time()
+    if not force:
+        last = _docs_last_checked.get(group_id, 0.0)
+        if now - last < _DOCS_RECHECK_INTERVAL:
+            return
+    _docs_last_checked[group_id] = now
 
     from app.db.queries_mysql import get_group_docs, upsert_group_docs
-
-    existing = get_group_docs(deps.db, group_id)
-    if existing:
-        return
 
     description = None
     try:
@@ -268,7 +271,11 @@ def _maybe_sync_docs_from_description(deps: "WorkerDeps", group_id: str) -> None
     if not urls:
         return
 
-    log.info("Auto-parsed %d doc URL(s) from group %s description", len(urls), group_id)
+    existing = get_group_docs(deps.db, group_id)
+    if sorted(urls) == sorted(existing):
+        return
+
+    log.info("Docs sync: %d URL(s) from group %s description (was %d)", len(urls), group_id[:20], len(existing))
     upsert_group_docs(deps.db, group_id, urls)
 
 
@@ -853,7 +860,7 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
                 break
 
         # Auto-parse docs URLs from group description if none configured yet
-        _maybe_sync_docs_from_description(deps, group_id)
+        sync_docs_from_description(deps, group_id)
 
         # Check for admin commands
         if msg.content_text.strip().startswith("/setdocs"):
