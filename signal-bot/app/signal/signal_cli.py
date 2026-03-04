@@ -174,6 +174,7 @@ class GroupInfo(BaseModel):
     """Information about a group the bot is a member of."""
     group_id: str
     group_name: str
+    description: str | None = None
 
 
 # ─────────────────────────────────────────────────────────────────────────────

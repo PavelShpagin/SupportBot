@@ -34,6 +34,7 @@ class SignalConversation:
     group_id: Optional[str] = None
     e164: Optional[str] = None  # Phone number for private conversations
     uuid: Optional[str] = None
+    description: Optional[str] = None
 
 
 @dataclass
@@ -510,6 +511,7 @@ class DevToolsClient:
                     groupId: conv.get('groupId') || null,
                     e164: conv.get('e164') || null,
                     uuid: conv.get('uuid') || null,
+                    description: conv.get('description') || null,
                 }));
             } catch (err) {
                 return { error: err.message };
@@ -532,6 +534,7 @@ class DevToolsClient:
                         group_id=c.get("groupId"),
                         e164=c.get("e164"),
                         uuid=c.get("uuid"),
+                        description=c.get("description"),
                     )
                     for c in result
                 ]

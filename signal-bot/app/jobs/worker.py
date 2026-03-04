@@ -233,6 +233,45 @@ def _trim_buffer(buffer_text: str, max_age_hours: int, max_messages: int) -> str
     return "\n\n".join(block for _, block in filtered_blocks) + "\n\n"
 
 
+_DOC_URL_RE = re.compile(r"https?://docs\.google\.com/document/d/[a-zA-Z0-9_-]+[^\s]*")
+
+# Track which groups we've already tried to sync docs for (avoids repeated API calls)
+_docs_synced_groups: set[str] = set()
+
+
+def _maybe_sync_docs_from_description(deps: "WorkerDeps", group_id: str) -> None:
+    """If group has no docs_urls yet, try extracting Google Docs links from its Signal description."""
+    if group_id in _docs_synced_groups:
+        return
+    _docs_synced_groups.add(group_id)
+
+    from app.db.queries_mysql import get_group_docs, upsert_group_docs
+
+    existing = get_group_docs(deps.db, group_id)
+    if existing:
+        return
+
+    description = None
+    try:
+        for g in deps.signal.list_groups():
+            if g.group_id == group_id and getattr(g, "description", None):
+                description = g.description
+                break
+    except Exception:
+        log.debug("Could not list groups for description sync")
+        return
+
+    if not description:
+        return
+
+    urls = _DOC_URL_RE.findall(description)
+    if not urls:
+        return
+
+    log.info("Auto-parsed %d doc URL(s) from group %s description", len(urls), group_id)
+    upsert_group_docs(deps.db, group_id, urls)
+
+
 def _mentions_bot(settings: Settings, text: str) -> bool:
     low = text.lower()
     return any(m.lower() in low for m in settings.bot_mention_strings)
@@ -804,6 +843,9 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
             if sess is not None:
                 group_lang = sess.lang or "uk"
                 break
+
+        # Auto-parse docs URLs from group description if none configured yet
+        _maybe_sync_docs_from_description(deps, group_id)
 
         # Check for admin commands
         if msg.content_text.strip().startswith("/setdocs"):

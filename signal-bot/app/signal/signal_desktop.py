@@ -351,6 +351,7 @@ class SignalDesktopAdapter:
                     groups.append(GroupInfo(
                         group_id=g.get("group_id") or g.get("id", ""),
                         group_name=g.get("name", ""),
+                        description=g.get("description"),
                     ))
                 return groups
         except Exception as e:
@@ -369,6 +370,7 @@ class SignalDesktopAdapter:
                     return GroupInfo(
                         group_id=g.get("group_id") or g.get("id", ""),
                         group_name=g.get("name", ""),
+                        description=g.get("description"),
                     )
                 return None
         except Exception as e:

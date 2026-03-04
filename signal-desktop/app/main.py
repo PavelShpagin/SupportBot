@@ -484,6 +484,7 @@ async def list_groups():
                     "id": g.id,
                     "name": g.name,
                     "group_id": g.group_id,
+                    "description": g.description,
                 }
                 for g in groups
             ]
@@ -512,6 +513,7 @@ async def find_group(name: str = Query(..., description="Group name to search fo
                     "id": group.id,
                     "name": group.name,
                     "group_id": group.group_id,
+                    "description": group.description,
                 }
             }
         else:
