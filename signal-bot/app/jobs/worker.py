@@ -830,7 +830,7 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
 
         # ── Gate: fast Flash model decides if this is a genuine support inquiry ──
         # Load recent messages for context (exclude the current one)
-        context_msgs = get_last_messages_text(deps.db, group_id, n=9)
+        context_msgs = get_last_messages_text(deps.db, group_id, n=deps.settings.context_last_n)
         # context_msgs are newest-last; current message is the last item
         context_text = "\n".join(context_msgs[:-1]) if len(context_msgs) > 1 else ""
 
