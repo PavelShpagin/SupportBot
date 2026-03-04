@@ -401,7 +401,8 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
     )
 
     # Reconcile stale admins first so re-added users always start fresh.
-    _prune_disconnected_admins()
+    # Exclude the current sender — they're actively messaging, so not disconnected.
+    _prune_disconnected_admins(exclude_admin=m.sender)
     
     admin_id = m.sender
     text = m.text.strip()
