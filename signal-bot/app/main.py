@@ -760,7 +760,7 @@ def signal_link_device_qr() -> Response:
     Debug-only: generate and return a QR PNG for `signal-cli link`.
 
     Open this endpoint in a desktop browser and scan the QR on your phone:
-      Signal -> Settings -> Linked devices -> Link new device
+      Signal -> Profile Icon -> Linked devices -> Link new device
     """
     if not settings.http_debug_endpoints_enabled:
         raise HTTPException(status_code=404, detail="Not found")
@@ -1304,18 +1304,18 @@ def history_qr_code(req: HistoryQrCodeRequest) -> dict:
             caption = (
                 "Відскануйте цей QR-код у Signal:\n\n"
                 "1. Відкрийте Signal на телефоні\n"
-                "2. Налаштування → Пов'язані пристрої → Додати пристрій\n"
+                "2. Іконка профілю → Пов'язані пристрої → Додати пристрій\n"
                 "3. Відскануйте QR-код\n\n"
-                "Примітка: макс. 5 пристроїв. Видаліть один при ліміті.\n\n"
+                "Примітка: макс. 5 пов'язаних пристроїв. Видаліть один при ліміті.\n\n"
                 "Очікую сканування (5 хв)..."
             )
         else:
             caption = (
                 "Scan this QR code in Signal:\n\n"
                 "1. Open Signal on your phone\n"
-                "2. Settings → Linked Devices → Link New Device\n"
+                "2. Profile Icon → Linked Devices → Link New Device\n"
                 "3. Scan the QR code\n\n"
-                "Note: max 5 devices. Remove one if limit reached.\n\n"
+                "Note: max 5 linked devices. Remove one if limit reached.\n\n"
                 "Waiting for scan (5 min)..."
             )
         

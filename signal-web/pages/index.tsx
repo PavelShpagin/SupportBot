@@ -185,6 +185,13 @@ export default function Home() {
           line-height: 1.55;
         }
 
+        .note a {
+          color: var(--signal-blue);
+          text-decoration: none;
+          font-weight: 500;
+        }
+        .note a:hover { text-decoration: underline; }
+
         footer {
           padding: 14px 20px;
           border-top: 1px solid var(--border);
@@ -252,7 +259,7 @@ export default function Home() {
                 <li>Напишіть <code>/en</code> — бот відповідатиме англійською (English)</li>
               </ul>
 
-              <div className="note">Бот обробляє повідомлення для формування бази знань. Використовуйте зі згоди учасників групи.</div>
+              <div className="note">Бот обробляє повідомлення групи для формування бази знань. Ідентифікатори відправників анонімізовані. Видалення бота з групи зупиняє обробку. <a href="/privacy?lang=uk">Політика конфіденційності та Умови використання →</a></div>
             </main>
           ) : (
             <main>
@@ -284,7 +291,7 @@ export default function Home() {
                 <li>Send <code>/en</code> — bot will reply in English</li>
               </ul>
 
-              <div className="note">The bot processes messages to build a knowledge base. Use with the consent of group members.</div>
+              <div className="note">The bot processes group messages to build a knowledge base. Sender identifiers are anonymized. Removing the bot from the group stops processing. <a href="/privacy?lang=en">Privacy Policy & Terms of Service →</a></div>
             </main>
           )}
 
