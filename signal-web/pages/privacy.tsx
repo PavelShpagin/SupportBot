@@ -136,6 +136,9 @@ export default function Privacy() {
           font-weight: bold;
         }
 
+        a { color: var(--signal-blue); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
         .back-link {
           display: inline-block;
           margin-top: 20px;
@@ -249,7 +252,7 @@ export default function Privacy() {
               <p>Ми можемо оновлювати цю політику. Зміни набувають чинності з моменту публікації на цій сторінці. Продовження використання бота означає прийняття оновлених умов.</p>
 
               <h2>9. Контакти</h2>
-              <p>З питань конфіденційності або для запиту на видалення даних зверніться до адміністратора вашої групи або до нас через Signal.</p>
+              <p>З питань конфіденційності або для запиту на видалення даних зверніться до адміністратора вашої групи або напишіть нам: <a href="mailto:support@theacademia.tech">support@theacademia.tech</a></p>
 
               <Link href="/" className="back-link">← На головну</Link>
             </main>
@@ -319,7 +322,7 @@ export default function Privacy() {
               <p>We may update this policy. Changes take effect upon publication on this page. Continued use of the bot constitutes acceptance of the updated terms.</p>
 
               <h2>9. Contact</h2>
-              <p>For privacy questions or data deletion requests, contact your group administrator or reach us via Signal.</p>
+              <p>For privacy questions or data deletion requests, contact your group administrator or email us at <a href="mailto:support@theacademia.tech">support@theacademia.tech</a></p>
 
               <Link href="/" className="back-link">← Back to home</Link>
             </main>
