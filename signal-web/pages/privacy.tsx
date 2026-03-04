@@ -107,8 +107,7 @@ export default function Privacy() {
 
         main { padding: 32px 24px 28px; }
 
-        h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.025em; margin-bottom: 8px; }
-        .effective { color: var(--text-sec); font-size: 13px; margin-bottom: 24px; }
+        h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.025em; margin-bottom: 24px; }
         h2 {
           font-size: 16px;
           font-weight: 650;
@@ -186,8 +185,7 @@ export default function Privacy() {
 
           {lang === 'uk' ? (
             <main>
-              <h1>Політика конфіденційності та Умови використання</h1>
-              <p className="effective">Дата набуття чинності: 4 березня 2026</p>
+              <h1>Конфіденційність та Умови використання</h1>
 
               <h2>1. Які дані ми обробляємо</h2>
               <p>SupportBot обробляє повідомлення в Signal-групах, до яких його додано адміністратором. Це включає:</p>
@@ -196,9 +194,9 @@ export default function Privacy() {
                 <li>Зображення та файли, надіслані в групі (для OCR-розпізнавання та зберігання в базі знань)</li>
                 <li>Метадані повідомлень: час відправки, хеш відправника (анонімізований ідентифікатор), відповіді на повідомлення</li>
               </ul>
-              <p>Ми <strong>не</strong> обробляємо та не зберігаємо:</p>
+              <p>Ми не обробляємо та не зберігаємо:</p>
               <ul>
-                <li>Номери телефонів учасників (зберігаються лише односторонні хеші)</li>
+                <li>Номери телефонів учасників (зберігаються лише односторонні SHA-256 хеші)</li>
                 <li>Особисті повідомлення учасників між собою</li>
                 <li>Повідомлення з груп, до яких бот не доданий</li>
               </ul>
@@ -207,8 +205,8 @@ export default function Privacy() {
               <p>При першому підключенні до групи адміністратор може дозволити імпорт історії повідомлень (до 45 днів). Цей процес:</p>
               <ul>
                 <li>Потребує явного підтвердження від адміністратора (сканування QR-коду)</li>
-                <li>Створює тимчасове підключення до Signal Desktop для отримання історії</li>
-                <li>Після завершення імпорту підключення автоматично розривається з міркувань безпеки</li>
+                <li>Створює тимчасове підключення до Signal Desktop для отримання історії, захищене одноразовим токеном</li>
+                <li>Після завершення імпорту підключення автоматично розривається, а тимчасові дані видаляються</li>
                 <li>Витягує з повідомлень структуровані кейси підтримки (проблема + рішення) для бази знань</li>
               </ul>
 
@@ -219,25 +217,29 @@ export default function Privacy() {
                 <li>Автоматичних відповідей на нові запитання в групі на основі попереднього досвіду</li>
                 <li>OCR-розпізнавання тексту на зображеннях для покращення якості бази знань</li>
               </ul>
-              <p>Дані <strong>не</strong> передаються третім сторонам, не використовуються для рекламних цілей та не продаються.</p>
+              <p>Дані не передаються третім сторонам, не використовуються для рекламних цілей та не продаються.</p>
 
-              <h2>4. Зберігання та безпека даних</h2>
+              <h2>4. Безпека</h2>
+              <p>SupportBot побудований на Signal — найбезпечнішому месенджері з наскрізним шифруванням. Додаткові заходи безпеки:</p>
               <ul>
-                <li>Дані зберігаються на захищеному сервері</li>
-                <li>Файли-вкладення зберігаються у зашифрованому хмарному сховищі (Cloudflare R2)</li>
-                <li>Ідентифікатори відправників анонімізовані за допомогою односторонніх хешів</li>
-                <li>Зв&apos;язок з Signal здійснюється через шифрований протокол Signal</li>
+                <li>Наскрізне шифрування Signal Protocol для всіх повідомлень між ботом і групами</li>
+                <li>HTTPS з автоматичним TLS для всіх веб-з&apos;єднань</li>
+                <li>Файли-вкладення зберігаються у приватному хмарному сховищі Cloudflare R2 (доступ лише через автентифікований серверний проксі, публічний доступ до сховища відсутній)</li>
+                <li>Ідентифікатори відправників анонімізовані за допомогою незворотних SHA-256 хешів — відновити номер телефону з хешу неможливо</li>
+                <li>Імпорт історії захищений одноразовими токенами з обмеженим терміном дії</li>
+                <li>Після завершення імпорту тимчасове з&apos;єднання Signal Desktop автоматично розривається, а локальні дані видаляються</li>
+                <li>Всі секрети та облікові дані зберігаються у змінних середовища, без вбудовування у код</li>
               </ul>
 
               <h2>5. Видалення даних</h2>
               <p>Щоб повністю видалити всі дані, пов&apos;язані з групою:</p>
               <ul>
-                <li><strong>Видаліть бота з групи</strong> — це зупиняє обробку нових повідомлень</li>
-                <li>Зверніться до адміністратора для видалення збережених кейсів та повідомлень</li>
+                <li>Видаліть бота з групи — це зупиняє обробку нових повідомлень</li>
+                <li>Зверніться до адміністратора для видалення збережених кейсів та повідомлень із бази даних</li>
               </ul>
               <p>Адміністратор групи може запросити повне видалення даних, звернувшись до нас.</p>
 
-              <h2>6. Використання сторонніх сервісів</h2>
+              <h2>6. Сторонні сервіси</h2>
               <p>Для аналізу повідомлень та створення кейсів бот використовує Google Gemini API. Повідомлення передаються в API для обробки, але не зберігаються Google відповідно до їхньої політики для API-користувачів.</p>
 
               <h2>7. Умови використання</h2>
@@ -245,9 +247,8 @@ export default function Privacy() {
               <ul>
                 <li>Ви маєте право (або згоду адміністратора) додавати бота до відповідної групи</li>
                 <li>Учасники групи повідомлені про присутність бота та обробку повідомлень</li>
-                <li>Бот надає відповіді на основі бази знань і не гарантує їх точність або повноту</li>
-                <li>Ви не будете використовувати бота для обробки конфіденційної особистої інформації (медичні, фінансові дані тощо)</li>
-                <li>Оператор залишає за собою право припинити обслуговування без попередження</li>
+                <li>Кожна відповідь бота містить посилання на кейс-джерело, щоб будь-хто міг перевірити правильність відповіді. Бот не гарантує абсолютну точність або повноту відповідей</li>
+                <li>Сервіс надається «як є». У разі змін у доступності сервісу ми зробимо розумні зусилля для попередження адміністраторів</li>
               </ul>
 
               <h2>8. Зміни до цієї політики</h2>
@@ -261,7 +262,6 @@ export default function Privacy() {
           ) : (
             <main>
               <h1>Privacy Policy & Terms of Service</h1>
-              <p className="effective">Effective date: March 4, 2026</p>
 
               <h2>1. What data we process</h2>
               <p>SupportBot processes messages in Signal groups to which it has been added by an administrator. This includes:</p>
@@ -270,9 +270,9 @@ export default function Privacy() {
                 <li>Images and files sent in the group (for OCR recognition and knowledge base storage)</li>
                 <li>Message metadata: send time, sender hash (anonymized identifier), message replies</li>
               </ul>
-              <p>We <strong>do not</strong> process or store:</p>
+              <p>We do not process or store:</p>
               <ul>
-                <li>Phone numbers of group members (only one-way hashes are stored)</li>
+                <li>Phone numbers of group members (only irreversible SHA-256 hashes are stored)</li>
                 <li>Private messages between members</li>
                 <li>Messages from groups where the bot is not a member</li>
               </ul>
@@ -281,8 +281,8 @@ export default function Privacy() {
               <p>When first connecting to a group, the administrator may authorize importing message history (up to 45 days). This process:</p>
               <ul>
                 <li>Requires explicit authorization from the administrator (QR code scan)</li>
-                <li>Creates a temporary Signal Desktop link to retrieve history</li>
-                <li>Automatically disconnects after import completes for security</li>
+                <li>Creates a temporary Signal Desktop link to retrieve history, secured by a one-time token</li>
+                <li>Automatically disconnects after import completes and deletes temporary data</li>
                 <li>Extracts structured support cases (problem + solution) from messages for the knowledge base</li>
               </ul>
 
@@ -293,21 +293,25 @@ export default function Privacy() {
                 <li>Automatically answering new questions in the group based on past experience</li>
                 <li>OCR text recognition on images to improve knowledge base quality</li>
               </ul>
-              <p>Data is <strong>not</strong> shared with third parties, not used for advertising, and not sold.</p>
+              <p>Data is not shared with third parties, not used for advertising, and not sold.</p>
 
-              <h2>4. Data storage and security</h2>
+              <h2>4. Security</h2>
+              <p>SupportBot is built on Signal — the most secure messenger with end-to-end encryption. Additional security measures:</p>
               <ul>
-                <li>Data is stored on a secured server</li>
-                <li>File attachments are stored in encrypted cloud storage (Cloudflare R2)</li>
-                <li>Sender identifiers are anonymized using one-way hashes</li>
-                <li>Communication with Signal uses the encrypted Signal protocol</li>
+                <li>Signal Protocol end-to-end encryption for all messages between the bot and groups</li>
+                <li>HTTPS with automatic TLS for all web connections</li>
+                <li>File attachments are stored in a private Cloudflare R2 bucket (access only through an authenticated server-side proxy — no public bucket access)</li>
+                <li>Sender identifiers are anonymized using irreversible SHA-256 hashes — recovering a phone number from a hash is not possible</li>
+                <li>History import is secured by single-use tokens with limited validity</li>
+                <li>After import completes, the temporary Signal Desktop session is automatically destroyed and local data is wiped</li>
+                <li>All secrets and credentials are stored in environment variables, never hardcoded</li>
               </ul>
 
               <h2>5. Data deletion</h2>
               <p>To completely remove all data associated with a group:</p>
               <ul>
-                <li><strong>Remove the bot from the group</strong> — this stops processing of new messages</li>
-                <li>Contact your administrator to request deletion of stored cases and messages</li>
+                <li>Remove the bot from the group — this stops processing of new messages</li>
+                <li>Contact your administrator to request deletion of stored cases and messages from the database</li>
               </ul>
               <p>The group administrator may request full data deletion by contacting us.</p>
 
@@ -319,9 +323,8 @@ export default function Privacy() {
               <ul>
                 <li>You have the right (or administrator consent) to add the bot to the respective group</li>
                 <li>Group members are informed about the bot&apos;s presence and message processing</li>
-                <li>The bot provides answers based on its knowledge base and does not guarantee their accuracy or completeness</li>
-                <li>You will not use the bot to process sensitive personal information (medical, financial data, etc.)</li>
-                <li>The operator reserves the right to discontinue the service without prior notice</li>
+                <li>Every bot response includes a citation linking to the source case, so anyone can verify the answer. The bot does not guarantee absolute accuracy or completeness of responses</li>
+                <li>The service is provided &quot;as is&quot;. In case of changes to service availability, we will make reasonable efforts to notify administrators</li>
               </ul>
 
               <h2>8. Changes to this policy</h2>
