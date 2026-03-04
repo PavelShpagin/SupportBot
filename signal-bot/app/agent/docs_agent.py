@@ -89,6 +89,39 @@ class DocsAgent:
         log.info("Cached %d doc parts for group %s", len(parts), group_id[:20])
         return parts
 
+    @staticmethod
+    def _build_prompt_with_images(
+        content_parts: list[Any], context: str, question: str,
+    ) -> tuple[str, list[tuple[bytes, str]]]:
+        """Build prompt text with [[IMG:N]] markers and a parallel images list.
+
+        Doc images are placed at their natural positions in the document flow.
+        """
+        doc_text_segments: list[str] = []
+        images: list[tuple[bytes, str]] = []
+        img_idx = 0
+
+        for part in content_parts:
+            if isinstance(part, str):
+                doc_text_segments.append(part)
+            elif isinstance(part, dict) and "data" in part:
+                mime = part.get("mime_type", "image/jpeg")
+                images.append((part["data"], mime))
+                doc_text_segments.append(f"[[IMG:{img_idx}]]")
+                img_idx += 1
+            else:
+                doc_text_segments.append(str(part))
+
+        docs_block = "\n".join(doc_text_segments)
+
+        variable_section = ""
+        if context.strip():
+            variable_section += f"\nRecent chat context:\n{context}\n"
+        variable_section += f"\nQUESTION:\n{question}"
+
+        prompt = f"{DOCS_SYSTEM_PROMPT}\n\nDOCUMENTATION:\n{docs_block}\n{variable_section}"
+        return prompt, images
+
     def answer(self, question: str, group_id: str, db: Any, context: str = "") -> str:
         """Answer a question using the group's documentation.
 
@@ -100,18 +133,15 @@ class DocsAgent:
 
         content_parts = self._get_or_refresh_docs(group_id, urls)
 
-        text_parts = [p for p in content_parts if isinstance(p, str)]
-        docs_text = "\n".join(text_parts)
-
-        variable_section = ""
-        if context.strip():
-            variable_section += f"\nRecent chat context:\n{context}\n"
-        variable_section += f"\nQUESTION:\n{question}"
-
-        prompt = f"{DOCS_SYSTEM_PROMPT}\n\nDOCUMENTATION:\n{docs_text}\n{variable_section}"
+        prompt, images = self._build_prompt_with_images(content_parts, context, question)
 
         try:
-            return self.llm.chat(prompt=prompt, cascade=SUBAGENT_CASCADE, timeout=45.0)
+            return self.llm.chat(
+                prompt=prompt,
+                cascade=SUBAGENT_CASCADE,
+                timeout=60.0,
+                images=images if images else None,
+            )
         except Exception as exc:
             log.error("DocsAgent LLM call failed: %s", exc)
             return f"INSUFFICIENT_INFO (Error: {exc})"
