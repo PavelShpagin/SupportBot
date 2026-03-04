@@ -661,6 +661,18 @@ class SignalCliAdapter:
 
                 buf = ""
 
+                # Detect group metadata updates FIRST (before group message)
+                # Description/name changes come as dataMessage with groupInfo type=UPDATE, empty body.
+                # If we parsed them as group messages first, we'd never reach on_group_update.
+                if on_group_update is not None:
+                    updated_group_id = _parse_group_update(obj)
+                    if updated_group_id is not None:
+                        try:
+                            on_group_update(updated_group_id)
+                        except Exception:
+                            log.exception("on_group_update handler failed")
+                        continue
+
                 # Try parsing as group message
                 group_msg = _parse_group_message(obj)
                 if group_msg is not None:
@@ -699,15 +711,6 @@ class SignalCliAdapter:
                             log.exception("on_contact_removed handler failed")
                         continue
 
-                # Detect group metadata updates (description/name change)
-                if on_group_update is not None:
-                    updated_group_id = _parse_group_update(obj)
-                    if updated_group_id is not None:
-                        try:
-                            on_group_update(updated_group_id)
-                        except Exception:
-                            log.exception("on_group_update handler failed")
-                        continue
             # Normal (timeout) exit: loop again.
             # Small pause to avoid starving other signal-cli commands that need the config lock.
             time.sleep(0.2)
