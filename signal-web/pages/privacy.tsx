@@ -228,16 +228,10 @@ export default function Privacy() {
                 <li>Ідентифікатори відправників анонімізовані за допомогою незворотних SHA-256 хешів — відновити номер телефону з хешу неможливо</li>
                 <li>Імпорт історії захищений одноразовими токенами з обмеженим терміном дії</li>
                 <li>Після завершення імпорту тимчасове з&apos;єднання Signal Desktop автоматично розривається, а локальні дані видаляються</li>
-                <li>Всі секрети та облікові дані зберігаються у змінних середовища, без вбудовування у код</li>
               </ul>
 
               <h2>5. Видалення даних</h2>
-              <p>Щоб повністю видалити всі дані, пов&apos;язані з групою:</p>
-              <ul>
-                <li>Видаліть бота з групи — це зупиняє обробку нових повідомлень</li>
-                <li>Зверніться до адміністратора для видалення збережених кейсів та повідомлень із бази даних</li>
-              </ul>
-              <p>Адміністратор групи може запросити повне видалення даних, звернувшись до нас.</p>
+              <p>Додаючи бота до групи, адміністратор та учасники погоджуються, що дані групи обробляються та зберігаються Academia Tech. Для видалення всіх даних, пов&apos;язаних з групою, адміністратор повинен видалити бота з групи — після цього обробка нових повідомлень зупиняється, а всі збережені кейси, повідомлення та файли цієї групи видаляються з серверів.</p>
 
               <h2>6. Сторонні сервіси</h2>
               <p>Для аналізу повідомлень та створення кейсів бот використовує Google Gemini API. Повідомлення передаються в API для обробки, але не зберігаються Google відповідно до їхньої політики для API-користувачів.</p>
@@ -304,16 +298,10 @@ export default function Privacy() {
                 <li>Sender identifiers are anonymized using irreversible SHA-256 hashes — recovering a phone number from a hash is not possible</li>
                 <li>History import is secured by single-use tokens with limited validity</li>
                 <li>After import completes, the temporary Signal Desktop session is automatically destroyed and local data is wiped</li>
-                <li>All secrets and credentials are stored in environment variables, never hardcoded</li>
               </ul>
 
               <h2>5. Data deletion</h2>
-              <p>To completely remove all data associated with a group:</p>
-              <ul>
-                <li>Remove the bot from the group — this stops processing of new messages</li>
-                <li>Contact your administrator to request deletion of stored cases and messages from the database</li>
-              </ul>
-              <p>The group administrator may request full data deletion by contacting us.</p>
+              <p>By adding the bot to a group, the administrator and group members agree that group data is processed and stored by Academia Tech. To delete all data associated with a group, the administrator must remove the bot from the group — this stops processing of new messages and all stored cases, messages, and files for that group are deleted from the servers.</p>
 
               <h2>6. Third-party services</h2>
               <p>The bot uses Google Gemini API for message analysis and case creation. Messages are sent to the API for processing but are not retained by Google per their API user policy.</p>
