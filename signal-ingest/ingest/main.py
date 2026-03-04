@@ -205,9 +205,13 @@ def _fetch_attachment(
 ) -> Optional[bytes]:
     """Fetch raw bytes for a Signal Desktop attachment with retries.
 
-    Tries two sources, CDN-cache first (more reliable for history), then disk:
-    1. ``GET /attachment/by-cdn/{cdn_key}`` — CDN-downloaded + decrypted cache.
-    2. ``GET /attachment?path=...`` — on-disk (auto-decrypts v2 encrypted files).
+    Tries two sources, on-disk path first (unique per attachment), then CDN:
+    1. ``GET /attachment?path=...`` — on-disk (auto-decrypts v2 encrypted files).
+    2. ``GET /attachment/by-cdn/{cdn_key}`` — CDN-downloaded + decrypted cache.
+
+    On-disk is preferred because each attachment has a unique path, while
+    multiple attachments can share the same cdnKey (Signal reuses CDN upload
+    slots), which would return the same cached blob for all of them.
 
     Retries each source on transient failures (timeouts, 5xx).
     Returns None if all attempts fail or the file is too large.
@@ -250,15 +254,17 @@ def _fetch_attachment(
                     return None
         return None
 
-    # CDN cache first (more reliable for history ingestion — already decrypted)
-    if cdn_key:
-        data = _get_with_retry(f"{base}/attachment/by-cdn/{cdn_key}")
+    # On-disk path first — each attachment has a unique path even when
+    # multiple attachments share the same cdnKey (Signal reuses upload
+    # slots).  The on-disk endpoint handles v2 decryption transparently.
+    if rel_path:
+        data = _get_with_retry(f"{base}/attachment", params={"path": rel_path})
         if data is not None:
             return data
 
-    # Then try on-disk (handles v2 decryption transparently)
-    if rel_path:
-        data = _get_with_retry(f"{base}/attachment", params={"path": rel_path})
+    # CDN cache fallback — useful when path is missing (CDN-only attachments)
+    if cdn_key:
+        data = _get_with_retry(f"{base}/attachment/by-cdn/{cdn_key}")
         if data is not None:
             return data
 
