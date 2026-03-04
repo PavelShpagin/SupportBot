@@ -19,6 +19,7 @@ import logging
 import re
 import time
 import urllib.parse
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -580,26 +581,29 @@ def _llm_call_with_fallback(
     Tries `model` first, then each entry in `fallback_models` in order.
     Only falls back on transient errors (503 Service Unavailable, timeout).
     Raises the last exception if all models are exhausted.
+
+    Timeout is per-model. Earlier (better) models get the given timeout;
+    the last fallback model gets 2x the timeout as a safety net.
     """
     import openai as _openai
 
     models_to_try = [model] + list(fallback_models)
     last_exc: Exception | None = None
-    for m in models_to_try:
+    for i, m in enumerate(models_to_try):
+        is_last = (i == len(models_to_try) - 1)
+        model_timeout = timeout * 2 if is_last and len(models_to_try) > 1 else timeout
         try:
-            return openai_client.chat.completions.create(model=m, timeout=timeout, **kwargs)
+            return openai_client.chat.completions.create(model=m, timeout=model_timeout, **kwargs)
         except (_openai.APITimeoutError, _openai.APIStatusError) as e:
             status_code = getattr(e, "status_code", None)
-            # Retry on: timeout, 503 Service Unavailable, 499 Cancelled (Gemini cancels
-            # long-running requests under load — treat as transient).
             is_retryable = isinstance(e, _openai.APITimeoutError) or status_code in (499, 503)
             if is_retryable:
                 log.warning(
-                    "Model %s failed (%s status=%s), trying next fallback...",
-                    m, type(e).__name__, status_code,
+                    "Model %s failed (%s status=%s, timeout=%.0fs), trying next fallback...",
+                    m, type(e).__name__, status_code, model_timeout,
                 )
                 last_exc = e
-                time.sleep(2)
+                time.sleep(1)
             else:
                 raise
     raise last_exc
@@ -610,7 +614,7 @@ def _extract_case_blocks(
     openai_client: OpenAI,
     model: str,
     chunk_text: str,
-    timeout: float = 120.0,
+    timeout: float = 60.0,
 ) -> List[str]:
     """Extract solved support cases from a chunk of messages.
 
@@ -654,7 +658,7 @@ def _extract_structured_cases(
     fallback_models: list,
     chunk_text: str,
     images: list[tuple[bytes, str]] | None = None,
-    timeout: float = 120.0,
+    timeout: float = 60.0,
 ) -> List[dict]:
     """Extract solved support cases with full structured fields in one pass."""
     user_parts: list = [{"type": "text", "text": f"HISTORY_CHUNK:\n{chunk_text}"}]
@@ -1415,19 +1419,51 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
         log.info("Split into %d chunks for processing", len(chunks))
 
         all_structured: List[dict] = []
-        for i, (ch, ch_images) in enumerate(chunks):
-            check_cancelled()
-            if len(chunks) > 1:
-                _notify_progress(settings=settings, token=token, progress_key="processing_chunk", current=i+1, total=len(chunks))
-            all_structured.extend(
-                _extract_structured_cases(
-                    openai_client=openai_client_early,
-                    model=settings.model_blocks,
-                    fallback_models=settings.model_blocks_fallback,
-                    chunk_text=ch,
-                    images=ch_images or None,
+        n_chunks = len(chunks)
+        max_workers = min(n_chunks, 4)
+
+        if n_chunks <= 1:
+            # Single chunk — no threading overhead
+            for i, (ch, ch_images) in enumerate(chunks):
+                check_cancelled()
+                if n_chunks > 1:
+                    _notify_progress(settings=settings, token=token, progress_key="processing_chunk", current=i+1, total=n_chunks)
+                all_structured.extend(
+                    _extract_structured_cases(
+                        openai_client=openai_client_early,
+                        model=settings.model_blocks,
+                        fallback_models=settings.model_blocks_fallback,
+                        chunk_text=ch,
+                        images=ch_images or None,
+                    )
                 )
-            )
+        else:
+            # Parallel extraction — chunks are independent
+            completed = 0
+            futures = {}
+            with ThreadPoolExecutor(max_workers=max_workers) as executor:
+                for i, (ch, ch_images) in enumerate(chunks):
+                    check_cancelled()
+                    fut = executor.submit(
+                        _extract_structured_cases,
+                        openai_client=openai_client_early,
+                        model=settings.model_blocks,
+                        fallback_models=settings.model_blocks_fallback,
+                        chunk_text=ch,
+                        images=ch_images or None,
+                    )
+                    futures[fut] = i
+
+                for fut in as_completed(futures):
+                    check_cancelled()
+                    completed += 1
+                    _notify_progress(settings=settings, token=token, progress_key="processing_chunk", current=completed, total=n_chunks)
+                    try:
+                        result = fut.result()
+                        all_structured.extend(result)
+                    except Exception:
+                        log.exception("Chunk %d failed, skipping", futures[fut])
+                        continue
 
         deduped = _dedup_cases_llm(
             openai_client=openai_client_early,
