@@ -23,6 +23,9 @@ log = logging.getLogger(__name__)
 
 T = TypeVar("T", bound=BaseModel)
 
+SUBAGENT_CASCADE = ["gemini-3.1-pro-preview", "gemini-2.5-pro", "gemini-2.5-flash"]
+GATE_CASCADE = ["gemini-2.5-flash", "gemini-2.0-flash"]
+
 
 class LLMClient:
     def __init__(self, settings: Settings):
@@ -39,6 +42,32 @@ class LLMClient:
         )
 
     def _json_call(
+        self,
+        *,
+        model: str,
+        system: str,
+        user: str,
+        schema: Type[T],
+        images: list[tuple[bytes, str]] | None = None,
+        cascade: list[str] | None = None,
+    ) -> T:
+        models_to_try = cascade or [model]
+        last_exc: Exception | None = None
+
+        for m in models_to_try:
+            try:
+                return self._json_call_single(
+                    model=m, system=system, user=user, schema=schema, images=images
+                )
+            except (json.JSONDecodeError, ValidationError):
+                raise  # parse errors: not a model issue, don't cascade
+            except Exception as exc:
+                log.warning("Cascade: %s failed (%s), trying next model", m, exc)
+                last_exc = exc
+
+        raise RuntimeError(f"All cascade models failed: {last_exc}")
+
+    def _json_call_single(
         self,
         *,
         model: str,
@@ -101,16 +130,25 @@ class LLMClient:
 
         raise RuntimeError(f"LLM JSON call failed after retries: {last_exc}")
 
-    def chat(self, *, prompt: str, model: str | None = None, timeout: float = 30.0) -> str:
-        """Free-text (non-JSON) completion. Returns the raw text response."""
-        m = model or self.settings.model_respond
-        resp = self.client.chat.completions.create(
-            model=m,
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0,
-            timeout=timeout,
-        )
-        return (resp.choices[0].message.content or "").strip()
+    def chat(self, *, prompt: str, model: str | None = None, timeout: float = 30.0, cascade: list[str] | None = None) -> str:
+        """Free-text (non-JSON) completion with optional model cascade."""
+        models_to_try = cascade or [model or self.settings.model_respond]
+        last_exc: Exception | None = None
+
+        for m in models_to_try:
+            try:
+                resp = self.client.chat.completions.create(
+                    model=m,
+                    messages=[{"role": "user", "content": prompt}],
+                    temperature=0,
+                    timeout=timeout,
+                )
+                return (resp.choices[0].message.content or "").strip()
+            except Exception as exc:
+                log.warning("Cascade chat: %s failed (%s), trying next model", m, exc)
+                last_exc = exc
+
+        raise RuntimeError(f"All cascade models failed for chat: {last_exc}")
 
     def embed(self, *, text: str) -> list[float]:
         resp = self.client.embeddings.create(model=self.settings.embedding_model, input=[text])
@@ -134,6 +172,7 @@ class LLMClient:
             user=user,
             schema=ImgExtract,
             images=[(image_bytes, "image/png")],
+            cascade=SUBAGENT_CASCADE,
         )
 
     def extract_case_from_buffer(self, *, buffer_text: str) -> ExtractResult:
@@ -143,6 +182,7 @@ class LLMClient:
             system=P.P_EXTRACT_SYSTEM,
             user=user,
             schema=ExtractResult,
+            cascade=SUBAGENT_CASCADE,
         )
 
     def check_case_resolved(
@@ -158,6 +198,7 @@ class LLMClient:
             system=P.P_RESOLVE_SYSTEM,
             user=user,
             schema=ResolutionResult,
+            cascade=SUBAGENT_CASCADE,
         )
 
     def make_case(self, *, case_block_text: str, images: list[tuple[bytes, str]] | None = None) -> CaseResult:
@@ -168,6 +209,7 @@ class LLMClient:
             user=user,
             schema=CaseResult,
             images=images,
+            cascade=SUBAGENT_CASCADE,
         )
 
     def decide_consider(
@@ -180,6 +222,7 @@ class LLMClient:
             user=user,
             schema=DecisionResult,
             images=images,
+            cascade=GATE_CASCADE,
         )
 
     def decide_and_respond(
@@ -191,7 +234,6 @@ class LLMClient:
         buffer: str = "",
         images: list[tuple[bytes, str]] | None = None,
     ) -> RespondResult:
-        # Build user prompt with buffer context if available
         parts = [
             f"MESSAGE:\n{message}",
             f"CONTEXT (last messages):\n{context}",
@@ -207,5 +249,6 @@ class LLMClient:
             user=user,
             schema=RespondResult,
             images=images,
+            cascade=SUBAGENT_CASCADE,
         )
 

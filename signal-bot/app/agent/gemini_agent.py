@@ -3,23 +3,18 @@ import sys
 import re
 import requests
 import google.generativeai as genai
-from google.generativeai import caching
-import datetime
 from pathlib import Path
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse
 
-# Fix encoding for Windows console
 sys.stdout.reconfigure(encoding='utf-8')
 
-# Configuration
 GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY")
 if GOOGLE_API_KEY:
     genai.configure(api_key=GOOGLE_API_KEY)
 
-# Model configuration
-MODEL_NAME = "gemini-2.0-flash" 
-TARGET_MODEL = "models/gemini-2.0-flash" 
+MODEL_NAME = "gemini-2.5-flash"
+TARGET_MODEL = "models/gemini-2.5-flash"
 
 def extract_doc_id(url):
     """Extract Google Doc ID from URL."""
@@ -163,14 +158,20 @@ def build_context_from_description(description_path):
     return parts
 
 class GeminiAgent:
+    """Docs Q&A agent using Gemini with implicit caching (static docs prefix + variable query)."""
+
     def __init__(self, context_parts, model_name=TARGET_MODEL):
         self.context_parts = context_parts
         self.model_name = model_name
-        self.cache = None
-        self.model = None
-        
-        self.system_instruction = """
-You are a technical support automation system. Your goal is to strictly filter and answer questions based on the provided documentation.
+        self.model = genai.GenerativeModel(
+            model_name,
+            system_instruction=self._system_instruction(),
+        )
+        print(f"GeminiAgent initialized with model {model_name}", flush=True)
+
+    @staticmethod
+    def _system_instruction():
+        return """You are a technical support automation system. Your goal is to strictly filter and answer questions based on the provided documentation.
 
 INPUT CLASSIFICATION & BEHAVIOR:
 
@@ -189,40 +190,11 @@ INPUT CLASSIFICATION & BEHAVIOR:
 
 CONTEXT (Google Docs):
 """
-        self._setup_cache()
-
-    def _setup_cache(self):
-        print("Setting up prompt cache...", flush=True)
-        
-        try:
-            # Create the cache
-            # contents expects a list of Content objects or compatible structure
-            # We wrap our parts in a single 'user' message for the cache context
-            
-            self.cache = caching.CachedContent.create(
-                model=self.model_name,
-                display_name="support_bot_context",
-                system_instruction=self.system_instruction,
-                contents=[{'role': 'user', 'parts': self.context_parts}],
-                ttl=datetime.timedelta(minutes=20),
-            )
-            
-            self.model = genai.GenerativeModel.from_cached_content(cached_content=self.cache)
-            print(f"Cache created: {self.cache.name}", flush=True)
-        except Exception as e:
-            print(f"Cache creation failed: {e}", flush=True)
-            print("Falling back to standard context injection.", flush=True)
-            self.model = genai.GenerativeModel(self.model_name)
 
     def answer(self, question):
         try:
-            if self.cache:
-                response = self.model.generate_content(question)
-            else:
-                # Fallback: Construct prompt manually
-                # Note: If context_parts contains images, we pass them as a list
-                prompt_parts = [self.system_instruction] + self.context_parts + ["\n\nQUESTION:\n" + question]
-                response = self.model.generate_content(prompt_parts)
+            prompt_parts = self.context_parts + ["\n\nQUESTION:\n" + question]
+            response = self.model.generate_content(prompt_parts)
             return response.text
         except Exception as e:
             return f"INSUFFICIENT_INFO (Error: {e})"
