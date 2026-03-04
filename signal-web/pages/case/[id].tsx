@@ -282,16 +282,22 @@ export default function CasePage({ data, publicApiUrl }: Props) {
 
         .message-images a {
           display: block;
-          width: 80px;
-          height: 80px;
+          max-width: 320px;
           border-radius: 8px;
           overflow: hidden;
           border: 1px solid var(--border);
+          transition: opacity 0.15s;
+        }
+
+        .message-images a:hover {
+          opacity: 0.85;
         }
 
         .message-images img {
+          display: block;
           width: 100%;
-          height: 100%;
+          height: auto;
+          max-height: 240px;
           object-fit: cover;
         }
 
@@ -449,12 +455,15 @@ export default function CasePage({ data, publicApiUrl }: Props) {
                     }</p>
                     {msg.images && msg.images.length > 0 && (
                       <div className="message-images">
-                        {msg.images.map((img, idx) => (
-                          <a key={idx} href={`${publicApiUrl}${img}`} target="_blank" rel="noopener noreferrer">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src={`${publicApiUrl}${img}`} alt="Attachment" />
-                          </a>
-                        ))}
+                        {msg.images.map((img, idx) => {
+                          const imgSrc = img.startsWith('http://') || img.startsWith('https://') ? img : `${publicApiUrl}${img}`;
+                          return (
+                            <a key={idx} href={imgSrc} target="_blank" rel="noopener noreferrer">
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img src={imgSrc} alt="Attachment" />
+                            </a>
+                          );
+                        })}
                       </div>
                     )}
                   </div>
