@@ -471,7 +471,7 @@ export default function CasePage({ data, publicApiUrl }: Props) {
 
           {data.evidence && data.evidence.length > 0 ? (
             <div className="messages">
-              {data.evidence.map((msg) => {
+              {data.evidence.filter((msg) => msg.content_text?.trim()).map((msg) => {
                 const participantNum = senderOrder.indexOf(msg.sender_hash) + 1;
                 const label = msg.sender_name || `Учасник ${participantNum}`;
                 const initials = msg.sender_name

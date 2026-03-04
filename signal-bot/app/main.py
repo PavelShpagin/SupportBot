@@ -1623,9 +1623,8 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
 
             # Detect emoji-confirmed cases: case_block header lines contain reactions=N
             emoji_confirmed = bool(re.search(r'\breactions=\d+', case_block))
-            # Extract the actual reaction emoji if present in header (reaction_emoji=<emoji>)
             rxn_emoji_match = re.search(r'\breaction_emoji=(\S+)', case_block)
-            confirmed_emoji = rxn_emoji_match.group(1) if rxn_emoji_match else "👍"
+            confirmed_emoji = rxn_emoji_match.group(1).rstrip('])"\',') if rxn_emoji_match else "👍"
 
             evidence_image_paths: List[str] = []
             for mid in evidence_ids:

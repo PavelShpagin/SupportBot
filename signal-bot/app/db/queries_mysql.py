@@ -994,7 +994,7 @@ def get_case_evidence(db: MySQL, case_id: str) -> List[RawMessage]:
             FROM raw_messages rm
             JOIN case_evidence ce ON rm.message_id = ce.message_id
             WHERE ce.case_id = %s
-            ORDER BY rm.ts ASC
+            ORDER BY rm.ts ASC, rm.message_id ASC
             """,
             (case_id,),
         )
