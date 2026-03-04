@@ -1715,7 +1715,7 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
     # We do NOT re-index archived cases from previous ingests: they were just wiped from
     # SCRAG by delete_cases_by_group above and should stay out — their status means a human
     # decided they're superseded.  Putting them back would resurface unapproved or stale
-    # knowledge (exactly the bug that caused the archived IMX-114 case to keep appearing).
+    # knowledge (exactly the bug that caused archived cases to keep reappearing).
     reindexed = 0
     try:
         from app.db.queries_mysql import get_case
