@@ -401,8 +401,7 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
     )
 
     # Reconcile stale admins first so re-added users always start fresh.
-    # Exclude the current sender — they're actively messaging, so not disconnected.
-    _prune_disconnected_admins(exclude_admin=m.sender)
+    _prune_disconnected_admins()
     
     admin_id = m.sender
     text = m.text.strip()
@@ -1008,7 +1007,7 @@ def view_case(case_id: str):
         <div class="case-header">
             <h1>{_html.escape(case.get('problem_title', 'Case ' + case_id))}</h1>
             <div class="status {case.get('status', 'open')}">{case.get('status', 'open')}</div>
-            <div class="case-date">{_html.escape(case.get('created_at', '') or '')}</div>
+            <div class="case-date">Created: {_html.escape(case.get('created_at', '') or 'Unknown')}</div>
             <p><strong>Problem:</strong> {_html.escape(case.get('problem_summary', ''))}</p>
             <p><strong>Solution:</strong> {_html.escape(case.get('solution_summary', ''))}</p>
         </div>
