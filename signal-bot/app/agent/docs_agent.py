@@ -1,163 +1,117 @@
-"""DocsAgent — Google Docs Q&A with implicit caching.
+"""DocsAgent: answers questions using Google Docs loaded all-in-context.
 
-Fetches group-specific documentation from Google Docs, sends full content
-as context to Gemini, and returns answers with source citations.
+Fetches docs recursively from URLs stored in chat_groups.docs_urls,
+passes them as multimodal content (text + images) to Gemini, and
+returns an answer with citations or INSUFFICIENT_INFO / SKIP.
 
-Prompt is structured for implicit caching: system instruction + docs (static
-prefix) followed by chat context + question (variable suffix).
+Prompt ordering is designed for implicit caching: the static docs
+prefix stays the same across requests for the same group, while the
+variable query goes last.
 """
+
 from __future__ import annotations
 
 import hashlib
+import json
 import logging
 import time
 from typing import Any
 
+from app.agent.gemini_agent import fetch_doc_recursive
+from app.db.queries_mysql import get_group_docs
 from app.llm.client import LLMClient, SUBAGENT_CASCADE
 
 log = logging.getLogger(__name__)
 
-_SYSTEM_INSTRUCTION = """You are a technical support automation system. Your goal is to strictly filter and answer questions based on the provided documentation.
+_DOC_REFRESH_INTERVAL_S = 600  # re-fetch docs every 10 minutes
+
+DOCS_SYSTEM_PROMPT = """You are a technical support automation system. Your goal is to strictly filter and answer questions based ONLY on the provided documentation.
 
 INPUT CLASSIFICATION & BEHAVIOR:
 
 1. **ANALYZE**: Is the user input a QUESTION or a REQUEST FOR HELP?
-   - **NO** (Greetings like "Hi", Gratitude like "Thanks", Statements like "Here is a log", Random phrases):
+   - **NO** (Greetings, gratitude, statements, random phrases):
      -> Output exactly: "SKIP"
    - **YES**: Proceed to step 2.
 
 2. **EVALUATE**: Do you have the information in the provided CONTEXT to answer it?
-   - **NO** (The topic is not covered, or you cannot perform the requested action like analyzing a log file):
+   - **NO** (The topic is not covered, or you cannot perform the requested action):
      -> Output exactly: "INSUFFICIENT_INFO"
    - **YES**:
      -> Provide a clear, technical answer.
      -> You MUST cite the specific Source URL and section.
+     -> Quote the exact relevant text you used from the document.
      -> Format: "Answer... [Source: URL, Section: ...]"
+
+3. **LANGUAGE**: Respond in the same language as the question.
+
+NEVER invent information not present in the provided documents.
 """
 
-# How long before re-fetching docs (seconds)
-_DOC_CACHE_TTL = 600  # 10 minutes
+
+class _DocsCacheEntry:
+    __slots__ = ("urls_hash", "content_parts", "fetched_at")
+
+    def __init__(self, urls_hash: str, content_parts: list[Any], fetched_at: float):
+        self.urls_hash = urls_hash
+        self.content_parts = content_parts
+        self.fetched_at = fetched_at
 
 
 class DocsAgent:
-    """Answers questions using Google Docs content as context.
-
-    Docs are cached in-memory per group with hash-based invalidation.
-    Prompt ordering enables Gemini implicit caching (static prefix).
-    """
+    """Answers questions using per-group Google Docs loaded fully in context."""
 
     def __init__(self, llm: LLMClient):
         self.llm = llm
-        self._cache: dict[str, _CacheEntry] = {}
+        self._cache: dict[str, _DocsCacheEntry] = {}
 
-    def answer(
-        self,
-        question: str,
-        group_id: str,
-        db: Any,
-        context: str = "",
-    ) -> str:
-        """Answer a question using group docs.
+    def _urls_hash(self, urls: list[str]) -> str:
+        return hashlib.sha256(json.dumps(sorted(urls)).encode()).hexdigest()[:16]
 
-        Returns one of:
-          - An answer with [Source: ...] citations
-          - "SKIP" (not a question)
-          - "INSUFFICIENT_INFO" (not in docs)
-          - "NO_DOCS" (group has no docs configured)
-        """
-        from app.db.queries_mysql import get_group_docs
-
-        docs_urls = get_group_docs(db, group_id)
-        if not docs_urls:
-            return "NO_DOCS"
-
-        content_parts = self._get_or_refresh(group_id, docs_urls)
-        if not content_parts:
-            return "NO_DOCS"
-
-        prompt, images = self._build_prompt(content_parts, context, question)
-
-        try:
-            return self.llm.chat(
-                prompt=prompt,
-                cascade=SUBAGENT_CASCADE,
-                timeout=60.0,
-                images=images if images else None,
-            )
-        except Exception as exc:
-            log.exception("DocsAgent LLM call failed for group %s", group_id)
-            return f"INSUFFICIENT_INFO (Error: {exc})"
-
-    def _get_or_refresh(
-        self, group_id: str, docs_urls: list[str]
-    ) -> list[str | dict]:
-        """Return cached doc content, re-fetching if URLs changed or TTL expired."""
-        urls_hash = hashlib.md5("|".join(sorted(docs_urls)).encode()).hexdigest()
+    def _get_or_refresh_docs(self, group_id: str, urls: list[str]) -> list[Any]:
+        h = self._urls_hash(urls)
         entry = self._cache.get(group_id)
+        now = time.time()
 
-        if entry and entry.urls_hash == urls_hash and (time.time() - entry.fetched_at) < _DOC_CACHE_TTL:
-            return entry.parts
+        if entry and entry.urls_hash == h and (now - entry.fetched_at) < _DOC_REFRESH_INTERVAL_S:
+            return entry.content_parts
 
-        from app.agent.gemini_agent import fetch_doc_recursive
-
-        log.info("DocsAgent: fetching docs for group %s (%d URLs)", group_id, len(docs_urls))
+        log.info("Fetching docs for group %s (%d URLs)", group_id[:20], len(urls))
         try:
-            parts = fetch_doc_recursive(docs_urls, max_depth=1, max_docs=10)
-        except Exception:
-            log.exception("DocsAgent: failed to fetch docs for group %s", group_id)
+            parts = fetch_doc_recursive(urls, max_depth=1, max_docs=20)
+        except Exception as exc:
+            log.error("Failed to fetch docs for group %s: %s", group_id[:20], exc)
             if entry:
-                return entry.parts
-            return []
+                return entry.content_parts
+            return [f"[Error loading documentation: {exc}]"]
 
-        self._cache[group_id] = _CacheEntry(
-            urls_hash=urls_hash,
-            parts=parts,
-            fetched_at=time.time(),
-        )
+        self._cache[group_id] = _DocsCacheEntry(urls_hash=h, content_parts=parts, fetched_at=now)
+        log.info("Cached %d doc parts for group %s", len(parts), group_id[:20])
         return parts
 
-    @staticmethod
-    def _build_prompt(
-        content_parts: list[str | dict],
-        context: str,
-        question: str,
-    ) -> tuple[str, list[tuple[bytes, str]]]:
-        """Build prompt with interleaved [[IMG:N]] markers for doc images.
+    def answer(self, question: str, group_id: str, db: Any, context: str = "") -> str:
+        """Answer a question using the group's documentation.
 
-        Returns (prompt_text, images_list). Images from Google Docs are placed
-        at their natural positions in the document flow using markers.
+        Returns the answer text, "INSUFFICIENT_INFO", "SKIP", or "NO_DOCS".
         """
-        doc_text_parts: list[str] = []
-        images: list[tuple[bytes, str]] = []
-        img_idx = 0
+        urls = get_group_docs(db, group_id)
+        if not urls:
+            return "NO_DOCS"
 
-        for part in content_parts:
-            if isinstance(part, str):
-                doc_text_parts.append(part)
-            elif isinstance(part, dict) and "data" in part:
-                mime = part.get("mime_type", "image/jpeg")
-                images.append((part["data"], mime))
-                doc_text_parts.append(f"[[IMG:{img_idx}]]")
-                img_idx += 1
-            else:
-                doc_text_parts.append(str(part))
+        content_parts = self._get_or_refresh_docs(group_id, urls)
 
-        docs_block = "\n".join(doc_text_parts)
-        context_block = f"\nRecent chat context:\n{context}\n" if context.strip() else ""
+        text_parts = [p for p in content_parts if isinstance(p, str)]
+        docs_text = "\n".join(text_parts)
 
-        prompt = (
-            f"{_SYSTEM_INSTRUCTION}\n\n"
-            f"DOCUMENTATION:\n{docs_block}\n\n"
-            f"{context_block}"
-            f"QUESTION:\n{question}"
-        )
-        return prompt, images
+        variable_section = ""
+        if context.strip():
+            variable_section += f"\nRecent chat context:\n{context}\n"
+        variable_section += f"\nQUESTION:\n{question}"
 
+        prompt = f"{DOCS_SYSTEM_PROMPT}\n\nDOCUMENTATION:\n{docs_text}\n{variable_section}"
 
-class _CacheEntry:
-    __slots__ = ("urls_hash", "parts", "fetched_at")
-
-    def __init__(self, urls_hash: str, parts: list, fetched_at: float):
-        self.urls_hash = urls_hash
-        self.parts = parts
-        self.fetched_at = fetched_at
+        try:
+            return self.llm.chat(prompt=prompt, cascade=SUBAGENT_CASCADE, timeout=45.0)
+        except Exception as exc:
+            log.error("DocsAgent LLM call failed: %s", exc)
+            return f"INSUFFICIENT_INFO (Error: {exc})"
