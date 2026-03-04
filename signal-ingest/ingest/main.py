@@ -412,6 +412,7 @@ def _enrich_messages_with_attachments(
     openai_client: OpenAI,
     messages: List[dict],
     max_att_per_message: int = 3,
+    max_ocr_workers: int = 6,
 ) -> List[dict]:
     """Fetch attachment bytes for each message, OCR them, and enrich the body.
 
@@ -421,6 +422,7 @@ def _enrich_messages_with_attachments(
       for storage in signal-bot's raw_messages.image_paths_json.
 
     Messages without attachments pass through unchanged (but gain empty keys).
+    OCR calls run in parallel (up to max_ocr_workers) to avoid serial bottleneck.
     """
     msgs_with_atts = [m for m in messages if m.get("attachments")]
     total_img = sum(
@@ -432,9 +434,62 @@ def _enrich_messages_with_attachments(
         len(messages), len(msgs_with_atts), total_img,
     )
 
+    # Phase 1: fetch all attachment bytes (I/O-bound, parallelise)
+    # Build work items: (msg_index, att_index, att_metadata)
+    fetch_tasks = []
+    for mi, m in enumerate(messages):
+        for ai, att in enumerate((m.get("attachments") or [])[:max_att_per_message]):
+            rel_path = att.get("path") or ""
+            cdn_key = att.get("cdnKey") or ""
+            if rel_path or cdn_key:
+                fetch_tasks.append((mi, ai, att, rel_path, cdn_key))
+
+    # Parallel fetch
+    fetched: Dict[tuple, bytes] = {}
+    if fetch_tasks:
+        def _do_fetch(task):
+            mi, ai, att, rel_path, cdn_key = task
+            data = _fetch_attachment(settings, rel_path, cdn_key=cdn_key)
+            return (mi, ai), data
+
+        with ThreadPoolExecutor(max_workers=max_ocr_workers) as pool:
+            for (key, data) in pool.map(lambda t: _do_fetch(t), fetch_tasks):
+                if data is not None:
+                    fetched[key] = data
+
+    # Phase 2: OCR images in parallel
+    ocr_tasks = []
+    for (mi, ai), data in fetched.items():
+        att = messages[mi].get("attachments", [])[ai]
+        ct = att.get("contentType") or "application/octet-stream"
+        if ct.startswith("image/"):
+            body = messages[mi].get("body") or messages[mi].get("text") or ""
+            ocr_tasks.append((mi, ai, data, ct, body))
+
+    ocr_results: Dict[tuple, str] = {}
+    if ocr_tasks:
+        log.info("Running OCR on %d images in parallel (workers=%d)", len(ocr_tasks), min(len(ocr_tasks), max_ocr_workers))
+
+        def _do_ocr(task):
+            mi, ai, img_bytes, ct, body = task
+            result = _ocr_attachment(
+                openai_client=openai_client,
+                model=settings.model_img,
+                image_bytes=img_bytes,
+                content_type=ct,
+                context_text=body,
+            )
+            return (mi, ai), result
+
+        with ThreadPoolExecutor(max_workers=max_ocr_workers) as pool:
+            for (key, result) in pool.map(lambda t: _do_ocr(t), ocr_tasks):
+                if result:
+                    ocr_results[key] = result
+
+    # Phase 3: assemble enriched messages
     enriched: List[dict] = []
     att_count = 0
-    for m in messages:
+    for mi, m in enumerate(messages):
         atts = m.get("attachments") or []
         if not atts:
             enriched.append({**m, "enriched_body": m.get("body") or m.get("text") or "", "image_payloads": []})
@@ -444,39 +499,25 @@ def _enrich_messages_with_attachments(
         payloads: List[dict] = []
         ocr_texts: List[str] = []
 
-        for att in atts[:max_att_per_message]:
-            rel_path = att.get("path") or ""
-            cdn_key = att.get("cdnKey") or ""
-            if not rel_path and not cdn_key:
+        for ai, att in enumerate(atts[:max_att_per_message]):
+            data = fetched.get((mi, ai))
+            if data is None:
                 continue
+            att_count += 1
             content_type = att.get("contentType") or "application/octet-stream"
 
-            att_bytes = _fetch_attachment(settings, rel_path, cdn_key=cdn_key)
-            if att_bytes is None:
-                continue
-
-            att_count += 1
-
-            # OCR only for images
             if content_type.startswith("image/"):
-                ocr_json = _ocr_attachment(
-                    openai_client=openai_client,
-                    model=settings.model_img,
-                    image_bytes=att_bytes,
-                    content_type=content_type,
-                    context_text=body,
-                )
-                if ocr_json:
-                    ocr_texts.append(ocr_json)
+                ocr_text = ocr_results.get((mi, ai))
+                if ocr_text:
+                    ocr_texts.append(ocr_text)
             else:
-                # Non-image: note the filename in the enriched body so LLM knows it exists
-                fname = att.get("fileName") or rel_path.split("/")[-1] or "attachment"
+                fname = att.get("fileName") or (att.get("path") or "").split("/")[-1] or "attachment"
                 ocr_texts.append(f'[attachment: {fname} ({content_type})]')
 
             payloads.append({
                 "filename": att.get("fileName") or "",
                 "content_type": content_type,
-                "data_b64": base64.b64encode(att_bytes).decode("utf-8"),
+                "data_b64": base64.b64encode(data).decode("utf-8"),
             })
 
         enriched_body = body
@@ -486,7 +527,7 @@ def _enrich_messages_with_attachments(
         enriched.append({**m, "enriched_body": enriched_body, "image_payloads": payloads})
 
     if att_count:
-        log.info("Processed %d image attachments across %d messages", att_count, len(messages))
+        log.info("Processed %d attachments across %d messages", att_count, len(messages))
     return enriched
 
 
@@ -586,7 +627,7 @@ def _llm_call_with_fallback(
     Raises the last exception if all models are exhausted.
 
     Timeout is per-model. Earlier (better) models get the given timeout;
-    the last fallback model gets 2x the timeout as a safety net.
+    the last fallback model gets 1.5x the timeout as a safety net.
     """
     import openai as _openai
 
@@ -594,16 +635,20 @@ def _llm_call_with_fallback(
     last_exc: Exception | None = None
     for i, m in enumerate(models_to_try):
         is_last = (i == len(models_to_try) - 1)
-        model_timeout = timeout * 2 if is_last and len(models_to_try) > 1 else timeout
+        model_timeout = timeout * 1.5 if is_last and len(models_to_try) > 1 else timeout
+        t0 = time.time()
         try:
-            return openai_client.chat.completions.create(model=m, timeout=model_timeout, **kwargs)
+            result = openai_client.chat.completions.create(model=m, timeout=model_timeout, **kwargs)
+            log.info("LLM call model=%s completed in %.1fs", m, time.time() - t0)
+            return result
         except (_openai.APITimeoutError, _openai.APIStatusError) as e:
+            elapsed = time.time() - t0
             status_code = getattr(e, "status_code", None)
-            is_retryable = isinstance(e, _openai.APITimeoutError) or status_code in (499, 503)
+            is_retryable = isinstance(e, _openai.APITimeoutError) or status_code in (429, 499, 503)
             if is_retryable:
                 log.warning(
-                    "Model %s failed (%s status=%s, timeout=%.0fs), trying next fallback...",
-                    m, type(e).__name__, status_code, model_timeout,
+                    "Model %s failed after %.1fs (%s status=%s, timeout=%.0fs), trying next fallback...",
+                    m, elapsed, type(e).__name__, status_code, model_timeout,
                 )
                 last_exc = e
                 time.sleep(1)
@@ -898,7 +943,7 @@ def _post_structured_cases_to_bot(
         "messages": formatted_messages,
     }
     url = settings.signal_bot_url.rstrip("/") + "/history/cases"
-    with httpx.Client(timeout=120) as client:
+    with httpx.Client(timeout=300) as client:
         r = client.post(url, json=payload)
         r.raise_for_status()
         data = r.json()
@@ -1365,6 +1410,7 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
             api_key=settings.openai_api_key,
             base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
         )
+        enrich_start = time.time()
         msgs = _enrich_messages_with_attachments(
             settings=settings,
             openai_client=openai_client_early,
@@ -1425,30 +1471,30 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
 
         all_structured: List[dict] = []
         n_chunks = len(chunks)
-        max_workers = min(n_chunks, 4)
+        max_workers = min(n_chunks, 6)
 
+        step5_start = time.time()
         if n_chunks <= 1:
-            # Single chunk — no threading overhead
             for i, (ch, ch_images) in enumerate(chunks):
                 check_cancelled()
-                if n_chunks > 1:
-                    _notify_progress(settings=settings, token=token, progress_key="processing_chunk", current=i+1, total=n_chunks)
-                all_structured.extend(
-                    _extract_structured_cases(
-                        openai_client=openai_client_early,
-                        model=settings.model_blocks,
-                        fallback_models=settings.model_blocks_fallback,
-                        chunk_text=ch,
-                        images=ch_images or None,
-                    )
+                t0 = time.time()
+                result = _extract_structured_cases(
+                    openai_client=openai_client_early,
+                    model=settings.model_blocks,
+                    fallback_models=settings.model_blocks_fallback,
+                    chunk_text=ch,
+                    images=ch_images or None,
                 )
+                log.info("Chunk %d/%d extracted %d cases in %.1fs", i+1, n_chunks, len(result), time.time()-t0)
+                all_structured.extend(result)
         else:
-            # Parallel extraction — chunks are independent
             completed = 0
             futures = {}
+            chunk_start_times = {}
             with ThreadPoolExecutor(max_workers=max_workers) as executor:
                 for i, (ch, ch_images) in enumerate(chunks):
                     check_cancelled()
+                    chunk_start_times[i] = time.time()
                     fut = executor.submit(
                         _extract_structured_cases,
                         openai_client=openai_client_early,
@@ -1462,20 +1508,26 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
                 for fut in as_completed(futures):
                     check_cancelled()
                     completed += 1
+                    chunk_idx = futures[fut]
+                    elapsed_chunk = time.time() - chunk_start_times[chunk_idx]
                     _notify_progress(settings=settings, token=token, progress_key="processing_chunk", current=completed, total=n_chunks)
                     try:
                         result = fut.result()
+                        log.info("Chunk %d/%d extracted %d cases in %.1fs", chunk_idx+1, n_chunks, len(result), elapsed_chunk)
                         all_structured.extend(result)
                     except Exception:
-                        log.exception("Chunk %d failed, skipping", futures[fut])
+                        log.exception("Chunk %d failed after %.1fs, skipping", chunk_idx, elapsed_chunk)
                         continue
+        log.info("All %d chunks processed in %.1fs — %d raw cases", n_chunks, time.time()-step5_start, len(all_structured))
 
+        dedup_start = time.time()
         deduped = _dedup_cases_llm(
             openai_client=openai_client_early,
             model=settings.model_blocks,
             fallback_models=settings.model_blocks_fallback,
             cases=all_structured,
         )
+        log.info("Dedup completed in %.1fs: %d → %d cases", time.time()-dedup_start, len(all_structured), len(deduped))
 
         # ─────────────────────────────────────────────────────────────
         # Step 6: Post structured cases to signal-bot (batch embed on bot side)

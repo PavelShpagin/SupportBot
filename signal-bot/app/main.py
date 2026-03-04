@@ -1454,8 +1454,10 @@ def _save_history_images(
     If R2 is configured, uploads to R2 and returns public URLs.
     Otherwise saves to disk under ``<storage_root>/history/<group_id>/``
     and returns absolute paths.
+    Uploads run in parallel when R2 is enabled for speed.
     """
     import base64 as _b64
+    from concurrent.futures import ThreadPoolExecutor, as_completed as _as_completed
 
     if not image_payloads:
         return []
@@ -1470,38 +1472,62 @@ def _save_history_images(
             return guessed
         return ".bin"
 
-    results: list = []
-
+    # Decode all payloads first
+    items = []
     for i, img in enumerate(image_payloads):
         try:
             raw_bytes = _b64.b64decode(img.data_b64)
         except Exception as e:
             log.warning("Failed to decode payload for %s[%d]: %s", message_id, i, e)
             continue
-
         ext = _ext_for(img.filename or "", img.content_type or "")
         content_type = (img.content_type or "application/octet-stream").split(";")[0].strip()
         safe_msg_id = message_id.replace("/", "_").replace(":", "_")
         filename = f"{safe_msg_id}_{i}{ext}"
+        items.append((raw_bytes, content_type, filename, i))
 
-        if _r2.is_enabled():
+    if not items:
+        return []
+
+    if _r2.is_enabled():
+        results = [None] * len(items)
+
+        def _upload_one(idx, raw_bytes, content_type, filename):
             key = f"history/{group_id}/{filename}"
             url = _r2.upload(key, raw_bytes, content_type)
-            if url:
-                results.append(url)
-                continue
-            log.warning("R2 upload failed for %s, falling back to disk", key)
+            return idx, url, key
 
-        # Local disk fallback
-        dest_dir = Path(storage_root) / "history" / group_id
+        with ThreadPoolExecutor(max_workers=min(len(items), 8)) as pool:
+            futs = [pool.submit(_upload_one, j, rb, ct, fn) for j, (rb, ct, fn, _) in enumerate(items)]
+            for fut in _as_completed(futs):
+                idx, url, key = fut.result()
+                if url:
+                    results[idx] = url
+                else:
+                    log.warning("R2 upload failed for %s, falling back to disk", key)
+                    rb, ct, fn, _ = items[idx]
+                    dest_dir = Path(storage_root) / "history" / group_id
+                    try:
+                        dest_dir.mkdir(parents=True, exist_ok=True)
+                        dest_file = dest_dir / fn
+                        dest_file.write_bytes(rb)
+                        results[idx] = str(dest_file)
+                    except Exception as e2:
+                        log.warning("Local save also failed for %s: %s", fn, e2)
+
+        return [r for r in results if r is not None]
+
+    # Local disk only
+    results: list = []
+    dest_dir = Path(storage_root) / "history" / group_id
+    for raw_bytes, content_type, filename, _ in items:
         try:
             dest_dir.mkdir(parents=True, exist_ok=True)
             dest_file = dest_dir / filename
             dest_file.write_bytes(raw_bytes)
             results.append(str(dest_file))
-        except OSError as e:
-            log.warning("Failed to write attachment %s: %s", filename, e)
-
+        except Exception as e:
+            log.warning("Failed to save attachment %s: %s", filename, e)
     return results
 
 
@@ -1531,10 +1557,15 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
     except Exception:
         log.exception("Failed to clear runtime data for group %s", req.group_id[:20])
 
-    # Store raw messages for evidence linking
+    # Store raw messages for evidence linking — parallelise R2 uploads
+    import time as _time
+    from concurrent.futures import ThreadPoolExecutor, as_completed as _as_completed
+
+    msg_store_start = _time.time()
     message_lookup: dict = {}
     messages_stored = 0
-    for m in req.messages:
+
+    def _store_one_message(m):
         image_paths = _save_history_images(
             group_id=req.group_id,
             message_id=m.message_id,
@@ -1551,16 +1582,21 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
             image_paths=image_paths,
             reply_to_id=m.reply_to_id,
         )
-        if insert_raw_message(db, raw_msg):
-            messages_stored += 1
-        # Build lookup for evidence matching
-        content_key = m.content_text.strip()[:100] if m.content_text else ""
-        if content_key:
-            message_lookup[content_key] = m.message_id
-        message_lookup[str(m.ts)] = m.message_id
+        return m, raw_msg
+
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        futs = [pool.submit(_store_one_message, m) for m in req.messages]
+        for fut in _as_completed(futs):
+            m, raw_msg = fut.result()
+            if insert_raw_message(db, raw_msg):
+                messages_stored += 1
+            content_key = m.content_text.strip()[:100] if m.content_text else ""
+            if content_key:
+                message_lookup[content_key] = m.message_id
+            message_lookup[str(m.ts)] = m.message_id
 
     if messages_stored > 0:
-        log.info("Stored %d raw messages (group=%s)", messages_stored, req.group_id[:20])
+        log.info("Stored %d raw messages in %.1fs (group=%s)", messages_stored, _time.time()-msg_store_start, req.group_id[:20])
 
     # Support both legacy (cases + make_case per item) and optimized (cases_structured + batch embed)
     use_structured = bool(req.cases_structured)
@@ -1573,9 +1609,12 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
     # Batch embed for structured pipeline (8x fewer API calls)
     dedup_embeddings: List[List[float]] = []
     if use_structured:
+        embed_start = _time.time()
         dedup_texts = [f"{c.problem_title}\n{c.problem_summary}" for c in req.cases_structured]
         dedup_embeddings = llm.embed_batch(texts=dedup_texts)
+        log.info("Batch embedding %d cases took %.1fs", len(dedup_texts), _time.time()-embed_start)
 
+    cases_start = _time.time()
     kept = 0
     final_case_ids: List[str] = []
     for idx, c in enumerate(case_items):
@@ -1746,7 +1785,10 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
             reindexed += 1
     except Exception:
         log.exception("Failed to index ingest cases for group %s", req.group_id[:20])
-    log.info("History cases done: inserted=%d re-indexed_to_scrag=%d group=%s", kept, reindexed, req.group_id[:20])
+    log.info(
+        "History cases done: inserted=%d re-indexed_to_scrag=%d group=%s (case loop %.1fs)",
+        kept, reindexed, req.group_id[:20], _time.time()-cases_start,
+    )
     return kept, final_case_ids
 
 
@@ -1788,9 +1830,11 @@ def history_cases(req: HistoryCasesRequest) -> dict:
 
     n_cases = len(req.cases_structured) if req.cases_structured else len(req.cases)
     n_messages = len(req.messages)
+    import time as _hc_time
+    hc_start = _hc_time.time()
     log.info("History ingest started: %d cases, %d messages (group=%s)", n_cases, n_messages, req.group_id[:20])
     inserted, case_ids = _process_history_cases_bg(req)
-    log.info("History ingest done: %d/%d cases inserted (group=%s)", inserted, n_cases, req.group_id[:20])
+    log.info("History ingest done: %d/%d cases inserted in %.1fs (group=%s)", inserted, n_cases, _hc_time.time()-hc_start, req.group_id[:20])
     return {"ok": True, "cases_inserted": inserted, "case_ids": case_ids}
 
 
