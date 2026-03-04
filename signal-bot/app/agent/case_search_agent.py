@@ -25,7 +25,7 @@ log = logging.getLogger(__name__)
 
 SCRAG_TOP_K = 3
 # Cosine distance threshold: cases with distance > this are too dissimilar to use.
-# Lower = stricter. 0.75 keeps good matches (GPS=0.43, stabx=0.68) and drops random queries (0.9+).
+# Lower = stricter. 0.75 keeps good matches while dropping unrelated queries (0.9+).
 SCRAG_DISTANCE_THRESHOLD = 0.75
 
 
