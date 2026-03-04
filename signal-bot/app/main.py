@@ -997,6 +997,7 @@ def view_case(case_id: str):
             .case-header {{ border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-bottom: 20px; }}
             .status {{ display: inline-block; padding: 5px 10px; border-radius: 5px; background: #eee; }}
             .status.solved {{ background: #d4edda; color: #155724; }}
+            .case-date {{ color: #666; font-size: 0.9em; margin-top: 4px; }}
             .message {{ border: 1px solid #eee; padding: 10px; margin-bottom: 10px; border-radius: 5px; }}
             .meta {{ color: #666; font-size: 0.9em; margin-bottom: 5px; }}
             img {{ max-width: 100%; height: auto; margin-top: 10px; }}
@@ -1006,6 +1007,7 @@ def view_case(case_id: str):
         <div class="case-header">
             <h1>{_html.escape(case.get('problem_title', 'Case ' + case_id))}</h1>
             <div class="status {case.get('status', 'open')}">{case.get('status', 'open')}</div>
+            <div class="case-date">{_html.escape(case.get('created_at', '') or '')}</div>
             <p><strong>Problem:</strong> {_html.escape(case.get('problem_summary', ''))}</p>
             <p><strong>Solution:</strong> {_html.escape(case.get('solution_summary', ''))}</p>
         </div>
@@ -1015,8 +1017,11 @@ def view_case(case_id: str):
     """
 
     if evidence:
+        from datetime import datetime, timezone, timedelta
+        _tz_kyiv = timezone(timedelta(hours=2))
         for msg in evidence:
-            ts_str = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(msg.ts / 1000))
+            dt = datetime.fromtimestamp(msg.ts / 1000, tz=_tz_kyiv)
+            ts_str = dt.strftime('%Y-%m-%d %H:%M:%S')
             html += f"""
                 <div class="message">
                     <div class="meta">{msg.sender_hash[:8]} at {ts_str}</div>
