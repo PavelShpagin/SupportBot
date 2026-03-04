@@ -43,7 +43,7 @@ from app.db import (
     upsert_reaction,
     delete_reaction,
 )
-from app.jobs.types import BUFFER_UPDATE, HISTORY_LINK, MAYBE_RESPOND
+from app.jobs.types import BUFFER_UPDATE, HISTORY_LINK, MAYBE_RESPOND, SYNC_GROUP_DOCS
 from app.jobs.worker import WorkerDeps, worker_loop_forever, get_worker_heartbeat_age
 from app.llm.client import LLMClient
 from app.logging_config import configure_logging
@@ -688,17 +688,11 @@ def _send_direct_or_cleanup(admin_id: str, text: str) -> bool:
 def _handle_group_update(group_id: str) -> None:
     """Handle group metadata changes (description, name, avatar).
 
-    Immediately re-syncs docs URLs from the group description so the
-    DocsAgent picks up newly added documentation within seconds.
+    Enqueues SYNC_GROUP_DOCS so it runs in queue order before any message
+    handling — description sync first, then answering.
     """
-    from app.jobs.worker import sync_docs_from_description
-    log.info("Group update event for %s — re-syncing docs from description", group_id[:20])
-    try:
-        sync_docs_from_description(deps, group_id, force=True)
-        if hasattr(deps, "ultimate_agent") and hasattr(deps.ultimate_agent, "docs_agent"):
-            deps.ultimate_agent.docs_agent.invalidate_cache(group_id)
-    except Exception:
-        log.exception("Failed to sync docs on group update for %s", group_id[:20])
+    log.info("Group update event for %s — enqueuing docs sync", group_id[:20])
+    enqueue_job(db, SYNC_GROUP_DOCS, {"group_id": group_id})
 
 
 def _handle_contact_removed(phone_number: str) -> None:

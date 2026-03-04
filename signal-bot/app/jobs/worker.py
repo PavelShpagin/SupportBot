@@ -501,7 +501,7 @@ def worker_loop_forever(deps: WorkerDeps) -> None:
 
         job = claim_next_job(
             deps.db,
-            allowed_types=[job_types.BUFFER_UPDATE, job_types.MAYBE_RESPOND],
+            allowed_types=[job_types.SYNC_GROUP_DOCS, job_types.BUFFER_UPDATE, job_types.MAYBE_RESPOND],
         )
         if job is None:
             _touch_heartbeat()
@@ -510,7 +510,9 @@ def worker_loop_forever(deps: WorkerDeps) -> None:
 
         _touch_heartbeat()
 
-        if job.type == job_types.BUFFER_UPDATE:
+        if job.type == job_types.SYNC_GROUP_DOCS:
+            handler = _handle_sync_group_docs
+        elif job.type == job_types.BUFFER_UPDATE:
             handler = _handle_buffer_update
         elif job.type == job_types.MAYBE_RESPOND:
             handler = _handle_maybe_respond
@@ -534,6 +536,12 @@ def worker_loop_forever(deps: WorkerDeps) -> None:
             fail_job(deps.db, job_id=job.job_id, attempts=job.attempts)
         else:
             complete_job(deps.db, job_id=job.job_id)
+
+
+def _handle_sync_group_docs(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
+    """Sync docs URLs from group description. Runs before message handling when queued first."""
+    group_id = str(payload["group_id"])
+    sync_docs_from_description(deps, group_id, force=True)
 
 
 def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
