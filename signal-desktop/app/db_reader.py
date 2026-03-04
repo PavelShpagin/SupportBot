@@ -38,6 +38,7 @@ class SignalMessage:
     # Each entry is a dict with keys: path (relative to Signal data dir),
     # fileName, contentType, cdnKey, cdnNumber, key, digest, size.
     attachments: list = None  # list[dict]
+    quote_id: Optional[str] = None  # timestamp of the message being replied to
 
     def __post_init__(self):
         if self.attachments is None:
@@ -525,6 +526,17 @@ def get_messages(
                 if not attachments:
                     attachments = att_from_downloads.get(msg_id, [])
 
+                # Extract quote/reply info from JSON (independent of attachment source)
+                quote_id = None
+                if raw_json_str:
+                    try:
+                        _json_for_quote = json.loads(raw_json_str)
+                        _q = _json_for_quote.get("quote") or {}
+                        if _q.get("id"):
+                            quote_id = str(_q["id"])
+                    except (json.JSONDecodeError, TypeError):
+                        pass
+
                 if not attachments and raw_json_str:
                     try:
                         msg_json = json.loads(raw_json_str)
@@ -533,7 +545,6 @@ def get_messages(
                             if not isinstance(att, dict):
                                 return None
                             content_type = att.get("contentType") or ""
-                            # Signal Desktop 7+ may use transitCdnKey instead of cdnKey
                             cdn_key = att.get("cdnKey") or att.get("transitCdnKey") or ""
                             cdn_number = att.get("cdnNumber") or att.get("transitCdnNumber")
                             path = att.get("path") or att.get("downloadPath") or ""
@@ -595,6 +606,7 @@ def get_messages(
                     reaction_emoji=emoji_by_ts.get(ts),
                     sender_name=sender_name,
                     attachments=attachments,
+                    quote_id=quote_id,
                 )
                 result.append(msg)
             except Exception as e:

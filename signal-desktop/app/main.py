@@ -285,6 +285,7 @@ async def poll_messages(
                     "group_id": m.group_id,
                     "group_name": m.group_name,
                     "attachments": m.attachments,
+                    "quote_id": m.quote_id,
                 }
                 for m in msgs
             ],
@@ -333,6 +334,7 @@ async def get_group_history(
                     "reactions": m.reactions,
                     "reaction_emoji": m.reaction_emoji,
                     "attachments": m.attachments,
+                    "quote_id": m.quote_id,
                 }
                 for m in msgs
             ],

@@ -519,6 +519,9 @@ def _chunk_messages(*, messages: List[dict], max_chars: int, overlap_messages: i
         msg_id = m.get("id") or m.get("message_id") or str(ts)
         reactions = int(m.get("reactions") or 0)
         header = f'{sender} ts={ts} msg_id={msg_id}'
+        quote_id = m.get("quote_id") or m.get("reply_to_id")
+        if quote_id:
+            header += f' reply_to={quote_id}'
         if reactions > 0:
             header += f' reactions={reactions}'
             rxn_emoji = m.get("reaction_emoji") or ""
@@ -824,6 +827,7 @@ def _post_cases_to_bot(*, settings, token: str, group_id: str, case_blocks: List
             "ts": ts,
             "content_text": text,
             "image_payloads": m.get("image_payloads") or [],
+            "reply_to_id": m.get("quote_id") or m.get("reply_to_id"),
         })
     
     payload = {
@@ -861,6 +865,7 @@ def _format_messages_for_bot(messages: List[dict], bot_e164: str = "") -> List[d
             "ts": m.get("ts") or m.get("timestamp") or 0,
             "content_text": text,
             "image_payloads": m.get("image_payloads") or [],
+            "reply_to_id": m.get("quote_id") or m.get("reply_to_id"),
         })
     return formatted
 

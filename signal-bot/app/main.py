@@ -1417,6 +1417,7 @@ class HistoryMessage(BaseModel):
     ts: int
     content_text: str
     image_payloads: List[HistoryImagePayload] = []
+    reply_to_id: str | None = None
 
 
 class CaseBlock(BaseModel):
@@ -1548,7 +1549,7 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
             sender_name=m.sender_name,
             content_text=m.content_text,
             image_paths=image_paths,
-            reply_to_id=None,
+            reply_to_id=m.reply_to_id,
         )
         if insert_raw_message(db, raw_msg):
             messages_stored += 1
@@ -1715,7 +1716,7 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
     # We do NOT re-index archived cases from previous ingests: they were just wiped from
     # SCRAG by delete_cases_by_group above and should stay out — their status means a human
     # decided they're superseded.  Putting them back would resurface unapproved or stale
-    # knowledge (exactly the bug that caused archived cases to keep reappearing).
+    # knowledge (exactly the bug that caused the archived IMX-114 case to keep appearing).
     reindexed = 0
     try:
         from app.db.queries_mysql import get_case
