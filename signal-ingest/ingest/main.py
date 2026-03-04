@@ -33,6 +33,46 @@ HISTORY_LINK = "HISTORY_LINK"
 HISTORY_SYNC = "HISTORY_SYNC"
 
 
+def _extract_video_thumbnail(video_bytes: bytes) -> bytes | None:
+    """Extract a single thumbnail frame from in-memory video bytes using OpenCV.
+
+    Picks a frame at ~1 second (or the first frame for very short clips).
+    Returns JPEG bytes or None on failure.
+    """
+    import tempfile
+    import os
+    try:
+        import cv2
+    except ImportError:
+        return None
+    tmp_path = None
+    try:
+        with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as tmp:
+            tmp.write(video_bytes)
+            tmp_path = tmp.name
+        cap = cv2.VideoCapture(tmp_path)
+        if not cap.isOpened():
+            return None
+        fps = cap.get(cv2.CAP_PROP_FPS) or 25
+        total = int(cap.get(cv2.CAP_PROP_FRAME_COUNT) or 0)
+        target = min(int(fps), max(total - 1, 0))
+        cap.set(cv2.CAP_PROP_POS_FRAMES, target)
+        ret, frame = cap.read()
+        cap.release()
+        if not ret or frame is None:
+            return None
+        ok, buf = cv2.imencode(".jpg", frame, [cv2.IMWRITE_JPEG_QUALITY, 80])
+        return buf.tobytes() if ok else None
+    except Exception:
+        return None
+    finally:
+        if tmp_path:
+            try:
+                os.unlink(tmp_path)
+            except Exception:
+                pass
+
+
 # ---------------------------------------------------------------------------
 # JSON helpers
 # ---------------------------------------------------------------------------
@@ -202,7 +242,7 @@ def _fetch_attachment(
     settings,
     rel_path: str,
     cdn_key: str = "",
-    max_bytes: int = 5_000_000,
+    max_bytes: int = 20_000_000,
     retries: int = 3,
     retry_delay: float = 2.0,
 ) -> Optional[bytes]:
@@ -457,7 +497,8 @@ def _enrich_messages_with_attachments(
                 if data is not None:
                     fetched[key] = data
 
-    # Phase 2: OCR images in parallel
+    # Phase 2: OCR images (and video thumbnails) in parallel
+    video_thumbs: Dict[tuple, bytes] = {}
     ocr_tasks = []
     for (mi, ai), data in fetched.items():
         att = messages[mi].get("attachments", [])[ai]
@@ -465,10 +506,17 @@ def _enrich_messages_with_attachments(
         if ct.startswith("image/"):
             body = messages[mi].get("body") or messages[mi].get("text") or ""
             ocr_tasks.append((mi, ai, data, ct, body))
+        elif ct.startswith("video/"):
+            thumb = _extract_video_thumbnail(data)
+            if thumb:
+                video_thumbs[(mi, ai)] = thumb
+                body = messages[mi].get("body") or messages[mi].get("text") or ""
+                fname = att.get("fileName") or "video"
+                ocr_tasks.append((mi, ai, thumb, "image/jpeg", f"Video thumbnail from: {fname}\n{body}"))
 
     ocr_results: Dict[tuple, str] = {}
     if ocr_tasks:
-        log.info("Running OCR on %d images in parallel (workers=%d)", len(ocr_tasks), min(len(ocr_tasks), max_ocr_workers))
+        log.info("Running OCR on %d images/video-thumbs in parallel (workers=%d)", len(ocr_tasks), min(len(ocr_tasks), max_ocr_workers))
 
         def _do_ocr(task):
             mi, ai, img_bytes, ct, body = task
@@ -510,6 +558,21 @@ def _enrich_messages_with_attachments(
                 ocr_text = ocr_results.get((mi, ai))
                 if ocr_text:
                     ocr_texts.append(ocr_text)
+            elif content_type.startswith("video/"):
+                thumb = video_thumbs.get((mi, ai))
+                if thumb:
+                    fname = att.get("fileName") or "video"
+                    ocr_text = ocr_results.get((mi, ai))
+                    ocr_texts.append(f"[Відео: {fname}" + (f" — {ocr_text}" if ocr_text else "") + "]")
+                    payloads.append({
+                        "filename": fname + "_thumb.jpg",
+                        "content_type": "image/jpeg",
+                        "data_b64": base64.b64encode(thumb).decode("utf-8"),
+                    })
+                else:
+                    fname = att.get("fileName") or (att.get("path") or "").split("/")[-1] or "video"
+                    ocr_texts.append(f'[Відео: {fname} ({content_type})]')
+                continue
             else:
                 fname = att.get("fileName") or (att.get("path") or "").split("/")[-1] or "attachment"
                 ocr_texts.append(f'[attachment: {fname} ({content_type})]')

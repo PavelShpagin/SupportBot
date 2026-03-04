@@ -15,6 +15,60 @@ from app.llm.client import LLMClient
 log = logging.getLogger(__name__)
 
 
+def _is_video(content_type: str) -> bool:
+    return content_type.startswith("video/")
+
+
+def _extract_video_thumbnail(video_path: str | Path) -> bytes | None:
+    """Extract a single thumbnail frame from a video file using OpenCV.
+
+    Picks a frame at ~1 second (or the first frame for very short videos).
+    Returns JPEG bytes or None on failure.
+    """
+    try:
+        import cv2
+
+        cap = cv2.VideoCapture(str(video_path))
+        if not cap.isOpened():
+            return None
+
+        fps = cap.get(cv2.CAP_PROP_FPS) or 25
+        total = int(cap.get(cv2.CAP_PROP_FRAME_COUNT) or 0)
+        target_frame = min(int(fps), max(total - 1, 0))
+        cap.set(cv2.CAP_PROP_POS_FRAMES, target_frame)
+
+        ret, frame = cap.read()
+        cap.release()
+        if not ret or frame is None:
+            return None
+
+        ok, buf = cv2.imencode(".jpg", frame, [cv2.IMWRITE_JPEG_QUALITY, 80])
+        return buf.tobytes() if ok else None
+    except Exception as exc:
+        log.debug("Video thumbnail extraction failed for %s: %s", video_path, exc)
+        return None
+
+
+def _extract_video_thumbnail_from_bytes(data: bytes) -> bytes | None:
+    """Extract a thumbnail from in-memory video bytes via a temp file."""
+    import tempfile
+    import os
+    try:
+        with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as tmp:
+            tmp.write(data)
+            tmp_path = tmp.name
+        result = _extract_video_thumbnail(tmp_path)
+        return result
+    except Exception as exc:
+        log.debug("Video thumbnail extraction from bytes failed: %s", exc)
+        return None
+    finally:
+        try:
+            os.unlink(tmp_path)
+        except Exception:
+            pass
+
+
 def _guess_mime(path: str) -> str:
     """Accept-all MIME guessing: stdlib first, fallback to application/octet-stream."""
     mime, _ = mimetypes.guess_type(path)
@@ -90,6 +144,32 @@ def ingest_message(
             except Exception:
                 log.exception("Image extraction failed (path=%s).", img_path)
                 content_text = content_text + "\n\n[Зображення]"
+        elif _is_video(ct):
+            thumb_bytes = _extract_video_thumbnail(img_path)
+            if thumb_bytes:
+                thumb_name = img_path.stem + "_thumb.jpg"
+                thumb_stored = None
+                if _r2.is_enabled():
+                    thumb_key = f"attachments/{group_id}/{thumb_name}"
+                    thumb_stored = _r2.upload(thumb_key, thumb_bytes, "image/jpeg")
+                if thumb_stored:
+                    stored_image_paths.append(thumb_stored)
+                try:
+                    j = llm.image_to_text_json(image_bytes=thumb_bytes, context_text=f"Video thumbnail from: {img_path.name}\n{context_text}")
+                    extracted_text = j.extracted_text or ""
+                    observations = ", ".join(j.observations) if j.observations else ""
+                    summary_parts = []
+                    if extracted_text:
+                        summary_parts.append(f"Текст: {extracted_text}")
+                    if observations:
+                        summary_parts.append(f"Елементи: {observations}")
+                    desc = " | ".join(summary_parts) if summary_parts else ""
+                    content_text = content_text + f"\n\n[Відео: {img_path.name}" + (f" — {desc}" if desc else "") + "]"
+                except Exception:
+                    log.debug("Video thumbnail OCR failed for %s", img_path)
+                    content_text = content_text + f"\n\n[Відео: {img_path.name}]"
+            else:
+                content_text = content_text + f"\n\n[Відео: {img_path.name}]"
         else:
             fname = img_path.name
             content_text = content_text + f"\n\n[attachment: {fname} ({ct})]"
