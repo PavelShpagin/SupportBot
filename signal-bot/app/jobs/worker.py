@@ -502,7 +502,7 @@ def worker_loop_forever(deps: WorkerDeps) -> None:
 
         job = claim_next_job(
             deps.db,
-            allowed_types=[job_types.SYNC_GROUP_DOCS, job_types.BUFFER_UPDATE, job_types.MAYBE_RESPOND],
+            allowed_types=[job_types.SYNC_GROUP_DOCS, job_types.BUFFER_UPDATE, job_types.MAYBE_RESPOND, job_types.CLOSE_CASE],
         )
         if job is None:
             _touch_heartbeat()
@@ -517,6 +517,8 @@ def worker_loop_forever(deps: WorkerDeps) -> None:
             handler = _handle_buffer_update
         elif job.type == job_types.MAYBE_RESPOND:
             handler = _handle_maybe_respond
+        elif job.type == job_types.CLOSE_CASE:
+            handler = _handle_close_case
         else:
             log.warning("Unknown job type=%s job_id=%s (marking done)", job.type, job.job_id)
             complete_job(deps.db, job_id=job.job_id)
@@ -537,6 +539,72 @@ def worker_loop_forever(deps: WorkerDeps) -> None:
             fail_job(deps.db, job_id=job.job_id, attempts=job.attempts)
         else:
             complete_job(deps.db, job_id=job.job_id)
+
+
+_CLOSE_CASE_DELAY_SECONDS = 300  # 5 minutes
+
+
+def _enqueue_close_case(deps: WorkerDeps, case_id: str, group_id: str) -> None:
+    """Schedule a CLOSE_CASE job with a 5-minute delay for SCRAG indexing."""
+    from app.db import enqueue_job
+    enqueue_job(
+        deps.db,
+        job_types.CLOSE_CASE,
+        {"case_id": case_id, "group_id": group_id},
+        delay_seconds=_CLOSE_CASE_DELAY_SECONDS,
+    )
+    log.info("Scheduled CLOSE_CASE for %s in %ds (group=%s)", case_id, _CLOSE_CASE_DELAY_SECONDS, group_id[:20])
+
+
+def _handle_close_case(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
+    """Finalize case closure: re-read the case from DB and index in SCRAG.
+
+    This runs ~5 minutes after a case was marked solved, giving time for
+    follow-up messages to be merged into the case via buffer_update dedup.
+    """
+    from app.db.queries_mysql import get_case
+
+    case_id = str(payload["case_id"])
+    group_id = str(payload["group_id"])
+
+    c = get_case(deps.db, case_id)
+    if not c:
+        log.warning("CLOSE_CASE: case %s not found (may have been archived)", case_id)
+        return
+
+    if c.get("status") != "solved":
+        log.info("CLOSE_CASE: case %s is not solved (status=%s), skipping SCRAG", case_id, c.get("status"))
+        return
+
+    solution = (c.get("solution_summary") or "").strip()
+    if not solution:
+        log.info("CLOSE_CASE: case %s has no solution_summary, skipping SCRAG", case_id)
+        return
+
+    doc_text = "\n".join([
+        f"[SOLVED] {(c.get('problem_title') or '').strip()}",
+        f"Проблема: {(c.get('problem_summary') or '').strip()}",
+        f"Рішення: {solution}",
+        "tags: " + ", ".join(c.get("tags") or []),
+    ]).strip()
+    rag_emb = deps.llm.embed(text=doc_text)
+
+    rag_meta: dict = {"group_id": group_id, "status": "solved"}
+    evidence_ids = c.get("evidence_ids") or []
+    evidence_image_paths = c.get("evidence_image_paths") or []
+    if evidence_ids:
+        rag_meta["evidence_ids"] = evidence_ids
+    if evidence_image_paths:
+        rag_meta["evidence_image_paths"] = evidence_image_paths
+
+    deps.rag.upsert_case(
+        case_id=case_id,
+        document=doc_text,
+        embedding=rag_emb,
+        metadata=rag_meta,
+    )
+    mark_case_in_rag(deps.db, case_id)
+    log.info("CLOSE_CASE: case %s indexed in SCRAG (group=%s)", case_id, group_id[:20])
 
 
 def _handle_sync_group_docs(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
@@ -695,34 +763,9 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
             store_case_embedding(deps.db, case_id, dedup_embedding)
 
         if effective_status == "solved" and case.solution_summary.strip():
-            # Solved case (emoji-confirmed) → index in SCRAG immediately
-            doc_text = "\n".join(
-                [
-                    f"[SOLVED] {case.problem_title.strip()}",
-                    f"Проблема: {case.problem_summary.strip()}",
-                    f"Рішення: {case.solution_summary.strip()}",
-                    "tags: " + ", ".join(case.tags),
-                ]
-            ).strip()
-            embedding = deps.llm.embed(text=doc_text)
-            rag_meta: dict = {
-                "group_id": group_id,
-                "status": "solved",  # in SCRAG, presence means solved
-            }
-            # Chroma rejects empty list metadata values — only include if non-empty
-            if evidence_ids:
-                rag_meta["evidence_ids"] = evidence_ids
-            if evidence_image_paths:
-                rag_meta["evidence_image_paths"] = evidence_image_paths
-            deps.rag.upsert_case(
-                case_id=case_id,
-                document=doc_text,
-                embedding=embedding,
-                metadata=rag_meta,
-            )
-            mark_case_in_rag(deps.db, case_id)
+            _enqueue_close_case(deps, case_id, group_id)
             accepted_ranges.append((span.start_idx, span.end_idx))
-            log.info("New solved case %s indexed in SCRAG (group=%s)", case_id, group_id[:20])
+            log.info("New solved case %s scheduled for SCRAG indexing (group=%s)", case_id, group_id[:20])
         else:
             # Open case → store in B1 only, keep messages in buffer
             log.info("New open case %s stored in B1 (not in SCRAG, group=%s)", case_id, group_id[:20])
@@ -781,25 +824,9 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
                                 final_case_id, group_id[:20],
                             )
 
-                        doc_text = "\n".join([
-                            f"[SOLVED] {b1_case['problem_title'].strip()}",
-                            f"Проблема: {b1_case['problem_summary'].strip()}",
-                            f"Рішення: {resolution.solution_summary.strip()}",
-                            "tags: " + ", ".join(b1_case.get("tags") or []),
-                        ]).strip()
-                        rag_embedding = deps.llm.embed(text=doc_text)
-                        deps.rag.upsert_case(
-                            case_id=final_case_id,
-                            document=doc_text,
-                            embedding=rag_embedding,
-                            metadata={
-                                "group_id": group_id,
-                                "status": "solved",
-                            },
-                        )
-                        mark_case_in_rag(deps.db, final_case_id)
+                        _enqueue_close_case(deps, final_case_id, group_id)
                         log.info(
-                            "B1 case %s indexed in SCRAG (group=%s)",
+                            "B1 case %s scheduled for SCRAG indexing (group=%s)",
                             final_case_id, group_id[:20],
                         )
                 except Exception:

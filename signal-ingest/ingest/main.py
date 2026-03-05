@@ -73,6 +73,77 @@ def _extract_video_thumbnail(video_bytes: bytes) -> bytes | None:
                 pass
 
 
+def _extract_video_audio_from_bytes(video_bytes: bytes) -> bytes | None:
+    """Extract audio from in-memory video bytes using ffmpeg. Returns mp3 bytes or None."""
+    import subprocess
+    tmp_video = None
+    tmp_audio = None
+    try:
+        with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as tmp:
+            tmp.write(video_bytes)
+            tmp_video = tmp.name
+        with tempfile.NamedTemporaryFile(suffix=".mp3", delete=False) as tmp:
+            tmp_audio = tmp.name
+        result = subprocess.run(
+            [
+                "ffmpeg", "-i", tmp_video,
+                "-vn", "-acodec", "libmp3lame",
+                "-ar", "16000", "-ac", "1", "-q:a", "9",
+                "-y", tmp_audio,
+            ],
+            capture_output=True,
+            timeout=60,
+        )
+        if result.returncode != 0:
+            return None
+        audio_bytes = Path(tmp_audio).read_bytes()
+        if len(audio_bytes) < 1000:
+            return None
+        return audio_bytes
+    except Exception:
+        return None
+    finally:
+        for p in (tmp_video, tmp_audio):
+            if p:
+                try:
+                    os.unlink(p)
+                except Exception:
+                    pass
+
+
+def _transcribe_audio_bytes(
+    audio_bytes: bytes,
+    openai_client: "OpenAI",
+    context: str = "",
+) -> str:
+    """Transcribe audio using Gemini via OpenAI-compatible endpoint."""
+    b64 = base64.b64encode(audio_bytes).decode("ascii")
+    prompt = (
+        "Transcribe this audio verbatim. Return ONLY the spoken words, "
+        "no timestamps or annotations. If there is no speech or only "
+        "noise/music, return exactly: EMPTY"
+    )
+    if context:
+        prompt += f"\nContext: {context}"
+    try:
+        resp = openai_client.chat.completions.create(
+            model="gemini-2.5-flash",
+            messages=[{
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": prompt},
+                    {"type": "input_audio", "input_audio": {"data": b64, "format": "mp3"}},
+                ],
+            }],
+            temperature=0,
+            timeout=30.0,
+        )
+        text = (resp.choices[0].message.content or "").strip()
+        return "" if text == "EMPTY" or not text else text
+    except Exception:
+        return ""
+
+
 # ---------------------------------------------------------------------------
 # JSON helpers
 # ---------------------------------------------------------------------------
@@ -497,9 +568,11 @@ def _enrich_messages_with_attachments(
                 if data is not None:
                     fetched[key] = data
 
-    # Phase 2: OCR images (and video thumbnails) in parallel
+    # Phase 2: OCR images (and video thumbnails) + video transcripts in parallel
     video_thumbs: Dict[tuple, bytes] = {}
+    video_transcripts: Dict[tuple, str] = {}
     ocr_tasks = []
+    transcript_tasks = []
     for (mi, ai), data in fetched.items():
         att = messages[mi].get("attachments", [])[ai]
         ct = att.get("contentType") or "application/octet-stream"
@@ -513,6 +586,10 @@ def _enrich_messages_with_attachments(
                 body = messages[mi].get("body") or messages[mi].get("text") or ""
                 fname = att.get("fileName") or "video"
                 ocr_tasks.append((mi, ai, thumb, "image/jpeg", f"Video thumbnail from: {fname}\n{body}"))
+            audio = _extract_video_audio_from_bytes(data)
+            if audio:
+                body = messages[mi].get("body") or messages[mi].get("text") or ""
+                transcript_tasks.append((mi, ai, audio, body))
 
     ocr_results: Dict[tuple, str] = {}
     if ocr_tasks:
@@ -533,6 +610,19 @@ def _enrich_messages_with_attachments(
             for (key, result) in pool.map(lambda t: _do_ocr(t), ocr_tasks):
                 if result:
                     ocr_results[key] = result
+
+    if transcript_tasks:
+        log.info("Transcribing %d video audio tracks in parallel", len(transcript_tasks))
+
+        def _do_transcribe(task):
+            mi, ai, audio, body = task
+            text = _transcribe_audio_bytes(audio, openai_client=openai_client, context=body)
+            return (mi, ai), text
+
+        with ThreadPoolExecutor(max_workers=min(len(transcript_tasks), max_ocr_workers)) as pool:
+            for (key, text) in pool.map(lambda t: _do_transcribe(t), transcript_tasks):
+                if text:
+                    video_transcripts[key] = text
 
     # Phase 3: assemble enriched messages
     enriched: List[dict] = []
@@ -572,6 +662,9 @@ def _enrich_messages_with_attachments(
                 else:
                     fname = att.get("fileName") or (att.get("path") or "").split("/")[-1] or "video"
                     ocr_texts.append(f'[Відео: {fname} ({content_type})]')
+                transcript = video_transcripts.get((mi, ai))
+                if transcript:
+                    ocr_texts.append(f"[Транскрипт відео: {transcript}]")
                 continue
             else:
                 fname = att.get("fileName") or (att.get("path") or "").split("/")[-1] or "attachment"

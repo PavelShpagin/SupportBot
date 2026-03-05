@@ -43,7 +43,7 @@ from app.db import (
     upsert_reaction,
     delete_reaction,
 )
-from app.jobs.types import BUFFER_UPDATE, HISTORY_LINK, MAYBE_RESPOND, SYNC_GROUP_DOCS
+from app.jobs.types import BUFFER_UPDATE, CLOSE_CASE, HISTORY_LINK, MAYBE_RESPOND, SYNC_GROUP_DOCS
 from app.jobs.worker import WorkerDeps, worker_loop_forever, get_worker_heartbeat_age
 from app.llm.client import LLMClient
 from app.logging_config import configure_logging
@@ -623,43 +623,21 @@ def _handle_reaction(r: InboundReaction) -> None:
         if r.emoji in POSITIVE_EMOJI:
             from app.db import close_case_by_message_ts
 
-            # Helper: close + SCRAG-index a case
-            def _close_and_index(case_id: str, source_label: str) -> None:
-                log.info(
-                    "Case %s CLOSED via emoji %s on ts=%s (%s, group=%s)",
-                    case_id, r.emoji, r.target_ts, source_label, r.group_id,
-                )
-                try:
-                    from app.db.queries_mysql import get_case
-                    from app.db import mark_case_in_rag
-                    c = get_case(db, case_id)
-                    if c and c.get("solution_summary", "").strip():
-                        doc_text = "\n".join([
-                            f"[SOLVED] {(c.get('problem_title') or '').strip()}",
-                            f"Проблема: {(c.get('problem_summary') or '').strip()}",
-                            f"Рішення: {c['solution_summary'].strip()}",
-                            "tags: " + ", ".join(c.get("tags") or []),
-                        ]).strip()
-                        rag_emb = llm.embed(text=doc_text)
-                        rag.upsert_case(
-                            case_id=case_id,
-                            document=doc_text,
-                            embedding=rag_emb,
-                            metadata={"group_id": r.group_id, "status": "solved"},
-                        )
-                        mark_case_in_rag(db, case_id)
-                        log.info("Emoji-closed case %s indexed in SCRAG (group=%s)", case_id, r.group_id[:20])
-                except Exception:
-                    log.exception("Failed to index emoji-closed case %s in SCRAG", case_id)
-
-            # Directly close any open case whose evidence includes this message
             closed_id = close_case_by_message_ts(
                 db, group_id=r.group_id, target_ts=r.target_ts, emoji=r.emoji
             )
             if closed_id:
-                _close_and_index(closed_id, "user-message")
+                log.info(
+                    "Case %s CLOSED via emoji %s on ts=%s (group=%s), SCRAG indexing in 5 min",
+                    closed_id, r.emoji, r.target_ts, r.group_id,
+                )
+                enqueue_job(
+                    db,
+                    CLOSE_CASE,
+                    {"case_id": closed_id, "group_id": r.group_id},
+                    delay_seconds=300,
+                )
 
-            # Also set closed_emoji on already-solved cases linked to this message
             n = confirm_cases_by_evidence_ts(
                 db, group_id=r.group_id, target_ts=r.target_ts, emoji=r.emoji
             )

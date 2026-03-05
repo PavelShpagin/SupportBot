@@ -3,6 +3,9 @@ from __future__ import annotations
 import hashlib
 import logging
 import mimetypes
+import os
+import subprocess
+import tempfile
 from pathlib import Path
 from typing import Iterable
 
@@ -47,6 +50,71 @@ def _extract_video_thumbnail(video_path: str | Path) -> bytes | None:
     except Exception as exc:
         log.debug("Video thumbnail extraction failed for %s: %s", video_path, exc)
         return None
+
+
+def _extract_video_audio(video_path: str | Path) -> bytes | None:
+    """Extract audio track from a video file using ffmpeg.
+
+    Returns mp3 bytes (mono, 16kHz, low-quality) or None if no audio track
+    or ffmpeg is unavailable.
+    """
+    tmp_audio = None
+    try:
+        with tempfile.NamedTemporaryFile(suffix=".mp3", delete=False) as tmp:
+            tmp_audio = tmp.name
+        result = subprocess.run(
+            [
+                "ffmpeg", "-i", str(video_path),
+                "-vn", "-acodec", "libmp3lame",
+                "-ar", "16000", "-ac", "1", "-q:a", "9",
+                "-y", tmp_audio,
+            ],
+            capture_output=True,
+            timeout=60,
+        )
+        if result.returncode != 0:
+            return None
+        audio_bytes = Path(tmp_audio).read_bytes()
+        if len(audio_bytes) < 1000:
+            return None
+        return audio_bytes
+    except Exception as exc:
+        log.debug("Video audio extraction failed for %s: %s", video_path, exc)
+        return None
+    finally:
+        if tmp_audio:
+            try:
+                os.unlink(tmp_audio)
+            except Exception:
+                pass
+
+
+def _transcribe_audio(audio_bytes: bytes, context: str = "") -> str:
+    """Transcribe audio bytes using Gemini. Returns transcript text or empty string."""
+    try:
+        import google.generativeai as genai
+
+        api_key = os.environ.get("GOOGLE_API_KEY")
+        if not api_key:
+            return ""
+        genai.configure(api_key=api_key)
+        model = genai.GenerativeModel("gemini-2.5-flash")
+        prompt = (
+            "Transcribe this audio verbatim. Return ONLY the spoken words, "
+            "no timestamps or annotations. If there is no speech or only "
+            "noise/music, return exactly: EMPTY"
+        )
+        if context:
+            prompt += f"\nContext: {context}"
+        response = model.generate_content([
+            prompt,
+            {"mime_type": "audio/mp3", "data": audio_bytes},
+        ])
+        text = (response.text or "").strip()
+        return "" if text == "EMPTY" or not text else text
+    except Exception as exc:
+        log.debug("Audio transcription failed: %s", exc)
+        return ""
 
 
 def _extract_video_thumbnail_from_bytes(data: bytes) -> bytes | None:
@@ -170,6 +238,12 @@ def ingest_message(
                     content_text = content_text + f"\n\n[Відео: {img_path.name}]"
             else:
                 content_text = content_text + f"\n\n[Відео: {img_path.name}]"
+
+            audio_bytes = _extract_video_audio(img_path)
+            if audio_bytes:
+                transcript = _transcribe_audio(audio_bytes, context=context_text)
+                if transcript:
+                    content_text = content_text + f"\n[Транскрипт відео: {transcript}]"
         else:
             fname = img_path.name
             content_text = content_text + f"\n\n[attachment: {fname} ({ct})]"

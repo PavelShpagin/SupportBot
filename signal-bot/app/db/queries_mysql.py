@@ -65,16 +65,25 @@ def insert_raw_message(db: MySQL, msg: RawMessage) -> bool:
             raise
 
 
-def enqueue_job(db: MySQL, job_type: str, payload: Dict[str, Any]) -> None:
+def enqueue_job(db: MySQL, job_type: str, payload: Dict[str, Any], *, delay_seconds: int = 0) -> None:
     with db.connection() as conn:
         cur = conn.cursor()
-        cur.execute(
-            """
-            INSERT INTO jobs(type, payload_json, status, attempts)
-            VALUES(%s, %s, 'pending', 0)
-            """,
-            (job_type, json.dumps(payload, ensure_ascii=False)),
-        )
+        if delay_seconds > 0:
+            cur.execute(
+                """
+                INSERT INTO jobs(type, payload_json, status, attempts, run_after)
+                VALUES(%s, %s, 'pending', 0, DATE_ADD(NOW(), INTERVAL %s SECOND))
+                """,
+                (job_type, json.dumps(payload, ensure_ascii=False), delay_seconds),
+            )
+        else:
+            cur.execute(
+                """
+                INSERT INTO jobs(type, payload_json, status, attempts)
+                VALUES(%s, %s, 'pending', 0)
+                """,
+                (job_type, json.dumps(payload, ensure_ascii=False)),
+            )
         conn.commit()
 
 
@@ -263,13 +272,13 @@ def claim_next_job(db: MySQL, *, allowed_types: List[str]) -> Optional[Job]:
 
     with db.connection() as conn:
         cur = conn.cursor()
-        # MySQL 8.0+ supports SELECT ... FOR UPDATE SKIP LOCKED
         cur.execute(
             f"""
             SELECT job_id, type, payload_json, attempts
             FROM jobs
             WHERE status = 'pending'
               AND type IN ({placeholders})
+              AND (run_after IS NULL OR run_after <= NOW())
             ORDER BY updated_at
             LIMIT 1
             FOR UPDATE SKIP LOCKED

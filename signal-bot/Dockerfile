@@ -5,7 +5,7 @@ ARG SIGNAL_CLI_VERSION=0.13.24
 ARG LIBSIGNAL_VERSION=0.87.0
 
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends ca-certificates curl openjdk-21-jre-headless zip unzip \
+  && apt-get install -y --no-install-recommends ca-certificates curl openjdk-21-jre-headless zip unzip ffmpeg \
   && rm -rf /var/lib/apt/lists/*
 
 # signal-cli (unofficial Signal tooling). This is needed for real Signal I/O.

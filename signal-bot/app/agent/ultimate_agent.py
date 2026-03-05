@@ -193,7 +193,7 @@ DECISION RULES — apply in order:
    b. Needs admin action: "<instruction> [[TAG_ADMIN]] <link>".
 4. If only OPEN/tracked cases exist (no solution yet): one sentence stating the issue is tracked + case link + [[TAG_ADMIN]].
 5. If BOTH agents returned useful info, combine the best answer. Prefer documentation for how-to, prefer cases for known bugs/fixes.
-6. Include source citations: case links and/or URL (Section: Y) for docs. Use "Секція" instead of "Section" when responding in Ukrainian.
+6. Include source citations: case links and/or doc URLs. If citing a specific section: URL (Section: Y) or URL (Секція: Y) in Ukrainian. If citing a whole document: URL (document title).
 7. NO greeting, NO "Вітаю", NO "Based on...", NO "According to...", NO bullet points.
 8. Respond in {lang_instruction}.
 9. NEVER invent information not provided by the agents.

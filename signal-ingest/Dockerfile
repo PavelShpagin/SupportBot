@@ -8,7 +8,7 @@ ARG LIBSIGNAL_VERSION=0.87.0
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
     ca-certificates curl \
-    openjdk-21-jre-headless zip unzip \
+    openjdk-21-jre-headless zip unzip ffmpeg \
   && rm -rf /var/lib/apt/lists/*
 
 # Download signal-cli

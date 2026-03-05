@@ -140,6 +140,8 @@ MIGRATIONS = [
     "ALTER TABLE cases ADD COLUMN closed_emoji VARCHAR(16)",
     # Embedding vector for semantic dedup (JSON array of floats)
     "ALTER TABLE cases ADD COLUMN embedding_json LONGTEXT",
+    # Delayed job execution: job is not claimed until run_after has passed
+    "ALTER TABLE jobs ADD COLUMN run_after TIMESTAMP NULL",
 ]
 
 

@@ -250,7 +250,15 @@ export default function Home() {
                 <li>Якщо Admin видаляє бота з контактів, доступ і мовні налаштування скидаються автоматично</li>
                 <li>Бот відповідає лише тоді, коли впевнений у відповіді</li>
                 <li>Щоб викликати бота напряму, наберіть <code>@SupportBot</code>, виберіть бота зі списку і напишіть питання</li>
-                <li>Бот враховує текст та зображення</li>
+                <li>Бот враховує текст, зображення та відео (включаючи транскрипцію аудіо)</li>
+              </ul>
+
+              <h2>Документація Google Docs</h2>
+              <ul>
+                <li>Додайте посилання на Google Docs в опис групи — бот автоматично їх проіндексує</li>
+                <li>Бот рекурсивно обходить пов&apos;язані документи (документ може містити посилання на інші Google Docs)</li>
+                <li>Документація переіндексується кожні 10 хвилин</li>
+                <li>Бот використовує текст і зображення з документів для відповідей</li>
               </ul>
 
               <h2>Зміна мови</h2>
@@ -282,7 +290,15 @@ export default function Home() {
                 <li>If an Admin removes the bot from contacts, access and language preferences are reset automatically</li>
                 <li>The bot replies only when it is confident in the answer</li>
                 <li>To invoke it directly, type <code>@SupportBot</code>, pick the bot from the mention list, then write your question</li>
-                <li>The bot considers text and images</li>
+                <li>The bot considers text, images, and video (including audio transcription)</li>
+              </ul>
+
+              <h2>Google Docs documentation</h2>
+              <ul>
+                <li>Add Google Docs links to the group description — the bot will automatically index them</li>
+                <li>The bot recursively follows linked documents (a doc can link to other Google Docs)</li>
+                <li>Documentation is re-indexed every 10 minutes</li>
+                <li>The bot uses text and images from documents to answer questions</li>
               </ul>
 
               <h2>Change language</h2>
