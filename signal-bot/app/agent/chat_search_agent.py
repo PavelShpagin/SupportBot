@@ -149,7 +149,7 @@ Search Results:
 {results_text}
 
 Do you have enough info to answer? 
-If YES, provide the answer with citations. Each citation MUST include the link: "Link (Sender: Sender, Date: Date)" or in Ukrainian "Link (Від: Sender, Дата: Date)".
+If YES, provide the answer with citations. Each citation MUST use format: Link (Section: Sender, Date) or in Ukrainian Link (Секція: Sender, Date).
 If NO, and you need to see the conversation context for a specific message, output "CONTEXT: <message_id>".
 """
         response2 = self.model.generate_content(prompt2)
