@@ -869,7 +869,8 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         return
 
     # Skip empty messages (system notifications like "user added bot to group")
-    if not msg.content_text or not msg.content_text.strip():
+    # But keep messages that have media attachments (image_paths) even if text is empty
+    if (not msg.content_text or not msg.content_text.strip()) and not msg.image_paths:
         log.info("MAYBE_RESPOND: skipping empty message (likely system notification)")
         return
 

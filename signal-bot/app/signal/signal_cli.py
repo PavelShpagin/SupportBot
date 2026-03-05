@@ -1012,6 +1012,10 @@ def _parse_group_update(obj: dict) -> Optional[str]:
     if has_text:
         return None
 
+    has_attachments = bool(dm.get("attachments"))
+    if has_attachments:
+        return None
+
     gtype = group_info.get("type", "")
     if gtype == "UPDATE" or "revision" in str(group_info):
         log.info("Group metadata update detected for %s (type=%s)", str(group_id)[:20], gtype)
