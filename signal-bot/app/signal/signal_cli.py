@@ -790,6 +790,8 @@ def _parse_group_message(obj: dict) -> Optional[InboundGroupMessage]:
                     ext = orig_name[orig_name.rfind("."):]
                 elif ct:
                     ext = mimetypes.guess_extension(ct) or ""
+                if ext and att_id.endswith(ext):
+                    ext = ""
                 stored = f"/var/lib/signal/bot/attachments/{att_id}{ext}" if ext else f"/var/lib/signal/bot/attachments/{att_id}"
             if stored:
                 image_paths.append(str(stored))
@@ -861,6 +863,8 @@ def _parse_direct_message(obj: dict) -> Optional[InboundDirectMessage]:
                     ext = orig_name[orig_name.rfind("."):]
                 elif ct:
                     ext = mimetypes.guess_extension(ct) or ""
+                if ext and att_id.endswith(ext):
+                    ext = ""
                 stored = f"/var/lib/signal/bot/attachments/{att_id}{ext}" if ext else f"/var/lib/signal/bot/attachments/{att_id}"
             if stored:
                 image_paths.append(str(stored))
