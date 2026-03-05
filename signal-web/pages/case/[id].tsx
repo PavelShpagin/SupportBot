@@ -531,13 +531,13 @@ export default function CasePage({ data, publicApiUrl }: Props) {
                           {text && <p className="message-text">{text}</p>}
                           {videoDesc && (
                             <details className="transcript-details">
-                              <summary>🔍 Опис відео</summary>
+                              <summary>Опис відео</summary>
                               <div className="transcript-content">{videoDesc}</div>
                             </details>
                           )}
                           {transcript && (
                             <details className="transcript-details">
-                              <summary>📝 Транскрипт відео</summary>
+                              <summary>Транскрипт відео</summary>
                               <div className="transcript-content">{transcript}</div>
                             </details>
                           )}

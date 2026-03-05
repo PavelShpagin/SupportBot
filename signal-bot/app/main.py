@@ -999,25 +999,21 @@ def _format_content_html(content_text: str) -> str:
         if video_match:
             raw = video_match.group(1)
             if ' — ' in raw:
-                fname, desc = raw.split(' — ', 1)
-                fname_esc = _html.escape(fname.strip())
+                _fname, desc = raw.split(' — ', 1)
                 desc_esc = _html.escape(desc.strip())
-                result_parts.append(f'<div class="media-label">🎬 Відео: {fname_esc}</div>')
                 result_parts.append(
-                    f'<details class="ocr-details"><summary>🔍 Опис відео</summary>'
+                    f'<details class="ocr-details"><summary>Опис відео</summary>'
                     f'<div class="ocr-text">{desc_esc}</div></details>'
                 )
-            else:
-                result_parts.append(f'<div class="media-label">🎬 Відео: {_html.escape(raw)}</div>')
             skip_image_marker = False
             continue
 
-        # Transcript marker → collapsible
+        # Transcript marker -> collapsible
         transcript_match = re.match(r'^\[Транскрипт відео:\s*(.+)\]$', stripped)
         if transcript_match:
             transcript_text = _html.escape(transcript_match.group(1))
             result_parts.append(
-                f'<details class="transcript"><summary>📝 Транскрипт відео</summary>'
+                f'<details class="transcript"><summary>Транскрипт відео</summary>'
                 f'<div class="transcript-text">{transcript_text}</div></details>'
             )
             skip_image_marker = False
@@ -1028,7 +1024,7 @@ def _format_content_html(content_text: str) -> str:
         if img_match:
             inner = _html.escape(img_match.group(1))
             result_parts.append(
-                f'<details class="ocr-details"><summary>🖼 Зображення (OCR)</summary>'
+                f'<details class="ocr-details"><summary>Розпізнаний текст</summary>'
                 f'<div class="ocr-text">{inner}</div></details>'
             )
             skip_image_marker = False
@@ -1037,8 +1033,6 @@ def _format_content_html(content_text: str) -> str:
         # Attachment marker
         att_match = re.match(r'^\[attachment:\s*(.+?)\]$', stripped)
         if att_match:
-            inner = _html.escape(att_match.group(1))
-            result_parts.append(f'<div class="media-label">📎 {inner}</div>')
             skip_image_marker = False
             continue
 
