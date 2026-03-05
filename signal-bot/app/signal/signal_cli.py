@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import json
 import logging
-import mimetypes
 import threading
 import time
 import shutil
@@ -777,15 +776,7 @@ def _parse_group_message(obj: dict) -> Optional[InboundGroupMessage]:
                 or a.get("file")
             )
             if not stored and a.get("id"):
-                att_id = a["id"]
-                ct = a.get("contentType", "")
-                orig_name = a.get("filename", "")
-                ext = ""
-                if orig_name and "." in orig_name:
-                    ext = orig_name[orig_name.rfind("."):]
-                elif ct:
-                    ext = mimetypes.guess_extension(ct) or ""
-                stored = f"/var/lib/signal/bot/attachments/{att_id}{ext}" if ext else f"/var/lib/signal/bot/attachments/{att_id}"
+                stored = f"/var/lib/signal/bot/attachments/{a['id']}"
             if stored:
                 image_paths.append(str(stored))
 
@@ -848,15 +839,7 @@ def _parse_direct_message(obj: dict) -> Optional[InboundDirectMessage]:
                 or a.get("file")
             )
             if not stored and a.get("id"):
-                att_id = a["id"]
-                ct = a.get("contentType", "")
-                orig_name = a.get("filename", "")
-                ext = ""
-                if orig_name and "." in orig_name:
-                    ext = orig_name[orig_name.rfind("."):]
-                elif ct:
-                    ext = mimetypes.guess_extension(ct) or ""
-                stored = f"/var/lib/signal/bot/attachments/{att_id}{ext}" if ext else f"/var/lib/signal/bot/attachments/{att_id}"
+                stored = f"/var/lib/signal/bot/attachments/{a['id']}"
             if stored:
                 image_paths.append(str(stored))
 
