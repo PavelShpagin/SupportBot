@@ -103,7 +103,7 @@ def _transcribe_audio(audio_bytes: bytes, context: str = "") -> str:
             log.warning("GOOGLE_API_KEY not set, cannot transcribe audio")
             return ""
         genai.configure(api_key=api_key)
-        model = genai.GenerativeModel("gemini-2.5-flash")
+        model = genai.GenerativeModel("gemini-2.0-flash")
         prompt = (
             "Transcribe this audio verbatim. Return ONLY the spoken words, "
             "no timestamps or annotations. If there is no speech or only "
@@ -112,29 +112,18 @@ def _transcribe_audio(audio_bytes: bytes, context: str = "") -> str:
         if context:
             prompt += f"\nContext: {context}"
         log.info("Sending %d bytes of audio to Gemini for transcription", len(audio_bytes))
-        last_exc = None
-        for attempt in range(2):
-            try:
-                response = model.generate_content([
-                    prompt,
-                    {"mime_type": "audio/mp3", "data": audio_bytes},
-                ])
-                text = (response.text or "").strip()
-                if text == "EMPTY" or not text:
-                    log.info("Gemini transcription returned empty/EMPTY")
-                    return ""
-                log.info("Gemini transcription (%d chars, attempt %d): %s", len(text), attempt + 1, text[:200])
-                return text
-            except Exception as exc:
-                last_exc = exc
-                if attempt == 0:
-                    log.warning("Audio transcription attempt 1 failed, retrying in 2s: %s", exc)
-                    import time
-                    time.sleep(2)
-        log.warning("Audio transcription failed after 2 attempts: %s", last_exc)
-        return ""
+        response = model.generate_content([
+            prompt,
+            {"mime_type": "audio/mp3", "data": audio_bytes},
+        ])
+        text = (response.text or "").strip()
+        if text == "EMPTY" or not text:
+            log.info("Gemini transcription returned empty/EMPTY")
+            return ""
+        log.info("Gemini transcription: %s", text[:200])
+        return text
     except Exception as exc:
-        log.warning("Audio transcription setup failed: %s", exc)
+        log.warning("Audio transcription failed: %s", exc)
         return ""
 
 

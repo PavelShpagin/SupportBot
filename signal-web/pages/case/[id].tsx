@@ -343,28 +343,39 @@ export default function CasePage({ data, publicApiUrl }: Props) {
 
         .transcript-details {
           margin: 8px 0 8px 52px;
-          border: 1px solid #ddd;
+          border: 1px solid var(--border);
           border-radius: 8px;
-          background: #f5f5f5;
+          background: var(--card-bg);
           overflow: hidden;
         }
         .transcript-details summary {
-          padding: 8px 12px;
+          padding: 7px 12px;
           cursor: pointer;
           font-weight: 500;
-          font-size: 13px;
-          background: #eee;
+          font-size: 12px;
+          color: var(--text-sec);
+          background: var(--page-bg);
           user-select: none;
+          list-style: none;
+        }
+        .transcript-details summary::-webkit-details-marker { display: none; }
+        .transcript-details summary::before {
+          content: '▸ ';
+          font-size: 10px;
+        }
+        .transcript-details[open] summary::before {
+          content: '▾ ';
         }
         .transcript-details summary:hover {
-          background: #e0e0e0;
+          color: var(--text);
         }
         .transcript-content {
           padding: 10px 12px;
           white-space: pre-wrap;
           font-size: 13px;
-          line-height: 1.5;
-          color: #444;
+          line-height: 1.6;
+          color: var(--text);
+          border-top: 1px solid var(--border);
         }
 
         .empty-chat {
@@ -516,20 +527,7 @@ export default function CasePage({ data, publicApiUrl }: Props) {
                     </div>
                     {(() => {
                       let text = msg.content_text || '';
-                      // Extract video description (before stripping markers)
-                      const videoMatch = text.match(/\[Відео:\s*[^\s\]]+\s*—\s*([\s\S]+?)\](?=\s*$|\s*\n|\s*\[)/m) || text.match(/\[Відео:\s*[^\s\]]+\s*—\s*(.+?)\]/);
-                      let videoDesc: string | null = videoMatch ? videoMatch[1].trim() : null;
-                      // Old format: desc may be raw JSON {"extracted_text": "...", "description": "..."}
-                      if (videoDesc) {
-                        try {
-                          const parsed = JSON.parse(videoDesc);
-                          const parts: string[] = [];
-                          if (parsed.extracted_text) parts.push(parsed.extracted_text);
-                          if (parsed.description) parts.push(parsed.description);
-                          videoDesc = parts.length ? parts.join(' | ') : null;
-                        } catch { /* not JSON, keep as-is */ }
-                      }
-                      // Extract transcript
+                      // Extract transcript only (no video description shown in UI)
                       const transcriptMatch = text.match(/\[Транскрипт відео:\s*([\s\S]+?)\]/);
                       const transcript = transcriptMatch ? transcriptMatch[1].trim() : null;
                       // Strip all media markers from display text
@@ -539,12 +537,6 @@ export default function CasePage({ data, publicApiUrl }: Props) {
                       return (
                         <>
                           {text && <p className="message-text">{text}</p>}
-                          {videoDesc && (
-                            <details className="transcript-details">
-                              <summary>Опис відео</summary>
-                              <div className="transcript-content">{videoDesc}</div>
-                            </details>
-                          )}
                           {transcript && (
                             <details className="transcript-details">
                               <summary>Транскрипт відео</summary>

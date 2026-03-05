@@ -113,11 +113,18 @@ def _extract_video_audio_from_bytes(video_bytes: bytes) -> bytes | None:
 
 def _transcribe_audio_bytes(
     audio_bytes: bytes,
-    openai_client: "OpenAI",
+    openai_client: "OpenAI" = None,  # kept for API compatibility, unused
     context: str = "",
 ) -> str:
-    """Transcribe audio using Gemini via OpenAI-compatible endpoint."""
-    b64 = base64.b64encode(audio_bytes).decode("ascii")
+    """Transcribe audio using the native Gemini SDK."""
+    import os
+    import google.generativeai as genai
+
+    api_key = os.environ.get("GOOGLE_API_KEY")
+    if not api_key:
+        log.warning("GOOGLE_API_KEY not set, cannot transcribe audio")
+        return ""
+    genai.configure(api_key=api_key)
     prompt = (
         "Transcribe this audio verbatim. Return ONLY the spoken words, "
         "no timestamps or annotations. If there is no speech or only "
@@ -127,19 +134,12 @@ def _transcribe_audio_bytes(
         prompt += f"\nContext: {context}"
     try:
         log.info("Sending %d bytes of audio to Gemini for transcription", len(audio_bytes))
-        resp = openai_client.chat.completions.create(
-            model="gemini-2.5-flash",
-            messages=[{
-                "role": "user",
-                "content": [
-                    {"type": "text", "text": prompt},
-                    {"type": "input_audio", "input_audio": {"data": b64, "format": "mp3"}},
-                ],
-            }],
-            temperature=0,
-            timeout=30.0,
-        )
-        text = (resp.choices[0].message.content or "").strip()
+        model = genai.GenerativeModel("gemini-2.0-flash")
+        response = model.generate_content([
+            prompt,
+            {"mime_type": "audio/mp3", "data": audio_bytes},
+        ])
+        text = (response.text or "").strip()
         if text == "EMPTY" or not text:
             log.info("Audio transcription returned empty/EMPTY")
             return ""

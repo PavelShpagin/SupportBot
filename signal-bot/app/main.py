@@ -994,30 +994,9 @@ def _format_content_html(content_text: str) -> str:
             skip_image_marker = True
             continue
 
-        # Video marker: [Відео: filename — desc] or [Відео: filename]
+        # Video marker: [Відео: filename — desc] or [Відео: filename] — strip silently
         video_match = re.match(r'^\[Відео:\s*(.+?)\]$', stripped)
         if video_match:
-            raw = video_match.group(1)
-            if ' — ' in raw:
-                _fname, desc = raw.split(' — ', 1)
-                desc = desc.strip()
-                # Old format: desc may be raw JSON {"extracted_text": "...", "description": "..."}
-                try:
-                    parsed = json.loads(desc)
-                    parts = []
-                    if parsed.get("extracted_text"):
-                        parts.append(parsed["extracted_text"])
-                    if parsed.get("description"):
-                        parts.append(parsed["description"])
-                    desc = " | ".join(parts) if parts else ""
-                except (json.JSONDecodeError, TypeError):
-                    pass
-                if desc:
-                    desc_esc = _html.escape(desc)
-                    result_parts.append(
-                        f'<details class="ocr-details"><summary>Опис відео</summary>'
-                        f'<div class="ocr-text">{desc_esc}</div></details>'
-                    )
             skip_image_marker = False
             continue
 
@@ -1141,19 +1120,26 @@ def view_case(case_id: str):
             .media-img {{ max-width: 100%; height: auto; margin-top: 10px; border-radius: 4px; }}
             .media-video {{ max-width: 100%; margin-top: 10px; border-radius: 4px; }}
             details.transcript, details.ocr-details {{
-                margin: 8px 0; border: 1px solid #ddd; border-radius: 6px;
-                background: #f5f5f5; overflow: hidden;
+                margin: 8px 0; border: 1px solid #e0e0e0; border-radius: 6px;
+                background: #fff; overflow: hidden;
             }}
             details.transcript summary, details.ocr-details summary {{
-                padding: 8px 12px; cursor: pointer; font-weight: 500;
-                background: #eee; user-select: none;
+                padding: 7px 12px; cursor: pointer; font-weight: 500; font-size: 0.85em;
+                color: #666; background: #f6f7f9; user-select: none; list-style: none;
+            }}
+            details.transcript summary::-webkit-details-marker {{ display: none; }}
+            details.transcript summary::before, details.ocr-details summary::before {{
+                content: '\\25B8  '; font-size: 10px;
+            }}
+            details.transcript[open] summary::before, details.ocr-details[open] summary::before {{
+                content: '\\25BE  ';
             }}
             details.transcript summary:hover, details.ocr-details summary:hover {{
-                background: #e0e0e0;
+                color: #333;
             }}
             .transcript-text, .ocr-text {{
                 padding: 10px 12px; white-space: pre-wrap; font-size: 0.9em;
-                line-height: 1.5; color: #444;
+                line-height: 1.6; color: #222; border-top: 1px solid #e0e0e0;
             }}
         </style>
     </head>
