@@ -341,6 +341,32 @@ export default function CasePage({ data, publicApiUrl }: Props) {
           flex-shrink: 0;
         }
 
+        .transcript-details {
+          margin: 8px 0 8px 52px;
+          border: 1px solid #ddd;
+          border-radius: 8px;
+          background: #f5f5f5;
+          overflow: hidden;
+        }
+        .transcript-details summary {
+          padding: 8px 12px;
+          cursor: pointer;
+          font-weight: 500;
+          font-size: 13px;
+          background: #eee;
+          user-select: none;
+        }
+        .transcript-details summary:hover {
+          background: #e0e0e0;
+        }
+        .transcript-content {
+          padding: 10px 12px;
+          white-space: pre-wrap;
+          font-size: 13px;
+          line-height: 1.5;
+          color: #444;
+        }
+
         .empty-chat {
           padding: 32px 20px;
           text-align: center;
@@ -488,11 +514,28 @@ export default function CasePage({ data, publicApiUrl }: Props) {
                         </span>
                       </div>
                     </div>
-                    <p className="message-text">{
-                      (msg.attachments?.length || msg.images?.length)
-                        ? msg.content_text.replace(/\n*\[Зображення[^\]]*\]|\n*\[image\]\s*\{[\s\S]*?\}|\n*\[attachment:[^\]]*\]/g, '').trim()
-                        : msg.content_text
-                    }</p>
+                    {(() => {
+                      let text = msg.content_text || '';
+                      // Strip media markers from display text
+                      text = text.replace(/\n*\[Зображення[^\]]*\]|\n*\[image\]\s*\{[\s\S]*?\}|\n*\[attachment:[^\]]*\]|\n*\[Відео:[^\]]*\]/g, '').trim();
+                      // Extract transcript
+                      const transcriptMatch = text.match(/\[Транскрипт відео:\s*([\s\S]+?)\]/);
+                      const transcript = transcriptMatch ? transcriptMatch[1].trim() : null;
+                      text = text.replace(/\n*\[Транскрипт відео:[^\]]*\]/g, '').trim();
+                      // Clean up raw JSON OCR blocks
+                      text = text.replace(/\{"extracted_text"\s*:[\s\S]*?\}/g, '').trim();
+                      return (
+                        <>
+                          {text && <p className="message-text">{text}</p>}
+                          {transcript && (
+                            <details className="transcript-details">
+                              <summary>📝 Транскрипт відео</summary>
+                              <div className="transcript-content">{transcript}</div>
+                            </details>
+                          )}
+                        </>
+                      );
+                    })()}
                     {(() => {
                       const items = msg.attachments?.length
                         ? msg.attachments

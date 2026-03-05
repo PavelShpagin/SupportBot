@@ -950,6 +950,95 @@ def _path_to_url(p: str) -> str:
     return p
 
 
+def _format_content_html(content_text: str) -> str:
+    """Format content_text for case page display.
+
+    Parses markers like [Відео: ...], [Транскрипт відео: ...], [Зображення: ...],
+    [image], and raw JSON OCR results into clean HTML.
+    """
+    import html as _html
+    import re
+    import json
+
+    if not content_text:
+        return ""
+
+    text = content_text
+
+    # Try to parse and clean up raw JSON OCR results embedded in the text
+    def _clean_json_block(match):
+        raw = match.group(0)
+        try:
+            parsed = json.loads(raw)
+            parts = []
+            et = (parsed.get("extracted_text") or "").strip()
+            desc = (parsed.get("description") or "").strip()
+            if et:
+                parts.append(f"Текст: {et}")
+            if desc:
+                parts.append(f"Опис: {desc}")
+            return " | ".join(parts) if parts else raw
+        except Exception:
+            return raw
+
+    text = re.sub(r'\{["\s]*"extracted_text"[^}]+\}', _clean_json_block, text)
+
+    lines = text.split("\n")
+    result_parts = []
+    skip_image_marker = False
+
+    for line in lines:
+        stripped = line.strip()
+
+        if stripped == "[image]":
+            skip_image_marker = True
+            continue
+
+        # Video marker
+        video_match = re.match(r'^\[Відео:\s*(.+?)\]$', stripped)
+        if video_match:
+            inner = _html.escape(video_match.group(1))
+            result_parts.append(f'<div class="media-label">🎬 Відео: {inner}</div>')
+            skip_image_marker = False
+            continue
+
+        # Transcript marker → collapsible
+        transcript_match = re.match(r'^\[Транскрипт відео:\s*(.+)\]$', stripped)
+        if transcript_match:
+            transcript_text = _html.escape(transcript_match.group(1))
+            result_parts.append(
+                f'<details class="transcript"><summary>📝 Транскрипт відео</summary>'
+                f'<div class="transcript-text">{transcript_text}</div></details>'
+            )
+            skip_image_marker = False
+            continue
+
+        # Image OCR marker
+        img_match = re.match(r'^\[Зображення:\s*(.+?)\]$', stripped)
+        if img_match:
+            inner = _html.escape(img_match.group(1))
+            result_parts.append(
+                f'<details class="ocr-details"><summary>🖼 Зображення (OCR)</summary>'
+                f'<div class="ocr-text">{inner}</div></details>'
+            )
+            skip_image_marker = False
+            continue
+
+        # Attachment marker
+        att_match = re.match(r'^\[attachment:\s*(.+?)\]$', stripped)
+        if att_match:
+            inner = _html.escape(att_match.group(1))
+            result_parts.append(f'<div class="media-label">📎 {inner}</div>')
+            skip_image_marker = False
+            continue
+
+        if stripped:
+            result_parts.append(f'<p>{_html.escape(stripped)}</p>')
+            skip_image_marker = False
+
+    return "\n".join(result_parts)
+
+
 def _media_html(paths: list) -> str:
     """Return HTML for a list of media file paths (images / video / fallback download)."""
     import html as _html
@@ -1021,14 +1110,34 @@ def view_case(case_id: str):
     <head>
         <title>Case {case_id}</title>
         <style>
-            body {{ font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }}
+            body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                   max-width: 800px; margin: 0 auto; padding: 20px; color: #333; }}
             .case-header {{ border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-bottom: 20px; }}
             .status {{ display: inline-block; padding: 5px 10px; border-radius: 5px; background: #eee; }}
             .status.solved {{ background: #d4edda; color: #155724; }}
             .case-date {{ color: #666; font-size: 0.9em; margin-top: 4px; }}
-            .message {{ border: 1px solid #eee; padding: 10px; margin-bottom: 10px; border-radius: 5px; }}
-            .meta {{ color: #666; font-size: 0.9em; margin-bottom: 5px; }}
-            img {{ max-width: 100%; height: auto; margin-top: 10px; }}
+            .message {{ border: 1px solid #e0e0e0; padding: 12px; margin-bottom: 12px; border-radius: 8px;
+                       background: #fafafa; }}
+            .meta {{ color: #888; font-size: 0.85em; margin-bottom: 6px; }}
+            .content p {{ margin: 4px 0; }}
+            .media-label {{ color: #555; font-size: 0.9em; margin: 6px 0; }}
+            .media-img {{ max-width: 100%; height: auto; margin-top: 10px; border-radius: 4px; }}
+            .media-video {{ max-width: 100%; margin-top: 10px; border-radius: 4px; }}
+            details.transcript, details.ocr-details {{
+                margin: 8px 0; border: 1px solid #ddd; border-radius: 6px;
+                background: #f5f5f5; overflow: hidden;
+            }}
+            details.transcript summary, details.ocr-details summary {{
+                padding: 8px 12px; cursor: pointer; font-weight: 500;
+                background: #eee; user-select: none;
+            }}
+            details.transcript summary:hover, details.ocr-details summary:hover {{
+                background: #e0e0e0;
+            }}
+            .transcript-text, .ocr-text {{
+                padding: 10px 12px; white-space: pre-wrap; font-size: 0.9em;
+                line-height: 1.5; color: #444;
+            }}
         </style>
     </head>
     <body>
@@ -1055,10 +1164,11 @@ def view_case(case_id: str):
         for msg in evidence:
             dt = datetime.fromtimestamp(msg.ts / 1000, tz=_tz_kyiv)
             ts_str = dt.strftime('%Y-%m-%d %H:%M:%S')
+            formatted_content = _format_content_html(msg.content_text or "")
             html += f"""
                 <div class="message">
                     <div class="meta">{msg.sender_hash[:8]} at {ts_str}</div>
-                    <div class="content">{_html.escape(msg.content_text or '')}</div>
+                    <div class="content">{formatted_content}</div>
             """
             html += _media_html(msg.image_paths)
             html += "</div>"

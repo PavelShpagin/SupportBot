@@ -73,13 +73,17 @@ def _extract_video_audio(video_path: str | Path) -> bytes | None:
             timeout=60,
         )
         if result.returncode != 0:
+            stderr = result.stderr.decode("utf-8", errors="replace")[:500]
+            log.warning("ffmpeg audio extraction failed for %s (rc=%d): %s", video_path, result.returncode, stderr)
             return None
         audio_bytes = Path(tmp_audio).read_bytes()
         if len(audio_bytes) < 1000:
+            log.warning("Audio too small (%d bytes) for %s, skipping transcription", len(audio_bytes), video_path)
             return None
+        log.info("Extracted %d bytes of audio from %s", len(audio_bytes), video_path)
         return audio_bytes
     except Exception as exc:
-        log.debug("Video audio extraction failed for %s: %s", video_path, exc)
+        log.warning("Video audio extraction failed for %s: %s", video_path, exc)
         return None
     finally:
         if tmp_audio:
@@ -96,6 +100,7 @@ def _transcribe_audio(audio_bytes: bytes, context: str = "") -> str:
 
         api_key = os.environ.get("GOOGLE_API_KEY")
         if not api_key:
+            log.warning("GOOGLE_API_KEY not set, cannot transcribe audio")
             return ""
         genai.configure(api_key=api_key)
         model = genai.GenerativeModel("gemini-2.5-flash")
@@ -106,14 +111,30 @@ def _transcribe_audio(audio_bytes: bytes, context: str = "") -> str:
         )
         if context:
             prompt += f"\nContext: {context}"
-        response = model.generate_content([
-            prompt,
-            {"mime_type": "audio/mp3", "data": audio_bytes},
-        ])
-        text = (response.text or "").strip()
-        return "" if text == "EMPTY" or not text else text
+        log.info("Sending %d bytes of audio to Gemini for transcription", len(audio_bytes))
+        last_exc = None
+        for attempt in range(2):
+            try:
+                response = model.generate_content([
+                    prompt,
+                    {"mime_type": "audio/mp3", "data": audio_bytes},
+                ])
+                text = (response.text or "").strip()
+                if text == "EMPTY" or not text:
+                    log.info("Gemini transcription returned empty/EMPTY")
+                    return ""
+                log.info("Gemini transcription (%d chars, attempt %d): %s", len(text), attempt + 1, text[:200])
+                return text
+            except Exception as exc:
+                last_exc = exc
+                if attempt == 0:
+                    log.warning("Audio transcription attempt 1 failed, retrying in 2s: %s", exc)
+                    import time
+                    time.sleep(2)
+        log.warning("Audio transcription failed after 2 attempts: %s", last_exc)
+        return ""
     except Exception as exc:
-        log.debug("Audio transcription failed: %s", exc)
+        log.warning("Audio transcription setup failed: %s", exc)
         return ""
 
 
@@ -220,8 +241,10 @@ def ingest_message(
                 log.exception("Image extraction failed (path=%s).", img_path)
                 content_text = content_text + "\n\n[Зображення]"
         elif _is_video(ct):
+            log.info("Processing video attachment: %s (%s)", img_path, ct)
             thumb_bytes = _extract_video_thumbnail(img_path)
             if thumb_bytes:
+                log.info("Extracted thumbnail (%d bytes) from %s", len(thumb_bytes), img_path)
                 thumb_name = img_path.stem + "_thumb.jpg"
                 thumb_stored = None
                 if _r2.is_enabled():
@@ -244,6 +267,7 @@ def ingest_message(
                     log.debug("Video thumbnail OCR failed for %s", img_path)
                     content_text = content_text + f"\n\n[Відео: {img_path.name}]"
             else:
+                log.warning("Failed to extract thumbnail from %s", img_path)
                 content_text = content_text + f"\n\n[Відео: {img_path.name}]"
 
             audio_bytes = _extract_video_audio(img_path)

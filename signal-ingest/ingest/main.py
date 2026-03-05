@@ -126,6 +126,7 @@ def _transcribe_audio_bytes(
     if context:
         prompt += f"\nContext: {context}"
     try:
+        log.info("Sending %d bytes of audio to Gemini for transcription", len(audio_bytes))
         resp = openai_client.chat.completions.create(
             model="gemini-2.5-flash",
             messages=[{
@@ -139,8 +140,13 @@ def _transcribe_audio_bytes(
             timeout=30.0,
         )
         text = (resp.choices[0].message.content or "").strip()
-        return "" if text == "EMPTY" or not text else text
-    except Exception:
+        if text == "EMPTY" or not text:
+            log.info("Audio transcription returned empty/EMPTY")
+            return ""
+        log.info("Audio transcription result: %s", text[:200])
+        return text
+    except Exception as e:
+        log.warning("Audio transcription failed: %s", e)
         return ""
 
 
@@ -524,6 +530,27 @@ def _get_desktop_messages(settings, group_id: str, group_name: str, limit: int =
 # LLM Case Extraction
 # ?????????????????????????????????????????????????????????????????????????????
 
+
+def _format_ocr_for_video(ocr_text: str) -> str:
+    """Parse raw JSON OCR result into human-readable text for video thumbnails.
+
+    _ocr_attachment() returns raw JSON like {"extracted_text": "...", "description": "..."}.
+    This formats it into a clean string like "Текст: ... | Опис: ..." for display.
+    """
+    try:
+        parsed = _safe_json_loads(ocr_text)
+        parts = []
+        et = (parsed.get("extracted_text") or "").strip()
+        desc = (parsed.get("description") or "").strip()
+        if et:
+            parts.append(f"Текст: {et}")
+        if desc:
+            parts.append(f"Опис: {desc}")
+        return " | ".join(parts) if parts else ocr_text
+    except Exception:
+        return ocr_text
+
+
 def _enrich_messages_with_attachments(
     *,
     settings,
@@ -661,7 +688,8 @@ def _enrich_messages_with_attachments(
                 if thumb:
                     fname = att.get("fileName") or "video"
                     ocr_text = ocr_results.get((mi, ai))
-                    ocr_texts.append(f"[Відео: {fname}" + (f" — {ocr_text}" if ocr_text else "") + "]")
+                    desc = _format_ocr_for_video(ocr_text) if ocr_text else ""
+                    ocr_texts.append(f"[Відео: {fname}" + (f" — {desc}" if desc else "") + "]")
                     payloads.append({
                         "filename": fname + "_thumb.jpg",
                         "content_type": "image/jpeg",
