@@ -208,7 +208,6 @@ def _maybe_start_signal_listener() -> None:
                 "on_group_message": _handle_group_message,
                 "on_direct_message": _handle_direct_message,
                 "on_reaction": _handle_reaction,
-                "on_message_delete": _handle_message_delete,
                 "on_contact_removed": _handle_contact_removed,
             },
             daemon=True,
