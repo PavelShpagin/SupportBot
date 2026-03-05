@@ -994,11 +994,21 @@ def _format_content_html(content_text: str) -> str:
             skip_image_marker = True
             continue
 
-        # Video marker
+        # Video marker: [Відео: filename — desc] or [Відео: filename]
         video_match = re.match(r'^\[Відео:\s*(.+?)\]$', stripped)
         if video_match:
-            inner = _html.escape(video_match.group(1))
-            result_parts.append(f'<div class="media-label">🎬 Відео: {inner}</div>')
+            raw = video_match.group(1)
+            if ' — ' in raw:
+                fname, desc = raw.split(' — ', 1)
+                fname_esc = _html.escape(fname.strip())
+                desc_esc = _html.escape(desc.strip())
+                result_parts.append(f'<div class="media-label">🎬 Відео: {fname_esc}</div>')
+                result_parts.append(
+                    f'<details class="ocr-details"><summary>🔍 Опис відео</summary>'
+                    f'<div class="ocr-text">{desc_esc}</div></details>'
+                )
+            else:
+                result_parts.append(f'<div class="media-label">🎬 Відео: {_html.escape(raw)}</div>')
             skip_image_marker = False
             continue
 

@@ -516,17 +516,25 @@ export default function CasePage({ data, publicApiUrl }: Props) {
                     </div>
                     {(() => {
                       let text = msg.content_text || '';
-                      // Strip media markers from display text
-                      text = text.replace(/\n*\[Зображення[^\]]*\]|\n*\[image\]\s*\{[\s\S]*?\}|\n*\[image\]|\n*\[attachment:[^\]]*\]|\n*\[Відео:[^\]]*\]/g, '').trim();
+                      // Extract video description (before stripping markers)
+                      const videoMatch = text.match(/\[Відео:\s*[^\s]+\s*—\s*(.+?)\]/);
+                      const videoDesc = videoMatch ? videoMatch[1].trim() : null;
                       // Extract transcript
                       const transcriptMatch = text.match(/\[Транскрипт відео:\s*([\s\S]+?)\]/);
                       const transcript = transcriptMatch ? transcriptMatch[1].trim() : null;
-                      text = text.replace(/\n*\[Транскрипт відео:[^\]]*\]/g, '').trim();
+                      // Strip all media markers from display text
+                      text = text.replace(/\n*\[Зображення[^\]]*\]|\n*\[image\]\s*\{[\s\S]*?\}|\n*\[image\]|\n*\[attachment:[^\]]*\]|\n*\[Відео:[^\]]*\]|\n*\[Транскрипт відео:[^\]]*\]/g, '').trim();
                       // Clean up raw JSON OCR blocks
                       text = text.replace(/\{"extracted_text"\s*:[\s\S]*?\}/g, '').trim();
                       return (
                         <>
                           {text && <p className="message-text">{text}</p>}
+                          {videoDesc && (
+                            <details className="transcript-details">
+                              <summary>🔍 Опис відео</summary>
+                              <div className="transcript-content">{videoDesc}</div>
+                            </details>
+                          )}
                           {transcript && (
                             <details className="transcript-details">
                               <summary>📝 Транскрипт відео</summary>
