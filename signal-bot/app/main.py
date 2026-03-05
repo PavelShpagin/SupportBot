@@ -43,7 +43,7 @@ from app.db import (
     upsert_reaction,
     delete_reaction,
 )
-from app.jobs.types import BUFFER_UPDATE, CLOSE_CASE, HISTORY_LINK, MAYBE_RESPOND, SYNC_GROUP_DOCS
+from app.jobs.types import BUFFER_UPDATE, HISTORY_LINK, MAYBE_RESPOND, SYNC_GROUP_DOCS
 from app.jobs.worker import WorkerDeps, worker_loop_forever, get_worker_heartbeat_age
 from app.llm.client import LLMClient
 from app.logging_config import configure_logging
@@ -361,7 +361,16 @@ def _do_prune() -> None:
             log.info("Deleted %d RAG docs for group %s (group-level delete)", deleted_rag, group_id)
         except Exception:
             log.exception("Failed to delete cases from RAG for group %s", group_id)
-        
+
+        # Delete R2 media (all attachments under attachments/{group_id}/)
+        try:
+            from app import r2
+            if r2.is_enabled():
+                deleted_r2 = r2.delete_prefix(f"attachments/{group_id}/")
+                log.info("Deleted %d R2 objects for group %s", deleted_r2, group_id)
+        except Exception:
+            log.exception("Failed to delete R2 objects for group %s", group_id)
+
         # Delete all group data from DB
         try:
             stats = delete_all_group_data(db, group_id)
@@ -619,24 +628,22 @@ def _handle_reaction(r: InboundReaction) -> None:
         )
         log.info("Reaction added: group=%s ts=%s emoji=%s", r.group_id, r.target_ts, r.emoji)
 
-        # Positive emoji → close open case linked to this message AND confirm solved cases
         if r.emoji in POSITIVE_EMOJI:
-            from app.db import close_case_by_message_ts
+            # Update buffer text so the next extraction sees the reaction count
+            _update_buffer_reaction_count(r.group_id, r.target_ts)
 
-            closed_id = close_case_by_message_ts(
-                db, group_id=r.group_id, target_ts=r.target_ts, emoji=r.emoji
-            )
-            if closed_id:
-                log.info(
-                    "Case %s CLOSED via emoji %s on ts=%s (group=%s), SCRAG indexing in 5 min",
-                    closed_id, r.emoji, r.target_ts, r.group_id,
-                )
-                enqueue_job(
-                    db,
-                    CLOSE_CASE,
-                    {"case_id": closed_id, "group_id": r.group_id},
-                    delay_seconds=300,
-                )
+            # Find the message being reacted to; enqueue BUFFER_UPDATE so the
+            # LLM re-evaluates the buffer with the updated reaction count.
+            from app.db import get_message_by_ts
+            target_msg = get_message_by_ts(db, group_id=r.group_id, ts=r.target_ts)
+            if target_msg:
+                msg_id = target_msg.message_id
+                # If the reacted message is a bot reply, use the original message
+                # it was replying to for the BUFFER_UPDATE trigger.
+                if target_msg.reply_to_id:
+                    msg_id = target_msg.reply_to_id
+                enqueue_job(db, BUFFER_UPDATE, {"group_id": r.group_id, "message_id": msg_id})
+                log.info("Enqueued BUFFER_UPDATE after reaction on ts=%s (msg_id=%s)", r.target_ts, msg_id)
 
             n = confirm_cases_by_evidence_ts(
                 db, group_id=r.group_id, target_ts=r.target_ts, emoji=r.emoji
@@ -646,6 +653,38 @@ def _handle_reaction(r: InboundReaction) -> None:
                     "Case confirmation via emoji %s on ts=%s in group=%s: %d case(s) updated",
                     r.emoji, r.target_ts, r.group_id, n,
                 )
+
+
+def _update_buffer_reaction_count(group_id: str, target_ts: int) -> None:
+    """Update the reaction count in the buffer text for a specific message."""
+    import re as _re
+    from app.db import get_buffer, set_buffer, get_positive_reactions_for_message
+
+    buf = get_buffer(db, group_id=group_id)
+    if not buf:
+        return
+
+    new_count = get_positive_reactions_for_message(db, group_id=group_id, target_ts=target_ts)
+    if new_count <= 0:
+        return
+
+    ts_str = str(target_ts)
+    lines = buf.split("\n")
+    updated = False
+    for i, line in enumerate(lines):
+        if f"ts={ts_str}" not in line:
+            continue
+        # Replace existing reactions=N or add it before the newline
+        if _re.search(r'\breactions=\d+', line):
+            lines[i] = _re.sub(r'\breactions=\d+', f'reactions={new_count}', line)
+        else:
+            lines[i] = line.rstrip() + f" reactions={new_count}"
+        updated = True
+        break
+
+    if updated:
+        set_buffer(db, group_id=group_id, buffer_text="\n".join(lines))
+        log.debug("Buffer updated: reactions=%d on ts=%s in group=%s", new_count, ts_str, group_id[:20])
 
 
 def _send_direct_or_cleanup(admin_id: str, text: str) -> bool:

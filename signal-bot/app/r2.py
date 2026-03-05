@@ -149,3 +149,36 @@ def key_from_url(url: str) -> str | None:
     if not _r2_public_url or not url.startswith(_r2_public_url):
         return None
     return url[len(_r2_public_url):].lstrip("/")
+
+
+def delete_prefix(prefix: str) -> int:
+    """Delete all objects under a given key prefix. Returns count of deleted objects."""
+    if not _r2_enabled or _r2_client is None:
+        return 0
+
+    deleted = 0
+    continuation_token = None
+
+    try:
+        while True:
+            kwargs: dict = {"Bucket": _r2_bucket, "Prefix": prefix, "MaxKeys": 1000}
+            if continuation_token:
+                kwargs["ContinuationToken"] = continuation_token
+
+            resp = _r2_client.list_objects_v2(**kwargs)
+
+            for obj in resp.get("Contents", []):
+                key = obj["Key"]
+                try:
+                    _r2_client.delete_object(Bucket=_r2_bucket, Key=key)
+                    deleted += 1
+                except Exception as e:
+                    log.warning("Failed to delete R2 object %s: %s", key, e)
+
+            if not resp.get("IsTruncated"):
+                break
+            continuation_token = resp.get("NextContinuationToken")
+    except Exception as e:
+        log.error("R2 delete_prefix failed for prefix=%s after %d deletions: %s", prefix, deleted, e)
+
+    return deleted

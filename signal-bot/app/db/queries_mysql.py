@@ -113,15 +113,6 @@ def get_raw_message(db: MySQL, message_id: str) -> Optional[RawMessage]:
         )
 
 
-def delete_raw_message(db: MySQL, message_id: str) -> bool:
-    """Delete a raw message by message_id (used for remote delete handling)."""
-    with db.connection() as conn:
-        cur = conn.cursor()
-        cur.execute("DELETE FROM raw_messages WHERE message_id = %s", (message_id,))
-        conn.commit()
-        return cur.rowcount > 0
-
-
 def get_last_messages_text(db: MySQL, group_id: str, n: int) -> List[str]:
     """Return last n messages as plain text strings (oldest-first).
 
@@ -1107,6 +1098,35 @@ def get_recent_solved_cases(db: MySQL, group_id: str, since_ts_ms: int) -> List[
                 "created_at": row[5].isoformat() if row[5] else None,
             }
             for row in rows
+        ]
+
+
+def get_overlapping_solved_cases(
+    db: MySQL, group_id: str, buffer_message_ids: List[str],
+) -> List[Dict[str, str]]:
+    """Return solved cases whose evidence overlaps the given message IDs.
+
+    Used to give the LLM context about already-extracted cases so it does not
+    re-extract them from the buffer.
+    """
+    if not buffer_message_ids:
+        return []
+    with db.connection() as conn:
+        cur = conn.cursor()
+        placeholders = ",".join(["%s"] * len(buffer_message_ids))
+        cur.execute(
+            f"""
+            SELECT DISTINCT c.case_id, c.problem_title, c.problem_summary
+            FROM cases c
+            JOIN case_evidence ce ON c.case_id = ce.case_id
+            WHERE c.group_id = %s AND c.status = 'solved'
+              AND ce.message_id IN ({placeholders})
+            """,
+            [group_id] + list(buffer_message_ids),
+        )
+        return [
+            {"case_id": row[0], "title": row[1] or "", "summary": row[2] or ""}
+            for row in cur.fetchall()
         ]
 
 

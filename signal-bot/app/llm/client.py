@@ -253,8 +253,22 @@ class LLMClient:
             cascade=SUBAGENT_CASCADE,
         )
 
-    def extract_case_from_buffer(self, *, buffer_text: str) -> ExtractResult:
-        user = f"BUFFER:\n{buffer_text}"
+    def extract_case_from_buffer(
+        self,
+        *,
+        buffer_text: str,
+        existing_cases: list[dict] | None = None,
+    ) -> ExtractResult:
+        parts = [f"BUFFER:\n{buffer_text}"]
+        if existing_cases:
+            lines = []
+            for ec in existing_cases:
+                lines.append(f"- {ec.get('title', '')} | {ec.get('summary', '')}")
+            parts.append(
+                "\nВЖЕ ВИТЯГНУТІ КЕЙСИ (НЕ витягувати повторно!):\n"
+                + "\n".join(lines)
+            )
+        user = "\n".join(parts)
         return self._json_call(
             model=self.settings.model_extract,
             system=P.P_EXTRACT_SYSTEM,

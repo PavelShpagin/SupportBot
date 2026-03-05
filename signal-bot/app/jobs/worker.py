@@ -23,15 +23,8 @@ from app.db import (
     get_last_messages_text,
     get_positive_reactions_for_message,
     get_message_by_ts,
-    get_open_cases_for_group,
-    update_case_to_solved,
     mark_case_in_rag,
-    expire_old_open_cases,
     get_all_active_case_ids,
-    store_case_embedding,
-    find_similar_case,
-    merge_case,
-    archive_case,
 )
 from app.jobs import types as job_types
 from app.llm.client import LLMClient
@@ -314,10 +307,15 @@ def _load_images(
         try:
             if not p:
                 continue
-            img_path = p
-            mime = _guess_mime(img_path)
-            with open(img_path, "rb") as f:
-                data = f.read()
+            mime = _guess_mime(p)
+            if p.startswith("http://") or p.startswith("https://"):
+                import requests as _req
+                resp = _req.get(p, timeout=15)
+                resp.raise_for_status()
+                data = resp.content
+            else:
+                with open(p, "rb") as f:
+                    data = f.read()
             size = len(data)
         except Exception:
             log.warning("Failed to read image for multimodal call: %s", p)
@@ -442,7 +440,6 @@ def _append_history_block(text: str, refs: List[Dict[str, str]]) -> str:
     return "\n".join(lines).strip() + "\n"
 
 
-_EXPIRY_INTERVAL_SECONDS = 3600   # run B1 expiry check once per hour
 _SYNC_RAG_INTERVAL_SECONDS = 3600  # reconcile Chroma vs MySQL once per hour
 
 
@@ -479,21 +476,10 @@ def _run_sync_rag(deps: WorkerDeps) -> None:
 
 def worker_loop_forever(deps: WorkerDeps) -> None:
     log.info("Worker loop started")
-    last_expiry_check = 0.0
     last_sync_rag = 0.0
 
     while True:
         now = time.time()
-
-        # Periodic B1 expiry: delete open cases older than 7 days
-        if now - last_expiry_check >= _EXPIRY_INTERVAL_SECONDS:
-            try:
-                expired = expire_old_open_cases(deps.db, max_age_days=7)
-                if expired:
-                    log.info("Expired %d stale B1 open cases: %s", len(expired), expired)
-            except Exception:
-                log.exception("B1 expiry cleanup failed")
-            last_expiry_check = now
 
         # Periodic RAG sync: remove Chroma entries with no matching MySQL case
         if now - last_sync_rag >= _SYNC_RAG_INTERVAL_SECONDS:
@@ -518,7 +504,9 @@ def worker_loop_forever(deps: WorkerDeps) -> None:
         elif job.type == job_types.MAYBE_RESPOND:
             handler = _handle_maybe_respond
         elif job.type == job_types.CLOSE_CASE:
-            handler = _handle_close_case
+            # Legacy: no-op for backward compat with queued jobs
+            complete_job(deps.db, job_id=job.job_id)
+            continue
         else:
             log.warning("Unknown job type=%s job_id=%s (marking done)", job.type, job.job_id)
             complete_job(deps.db, job_id=job.job_id)
@@ -541,57 +529,28 @@ def worker_loop_forever(deps: WorkerDeps) -> None:
             complete_job(deps.db, job_id=job.job_id)
 
 
-_CLOSE_CASE_DELAY_SECONDS = 300  # 5 minutes
-
-
-def _enqueue_close_case(deps: WorkerDeps, case_id: str, group_id: str) -> None:
-    """Schedule a CLOSE_CASE job with a 5-minute delay for SCRAG indexing."""
-    from app.db import enqueue_job
-    enqueue_job(
-        deps.db,
-        job_types.CLOSE_CASE,
-        {"case_id": case_id, "group_id": group_id},
-        delay_seconds=_CLOSE_CASE_DELAY_SECONDS,
-    )
-    log.info("Scheduled CLOSE_CASE for %s in %ds (group=%s)", case_id, _CLOSE_CASE_DELAY_SECONDS, group_id[:20])
-
-
-def _handle_close_case(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
-    """Finalize case closure: re-read the case from DB and index in SCRAG.
-
-    This runs ~5 minutes after a case was marked solved, giving time for
-    follow-up messages to be merged into the case via buffer_update dedup.
-    """
-    from app.db.queries_mysql import get_case
-
-    case_id = str(payload["case_id"])
-    group_id = str(payload["group_id"])
-
-    c = get_case(deps.db, case_id)
-    if not c:
-        log.warning("CLOSE_CASE: case %s not found (may have been archived)", case_id)
-        return
-
-    if c.get("status") != "solved":
-        log.info("CLOSE_CASE: case %s is not solved (status=%s), skipping SCRAG", case_id, c.get("status"))
-        return
-
-    solution = (c.get("solution_summary") or "").strip()
-    if not solution:
-        log.info("CLOSE_CASE: case %s has no solution_summary, skipping SCRAG", case_id)
-        return
-
+def _index_case_in_rag(
+    deps: WorkerDeps,
+    *,
+    case_id: str,
+    group_id: str,
+    problem_title: str,
+    problem_summary: str,
+    solution_summary: str,
+    tags: List[str],
+    evidence_ids: List[str],
+    evidence_image_paths: List[str],
+) -> None:
+    """Build the document, embed it, and upsert into ChromaDB immediately."""
     doc_text = "\n".join([
-        f"[SOLVED] {(c.get('problem_title') or '').strip()}",
-        f"Проблема: {(c.get('problem_summary') or '').strip()}",
-        f"Рішення: {solution}",
-        "tags: " + ", ".join(c.get("tags") or []),
+        f"[SOLVED] {problem_title.strip()}",
+        f"Проблема: {problem_summary.strip()}",
+        f"Рішення: {solution_summary.strip()}",
+        "tags: " + ", ".join(tags),
     ]).strip()
     rag_emb = deps.llm.embed(text=doc_text)
 
     rag_meta: dict = {"group_id": group_id, "status": "solved"}
-    evidence_ids = c.get("evidence_ids") or []
-    evidence_image_paths = c.get("evidence_image_paths") or []
     if evidence_ids:
         rag_meta["evidence_ids"] = evidence_ids
     if evidence_image_paths:
@@ -604,7 +563,7 @@ def _handle_close_case(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         metadata=rag_meta,
     )
     mark_case_in_rag(deps.db, case_id)
-    log.info("CLOSE_CASE: case %s indexed in SCRAG (group=%s)", case_id, group_id[:20])
+    log.info("Case %s indexed in ChromaDB (group=%s)", case_id, group_id[:20])
 
 
 def _handle_sync_group_docs(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
@@ -622,18 +581,16 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         log.warning("BUFFER_UPDATE: message not found: %s", message_id)
         return
 
-    # Check for positive reactions on this message
     positive_reactions = get_positive_reactions_for_message(deps.db, group_id=group_id, target_ts=msg.ts)
     is_bot_msg = bool(deps.bot_sender_hash and msg.sender_hash == deps.bot_sender_hash)
     line = _format_buffer_line(msg, positive_reactions=positive_reactions, is_bot=is_bot_msg)
     buf = get_buffer(deps.db, group_id=group_id)
     buf2 = (buf or "") + line
 
-    # Trim buffer to enforce size/age limits before processing
     buf2 = _trim_buffer(
         buf2,
         max_age_hours=deps.settings.buffer_max_age_hours,
-        max_messages=deps.settings.buffer_max_messages
+        max_messages=deps.settings.buffer_max_messages,
     )
 
     blocks = _parse_buffer_blocks(buf2)
@@ -641,9 +598,7 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         set_buffer(deps.db, group_id=group_id, buffer_text=buf2)
         return
 
-    # Build extraction view: exclude bot messages AND messages the bot already
-    # answered via RAG — both are kept in buf2 for context but must not generate
-    # new open B1 cases.
+    # Exclude bot messages and already-RAG-answered messages from extraction view
     with _rag_answered_lock:
         local_rag_answered = set(_rag_answered_messages.keys())
     non_bot_blocks = [
@@ -655,13 +610,21 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         set_buffer(deps.db, group_id=group_id, buffer_text=buf2)
         return
 
+    # Load solved cases whose evidence overlaps the current buffer to prevent
+    # the LLM from re-extracting them.
+    from app.db.queries_mysql import get_overlapping_solved_cases
+    buffer_msg_ids = [b.message_id for b in blocks if b.message_id]
+    existing_cases = get_overlapping_solved_cases(deps.db, group_id, buffer_msg_ids)
+
     numbered_buffer = _format_numbered_buffer_for_extract(non_bot_blocks)
-    extract = deps.llm.extract_case_from_buffer(buffer_text=numbered_buffer)
+    extract = deps.llm.extract_case_from_buffer(
+        buffer_text=numbered_buffer,
+        existing_cases=existing_cases,
+    )
     if not extract.cases:
         set_buffer(deps.db, group_id=group_id, buffer_text=buf2)
         return
 
-    # Hard safety: if any returned span is out of bounds, reject this extract output.
     n_blocks = len(non_bot_blocks)
     if any(c.start_idx < 0 or c.end_idx >= n_blocks for c in extract.cases):
         log.warning(
@@ -672,10 +635,7 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         set_buffer(deps.db, group_id=group_id, buffer_text=buf2)
         return
 
-    # ── Phase 1: Extract new cases from the current buffer spans ────────────
-    accepted_ranges: List[tuple[int, int]] = []  # solved ranges (indices in non_bot_blocks) to remove
     for span in extract.cases:
-        # Build case block with interleaved [[IMG:N]] markers
         case_block_parts: list[str] = []
         all_images: list[tuple[bytes, str]] = []
         img_idx = 0
@@ -701,162 +661,48 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         span_images = all_images if all_images else None
 
         case = deps.llm.make_case(case_block_text=case_block_text, images=span_images)
-        if not case.keep:
+        if not case.keep or case.status != "solved" or not case.solution_summary.strip():
             continue
 
-        # Require at least one positive emoji reaction in the span before accepting
-        # the LLM's "solved" verdict for live cases. Without emoji, the "solution"
-        # might just be the user's own continued narrative (no human confirmation).
-        span_has_reaction = bool(re.search(r'\breactions=[1-9]', case_block_text))
-        effective_status = case.status if span_has_reaction else "open"
-        if case.status == "solved" and not span_has_reaction:
-            log.info(
-                "Case span %s..%s: LLM said solved but no emoji reaction → stored as open (pending confirmation)",
-                span.start_idx, span.end_idx,
-            )
-
-        # Extract evidence_ids directly from non-bot blocks
         evidence_ids = [
             non_bot_blocks[i].message_id
             for i in range(span.start_idx, span.end_idx + 1)
             if non_bot_blocks[i].message_id
         ]
-        log.info(
-            "Case span %s..%s llm_status=%s effective_status=%s evidence_ids=%d",
-            span.start_idx, span.end_idx, case.status, effective_status, len(evidence_ids),
-        )
-
         evidence_image_paths = _collect_evidence_image_paths(deps, evidence_ids)
 
-        # Semantic dedup: embed problem text and check similarity against existing cases
-        embed_text = f"{case.problem_title}\n{case.problem_summary}"
-        dedup_embedding = deps.llm.embed(text=embed_text)
-        similar_id = find_similar_case(deps.db, group_id=group_id, embedding=dedup_embedding)
-        if similar_id:
-            merge_case(
-                deps.db,
-                target_case_id=similar_id,
-                status=effective_status,
-                problem_summary=case.problem_summary,
-                solution_summary=case.solution_summary,
-                tags=case.tags,
-                evidence_ids=evidence_ids,
-                evidence_image_paths=evidence_image_paths,
-            )
-            store_case_embedding(deps.db, similar_id, dedup_embedding)
-            case_id = similar_id
-            log.info("Semantic dedup: merged live case into existing %s (group=%s)", case_id, group_id[:20])
-        else:
-            case_id = new_case_id(deps.db)
-            insert_case(
-                deps.db,
-                case_id=case_id,
-                group_id=group_id,
-                status=effective_status,
-                problem_title=case.problem_title,
-                problem_summary=case.problem_summary,
-                solution_summary=case.solution_summary,
-                tags=case.tags,
-                evidence_ids=evidence_ids,
-                evidence_image_paths=evidence_image_paths,
-            )
-            store_case_embedding(deps.db, case_id, dedup_embedding)
+        case_id = new_case_id(deps.db)
+        insert_case(
+            deps.db,
+            case_id=case_id,
+            group_id=group_id,
+            status="solved",
+            problem_title=case.problem_title,
+            problem_summary=case.problem_summary,
+            solution_summary=case.solution_summary,
+            tags=case.tags,
+            evidence_ids=evidence_ids,
+            evidence_image_paths=evidence_image_paths,
+        )
 
-        if effective_status == "solved" and case.solution_summary.strip():
-            _enqueue_close_case(deps, case_id, group_id)
-            accepted_ranges.append((span.start_idx, span.end_idx))
-            log.info("New solved case %s scheduled for SCRAG indexing (group=%s)", case_id, group_id[:20])
-        else:
-            # Open case → store in B1 only, keep messages in buffer
-            log.info("New open case %s stored in B1 (not in SCRAG, group=%s)", case_id, group_id[:20])
+        _index_case_in_rag(
+            deps,
+            case_id=case_id,
+            group_id=group_id,
+            problem_title=case.problem_title,
+            problem_summary=case.problem_summary,
+            solution_summary=case.solution_summary,
+            tags=case.tags,
+            evidence_ids=evidence_ids,
+            evidence_image_paths=evidence_image_paths,
+        )
+        log.info(
+            "New solved case %s (span %s..%s, evidence=%d) indexed immediately (group=%s)",
+            case_id, span.start_idx, span.end_idx, len(evidence_ids), group_id[:20],
+        )
 
-    # ── Phase 2: Dynamic B1 resolution ────────────────────────────────────────
-    # Check if any previously open (B1) cases for this group are now resolved
-    # based on the current B2 buffer content.
-    try:
-        open_cases = get_open_cases_for_group(deps.db, group_id)
-        if open_cases:
-            for b1_case in open_cases:
-                try:
-                    resolution = deps.llm.check_case_resolved(
-                        case_title=b1_case["problem_title"],
-                        case_problem=b1_case["problem_summary"],
-                        buffer_text=buf2,
-                    )
-                    if resolution and resolution.resolved and resolution.solution_summary.strip():
-                        # Semantic dedup on promotion: check if a solved case for the
-                        # same problem already exists (from history ingest or another live case).
-                        promote_embed_text = f"{b1_case['problem_title']}\n{b1_case['problem_summary']}"
-                        promote_embedding = deps.llm.embed(text=promote_embed_text)
-                        existing_solved = find_similar_case(
-                            deps.db,
-                            group_id=group_id,
-                            embedding=promote_embedding,
-                            exclude_case_id=b1_case["case_id"],
-                            statuses=["solved"],
-                        )
-
-                        if existing_solved:
-                            # Merge the new solution into the existing solved case
-                            merge_case(
-                                deps.db,
-                                target_case_id=existing_solved,
-                                status="solved",
-                                problem_summary=b1_case["problem_summary"],
-                                solution_summary=resolution.solution_summary,
-                                tags=b1_case.get("tags") or [],
-                                evidence_ids=[],
-                                evidence_image_paths=[],
-                            )
-                            store_case_embedding(deps.db, existing_solved, promote_embedding)
-                            archive_case(deps.db, b1_case["case_id"])
-                            final_case_id = existing_solved
-                            log.info(
-                                "B1 case %s merged into existing solved %s (group=%s)",
-                                b1_case["case_id"], existing_solved, group_id[:20],
-                            )
-                        else:
-                            update_case_to_solved(deps.db, b1_case["case_id"], resolution.solution_summary)
-                            store_case_embedding(deps.db, b1_case["case_id"], promote_embedding)
-                            final_case_id = b1_case["case_id"]
-                            log.info(
-                                "B1 case %s promoted to solved (group=%s)",
-                                final_case_id, group_id[:20],
-                            )
-
-                        _enqueue_close_case(deps, final_case_id, group_id)
-                        log.info(
-                            "B1 case %s scheduled for SCRAG indexing (group=%s)",
-                            final_case_id, group_id[:20],
-                        )
-                except Exception:
-                    log.exception("B1 resolution check failed for case %s", b1_case["case_id"])
-    except Exception:
-        log.exception("B1 resolution phase failed for group %s", group_id[:20])
-
-    # ── Update buffer: remove message spans that became solved cases ──────────
-    if not accepted_ranges:
-        set_buffer(deps.db, group_id=group_id, buffer_text=buf2)
-        return
-
-    # Map accepted ranges back to message_ids (from non_bot_blocks) so we can
-    # remove those messages from the full block list (which also has bot messages).
-    consumed_message_ids: set[str] = set()
-    for start_idx, end_idx in accepted_ranges:
-        for i in range(start_idx, end_idx + 1):
-            mid = non_bot_blocks[i].message_id
-            if mid:
-                consumed_message_ids.add(mid)
-
-    kept_blocks = [b.raw_text for b in blocks if b.message_id not in consumed_message_ids]
-    buffer_new = "".join(kept_blocks)
-
-    set_buffer(deps.db, group_id=group_id, buffer_text=buffer_new)
-    n_consumed = len(consumed_message_ids)
-    log.info(
-        "Buffer updated group_id=%s total=%s solved_removed=%s remaining=%s",
-        group_id, len(blocks), n_consumed, len(blocks) - n_consumed,
-    )
+    # Buffer is append-only: just save the trimmed version, never remove spans.
+    set_buffer(deps.db, group_id=group_id, buffer_text=buf2)
 
 
 def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
