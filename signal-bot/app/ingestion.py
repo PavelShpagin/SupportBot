@@ -181,8 +181,15 @@ def ingest_message(
         except Exception:
             img_path = img_path.absolute()
         if not img_path.exists():
-            log.warning("Attachment missing on disk: %s", img_path)
-            continue
+            parent = img_path.parent
+            stem = img_path.stem
+            candidates = list(parent.glob(f"{stem}.*")) if parent.exists() else []
+            if candidates:
+                img_path = candidates[0]
+                log.info("Resolved attachment via glob: %s", img_path)
+            else:
+                log.warning("Attachment missing on disk: %s (also tried glob %s.*)", img_path, stem)
+                continue
         file_bytes = img_path.read_bytes()
 
         ct = _guess_mime(str(img_path))
