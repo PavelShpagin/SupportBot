@@ -191,8 +191,8 @@ INPUT CLASSIFICATION & BEHAVIOR:
      -> Output exactly: "INSUFFICIENT_INFO"
    - **YES**:
      -> Provide a clear, technical answer.
-     -> You MUST cite the specific Source URL and section.
-     -> Format: "Answer... [Source: URL, Section: ...]"
+     -> You MUST cite the specific URL and section.
+     -> Format: "Answer... URL (Section: section name)" or in Ukrainian "URL (Секція: section name)"
 
 CONTEXT (Google Docs):
 """
