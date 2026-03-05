@@ -375,9 +375,9 @@ def _do_prune() -> None:
         try:
             stats = delete_all_group_data(db, group_id)
             log.info(
-                "Deleted group data for %s: cases=%d, evidence=%d, messages=%d, reactions=%d, jobs=%d",
+                "Deleted group data for %s: cases=%d, evidence=%d, messages=%d, reactions=%d, jobs=%d, buffer=%d",
                 group_id, stats["cases"], stats["case_evidence"], stats["raw_messages"],
-                stats["reactions"], stats["jobs"]
+                stats["reactions"], stats["jobs"], stats["buffer"]
             )
         except Exception:
             log.exception("Failed to delete group data for %s", group_id)

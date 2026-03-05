@@ -576,6 +576,11 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
     group_id = str(payload["group_id"])
     message_id = str(payload["message_id"])
 
+    from app.db.queries_mysql import get_group_admins
+    if not get_group_admins(deps.db, group_id):
+        log.info("BUFFER_UPDATE: group %s has no linked admins, skipping", group_id)
+        return
+
     msg = get_raw_message(deps.db, message_id=message_id)
     if msg is None:
         log.warning("BUFFER_UPDATE: message not found: %s", message_id)

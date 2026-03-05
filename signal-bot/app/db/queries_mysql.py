@@ -729,9 +729,9 @@ def delete_all_group_data(db: MySQL, group_id: str) -> dict:
         cur.execute("DELETE FROM reactions WHERE group_id = %s", (group_id,))
         stats["reactions"] = cur.rowcount
         
-        # 8. Delete pending jobs for this group
+        # 8. Delete all jobs for this group (pending, in_progress, done)
         cur.execute(
-            "DELETE FROM jobs WHERE status = 'pending' AND payload_json LIKE %s",
+            "DELETE FROM jobs WHERE payload_json LIKE %s",
             (f'%"{group_id}"%',)
         )
         stats["jobs"] = cur.rowcount
