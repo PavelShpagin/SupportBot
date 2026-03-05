@@ -1000,11 +1000,24 @@ def _format_content_html(content_text: str) -> str:
             raw = video_match.group(1)
             if ' — ' in raw:
                 _fname, desc = raw.split(' — ', 1)
-                desc_esc = _html.escape(desc.strip())
-                result_parts.append(
-                    f'<details class="ocr-details"><summary>Опис відео</summary>'
-                    f'<div class="ocr-text">{desc_esc}</div></details>'
-                )
+                desc = desc.strip()
+                # Old format: desc may be raw JSON {"extracted_text": "...", "description": "..."}
+                try:
+                    parsed = json.loads(desc)
+                    parts = []
+                    if parsed.get("extracted_text"):
+                        parts.append(parsed["extracted_text"])
+                    if parsed.get("description"):
+                        parts.append(parsed["description"])
+                    desc = " | ".join(parts) if parts else ""
+                except (json.JSONDecodeError, TypeError):
+                    pass
+                if desc:
+                    desc_esc = _html.escape(desc)
+                    result_parts.append(
+                        f'<details class="ocr-details"><summary>Опис відео</summary>'
+                        f'<div class="ocr-text">{desc_esc}</div></details>'
+                    )
             skip_image_marker = False
             continue
 

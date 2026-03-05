@@ -517,8 +517,18 @@ export default function CasePage({ data, publicApiUrl }: Props) {
                     {(() => {
                       let text = msg.content_text || '';
                       // Extract video description (before stripping markers)
-                      const videoMatch = text.match(/\[Відео:\s*[^\s]+\s*—\s*(.+?)\]/);
-                      const videoDesc = videoMatch ? videoMatch[1].trim() : null;
+                      const videoMatch = text.match(/\[Відео:\s*[^\s\]]+\s*—\s*([\s\S]+?)\](?=\s*$|\s*\n|\s*\[)/m) || text.match(/\[Відео:\s*[^\s\]]+\s*—\s*(.+?)\]/);
+                      let videoDesc: string | null = videoMatch ? videoMatch[1].trim() : null;
+                      // Old format: desc may be raw JSON {"extracted_text": "...", "description": "..."}
+                      if (videoDesc) {
+                        try {
+                          const parsed = JSON.parse(videoDesc);
+                          const parts: string[] = [];
+                          if (parsed.extracted_text) parts.push(parsed.extracted_text);
+                          if (parsed.description) parts.push(parsed.description);
+                          videoDesc = parts.length ? parts.join(' | ') : null;
+                        } catch { /* not JSON, keep as-is */ }
+                      }
                       // Extract transcript
                       const transcriptMatch = text.match(/\[Транскрипт відео:\s*([\s\S]+?)\]/);
                       const transcript = transcriptMatch ? transcriptMatch[1].trim() : null;
