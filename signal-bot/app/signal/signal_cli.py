@@ -849,7 +849,14 @@ def _parse_direct_message(obj: dict) -> Optional[InboundDirectMessage]:
             )
             if not stored and a.get("id"):
                 att_id = a["id"]
-                stored = f"/var/lib/signal/bot/attachments/{att_id}"
+                ct = a.get("contentType", "")
+                orig_name = a.get("filename", "")
+                ext = ""
+                if orig_name and "." in orig_name:
+                    ext = orig_name[orig_name.rfind("."):]
+                elif ct:
+                    ext = mimetypes.guess_extension(ct) or ""
+                stored = f"/var/lib/signal/bot/attachments/{att_id}{ext}" if ext else f"/var/lib/signal/bot/attachments/{att_id}"
             if stored:
                 image_paths.append(str(stored))
 
@@ -924,6 +931,51 @@ def _parse_reaction(obj: dict) -> Optional[InboundReaction]:
         target_author=str(target_author),
         emoji=str(emoji),
         is_remove=is_remove,
+    )
+
+
+def _parse_message_delete(obj: dict) -> Optional[InboundMessageDelete]:
+    """Parse a remote delete event from signal-cli JSON."""
+    env = obj.get("envelope") if isinstance(obj, dict) else None
+    if not isinstance(env, dict):
+        return None
+
+    sender = (
+        env.get("sourceNumber")
+        or env.get("sourceUuid")
+        or env.get("source")
+        or ""
+    )
+    if not sender:
+        return None
+
+    dm = env.get("dataMessage")
+    if not isinstance(dm, dict):
+        return None
+
+    group_info = dm.get("groupInfo")
+    if not isinstance(group_info, dict):
+        return None
+    group_id = group_info.get("groupId")
+    if not group_id:
+        return None
+
+    remote_delete = dm.get("remoteDelete")
+    if not isinstance(remote_delete, dict):
+        return None
+
+    target_ts = remote_delete.get("timestamp")
+    if target_ts is None:
+        return None
+    try:
+        target_ts_i = int(target_ts)
+    except Exception:
+        return None
+
+    return InboundMessageDelete(
+        group_id=str(group_id),
+        sender=str(sender),
+        target_ts=target_ts_i,
     )
 
 

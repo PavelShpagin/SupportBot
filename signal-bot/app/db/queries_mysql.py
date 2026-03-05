@@ -113,6 +113,15 @@ def get_raw_message(db: MySQL, message_id: str) -> Optional[RawMessage]:
         )
 
 
+def delete_raw_message(db: MySQL, message_id: str) -> bool:
+    """Delete a raw message by message_id (used for remote delete handling)."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute("DELETE FROM raw_messages WHERE message_id = %s", (message_id,))
+        conn.commit()
+        return cur.rowcount > 0
+
+
 def get_last_messages_text(db: MySQL, group_id: str, n: int) -> List[str]:
     """Return last n messages as plain text strings (oldest-first).
 

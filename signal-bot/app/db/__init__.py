@@ -37,6 +37,7 @@ if DB_BACKEND == "mysql":
         AdminSession,
         POSITIVE_EMOJI,
         insert_raw_message,
+        delete_raw_message,
         enqueue_job,
         get_raw_message,
         get_last_messages_text,
