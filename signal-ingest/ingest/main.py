@@ -396,12 +396,16 @@ def _ocr_attachment(
     image_bytes: bytes,
     content_type: str,
     context_text: str = "",
+    fallback_models: list | None = None,
+    timeout: float = 45.0,
 ) -> str:
     """Run multimodal OCR on an image and return a structured description.
 
     Extracts all visible text verbatim and a concise functional description
     of what the image shows in the context of the support conversation.
     Returns an empty string on failure (the message is still stored without OCR).
+
+    Uses _llm_call_with_fallback for timeout and cascade protection.
     """
     try:
         import base64 as _b64
@@ -431,8 +435,11 @@ def _ocr_attachment(
                 ],
             }
         ]
-        resp = openai_client.chat.completions.create(
+        resp = _llm_call_with_fallback(
+            openai_client=openai_client,
             model=model,
+            fallback_models=fallback_models or [],
+            timeout=timeout,
             messages=messages,
             max_tokens=1024,
             temperature=0,
@@ -603,6 +610,7 @@ def _enrich_messages_with_attachments(
                 image_bytes=img_bytes,
                 content_type=ct,
                 context_text=body,
+                fallback_models=settings.model_img_fallback,
             )
             return (mi, ai), result
 
@@ -1606,6 +1614,7 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
         openai_client_early = OpenAI(
             api_key=settings.openai_api_key,
             base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
+            max_retries=0,
         )
         enrich_start = time.time()
         msgs = _enrich_messages_with_attachments(

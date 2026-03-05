@@ -63,6 +63,7 @@ class Settings:
     model_blocks: str
     model_blocks_fallback: list  # ordered fallback models tried on 503/timeout
     model_img: str
+    model_img_fallback: list
 
     signal_cli: str
     signal_ingest_storage: str
@@ -104,6 +105,9 @@ def load_settings() -> Settings:
             _env("MODEL_BLOCKS_FALLBACK", default="gemini-3-pro-preview,gemini-2.5-flash")
         ),
         model_img=_env("MODEL_IMG", default="gemini-3.1-pro-preview"),
+        model_img_fallback=_parse_model_list(
+            _env("MODEL_IMG_FALLBACK", default="gemini-2.5-flash")
+        ),
         signal_cli=_env("SIGNAL_CLI", default="signal-cli"),
         signal_ingest_storage=_env("SIGNAL_INGEST_STORAGE", default="/var/lib/signal/ingest"),
         history_dir=_env("HISTORY_DIR", default="/var/lib/history"),
