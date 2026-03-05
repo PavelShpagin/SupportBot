@@ -77,7 +77,8 @@ class UltimateAgent:
         case_ans = "No relevant cases found."
         docs_ans = "NO_DOCS"
 
-        with ThreadPoolExecutor(max_workers=2) as pool:
+        pool = ThreadPoolExecutor(max_workers=2)
+        try:
             case_future = pool.submit(
                 self.case_agent.answer, question, group_id=group_id, db=db
             )
@@ -85,17 +86,33 @@ class UltimateAgent:
                 self.docs_agent.answer, question, group_id=group_id, db=db, context=context
             )
 
-            for future in as_completed([case_future, docs_future], timeout=60):
-                try:
-                    if future is case_future:
-                        case_ans = future.result()
+            try:
+                for future in as_completed([case_future, docs_future], timeout=60):
+                    try:
+                        if future is case_future:
+                            case_ans = future.result()
+                        else:
+                            docs_ans = future.result()
+                    except Exception as exc:
+                        if future is case_future:
+                            log.warning("CaseSearchAgent failed: %s", exc)
+                        else:
+                            log.warning("DocsAgent failed: %s", exc)
+            except TimeoutError:
+                log.error("Agent futures timed out after 60s; proceeding with partial results")
+                for f in [case_future, docs_future]:
+                    if f.done():
+                        try:
+                            if f is case_future:
+                                case_ans = f.result(timeout=0)
+                            else:
+                                docs_ans = f.result(timeout=0)
+                        except Exception:
+                            pass
                     else:
-                        docs_ans = future.result()
-                except Exception as exc:
-                    if future is case_future:
-                        log.warning("CaseSearchAgent failed: %s", exc)
-                    else:
-                        log.warning("DocsAgent failed: %s", exc)
+                        f.cancel()
+        finally:
+            pool.shutdown(wait=False, cancel_futures=True)
 
         log.info(
             "Agent results: case=%s docs=%s",
