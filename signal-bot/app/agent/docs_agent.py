@@ -40,8 +40,7 @@ INPUT CLASSIFICATION & BEHAVIOR:
    - **YES**:
      -> Provide a clear, technical answer.
      -> You MUST cite the specific URL and section.
-     -> Quote the exact relevant text you used from the document.
-     -> Format: "Answer... URL (Section: section name)" or in Ukrainian "URL (Секція: section name)"
+     -> Format: "Answer... URL (Section: section name)" or in Ukrainian "URL (Секція: назва секції)"
 
 3. **LANGUAGE**: Respond in the same language as the question.
 
@@ -67,6 +66,10 @@ class DocsAgent:
 
     def _urls_hash(self, urls: list[str]) -> str:
         return hashlib.sha256(json.dumps(sorted(urls)).encode()).hexdigest()[:16]
+
+    def invalidate_cache(self, group_id: str) -> None:
+        """Force next query for this group to re-fetch docs."""
+        self._cache.pop(group_id, None)
 
     def _get_or_refresh_docs(self, group_id: str, urls: list[str]) -> list[Any]:
         h = self._urls_hash(urls)
