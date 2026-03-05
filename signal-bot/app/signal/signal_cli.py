@@ -676,6 +676,10 @@ class SignalCliAdapter:
                 # Try parsing as group message
                 group_msg = _parse_group_message(obj)
                 if group_msg is not None:
+                    if group_msg.image_paths:
+                        log.info("Group message with %d attachments: %s", len(group_msg.image_paths), group_msg.image_paths)
+                    elif obj.get("envelope", {}).get("dataMessage", {}).get("attachments"):
+                        log.warning("Group message parsed but image_paths empty despite raw attachments present")
                     try:
                         on_group_message(group_msg)
                     except Exception:
@@ -770,9 +774,16 @@ def _parse_group_message(obj: dict) -> Optional[InboundGroupMessage]:
         for a in attachments:
             if not isinstance(a, dict):
                 continue
+            log.debug("Attachment dict keys: %s, values: %s", list(a.keys()), {k: v for k, v in a.items() if k != "data"})
             stored = a.get("storedFilename") or a.get("path") or a.get("file") or a.get("filename")
             if stored:
                 image_paths.append(str(stored))
+            else:
+                log.warning("Attachment has no stored path. Keys: %s", list(a.keys()))
+
+    if attachments and not image_paths:
+        log.warning("Message has %d attachments but 0 stored paths. Raw attachments: %s",
+                     len(attachments), attachments[:2])
 
     message_id = str(dm.get("id") or dm.get("timestamp") or f"{group_id}:{sender}:{ts_i}")
 
