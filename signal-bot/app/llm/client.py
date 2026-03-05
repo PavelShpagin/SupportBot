@@ -112,14 +112,21 @@ class LLMClient:
         schema: Type[T],
         images: list[tuple[bytes, str]] | None = None,
         cascade: list[str] | None = None,
+        timeout: float = 60.0,
     ) -> T:
+        import time as _t
         models_to_try = cascade or [model]
         last_exc: Exception | None = None
+        deadline = _t.monotonic() + timeout
 
         for m in models_to_try:
+            remaining = deadline - _t.monotonic()
+            if remaining <= 2.0:
+                break
             try:
                 return self._json_call_single(
-                    model=m, system=system, user=user, schema=schema, images=images
+                    model=m, system=system, user=user, schema=schema,
+                    images=images, timeout=remaining,
                 )
             except (json.JSONDecodeError, ValidationError):
                 raise  # parse errors: not a model issue, don't cascade
@@ -137,6 +144,7 @@ class LLMClient:
         user: str,
         schema: Type[T],
         images: list[tuple[bytes, str]] | None = None,
+        timeout: float = 60.0,
     ) -> T:
         last_exc: Exception | None = None
         for attempt in range(2):
@@ -156,7 +164,7 @@ class LLMClient:
                     messages=messages,
                     response_format={"type": "json_object"},
                     temperature=0,
-                    timeout=60.0,
+                    timeout=timeout,
                 )
 
                 raw = resp.choices[0].message.content or "{}"
@@ -188,11 +196,20 @@ class LLMClient:
         cascade: list[str] | None = None,
         images: list[tuple[bytes, str]] | None = None,
     ) -> str:
-        """Free-text (non-JSON) completion with optional model cascade and interleaved images."""
+        """Free-text (non-JSON) completion with optional model cascade and interleaved images.
+
+        The timeout is a *total* budget shared across all cascade attempts,
+        not a per-model allowance.
+        """
+        import time as _t
         models_to_try = cascade or [model or self.settings.model_respond]
         last_exc: Exception | None = None
+        deadline = _t.monotonic() + timeout
 
         for m in models_to_try:
+            remaining = deadline - _t.monotonic()
+            if remaining <= 2.0:
+                break
             try:
                 if images:
                     content = _build_interleaved_parts(prompt, images)
@@ -202,7 +219,7 @@ class LLMClient:
                     model=m,
                     messages=[{"role": "user", "content": content}],
                     temperature=0,
-                    timeout=timeout,
+                    timeout=remaining,
                 )
                 return (resp.choices[0].message.content or "").strip()
             except Exception as exc:

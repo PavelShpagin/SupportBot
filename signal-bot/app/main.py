@@ -1056,7 +1056,7 @@ def view_case(case_id: str):
     return HTMLResponse(content=html)
 
 
-_WORKER_STALL_THRESHOLD_S = 120  # seconds before we consider the worker stalled
+_WORKER_STALL_THRESHOLD_S = 300  # seconds before we consider the worker stalled
 
 
 @app.get("/healthz")

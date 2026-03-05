@@ -21,19 +21,29 @@ def extract_doc_id(url):
     match = re.search(r"/document/d/([a-zA-Z0-9-_]+)", url)
     return match.group(1) if match else None
 
-def fetch_doc_recursive(start_urls, max_docs=50):
+def fetch_doc_recursive(start_urls, max_docs=50, total_timeout=45):
     """Recursively fetch Google Docs content and images (BFS by depth).
 
     Follows all Google Doc links found in each document with no depth limit.
     BFS ensures shallow (directly linked) docs are fetched first; if
     max_docs is hit, only the deepest docs are dropped.
+
+    total_timeout caps the entire fetch operation so it doesn't block agents
+    indefinitely when network is slow.
     """
+    import time as _t
+    deadline = _t.monotonic() + total_timeout
+
     queue = [(url, 0) for url in start_urls]
     visited: set[str] = set()
     content_parts: list = []
     docs_processed = 0
 
     while queue and docs_processed < max_docs:
+        if _t.monotonic() > deadline:
+            print(f"  - Doc fetch total timeout ({total_timeout}s) reached after {docs_processed} docs", flush=True)
+            break
+
         url, depth = queue.pop(0)
         doc_id = extract_doc_id(url)
 
@@ -47,8 +57,10 @@ def fetch_doc_recursive(start_urls, max_docs=50):
 
         export_url = f"https://docs.google.com/document/d/{doc_id}/export?format=html"
 
+        per_doc_timeout = min(15, max(5, deadline - _t.monotonic()))
+
         try:
-            response = requests.get(export_url, timeout=15)
+            response = requests.get(export_url, timeout=per_doc_timeout)
             response.raise_for_status()
 
             soup = BeautifulSoup(response.text, 'html.parser')
@@ -69,8 +81,10 @@ def fetch_doc_recursive(start_urls, max_docs=50):
 
                     img_src = element.get('src')
                     if img_src:
+                        if _t.monotonic() > deadline:
+                            break
                         try:
-                            img_resp = requests.get(img_src, timeout=10)
+                            img_resp = requests.get(img_src, timeout=min(5, max(2, deadline - _t.monotonic())))
                             if img_resp.status_code == 200:
                                 mime_type = img_resp.headers.get('Content-Type', 'image/jpeg')
                                 content_parts.append({

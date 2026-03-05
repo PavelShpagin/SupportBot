@@ -64,7 +64,8 @@ def get_worker_heartbeat_age() -> float:
 # running in the background but the main loop moves on and marks the job failed).
 # LLM call timeouts (30 s / 60 s) mean the orphaned thread usually terminates
 # shortly after the main loop moves on.
-_JOB_TIMEOUT_SECONDS = 90.0
+# Must be greater than UltimateAgent's as_completed timeout (120s) + synthesizer (45s).
+_JOB_TIMEOUT_SECONDS = 180.0
 
 
 def _run_with_timeout(fn, *args, timeout: float) -> tuple[bool, Exception | None]:

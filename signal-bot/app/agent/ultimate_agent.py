@@ -87,7 +87,7 @@ class UltimateAgent:
             )
 
             try:
-                for future in as_completed([case_future, docs_future], timeout=60):
+                for future in as_completed([case_future, docs_future], timeout=120):
                     try:
                         if future is case_future:
                             case_ans = future.result()
@@ -99,7 +99,7 @@ class UltimateAgent:
                         else:
                             log.warning("DocsAgent failed: %s", exc)
             except TimeoutError:
-                log.error("Agent futures timed out after 60s; proceeding with partial results")
+                log.error("Agent futures timed out after 120s; proceeding with partial results")
                 for f in [case_future, docs_future]:
                     if f.done():
                         try:
