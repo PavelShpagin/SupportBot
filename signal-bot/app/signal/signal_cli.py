@@ -849,14 +849,7 @@ def _parse_direct_message(obj: dict) -> Optional[InboundDirectMessage]:
             )
             if not stored and a.get("id"):
                 att_id = a["id"]
-                ct = a.get("contentType", "")
-                orig_name = a.get("filename", "")
-                ext = ""
-                if orig_name and "." in orig_name:
-                    ext = orig_name[orig_name.rfind("."):]
-                elif ct:
-                    ext = mimetypes.guess_extension(ct) or ""
-                stored = f"/var/lib/signal/bot/attachments/{att_id}{ext}" if ext else f"/var/lib/signal/bot/attachments/{att_id}"
+                stored = f"/var/lib/signal/bot/attachments/{att_id}"
             if stored:
                 image_paths.append(str(stored))
 
