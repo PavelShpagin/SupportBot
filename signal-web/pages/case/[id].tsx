@@ -497,7 +497,7 @@ export default function CasePage({ data, publicApiUrl }: Props) {
 
           {data.evidence && data.evidence.length > 0 ? (
             <div className="messages">
-              {data.evidence.filter((msg) => msg.content_text?.trim()).map((msg) => {
+              {data.evidence.filter((msg) => msg.content_text?.trim() || msg.attachments?.length || msg.images?.length).map((msg) => {
                 const participantNum = senderOrder.indexOf(msg.sender_hash) + 1;
                 const label = msg.sender_name || `Учасник ${participantNum}`;
                 const initials = msg.sender_name
@@ -517,7 +517,7 @@ export default function CasePage({ data, publicApiUrl }: Props) {
                     {(() => {
                       let text = msg.content_text || '';
                       // Strip media markers from display text
-                      text = text.replace(/\n*\[Зображення[^\]]*\]|\n*\[image\]\s*\{[\s\S]*?\}|\n*\[attachment:[^\]]*\]|\n*\[Відео:[^\]]*\]/g, '').trim();
+                      text = text.replace(/\n*\[Зображення[^\]]*\]|\n*\[image\]\s*\{[\s\S]*?\}|\n*\[image\]|\n*\[attachment:[^\]]*\]|\n*\[Відео:[^\]]*\]/g, '').trim();
                       // Extract transcript
                       const transcriptMatch = text.match(/\[Транскрипт відео:\s*([\s\S]+?)\]/);
                       const transcript = transcriptMatch ? transcriptMatch[1].trim() : null;
