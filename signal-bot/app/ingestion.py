@@ -52,26 +52,43 @@ def _extract_video_thumbnail(video_path: str | Path) -> bytes | None:
         return None
 
 
-def _extract_video_audio(video_path: str | Path) -> bytes | None:
+def _extract_video_audio(video_path: str | Path) -> tuple[bytes, str] | None:
     """Extract audio track from a video file using ffmpeg.
 
-    Returns mp3 bytes (mono, 16kHz, low-quality) or None if no audio track
-    or ffmpeg is unavailable.
+    Uses stream copy (no re-encoding) for speed. Falls back to mp3 encoding
+    if copy fails. Returns (audio_bytes, mime_type) or None.
     """
     tmp_audio = None
     try:
-        with tempfile.NamedTemporaryFile(suffix=".mp3", delete=False) as tmp:
+        # First try: copy audio stream as-is (near-instant, no re-encoding)
+        with tempfile.NamedTemporaryFile(suffix=".m4a", delete=False) as tmp:
             tmp_audio = tmp.name
         result = subprocess.run(
             [
                 "ffmpeg", "-i", str(video_path),
-                "-vn", "-acodec", "libmp3lame",
-                "-ar", "16000", "-ac", "1", "-q:a", "9",
+                "-vn", "-acodec", "copy",
                 "-y", tmp_audio,
             ],
             capture_output=True,
-            timeout=60,
+            timeout=30,
         )
+        mime = "audio/mp4"
+        # Fallback: re-encode to mp3 if copy failed
+        if result.returncode != 0:
+            os.unlink(tmp_audio)
+            with tempfile.NamedTemporaryFile(suffix=".mp3", delete=False) as tmp:
+                tmp_audio = tmp.name
+            result = subprocess.run(
+                [
+                    "ffmpeg", "-i", str(video_path),
+                    "-vn", "-acodec", "libmp3lame",
+                    "-ar", "16000", "-ac", "1", "-q:a", "9",
+                    "-y", tmp_audio,
+                ],
+                capture_output=True,
+                timeout=60,
+            )
+            mime = "audio/mp3"
         if result.returncode != 0:
             stderr = result.stderr.decode("utf-8", errors="replace")[:500]
             log.warning("ffmpeg audio extraction failed for %s (rc=%d): %s", video_path, result.returncode, stderr)
@@ -80,8 +97,8 @@ def _extract_video_audio(video_path: str | Path) -> bytes | None:
         if len(audio_bytes) < 1000:
             log.warning("Audio too small (%d bytes) for %s, skipping transcription", len(audio_bytes), video_path)
             return None
-        log.info("Extracted %d bytes of audio from %s", len(audio_bytes), video_path)
-        return audio_bytes
+        log.info("Extracted %d bytes of audio (%s) from %s", len(audio_bytes), mime, video_path)
+        return audio_bytes, mime
     except Exception as exc:
         log.warning("Video audio extraction failed for %s: %s", video_path, exc)
         return None
@@ -93,7 +110,7 @@ def _extract_video_audio(video_path: str | Path) -> bytes | None:
                 pass
 
 
-def _transcribe_audio(audio_bytes: bytes, context: str = "") -> str:
+def _transcribe_audio(audio_bytes: bytes, mime_type: str = "audio/mp4", context: str = "") -> str:
     """Transcribe audio bytes using Gemini. Returns transcript text or empty string."""
     try:
         import google.generativeai as genai
@@ -111,10 +128,10 @@ def _transcribe_audio(audio_bytes: bytes, context: str = "") -> str:
         )
         if context:
             prompt += f"\nContext: {context}"
-        log.info("Sending %d bytes of audio to Gemini for transcription", len(audio_bytes))
+        log.info("Sending %d bytes of audio (%s) to Gemini for transcription", len(audio_bytes), mime_type)
         response = model.generate_content([
             prompt,
-            {"mime_type": "audio/mp3", "data": audio_bytes},
+            {"mime_type": mime_type, "data": audio_bytes},
         ])
         text = (response.text or "").strip()
         if text == "EMPTY" or not text:
@@ -262,9 +279,10 @@ def ingest_message(
                 log.warning("Failed to extract thumbnail from %s", img_path)
                 content_text = content_text + f"\n\n[Відео: {img_path.name}]"
 
-            audio_bytes = _extract_video_audio(img_path)
-            if audio_bytes:
-                transcript = _transcribe_audio(audio_bytes, context=context_text)
+            audio_result = _extract_video_audio(img_path)
+            if audio_result:
+                audio_bytes, audio_mime = audio_result
+                transcript = _transcribe_audio(audio_bytes, mime_type=audio_mime, context=context_text)
                 if transcript:
                     content_text = content_text + f"\n[Транскрипт відео: {transcript}]"
         else:

@@ -73,8 +73,12 @@ def _extract_video_thumbnail(video_bytes: bytes) -> bytes | None:
                 pass
 
 
-def _extract_video_audio_from_bytes(video_bytes: bytes) -> bytes | None:
-    """Extract audio from in-memory video bytes using ffmpeg. Returns mp3 bytes or None."""
+def _extract_video_audio_from_bytes(video_bytes: bytes) -> tuple[bytes, str] | None:
+    """Extract audio from in-memory video bytes using ffmpeg.
+
+    Uses stream copy (no re-encoding) for speed. Falls back to mp3 encoding
+    if copy fails. Returns (audio_bytes, mime_type) or None.
+    """
     import subprocess
     tmp_video = None
     tmp_audio = None
@@ -82,24 +86,41 @@ def _extract_video_audio_from_bytes(video_bytes: bytes) -> bytes | None:
         with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as tmp:
             tmp.write(video_bytes)
             tmp_video = tmp.name
-        with tempfile.NamedTemporaryFile(suffix=".mp3", delete=False) as tmp:
+        # First try: copy audio stream as-is (near-instant)
+        with tempfile.NamedTemporaryFile(suffix=".m4a", delete=False) as tmp:
             tmp_audio = tmp.name
         result = subprocess.run(
             [
                 "ffmpeg", "-i", tmp_video,
-                "-vn", "-acodec", "libmp3lame",
-                "-ar", "16000", "-ac", "1", "-q:a", "9",
+                "-vn", "-acodec", "copy",
                 "-y", tmp_audio,
             ],
             capture_output=True,
-            timeout=60,
+            timeout=30,
         )
+        mime = "audio/mp4"
+        # Fallback: re-encode to mp3 if copy failed
+        if result.returncode != 0:
+            os.unlink(tmp_audio)
+            with tempfile.NamedTemporaryFile(suffix=".mp3", delete=False) as tmp:
+                tmp_audio = tmp.name
+            result = subprocess.run(
+                [
+                    "ffmpeg", "-i", tmp_video,
+                    "-vn", "-acodec", "libmp3lame",
+                    "-ar", "16000", "-ac", "1", "-q:a", "9",
+                    "-y", tmp_audio,
+                ],
+                capture_output=True,
+                timeout=60,
+            )
+            mime = "audio/mp3"
         if result.returncode != 0:
             return None
         audio_bytes = Path(tmp_audio).read_bytes()
         if len(audio_bytes) < 1000:
             return None
-        return audio_bytes
+        return audio_bytes, mime
     except Exception:
         return None
     finally:
@@ -115,6 +136,7 @@ def _transcribe_audio_bytes(
     audio_bytes: bytes,
     openai_client: "OpenAI" = None,  # kept for API compatibility, unused
     context: str = "",
+    mime_type: str = "audio/mp4",
 ) -> str:
     """Transcribe audio using the native Gemini SDK."""
     import os
@@ -133,11 +155,11 @@ def _transcribe_audio_bytes(
     if context:
         prompt += f"\nContext: {context}"
     try:
-        log.info("Sending %d bytes of audio to Gemini for transcription", len(audio_bytes))
+        log.info("Sending %d bytes of audio (%s) to Gemini for transcription", len(audio_bytes), mime_type)
         model = genai.GenerativeModel("gemini-2.5-flash")
         response = model.generate_content([
             prompt,
-            {"mime_type": "audio/mp3", "data": audio_bytes},
+            {"mime_type": mime_type, "data": audio_bytes},
         ])
         text = (response.text or "").strip()
         if text == "EMPTY" or not text:
@@ -620,10 +642,11 @@ def _enrich_messages_with_attachments(
                 body = messages[mi].get("body") or messages[mi].get("text") or ""
                 fname = att.get("fileName") or "video"
                 ocr_tasks.append((mi, ai, thumb, "image/jpeg", f"Video thumbnail from: {fname}\n{body}"))
-            audio = _extract_video_audio_from_bytes(data)
-            if audio:
+            audio_result = _extract_video_audio_from_bytes(data)
+            if audio_result:
+                audio, audio_mime = audio_result
                 body = messages[mi].get("body") or messages[mi].get("text") or ""
-                transcript_tasks.append((mi, ai, audio, body))
+                transcript_tasks.append((mi, ai, audio, audio_mime, body))
 
     ocr_results: Dict[tuple, str] = {}
     if ocr_tasks:
@@ -650,8 +673,8 @@ def _enrich_messages_with_attachments(
         log.info("Transcribing %d video audio tracks in parallel", len(transcript_tasks))
 
         def _do_transcribe(task):
-            mi, ai, audio, body = task
-            text = _transcribe_audio_bytes(audio, openai_client=openai_client, context=body)
+            mi, ai, audio, audio_mime, body = task
+            text = _transcribe_audio_bytes(audio, openai_client=openai_client, context=body, mime_type=audio_mime)
             return (mi, ai), text
 
         with ThreadPoolExecutor(max_workers=min(len(transcript_tasks), max_ocr_workers)) as pool:
