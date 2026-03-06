@@ -850,14 +850,15 @@ def _llm_call_with_fallback(
     timeout: float,
     **kwargs,
 ):
-    """Call openai_client.chat.completions.create with model cascade on 503/timeout.
+    """Call openai_client.chat.completions.create with model cascade.
 
     Tries `model` first, then each entry in `fallback_models` in order.
-    Only falls back on transient errors (503 Service Unavailable, timeout).
+    Falls back on transient errors (429, 499, 503, timeout).
+    On 429 (rate limit), retries the SAME model once after a backoff before
+    cascading to the next model.
     Raises the last exception if all models are exhausted.
 
-    Timeout is per-model. Earlier (better) models get the given timeout;
-    the last fallback model gets 1.5x the timeout as a safety net.
+    The last fallback model gets 2x the timeout as a safety net.
     """
     import openai as _openai
 
@@ -865,25 +866,40 @@ def _llm_call_with_fallback(
     last_exc: Exception | None = None
     for i, m in enumerate(models_to_try):
         is_last = (i == len(models_to_try) - 1)
-        model_timeout = timeout * 1.5 if is_last and len(models_to_try) > 1 else timeout
-        t0 = time.time()
-        try:
-            result = openai_client.chat.completions.create(model=m, timeout=model_timeout, **kwargs)
-            log.info("LLM call model=%s completed in %.1fs", m, time.time() - t0)
-            return result
-        except (_openai.APITimeoutError, _openai.APIStatusError) as e:
-            elapsed = time.time() - t0
-            status_code = getattr(e, "status_code", None)
-            is_retryable = isinstance(e, _openai.APITimeoutError) or status_code in (429, 499, 503)
-            if is_retryable:
+        model_timeout = timeout * 2.0 if is_last and len(models_to_try) > 1 else timeout
+
+        # Try up to 2 attempts per model (retry on 429 rate limit)
+        max_attempts = 2 if not is_last else 3
+        for attempt in range(max_attempts):
+            t0 = time.time()
+            try:
+                result = openai_client.chat.completions.create(model=m, timeout=model_timeout, **kwargs)
+                log.info("LLM call model=%s completed in %.1fs", m, time.time() - t0)
+                return result
+            except (_openai.APITimeoutError, _openai.APIStatusError) as e:
+                elapsed = time.time() - t0
+                status_code = getattr(e, "status_code", None)
+                is_retryable = isinstance(e, _openai.APITimeoutError) or status_code in (429, 499, 503)
+                if not is_retryable:
+                    raise
+                # On 429, retry same model with backoff before cascading
+                if status_code == 429 and attempt < max_attempts - 1:
+                    backoff = 2 ** attempt * 2  # 2s, 4s
+                    log.warning(
+                        "Model %s rate-limited (429) after %.1fs, retrying in %ds (attempt %d/%d)...",
+                        m, elapsed, backoff, attempt + 1, max_attempts,
+                    )
+                    last_exc = e
+                    time.sleep(backoff)
+                    continue
+                # Other transient errors or exhausted retries → cascade
                 log.warning(
                     "Model %s failed after %.1fs (%s status=%s, timeout=%.0fs), trying next fallback...",
                     m, elapsed, type(e).__name__, status_code, model_timeout,
                 )
                 last_exc = e
                 time.sleep(1)
-            else:
-                raise
+                break  # move to next model
     raise last_exc
 
 
@@ -936,7 +952,7 @@ def _extract_structured_cases(
     fallback_models: list,
     chunk_text: str,
     images: list[tuple[bytes, str]] | None = None,
-    timeout: float = 60.0,
+    timeout: float = 30.0,
 ) -> List[dict]:
     """Extract solved support cases with full structured fields in one pass.
 
@@ -1017,7 +1033,7 @@ def _dedup_cases_llm(
     model: str,
     fallback_models: list,
     cases: List[dict],
-    timeout: float = 120.0,
+    timeout: float = 45.0,
 ) -> List[dict]:
     """Merge duplicate cases via LLM. Returns deduplicated list."""
     if len(cases) <= 1:
