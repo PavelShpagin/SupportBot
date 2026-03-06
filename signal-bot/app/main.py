@@ -2022,8 +2022,9 @@ def history_cases(req: HistoryCasesRequest) -> dict:
     hc_start = _hc_time.time()
     log.info("History ingest started: %d cases, %d messages (group=%s)", n_cases, n_messages, req.group_id[:20])
     inserted, case_ids = _process_history_cases_bg(req)
-    log.info("History ingest done: %d/%d cases inserted in %.1fs (group=%s)", inserted, n_cases, _hc_time.time()-hc_start, req.group_id[:20])
-    return {"ok": True, "cases_inserted": inserted, "case_ids": case_ids}
+    unique_cases = len(set(case_ids))
+    log.info("History ingest done: %d/%d cases (%d unique) in %.1fs (group=%s)", inserted, n_cases, unique_cases, _hc_time.time()-hc_start, req.group_id[:20])
+    return {"ok": True, "cases_inserted": unique_cases, "case_ids": list(set(case_ids))}
 
 
 class BackfillImageItem(BaseModel):
