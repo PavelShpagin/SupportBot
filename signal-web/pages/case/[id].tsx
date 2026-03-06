@@ -206,6 +206,67 @@ export default function CasePage({ data, publicApiUrl }: Props) {
           color: var(--green);
         }
 
+        .video-transcript-section {
+          margin-top: 20px;
+          border: 1px solid var(--border);
+          border-radius: 8px;
+          overflow: hidden;
+        }
+        .video-transcript-section summary {
+          padding: 12px 16px;
+          cursor: pointer;
+          font-size: 13px;
+          font-weight: 600;
+          color: var(--text-sec);
+          background: var(--page-bg);
+          user-select: none;
+          list-style: none;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          transition: color 0.15s;
+        }
+        .video-transcript-section summary::-webkit-details-marker { display: none; }
+        .video-transcript-section summary::after {
+          content: '▸';
+          font-size: 10px;
+          margin-left: auto;
+          transition: transform 0.15s;
+        }
+        .video-transcript-section[open] summary::after {
+          transform: rotate(90deg);
+        }
+        .video-transcript-section summary:hover {
+          color: var(--text);
+        }
+        .video-transcript-section summary svg {
+          width: 15px;
+          height: 15px;
+          flex-shrink: 0;
+        }
+        .video-transcript-body {
+          padding: 14px 16px;
+          font-size: 14px;
+          line-height: 1.65;
+          color: var(--text);
+          white-space: pre-wrap;
+          border-top: 1px solid var(--border);
+          background: var(--card-bg);
+        }
+        .video-transcript-body .vt-label {
+          font-size: 11px;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+          color: var(--text-sec);
+          margin-bottom: 4px;
+        }
+        .video-transcript-body .vt-block + .vt-block {
+          margin-top: 12px;
+          padding-top: 12px;
+          border-top: 1px solid var(--border);
+        }
+
         .chat-header {
           padding: 14px 20px;
           border-bottom: 1px solid var(--border);
@@ -494,6 +555,51 @@ export default function CasePage({ data, publicApiUrl }: Props) {
               <p className="section-content">{data.solution_summary}</p>
             </div>
           </main>
+
+          {(() => {
+            const videoBlocks: { description?: string; transcript?: string }[] = [];
+            data.evidence?.forEach((msg) => {
+              const text = msg.content_text || '';
+              const descMatch = text.match(/\[Відео:\s*[^\]]*?—\s*(.+?)\]/);
+              const transMatch = text.match(/\[Транскрипт відео:\s*([\s\S]+?)\]/);
+              if (descMatch || transMatch) {
+                videoBlocks.push({
+                  description: descMatch ? descMatch[1].trim() : undefined,
+                  transcript: transMatch ? transMatch[1].trim() : undefined,
+                });
+              }
+            });
+            if (videoBlocks.length === 0) return null;
+            return (
+              <details className="video-transcript-section" style={{ margin: '0 0 0 0', borderTop: 'none', borderRadius: '0 0 var(--radius) var(--radius)', borderTopWidth: 0 }}>
+                <summary>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <polygon points="23 7 16 12 23 17 23 7" />
+                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+                  </svg>
+                  Відеоматеріали ({videoBlocks.length})
+                </summary>
+                <div className="video-transcript-body">
+                  {videoBlocks.map((vb, i) => (
+                    <div key={i} className="vt-block">
+                      {vb.description && (
+                        <>
+                          <div className="vt-label">Опис</div>
+                          <div>{vb.description}</div>
+                        </>
+                      )}
+                      {vb.transcript && (
+                        <>
+                          <div className="vt-label" style={vb.description ? { marginTop: 8 } : {}}>Транскрипт</div>
+                          <div>{vb.transcript}</div>
+                        </>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </details>
+            );
+          })()}
         </div>
 
         <div className="card">

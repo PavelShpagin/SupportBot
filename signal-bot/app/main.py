@@ -1154,7 +1154,31 @@ def view_case(case_id: str):
             <p><strong>Problem:</strong> {_html.escape(case.get('problem_summary', ''))}</p>
             <p><strong>Solution:</strong> {_html.escape(case.get('solution_summary', ''))}</p>
         </div>
+    """
 
+    # Video transcript collapsible
+    if evidence:
+        import re as _re
+        video_blocks = []
+        for msg in evidence:
+            txt = msg.content_text or ""
+            desc_m = _re.search(r'\[Відео:\s*[^\]]*?—\s*(.+?)\]', txt)
+            trans_m = _re.search(r'\[Транскрипт відео:\s*([\s\S]+?)\]', txt)
+            if desc_m or trans_m:
+                video_blocks.append((
+                    _html.escape(desc_m.group(1).strip()) if desc_m else None,
+                    _html.escape(trans_m.group(1).strip()) if trans_m else None,
+                ))
+        if video_blocks:
+            html += f'<details class="transcript" style="margin-bottom:20px"><summary>Відеоматеріали ({len(video_blocks)})</summary><div class="transcript-text">'
+            for desc, trans in video_blocks:
+                if desc:
+                    html += f"<strong>Опис:</strong> {desc}<br/>"
+                if trans:
+                    html += f"<strong>Транскрипт:</strong> {trans}<br/>"
+            html += "</div></details>"
+
+    html += """
         <h2>Evidence</h2>
         <div class="evidence-list">
     """
