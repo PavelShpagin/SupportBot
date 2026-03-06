@@ -102,11 +102,11 @@ def load_settings() -> Settings:
         openai_api_key=_env("GOOGLE_API_KEY", required=True),
         model_blocks=_env("MODEL_BLOCKS", default="gemini-2.5-flash"),
         model_blocks_fallback=_parse_model_list(
-            _env("MODEL_BLOCKS_FALLBACK", default="gemini-2.5-pro,gemini-3-flash-preview,gemini-2.0-flash")
+            _env("MODEL_BLOCKS_FALLBACK", default="gemini-3-flash-preview,gemini-2.5-pro,gemini-3.1-pro-preview")
         ),
         model_img=_env("MODEL_IMG", default="gemini-2.5-flash"),
         model_img_fallback=_parse_model_list(
-            _env("MODEL_IMG_FALLBACK", default="gemini-3-flash-preview,gemini-2.0-flash")
+            _env("MODEL_IMG_FALLBACK", default="gemini-3-flash-preview,gemini-3.1-pro-preview")
         ),
         signal_cli=_env("SIGNAL_CLI", default="signal-cli"),
         signal_ingest_storage=_env("SIGNAL_INGEST_STORAGE", default="/var/lib/signal/ingest"),

@@ -945,7 +945,7 @@ def _extract_structured_cases(
     fallback_models: list,
     chunk_text: str,
     images: list[tuple[bytes, str]] | None = None,
-    timeout: float = 30.0,
+    timeout: float = 45.0,
 ) -> List[dict]:
     """Extract solved support cases with full structured fields in one pass.
 
