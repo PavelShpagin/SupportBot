@@ -516,9 +516,12 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
         lang = session.lang
 
     if not text:
-        # Empty message - resend prompt
-        if not isinstance(signal, NoopSignalAdapter):
-            signal.send_onboarding_prompt(recipient=admin_id, lang=lang)
+        # Attachment-only or sticker messages have no text — ignore silently
+        if m.image_paths:
+            log.info("Admin %s sent attachment-only message (no text), ignoring", admin_id)
+            return
+        # Truly empty message (no text, no attachments) — ignore, don't spam welcome
+        log.info("Admin %s sent empty message, ignoring", admin_id)
         return
     
     # Any message while a job is running cancels it and restarts.
@@ -1539,6 +1542,7 @@ def history_link_result(req: HistoryLinkResultRequest) -> dict:
                             )
                             if req.note:
                                 summary += f"\n{req.note}"
+                            summary += "\nhttps://supportbot.info"
                         else:
                             summary = (
                                 f"Import summary: messages={req.message_count if req.message_count is not None else '?'}"
@@ -1546,6 +1550,7 @@ def history_link_result(req: HistoryLinkResultRequest) -> dict:
                             )
                             if req.note:
                                 summary += f"\n{req.note}"
+                            summary += "\nhttps://supportbot.info"
                         _send_direct_or_cleanup(admin_id, summary)
                 else:
                     signal.send_failure_message(recipient=admin_id, group_name=group_name, lang=lang)
