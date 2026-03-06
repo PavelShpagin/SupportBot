@@ -134,7 +134,7 @@ def _transcribe_audio_bytes(
         prompt += f"\nContext: {context}"
     try:
         log.info("Sending %d bytes of audio to Gemini for transcription", len(audio_bytes))
-        model = genai.GenerativeModel("gemini-2.0-flash")
+        model = genai.GenerativeModel("gemini-2.5-flash")
         response = model.generate_content([
             prompt,
             {"mime_type": "audio/mp3", "data": audio_bytes},
