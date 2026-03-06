@@ -625,8 +625,21 @@ async def get_qr_png():
         // Approach 3: Check for SVG-based QR (Signal renders QR as SVG)
         var svgs = document.querySelectorAll('svg');
         if (svgs.length > 0) {
-            // Return the SVG outerHTML so we can render it ourselves
-            return 'SVG:' + svgs[0].outerHTML;
+            var svg = svgs[0];
+            // Return first 500 chars for debugging plus viewBox and style info
+            var info = 'viewBox=' + svg.getAttribute('viewBox')
+                + ' width=' + svg.getAttribute('width')
+                + ' height=' + svg.getAttribute('height')
+                + ' fill=' + svg.getAttribute('fill')
+                + ' style=' + (svg.style.cssText || 'none')
+                + ' class=' + (svg.className.baseVal || 'none');
+            // Get first path to see fill color
+            var paths = svg.querySelectorAll('path');
+            if (paths.length > 0) {
+                info += ' path0_fill=' + paths[0].getAttribute('fill')
+                    + ' path0_d=' + (paths[0].getAttribute('d') || '').substring(0, 100);
+            }
+            return 'SVG_INFO:' + info;
         }
 
         // Approach 4: Look for data: URL images
@@ -663,6 +676,9 @@ async def get_qr_png():
         buf = io.BytesIO()
         img.save(buf, format="PNG")
         return Response(content=buf.getvalue(), media_type="image/png")
+
+    if raw.startswith("SVG_INFO:"):
+        raise HTTPException(status_code=404, detail=raw[:500])
 
     if raw.startswith("SVG:"):
         # Got the SVG QR — convert to high-quality PNG via cairosvg or ImageMagick
