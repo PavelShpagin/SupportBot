@@ -1274,7 +1274,7 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
                         time.sleep(5)
                         qr_image = _get_desktop_screenshot(settings)
                         log.info("Screenshot attempt %d size: %d bytes", sc_attempt + 1, len(qr_image))
-                        if len(qr_image) > 2000:
+                        if len(qr_image) > 5000:
                             break
                         log.info("Screenshot looks blank, waiting longer...")
                     break

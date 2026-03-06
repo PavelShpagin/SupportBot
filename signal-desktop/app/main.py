@@ -551,13 +551,15 @@ async def take_screenshot(crop_qr: bool = Query(True, description="Crop to just 
         if crop_qr:
             # Crop to QR code area (Signal Desktop QR is roughly in center-left)
             # QR code is at approximately x=[163, 418], y=[270, 525]
-            # Center is (290, 397)
-            # Crop a 300x300 area centered on the QR
-            # Crop: 300x300 starting at (140, 247)
+            # Crop: 300x300 starting at (140, 247), then upscale to 800x800.
             # -threshold 50%: forces pure black/white so Signal's gray QR scans reliably
+            # -sample 800x800: nearest-neighbor upscale (no interpolation blur)
+            # -depth 8 -type Grayscale: 8-bit grayscale so it survives Signal's
+            #   JPEG recompression without destroying sharp QR module edges
             convert_result = subprocess.run(
                 ["convert", "xwd:-", "-crop", "300x300+140+247", "+repage",
-                 "-threshold", "50%", "png:-"],
+                 "-threshold", "50%", "-sample", "800x800",
+                 "-depth", "8", "-type", "Grayscale", "png:-"],
                 input=result.stdout,
                 capture_output=True,
                 timeout=10,
@@ -1077,7 +1079,8 @@ async def refresh_qr():
 
         convert_result = subprocess.run(
             ["convert", "xwd:-", "-crop", "300x300+140+247", "+repage",
-             "-threshold", "50%", "png:-"],
+             "-threshold", "50%", "-sample", "800x800",
+             "-depth", "8", "-type", "Grayscale", "png:-"],
             input=result_sc.stdout, capture_output=True, timeout=10,
         )
         if convert_result.returncode != 0:
