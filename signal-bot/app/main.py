@@ -1457,7 +1457,8 @@ def history_qr_code(req: HistoryQrCodeRequest) -> dict:
                 "Відскануйте цей QR-код у Signal:\n\n"
                 "1. Відкрийте Signal на телефоні\n"
                 "2. Іконка профілю → Пов'язані пристрої → Додати пристрій\n"
-                "3. Відскануйте QR-код\n\n"
+                "3. Відскануйте QR-код\n"
+                "4. Натисніть «Перенести історію» (Transfer history)\n\n"
                 "Примітка: макс. 5 пов'язаних пристроїв. Видаліть один при ліміті.\n\n"
                 "Очікую сканування (5 хв)..."
             )
@@ -1466,7 +1467,8 @@ def history_qr_code(req: HistoryQrCodeRequest) -> dict:
                 "Scan this QR code in Signal:\n\n"
                 "1. Open Signal on your phone\n"
                 "2. Profile Icon → Linked Devices → Link New Device\n"
-                "3. Scan the QR code\n\n"
+                "3. Scan the QR code\n"
+                "4. Click 'Transfer history'\n\n"
                 "Note: max 5 linked devices. Remove one if limit reached.\n\n"
                 "Waiting for scan (5 min)..."
             )

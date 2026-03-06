@@ -42,25 +42,29 @@ Learn more: https://supportbot.info/
 
 Which group would you like to connect?"""
 
-QR_MESSAGE_UK = """Відскануйте цей QR-код у Signal протягом 10 хвилин (Іконка профілю → Пов'язані пристрої → Додати пристрій).
+QR_MESSAGE_UK = “””Відскануйте цей QR-код у Signal протягом 10 хвилин:
+
+1. Іконка профілю → Пов'язані пристрої → Додати пристрій
+2. Відскануйте QR-код
+3. Натисніть «Перенести історію» (Transfer history)
 
 Примітка: макс. 5 пов'язаних пристроїв. Видаліть один при ліміті.
 
-Після сканування я зможу обробити історію групи "{group_name}" та почати відповідати на питання.
+Після сканування я зможу обробити історію групи “{group_name}” та почати відповідати на питання.
 
-Під час підключення на телефоні виберіть «Перенести історію повідомлень» (якщо зʼявиться).
+Якщо після сканування пристрій не додався - QR-код застарів. Напишіть назву групи ще раз для нового коду.”””
 
-Якщо після сканування пристрій не додався - QR-код застарів. Напишіть назву групи ще раз для нового коду."""
+QR_MESSAGE_EN = “””Scan this QR code in Signal within 10 minutes:
 
-QR_MESSAGE_EN = """Scan this QR code in Signal within 10 minutes (Profile Icon → Linked Devices → Link New Device).
+1. Profile Icon → Linked Devices → Link New Device
+2. Scan the QR code
+3. Click 'Transfer history'
 
 Note: max 5 linked devices. Remove one if limit reached.
 
-After scanning, I'll be able to process the history of group "{group_name}" and start answering questions.
+After scanning, I'll be able to process the history of group “{group_name}” and start answering questions.
 
-During linking on your phone, choose “Transfer Message History” (if prompted).
-
-If no device was added after scanning - the QR code has expired. Send the group name again for a new code."""
+If no device was added after scanning - the QR code has expired. Send the group name again for a new code.”””
 
 SUCCESS_MESSAGE_UK = """Успішно підключено до групи "{group_name}"!
 
