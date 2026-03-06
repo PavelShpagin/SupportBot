@@ -83,6 +83,7 @@ def _extract_video_audio_from_bytes(video_bytes: bytes) -> tuple[bytes, str] | N
     tmp_video = None
     tmp_audio = None
     try:
+        log.info("Extracting audio from video (%d bytes)", len(video_bytes))
         with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as tmp:
             tmp.write(video_bytes)
             tmp_video = tmp.name
@@ -101,6 +102,7 @@ def _extract_video_audio_from_bytes(video_bytes: bytes) -> tuple[bytes, str] | N
         mime = "audio/mp4"
         # Fallback: re-encode to mp3 if copy failed
         if result.returncode != 0:
+            log.info("ffmpeg audio copy failed (rc=%d): %s", result.returncode, result.stderr[-500:].decode(errors="replace"))
             os.unlink(tmp_audio)
             with tempfile.NamedTemporaryFile(suffix=".mp3", delete=False) as tmp:
                 tmp_audio = tmp.name
@@ -116,12 +118,16 @@ def _extract_video_audio_from_bytes(video_bytes: bytes) -> tuple[bytes, str] | N
             )
             mime = "audio/mp3"
         if result.returncode != 0:
+            log.warning("ffmpeg audio extraction failed entirely (rc=%d): %s", result.returncode, result.stderr[-500:].decode(errors="replace"))
             return None
         audio_bytes = Path(tmp_audio).read_bytes()
         if len(audio_bytes) < 1000:
+            log.warning("Extracted audio too small (%d bytes), skipping", len(audio_bytes))
             return None
+        log.info("Audio extracted: %d bytes, mime=%s", len(audio_bytes), mime)
         return audio_bytes, mime
-    except Exception:
+    except Exception as e:
+        log.warning("Audio extraction exception: %s", e)
         return None
     finally:
         for p in (tmp_video, tmp_audio):
@@ -668,6 +674,8 @@ def _enrich_messages_with_attachments(
                 audio, audio_mime = audio_result
                 body = messages[mi].get("body") or messages[mi].get("text") or ""
                 transcript_tasks.append((mi, ai, audio, audio_mime, body))
+            else:
+                log.warning("No audio extracted from video at msg[%d] att[%d] (%d bytes)", mi, ai, len(data))
 
     ocr_results: Dict[tuple, str] = {}
     if ocr_tasks:
