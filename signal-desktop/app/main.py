@@ -622,10 +622,11 @@ async def get_qr_png():
             if (keys.length > 0) return 'KEYS:' + keys.join(',');
         } catch(e) {}
 
-        // Approach 3: Check for SVG-based QR (Signal may use SVG paths)
+        // Approach 3: Check for SVG-based QR (Signal renders QR as SVG)
         var svgs = document.querySelectorAll('svg');
         if (svgs.length > 0) {
-            return 'SVG_COUNT:' + svgs.length;
+            // Return the SVG outerHTML so we can render it ourselves
+            return 'SVG:' + svgs[0].outerHTML;
         }
 
         // Approach 4: Look for data: URL images
@@ -649,23 +650,41 @@ async def get_qr_png():
     result = await devtools._send_command(
         "Runtime.evaluate", {"expression": js, "returnByValue": True}
     )
-    sgnl_url = (result or {}).get("result", {}).get("value")
-    if not sgnl_url or not sgnl_url.startswith("sgnl://"):
-        raise HTTPException(
-            status_code=404,
-            detail=f"No sgnl:// linking URL found. Got: {str(sgnl_url)[:200]}",
+    raw = (result or {}).get("result", {}).get("value") or ""
+
+    if raw.startswith("sgnl://"):
+        # Got the URL directly — regenerate clean QR
+        log.info("Extracted QR URL: %s", raw[:60])
+        import qrcode
+        qr = qrcode.QRCode(error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=20, border=4)
+        qr.add_data(raw)
+        qr.make(fit=True)
+        img = qr.make_image(fill_color="black", back_color="white")
+        buf = io.BytesIO()
+        img.save(buf, format="PNG")
+        return Response(content=buf.getvalue(), media_type="image/png")
+
+    if raw.startswith("SVG:"):
+        # Got the SVG QR — convert to high-quality PNG via cairosvg or ImageMagick
+        svg_data = raw[4:]
+        log.info("Got QR SVG (%d chars), converting to PNG", len(svg_data))
+        convert = subprocess.run(
+            ["convert", "-background", "white", "-density", "300",
+             "svg:-", "-resize", "800x800", "-threshold", "50%",
+             "-depth", "8", "png:-"],
+            input=svg_data.encode(),
+            capture_output=True,
+            timeout=10,
         )
+        if convert.returncode == 0 and len(convert.stdout) > 1000:
+            return Response(content=convert.stdout, media_type="image/png")
+        log.warning("SVG→PNG conversion failed (rc=%d, size=%d)", convert.returncode, len(convert.stdout))
+        log.warning("convert stderr: %s", convert.stderr.decode()[:200])
 
-    log.info("Extracted QR URL: %s", sgnl_url[:60])
-
-    # Generate a clean QR code
-    qr = qrcode.QRCode(error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=20, border=4)
-    qr.add_data(sgnl_url)
-    qr.make(fit=True)
-    img = qr.make_image(fill_color="black", back_color="white")
-    buf = io.BytesIO()
-    img.save(buf, format="PNG")
-    return Response(content=buf.getvalue(), media_type="image/png")
+    raise HTTPException(
+        status_code=404,
+        detail=f"No QR data found. Got: {raw[:200]}",
+    )
 
 
 @app.get("/attachment")
