@@ -359,14 +359,6 @@ export default function CasePage({ data, publicApiUrl }: Props) {
           list-style: none;
         }
         .transcript-details summary::-webkit-details-marker { display: none; }
-        .transcript-details summary::before {
-          content: '▸';
-          font-size: 9px;
-          transition: transform 0.15s;
-        }
-        .transcript-details[open] summary::before {
-          transform: rotate(90deg);
-        }
         .transcript-details summary:hover {
           color: var(--text);
         }
