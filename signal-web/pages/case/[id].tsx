@@ -521,24 +521,11 @@ export default function CasePage({ data, publicApiUrl }: Props) {
                     </div>
                     {(() => {
                       let text = msg.content_text || '';
-                      // Extract transcript
-                      const transcriptMatch = text.match(/\[Транскрипт відео:\s*([\s\S]+?)\]/);
-                      const transcript = transcriptMatch ? transcriptMatch[1].trim() : null;
                       // Strip all media markers from display text
                       text = text.replace(/\n*\[Зображення[^\]]*\]|\n*\[image\]\s*\{[\s\S]*?\}|\n*\[image\]|\n*\[attachment:[^\]]*\]|\n*\[Відео:[^\]]*\]|\n*\[Транскрипт відео:[^\]]*\]/g, '').trim();
                       // Clean up raw JSON OCR blocks
                       text = text.replace(/\{"extracted_text"\s*:[\s\S]*?\}/g, '').trim();
-                      return (
-                        <>
-                          {text && <p className="message-text">{text}</p>}
-                          {transcript && (
-                            <details className="transcript-details">
-                              <summary>Транскрипт</summary>
-                              <div className="transcript-content">{transcript}</div>
-                            </details>
-                          )}
-                        </>
-                      );
+                      return text ? <p className="message-text">{text}</p> : null;
                     })()}
                     {(() => {
                       const items = msg.attachments?.length
@@ -593,6 +580,18 @@ export default function CasePage({ data, publicApiUrl }: Props) {
                             );
                           })}
                         </div>
+                      );
+                    })()}
+                    {(() => {
+                      const text = msg.content_text || '';
+                      const transcriptMatch = text.match(/\[Транскрипт відео:\s*([\s\S]+?)\]/);
+                      const transcript = transcriptMatch ? transcriptMatch[1].trim() : null;
+                      if (!transcript) return null;
+                      return (
+                        <details className="transcript-details">
+                          <summary>Транскрипт</summary>
+                          <div className="transcript-content">{transcript}</div>
+                        </details>
                       );
                     })()}
                   </div>
