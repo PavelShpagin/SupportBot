@@ -323,6 +323,22 @@ def _reset_desktop(settings) -> dict:
         return {"status": "reset_attempted"}
 
 
+def _get_clean_qr(settings) -> bytes:
+    """Get a cleanly regenerated QR PNG from Signal Desktop's /qr-png endpoint.
+
+    Returns the PNG bytes, or empty bytes on failure (caller should fall back to screenshot).
+    """
+    url = settings.signal_desktop_url.rstrip("/") + "/qr-png"
+    try:
+        with httpx.Client(timeout=30) as client:
+            r = client.get(url)
+            r.raise_for_status()
+            return r.content
+    except Exception as e:
+        log.warning("Clean QR (/qr-png) failed, will fall back to screenshot: %s", e)
+        return b""
+
+
 def _get_desktop_screenshot(settings) -> bytes:
     """Get screenshot from Signal Desktop (for QR code)."""
     url = settings.signal_desktop_url.rstrip("/") + "/screenshot"
@@ -1268,15 +1284,21 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
                     status.get("linked"), devtools_ready, attempt + 1,
                 )
                 if is_unlinked and devtools_ready:
-                    log.info("Signal Desktop is unlinked and DevTools ready — QR visible, taking screenshot")
-                    # Wait for QR to fully render; retry up to 5 times if screenshot is blank
-                    for sc_attempt in range(5):
-                        time.sleep(5)
-                        qr_image = _get_desktop_screenshot(settings)
-                        log.info("Screenshot attempt %d size: %d bytes", sc_attempt + 1, len(qr_image))
-                        if len(qr_image) > 5000:
-                            break
-                        log.info("Screenshot looks blank, waiting longer...")
+                    log.info("Signal Desktop is unlinked and DevTools ready — fetching QR")
+                    time.sleep(5)  # let QR fully render
+                    # Try clean QR generation first (extracts URL from DOM, regenerates QR)
+                    qr_image = _get_clean_qr(settings)
+                    if qr_image:
+                        log.info("Got clean QR via /qr-png: %d bytes", len(qr_image))
+                    else:
+                        # Fallback to screenshot with retries
+                        for sc_attempt in range(5):
+                            time.sleep(5)
+                            qr_image = _get_desktop_screenshot(settings)
+                            log.info("Screenshot attempt %d size: %d bytes", sc_attempt + 1, len(qr_image))
+                            if len(qr_image) > 5000:
+                                break
+                            log.info("Screenshot looks blank, waiting longer...")
                     break
                 elif is_unlinked:
                     log.info("Unlinked but DevTools not ready yet, waiting...")

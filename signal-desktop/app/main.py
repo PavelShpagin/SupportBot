@@ -559,7 +559,6 @@ async def take_screenshot(crop_qr: bool = Query(True, description="Crop to just 
             convert_result = subprocess.run(
                 ["convert", "xwd:-", "-crop", "300x300+140+247", "+repage",
                  "-resize", "800x800", "-threshold", "50%",
-                 "-morphology", "Open", "Square:1",
                  "-depth", "8", "png:-"],
                 input=result.stdout,
                 capture_output=True,
@@ -585,6 +584,62 @@ async def take_screenshot(crop_qr: bool = Query(True, description="Crop to just 
     except Exception as e:
         log.exception("Screenshot failed")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/qr-png")
+async def get_qr_png():
+    """Extract the sgnl:// linking URL from Signal Desktop via DevTools and
+    return a clean, regenerated QR code PNG (800x800).
+
+    This avoids screenshot artifacts that make QR codes unscannable after
+    Signal's JPEG recompression when sent as attachments.
+    """
+    import qrcode
+
+    devtools = await get_devtools()
+    if not devtools.is_connected:
+        raise HTTPException(status_code=503, detail="DevTools not connected")
+
+    # Extract sgnl:// URL from the page's QR canvas or DOM
+    js = """
+    (function(){
+        // Signal Desktop renders QR as an <img> whose parent has aria-label
+        // or as a canvas. The sgnl:// URL is in the provisioning state.
+        // Try to find it in the DOM attributes or from the Electron IPC.
+        // The QR image is an <img> or <canvas> inside the QR container.
+        // Signal stores the URL in a data attribute or we can read it from
+        // the page's JS state via __SIGNAL_QR_URL__ or similar.
+
+        // Approach 1: look for sgnl:// in any element's attribute
+        var all = document.documentElement.outerHTML;
+        var m = all.match(/sgnl:\\/\\/linkdevice\\?[^"'<>\\s]+/);
+        if (m) return m[0];
+
+        // Approach 2: Check canvas toDataURL (won't contain the URL itself)
+        // Approach 3: Check Electron mainWindow provisioning URL
+        return null;
+    })()
+    """
+    result = await devtools._send_command(
+        "Runtime.evaluate", {"expression": js, "returnByValue": True}
+    )
+    sgnl_url = (result or {}).get("result", {}).get("value")
+    if not sgnl_url:
+        raise HTTPException(
+            status_code=404,
+            detail="No sgnl:// linking URL found in Signal Desktop DOM. QR may have expired.",
+        )
+
+    log.info("Extracted QR URL: %s", sgnl_url[:60])
+
+    # Generate a clean QR code
+    qr = qrcode.QRCode(error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=20, border=4)
+    qr.add_data(sgnl_url)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="black", back_color="white")
+    buf = io.BytesIO()
+    img.save(buf, format="PNG")
+    return Response(content=buf.getvalue(), media_type="image/png")
 
 
 @app.get("/attachment")
@@ -1081,7 +1136,6 @@ async def refresh_qr():
         convert_result = subprocess.run(
             ["convert", "xwd:-", "-crop", "300x300+140+247", "+repage",
              "-resize", "800x800", "-threshold", "50%",
-             "-morphology", "Open", "Square:1",
              "-depth", "8", "png:-"],
             input=result_sc.stdout, capture_output=True, timeout=10,
         )
