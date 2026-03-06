@@ -853,7 +853,7 @@ def _llm_call_with_fallback(
     """Call openai_client.chat.completions.create with fast model cascade.
 
     Tries `model` first, then each entry in `fallback_models` in order.
-    Falls back on transient errors (429, 499, 503, timeout).
+    Falls back on transient errors (404, 429, 499, 503, timeout).
     Max ~10s spent per model (1 retry with 2s backoff) before cascading.
     Raises the last exception if all models are exhausted.
     """
@@ -876,7 +876,7 @@ def _llm_call_with_fallback(
             except (_openai.APITimeoutError, _openai.APIStatusError) as e:
                 elapsed = time.time() - t0
                 status_code = getattr(e, "status_code", None)
-                is_retryable = isinstance(e, _openai.APITimeoutError) or status_code in (429, 499, 503)
+                is_retryable = isinstance(e, _openai.APITimeoutError) or status_code in (404, 429, 499, 503)
                 if not is_retryable:
                     raise
                 last_exc = e
