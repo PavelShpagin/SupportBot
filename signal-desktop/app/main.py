@@ -600,34 +600,57 @@ async def get_qr_png():
     if not devtools.is_connected:
         raise HTTPException(status_code=503, detail="DevTools not connected")
 
-    # Extract sgnl:// URL from the page's QR canvas or DOM
+    # Extract sgnl:// URL from Signal Desktop.
+    # Signal renders the QR on a <canvas>. The URL isn't in the DOM HTML but
+    # is accessible via Signal's internal React/Redux state or the canvas element.
     js = """
     (function(){
-        // Signal Desktop renders QR as an <img> whose parent has aria-label
-        // or as a canvas. The sgnl:// URL is in the provisioning state.
-        // Try to find it in the DOM attributes or from the Electron IPC.
-        // The QR image is an <img> or <canvas> inside the QR container.
-        // Signal stores the URL in a data attribute or we can read it from
-        // the page's JS state via __SIGNAL_QR_URL__ or similar.
+        // Approach 1: Check window.Signal or window.textsecure for provisioning URL
+        try {
+            if (window.Signal && window.Signal.State) {
+                var state = window.Signal.State.getState();
+                if (state && state.installer && state.installer.provisioningUrl) {
+                    return state.installer.provisioningUrl;
+                }
+            }
+        } catch(e) {}
 
-        // Approach 1: look for sgnl:// in any element's attribute
+        // Approach 2: Check window.getProvisioningUrl or similar globals
+        try {
+            if (window.provisioningUrl) return window.provisioningUrl;
+        } catch(e) {}
+
+        // Approach 3: Search the entire DOM including attributes
         var all = document.documentElement.outerHTML;
         var m = all.match(/sgnl:\\/\\/linkdevice\\?[^"'<>\\s]+/);
         if (m) return m[0];
 
-        // Approach 2: Check canvas toDataURL (won't contain the URL itself)
-        // Approach 3: Check Electron mainWindow provisioning URL
-        return null;
+        // Approach 4: Extract from canvas as data URL (for debugging)
+        var canvases = document.querySelectorAll('canvas');
+        if (canvases.length > 0) {
+            return 'CANVAS_FOUND:' + canvases.length;
+        }
+
+        // Approach 5: Check for img elements with QR-like src
+        var imgs = document.querySelectorAll('img');
+        for (var i = 0; i < imgs.length; i++) {
+            var src = imgs[i].src || '';
+            if (src.startsWith('data:') || src.includes('qr')) {
+                return 'IMG:' + src.substring(0, 200);
+            }
+        }
+
+        return 'DOM_LEN:' + all.length;
     })()
     """
     result = await devtools._send_command(
         "Runtime.evaluate", {"expression": js, "returnByValue": True}
     )
     sgnl_url = (result or {}).get("result", {}).get("value")
-    if not sgnl_url:
+    if not sgnl_url or not sgnl_url.startswith("sgnl://"):
         raise HTTPException(
             status_code=404,
-            detail="No sgnl:// linking URL found in Signal Desktop DOM. QR may have expired.",
+            detail=f"No sgnl:// linking URL found. Got: {str(sgnl_url)[:200]}",
         )
 
     log.info("Extracted QR URL: %s", sgnl_url[:60])
