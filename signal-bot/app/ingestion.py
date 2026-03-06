@@ -103,7 +103,7 @@ def _transcribe_audio(audio_bytes: bytes, context: str = "") -> str:
             log.warning("GOOGLE_API_KEY not set, cannot transcribe audio")
             return ""
         genai.configure(api_key=api_key)
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        model = genai.GenerativeModel("gemini-2.0-flash")
         prompt = (
             "Transcribe this audio verbatim. Return ONLY the spoken words, "
             "no timestamps or annotations. If there is no speech or only "
