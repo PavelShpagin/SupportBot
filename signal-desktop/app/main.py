@@ -600,47 +600,50 @@ async def get_qr_png():
     if not devtools.is_connected:
         raise HTTPException(status_code=503, detail="DevTools not connected")
 
-    # Extract sgnl:// URL from Signal Desktop.
-    # Signal renders the QR on a <canvas>. The URL isn't in the DOM HTML but
-    # is accessible via Signal's internal React/Redux state or the canvas element.
+    # Extract sgnl:// URL from Signal Desktop's React/Redux state.
     js = """
     (function(){
-        // Approach 1: Check window.Signal or window.textsecure for provisioning URL
+        // Approach 1: Signal stores provisioning URL in window.Signal Redux store
         try {
-            if (window.Signal && window.Signal.State) {
-                var state = window.Signal.State.getState();
-                if (state && state.installer && state.installer.provisioningUrl) {
-                    return state.installer.provisioningUrl;
-                }
+            var state = window.reduxStore && window.reduxStore.getState();
+            if (state) {
+                // Check various possible paths in the state tree
+                var url = (state.installer && state.installer.provisioningUrl)
+                    || (state.app && state.app.provisioningUrl);
+                if (url) return url;
             }
         } catch(e) {}
 
-        // Approach 2: Check window.getProvisioningUrl or similar globals
+        // Approach 2: Look for SignalContext or other Electron-exposed globals
         try {
-            if (window.provisioningUrl) return window.provisioningUrl;
+            var keys = Object.keys(window).filter(function(k) {
+                return k.toLowerCase().includes('signal') || k.toLowerCase().includes('provision');
+            });
+            if (keys.length > 0) return 'KEYS:' + keys.join(',');
         } catch(e) {}
 
-        // Approach 3: Search the entire DOM including attributes
+        // Approach 3: Check for SVG-based QR (Signal may use SVG paths)
+        var svgs = document.querySelectorAll('svg');
+        if (svgs.length > 0) {
+            return 'SVG_COUNT:' + svgs.length;
+        }
+
+        // Approach 4: Look for data: URL images
+        var imgs = document.querySelectorAll('img[src^="data:"]');
+        if (imgs.length > 0) {
+            return 'DATA_IMG:' + imgs[0].src.substring(0, 300);
+        }
+
+        // Approach 5: Dump interesting DOM elements for debugging
+        var qrEl = document.querySelector('[class*="qr" i], [class*="QR"], [data-testid*="qr" i]');
+        if (qrEl) return 'QR_EL:' + qrEl.outerHTML.substring(0, 500);
+
+        // Approach 6: Search full HTML
         var all = document.documentElement.outerHTML;
         var m = all.match(/sgnl:\\/\\/linkdevice\\?[^"'<>\\s]+/);
         if (m) return m[0];
 
-        // Approach 4: Extract from canvas as data URL (for debugging)
-        var canvases = document.querySelectorAll('canvas');
-        if (canvases.length > 0) {
-            return 'CANVAS_FOUND:' + canvases.length;
-        }
-
-        // Approach 5: Check for img elements with QR-like src
-        var imgs = document.querySelectorAll('img');
-        for (var i = 0; i < imgs.length; i++) {
-            var src = imgs[i].src || '';
-            if (src.startsWith('data:') || src.includes('qr')) {
-                return 'IMG:' + src.substring(0, 200);
-            }
-        }
-
-        return 'DOM_LEN:' + all.length;
+        return 'NO_MATCH:DOM_LEN=' + all.length;
     })()
     """
     result = await devtools._send_command(
