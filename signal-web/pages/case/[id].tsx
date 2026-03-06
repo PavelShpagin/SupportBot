@@ -357,9 +357,6 @@ export default function CasePage({ data, publicApiUrl }: Props) {
           background: #fff;
           user-select: none;
           list-style: none;
-          display: flex;
-          align-items: center;
-          gap: 6px;
         }
         .transcript-details summary::-webkit-details-marker { display: none; }
         .transcript-details summary::before {
@@ -373,31 +370,12 @@ export default function CasePage({ data, publicApiUrl }: Props) {
         .transcript-details summary:hover {
           color: var(--text);
         }
-        .transcript-details summary svg {
-          width: 13px;
-          height: 13px;
-          flex-shrink: 0;
-          color: var(--text-sec);
-        }
         .transcript-content {
           padding: 10px 12px;
           white-space: pre-wrap;
           font-size: 13px;
           line-height: 1.6;
           color: var(--text);
-          border-top: 1px solid #e2e2e2;
-        }
-        .transcript-label {
-          font-size: 11px;
-          font-weight: 600;
-          text-transform: uppercase;
-          letter-spacing: 0.04em;
-          color: var(--text-sec);
-          margin-bottom: 3px;
-        }
-        .transcript-content .tr-block + .tr-block {
-          margin-top: 10px;
-          padding-top: 10px;
           border-top: 1px solid #e2e2e2;
         }
 
@@ -551,42 +529,20 @@ export default function CasePage({ data, publicApiUrl }: Props) {
                     </div>
                     {(() => {
                       let text = msg.content_text || '';
-                      // Extract video description and transcript
-                      const descMatch = text.match(/\[Відео:\s*[^\]]*?—\s*(.+?)\]/);
-                      const videoDesc = descMatch ? descMatch[1].trim() : null;
+                      // Extract transcript
                       const transcriptMatch = text.match(/\[Транскрипт відео:\s*([\s\S]+?)\]/);
                       const transcript = transcriptMatch ? transcriptMatch[1].trim() : null;
                       // Strip all media markers from display text
                       text = text.replace(/\n*\[Зображення[^\]]*\]|\n*\[image\]\s*\{[\s\S]*?\}|\n*\[image\]|\n*\[attachment:[^\]]*\]|\n*\[Відео:[^\]]*\]|\n*\[Транскрипт відео:[^\]]*\]/g, '').trim();
                       // Clean up raw JSON OCR blocks
                       text = text.replace(/\{"extracted_text"\s*:[\s\S]*?\}/g, '').trim();
-                      const hasVideoInfo = videoDesc || transcript;
                       return (
                         <>
                           {text && <p className="message-text">{text}</p>}
-                          {hasVideoInfo && (
+                          {transcript && (
                             <details className="transcript-details">
-                              <summary>
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                  <polygon points="23 7 16 12 23 17 23 7" />
-                                  <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
-                                </svg>
-                                Відеоматеріали
-                              </summary>
-                              <div className="transcript-content">
-                                {videoDesc && (
-                                  <div className="tr-block">
-                                    <div className="transcript-label">Опис</div>
-                                    <div>{videoDesc}</div>
-                                  </div>
-                                )}
-                                {transcript && (
-                                  <div className="tr-block">
-                                    <div className="transcript-label">Транскрипт</div>
-                                    <div>{transcript}</div>
-                                  </div>
-                                )}
-                              </div>
+                              <summary>Транскрипт</summary>
+                              <div className="transcript-content">{transcript}</div>
                             </details>
                           )}
                         </>
