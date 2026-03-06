@@ -625,21 +625,19 @@ async def get_qr_png():
         // Approach 3: Check for SVG-based QR (Signal renders QR as SVG)
         var svgs = document.querySelectorAll('svg');
         if (svgs.length > 0) {
-            var svg = svgs[0];
-            // Return first 500 chars for debugging plus viewBox and style info
-            var info = 'viewBox=' + svg.getAttribute('viewBox')
-                + ' width=' + svg.getAttribute('width')
-                + ' height=' + svg.getAttribute('height')
-                + ' fill=' + svg.getAttribute('fill')
-                + ' style=' + (svg.style.cssText || 'none')
-                + ' class=' + (svg.className.baseVal || 'none');
-            // Get first path to see fill color
-            var paths = svg.querySelectorAll('path');
-            if (paths.length > 0) {
-                info += ' path0_fill=' + paths[0].getAttribute('fill')
-                    + ' path0_d=' + (paths[0].getAttribute('d') || '').substring(0, 100);
-            }
-            return 'SVG_INFO:' + info;
+            var svg = svgs[0].cloneNode(true);
+            // Set explicit width/height for rasterization
+            svg.setAttribute('width', '800');
+            svg.setAttribute('height', '800');
+            // Ensure white background via a rect
+            var bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            bg.setAttribute('width', '100%');
+            bg.setAttribute('height', '100%');
+            bg.setAttribute('fill', 'white');
+            svg.insertBefore(bg, svg.firstChild);
+            // Add XML namespace
+            svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+            return 'SVG:' + svg.outerHTML;
         }
 
         // Approach 4: Look for data: URL images
@@ -677,17 +675,12 @@ async def get_qr_png():
         img.save(buf, format="PNG")
         return Response(content=buf.getvalue(), media_type="image/png")
 
-    if raw.startswith("SVG_INFO:"):
-        raise HTTPException(status_code=404, detail=raw[:500])
-
     if raw.startswith("SVG:"):
         # Got the SVG QR — convert to high-quality PNG via cairosvg or ImageMagick
         svg_data = raw[4:]
         log.info("Got QR SVG (%d chars), converting to PNG", len(svg_data))
         convert = subprocess.run(
-            ["convert", "-background", "white", "-density", "300",
-             "svg:-", "-resize", "800x800", "-threshold", "50%",
-             "-depth", "8", "png:-"],
+            ["convert", "svg:-", "-depth", "8", "png:-"],
             input=svg_data.encode(),
             capture_output=True,
             timeout=10,
