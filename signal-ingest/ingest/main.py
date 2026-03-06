@@ -267,8 +267,10 @@ Rules:
 - Extract ONLY solved cases with a confirmed working solution. keep=false for bot-only or no human answer.
 - Preserve original headers (sender_hash ts=... msg_id=...) verbatim inside case_block.
 - Resolution signals: reactions=N>0, "thanks"/"works"/"ok", or thread ends after technical answer.
+- problem_title MUST accurately describe the problem_summary content. Do NOT use titles from other conversations in the chunk.
 - problem_title, problem_summary, solution_summary in Ukrainian.
 - evidence_ids: extract ALL msg_id=XXX from headers.
+- Each case must be self-consistent: the title, problem, and solution must all describe the SAME issue.
 - If no solved cases, return {"cases": []}.
 """
 
