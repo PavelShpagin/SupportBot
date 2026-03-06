@@ -1305,9 +1305,9 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
 
         _notify_progress(settings=settings, token=token, progress_key="qr_sent")
 
-        # Step 2: Wait for user to scan QR code (QR expires after ~5 minutes)
+        # Step 2: Wait for user to scan QR code (QR expires after ~10 minutes)
         log.info("Waiting for user to scan QR code...")
-        max_wait_seconds = 270
+        max_wait_seconds = 570
         poll_interval = 3
         waited = 0
 

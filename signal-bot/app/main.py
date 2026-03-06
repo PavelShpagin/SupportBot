@@ -1460,7 +1460,7 @@ def history_qr_code(req: HistoryQrCodeRequest) -> dict:
                 "3. Відскануйте QR-код\n"
                 "4. Натисніть «Перенести історію повідомлень» (Transfer message history)\n\n"
                 "Примітка: макс. 5 пов'язаних пристроїв. Видаліть один при ліміті.\n\n"
-                "Очікую сканування (5 хв)..."
+                "Очікую сканування (10 хв)..."
             )
         else:
             caption = (
@@ -1470,7 +1470,7 @@ def history_qr_code(req: HistoryQrCodeRequest) -> dict:
                 "3. Scan the QR code\n"
                 "4. Click \"Transfer message history\"\n\n"
                 "Note: max 5 linked devices. Remove one if limit reached.\n\n"
-                "Waiting for scan (5 min)..."
+                "Waiting for scan (10 min)..."
             )
         
         if not isinstance(signal, NoopSignalAdapter):
