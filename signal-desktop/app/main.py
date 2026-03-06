@@ -559,6 +559,7 @@ async def take_screenshot(crop_qr: bool = Query(True, description="Crop to just 
             convert_result = subprocess.run(
                 ["convert", "xwd:-", "-crop", "300x300+140+247", "+repage",
                  "-resize", "800x800", "-threshold", "50%",
+                 "-bordercolor", "white", "-border", "80",
                  "-depth", "8", "png:-"],
                 input=result.stdout,
                 capture_output=True,
@@ -679,8 +680,11 @@ async def get_qr_png():
         # Got the SVG QR — convert to high-quality PNG via cairosvg or ImageMagick
         svg_data = raw[4:]
         log.info("Got QR SVG (%d chars), converting to PNG", len(svg_data))
+        # Render SVG to PNG, then add white border for QR quiet zone
+        # (Signal's QR SVG has no built-in quiet zone, which QR scanners need)
         convert = subprocess.run(
-            ["convert", "svg:-", "-depth", "8", "png:-"],
+            ["convert", "svg:-", "-bordercolor", "white", "-border", "80",
+             "-depth", "8", "png:-"],
             input=svg_data.encode(),
             capture_output=True,
             timeout=10,
@@ -1190,6 +1194,7 @@ async def refresh_qr():
         convert_result = subprocess.run(
             ["convert", "xwd:-", "-crop", "300x300+140+247", "+repage",
              "-resize", "800x800", "-threshold", "50%",
+             "-bordercolor", "white", "-border", "80",
              "-depth", "8", "png:-"],
             input=result_sc.stdout, capture_output=True, timeout=10,
         )
