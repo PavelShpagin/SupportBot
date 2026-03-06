@@ -204,13 +204,16 @@ def ingest_message(
 
         ct = _guess_mime(str(img_path))
 
-        stored_path = str(img_path)
-        if _r2.is_enabled():
-            r2_key = f"attachments/{group_id}/{img_path.name}"
-            r2_url = _r2.upload(r2_key, file_bytes, ct)
-            if r2_url:
-                stored_path = r2_url
-        stored_image_paths.append(stored_path)
+        # For videos, skip uploading the full file to R2 — only the thumbnail
+        # gets uploaded below. For images/other files, upload as before.
+        if not _is_video(ct):
+            stored_path = str(img_path)
+            if _r2.is_enabled():
+                r2_key = f"attachments/{group_id}/{img_path.name}"
+                r2_url = _r2.upload(r2_key, file_bytes, ct)
+                if r2_url:
+                    stored_path = r2_url
+            stored_image_paths.append(stored_path)
 
         if _is_image(ct):
             try:
