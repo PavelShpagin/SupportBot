@@ -16,7 +16,10 @@ from __future__ import annotations
 import base64
 import json
 import logging
+import os
 import re
+import subprocess
+import tempfile
 import time
 import urllib.parse
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -39,8 +42,6 @@ def _extract_video_thumbnail(video_bytes: bytes) -> bytes | None:
     Picks a frame at ~1 second (or the first frame for very short clips).
     Returns JPEG bytes or None on failure.
     """
-    import tempfile
-    import os
     try:
         import cv2
     except ImportError:
@@ -79,7 +80,6 @@ def _extract_video_audio_from_bytes(video_bytes: bytes) -> tuple[bytes, str] | N
     Uses stream copy (no re-encoding) for speed. Falls back to mp3 encoding
     if copy fails. Returns (audio_bytes, mime_type) or None.
     """
-    import subprocess
     tmp_video = None
     tmp_audio = None
     try:
