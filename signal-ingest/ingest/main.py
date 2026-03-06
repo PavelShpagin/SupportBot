@@ -850,15 +850,12 @@ def _llm_call_with_fallback(
     timeout: float,
     **kwargs,
 ):
-    """Call openai_client.chat.completions.create with model cascade.
+    """Call openai_client.chat.completions.create with fast model cascade.
 
     Tries `model` first, then each entry in `fallback_models` in order.
     Falls back on transient errors (429, 499, 503, timeout).
-    On 429 (rate limit), retries the SAME model once after a backoff before
-    cascading to the next model.
+    Max ~10s spent per model (1 retry with 2s backoff) before cascading.
     Raises the last exception if all models are exhausted.
-
-    The last fallback model gets 2x the timeout as a safety net.
     """
     import openai as _openai
 
@@ -866,10 +863,10 @@ def _llm_call_with_fallback(
     last_exc: Exception | None = None
     for i, m in enumerate(models_to_try):
         is_last = (i == len(models_to_try) - 1)
-        model_timeout = timeout * 2.0 if is_last and len(models_to_try) > 1 else timeout
+        # Last model gets more patience
+        model_timeout = timeout * 1.5 if is_last and len(models_to_try) > 1 else timeout
+        max_attempts = 2 if is_last else 1  # only retry on last model
 
-        # Try up to 2 attempts per model (retry on 429 rate limit)
-        max_attempts = 2 if not is_last else 3
         for attempt in range(max_attempts):
             t0 = time.time()
             try:
@@ -882,20 +879,16 @@ def _llm_call_with_fallback(
                 is_retryable = isinstance(e, _openai.APITimeoutError) or status_code in (429, 499, 503)
                 if not is_retryable:
                     raise
-                # On 429, retry same model with backoff before cascading
-                if status_code == 429 and attempt < max_attempts - 1:
-                    backoff = 2 ** attempt * 2  # 2s, 4s
-                    log.warning(
-                        "Model %s rate-limited (429) after %.1fs, retrying in %ds (attempt %d/%d)...",
-                        m, elapsed, backoff, attempt + 1, max_attempts,
-                    )
-                    last_exc = e
-                    time.sleep(backoff)
+                last_exc = e
+                # Last model, can retry once with short backoff
+                if is_last and attempt < max_attempts - 1:
+                    log.warning("Model %s failed after %.1fs (status=%s), retrying in 2s...", m, elapsed, status_code)
+                    time.sleep(2)
                     continue
-                # Other transient errors or exhausted retries → cascade
+                # Cascade immediately to next model
                 log.warning(
-                    "Model %s failed after %.1fs (%s status=%s, timeout=%.0fs), trying next fallback...",
-                    m, elapsed, type(e).__name__, status_code, model_timeout,
+                    "Model %s failed after %.1fs (%s status=%s), cascading...",
+                    m, elapsed, type(e).__name__, status_code,
                 )
                 last_exc = e
                 time.sleep(1)
