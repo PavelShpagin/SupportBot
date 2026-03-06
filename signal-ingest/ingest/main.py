@@ -1737,7 +1737,7 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
 
         all_structured: List[dict] = []
         n_chunks = len(chunks)
-        max_workers = min(n_chunks, 6)
+        max_workers = min(n_chunks, 10)
 
         step5_start = time.time()
         if n_chunks <= 1:

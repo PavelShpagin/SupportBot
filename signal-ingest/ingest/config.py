@@ -118,7 +118,7 @@ def load_settings() -> Settings:
         signal_desktop_url=_env("SIGNAL_DESKTOP_URL", default="http://signal-desktop-arm64:8001"),
         history_max_seconds=_env_float("HISTORY_MAX_SECONDS", default=180.0, min_value=10.0),
         history_idle_seconds=_env_float("HISTORY_IDLE_SECONDS", default=10.0, min_value=2.0),
-        chunk_max_chars=int(_env("HISTORY_CHUNK_MAX_CHARS", default="45000")),
+        chunk_max_chars=int(_env("HISTORY_CHUNK_MAX_CHARS", default="20000")),
         chunk_overlap_messages=int(_env("HISTORY_CHUNK_OVERLAP_MESSAGES", default="1")),
         worker_poll_seconds=_env_float("WORKER_POLL_SECONDS", default=1.0, min_value=0.1),
     )
