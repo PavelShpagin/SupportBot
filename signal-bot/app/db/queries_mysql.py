@@ -113,6 +113,35 @@ def get_raw_message(db: MySQL, message_id: str) -> Optional[RawMessage]:
         )
 
 
+def get_recent_raw_messages(db: MySQL, group_id: str, limit: int = 30) -> List[RawMessage]:
+    """Return the most recent raw messages for a group, oldest-first."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            """
+            SELECT message_id, group_id, ts, sender_hash, sender_name, content_text, image_paths_json, reply_to_id
+            FROM raw_messages
+            WHERE group_id = %s
+            ORDER BY ts DESC
+            LIMIT %s
+            """,
+            (group_id, limit),
+        )
+        rows = cur.fetchall()
+    # Reverse to oldest-first
+    rows.reverse()
+    return [
+        RawMessage(
+            message_id=r[0], group_id=r[1], ts=int(r[2]),
+            sender_hash=r[3], sender_name=r[4],
+            content_text=r[5] or "",
+            image_paths=_parse_json_list(r[6]),
+            reply_to_id=r[7],
+        )
+        for r in rows
+    ]
+
+
 def get_last_messages_text(db: MySQL, group_id: str, n: int) -> List[str]:
     """Return last n messages as plain text strings (oldest-first).
 
@@ -1508,36 +1537,62 @@ def merge_case(
     *,
     target_case_id: str,
     status: str,
+    problem_title: str = "",
     problem_summary: str,
     solution_summary: str,
     tags: List[str],
     evidence_ids: List[str],
     evidence_image_paths: List[str],
 ) -> None:
-    """Overwrite an existing case's content (semantic merge). Does not touch problem_title."""
+    """Overwrite an existing case's content (semantic merge), including title."""
     with db.connection() as conn:
         cur = conn.cursor()
-        cur.execute(
-            """
-            UPDATE cases
-            SET status = %s,
-                problem_summary = %s,
-                solution_summary = %s,
-                tags_json = %s,
-                evidence_image_paths_json = %s,
-                in_rag = 0,
-                updated_at = NOW()
-            WHERE case_id = %s
-            """,
-            (
-                status,
-                problem_summary,
-                solution_summary,
-                json.dumps(tags, ensure_ascii=False),
-                json.dumps(evidence_image_paths, ensure_ascii=False),
-                target_case_id,
-            ),
-        )
+        if problem_title:
+            cur.execute(
+                """
+                UPDATE cases
+                SET status = %s,
+                    problem_title = %s,
+                    problem_summary = %s,
+                    solution_summary = %s,
+                    tags_json = %s,
+                    evidence_image_paths_json = %s,
+                    in_rag = 0,
+                    updated_at = NOW()
+                WHERE case_id = %s
+                """,
+                (
+                    status,
+                    problem_title,
+                    problem_summary,
+                    solution_summary,
+                    json.dumps(tags, ensure_ascii=False),
+                    json.dumps(evidence_image_paths, ensure_ascii=False),
+                    target_case_id,
+                ),
+            )
+        else:
+            cur.execute(
+                """
+                UPDATE cases
+                SET status = %s,
+                    problem_summary = %s,
+                    solution_summary = %s,
+                    tags_json = %s,
+                    evidence_image_paths_json = %s,
+                    in_rag = 0,
+                    updated_at = NOW()
+                WHERE case_id = %s
+                """,
+                (
+                    status,
+                    problem_summary,
+                    solution_summary,
+                    json.dumps(tags, ensure_ascii=False),
+                    json.dumps(evidence_image_paths, ensure_ascii=False),
+                    target_case_id,
+                ),
+            )
         cur.execute("DELETE FROM case_evidence WHERE case_id = %s", (target_case_id,))
         for mid in evidence_ids:
             try:

@@ -1685,6 +1685,31 @@ def _save_history_images(
     return results
 
 
+def _init_buffer_from_history(group_id: str, max_messages: int = 30) -> None:
+    """Seed the message buffer with the most recent messages from history import.
+
+    This ensures ongoing/unsolved discussions are visible for live case extraction
+    even before any new live messages arrive.
+    """
+    from app.db import set_buffer, get_positive_reactions_for_message
+    from app.db.queries_mysql import get_recent_raw_messages
+    from app.jobs.worker import _format_buffer_line
+
+    messages = get_recent_raw_messages(db, group_id=group_id, limit=max_messages)
+    if not messages:
+        return
+
+    lines = []
+    for msg in messages:
+        positive_reactions = get_positive_reactions_for_message(db, group_id=group_id, target_ts=msg.ts)
+        line = _format_buffer_line(msg, positive_reactions=positive_reactions)
+        lines.append(line)
+
+    buf = "".join(lines)
+    set_buffer(db, group_id=group_id, buffer_text=buf)
+    log.info("Initialized buffer with %d messages for group %s", len(messages), group_id[:20])
+
+
 def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
     """Process history cases synchronously. Returns number of cases inserted."""
     import re
@@ -1839,6 +1864,7 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
                     db,
                     target_case_id=similar_id,
                     status=case.status,
+                    problem_title=case.problem_title,
                     problem_summary=case.problem_summary,
                     solution_summary=case.solution_summary,
                     tags=case.tags,
@@ -1943,6 +1969,14 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
         "History cases done: inserted=%d re-indexed_to_scrag=%d group=%s (case loop %.1fs)",
         kept, reindexed, req.group_id[:20], _time.time()-cases_start,
     )
+
+    # Initialize buffer with the last N messages so that ongoing/unsolved
+    # discussions are visible for live case extraction.
+    try:
+        _init_buffer_from_history(req.group_id, max_messages=30)
+    except Exception:
+        log.exception("Failed to init buffer from history for group %s", req.group_id[:20])
+
     return kept, final_case_ids
 
 
