@@ -464,6 +464,9 @@ def _ocr_attachment(
             "filenames, log lines — everything readable). Do not paraphrase.\n"
             "2. Write a concise functional description: what screen/state is shown, what problem or "
             "information it illustrates, and how it relates to the support conversation.\n\n"
+            "IMPORTANT: Write the description in the SAME language as the chat context. "
+            "If the context is in Ukrainian, write the description in Ukrainian. "
+            "If the context is in English, write in English. Match the language.\n\n"
             "Return a JSON object with exactly two keys:\n"
             '  "extracted_text": string with all visible text copied verbatim (empty string if none),\n'
             '  "description": one or two sentences describing what the image shows and its relevance.\n'
