@@ -961,7 +961,7 @@ def _extract_structured_cases(
     fallback_models: list,
     chunk_text: str,
     images: list[tuple[bytes, str]] | None = None,
-    timeout: float = 45.0,
+    timeout: float = 120.0,
 ) -> List[dict]:
     """Extract solved support cases with full structured fields in one pass.
 
@@ -1042,7 +1042,7 @@ def _dedup_cases_llm(
     model: str,
     fallback_models: list,
     cases: List[dict],
-    timeout: float = 45.0,
+    timeout: float = 120.0,
 ) -> List[dict]:
     """Merge duplicate cases via LLM. Returns deduplicated list."""
     if len(cases) <= 1:
