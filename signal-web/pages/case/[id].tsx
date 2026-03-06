@@ -206,67 +206,6 @@ export default function CasePage({ data, publicApiUrl }: Props) {
           color: var(--green);
         }
 
-        .video-transcript-section {
-          margin-top: 20px;
-          border: 1px solid var(--border);
-          border-radius: 8px;
-          overflow: hidden;
-        }
-        .video-transcript-section summary {
-          padding: 12px 16px;
-          cursor: pointer;
-          font-size: 13px;
-          font-weight: 600;
-          color: var(--text-sec);
-          background: var(--page-bg);
-          user-select: none;
-          list-style: none;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          transition: color 0.15s;
-        }
-        .video-transcript-section summary::-webkit-details-marker { display: none; }
-        .video-transcript-section summary::after {
-          content: '▸';
-          font-size: 10px;
-          margin-left: auto;
-          transition: transform 0.15s;
-        }
-        .video-transcript-section[open] summary::after {
-          transform: rotate(90deg);
-        }
-        .video-transcript-section summary:hover {
-          color: var(--text);
-        }
-        .video-transcript-section summary svg {
-          width: 15px;
-          height: 15px;
-          flex-shrink: 0;
-        }
-        .video-transcript-body {
-          padding: 14px 16px;
-          font-size: 14px;
-          line-height: 1.65;
-          color: var(--text);
-          white-space: pre-wrap;
-          border-top: 1px solid var(--border);
-          background: var(--card-bg);
-        }
-        .video-transcript-body .vt-label {
-          font-size: 11px;
-          font-weight: 600;
-          text-transform: uppercase;
-          letter-spacing: 0.04em;
-          color: var(--text-sec);
-          margin-bottom: 4px;
-        }
-        .video-transcript-body .vt-block + .vt-block {
-          margin-top: 12px;
-          padding-top: 12px;
-          border-top: 1px solid var(--border);
-        }
-
         .chat-header {
           padding: 14px 20px;
           border-bottom: 1px solid var(--border);
@@ -403,32 +342,42 @@ export default function CasePage({ data, publicApiUrl }: Props) {
         }
 
         .transcript-details {
-          margin: 8px 0 8px 52px;
-          border: 1px solid var(--border);
+          margin: 8px 0 4px 38px;
+          border: 1px solid #e2e2e2;
           border-radius: 8px;
-          background: var(--card-bg);
+          background: #fff;
           overflow: hidden;
         }
         .transcript-details summary {
-          padding: 7px 12px;
+          padding: 8px 12px;
           cursor: pointer;
           font-weight: 500;
           font-size: 12px;
           color: var(--text-sec);
-          background: var(--page-bg);
+          background: #fff;
           user-select: none;
           list-style: none;
+          display: flex;
+          align-items: center;
+          gap: 6px;
         }
         .transcript-details summary::-webkit-details-marker { display: none; }
         .transcript-details summary::before {
-          content: '▸ ';
-          font-size: 10px;
+          content: '▸';
+          font-size: 9px;
+          transition: transform 0.15s;
         }
         .transcript-details[open] summary::before {
-          content: '▾ ';
+          transform: rotate(90deg);
         }
         .transcript-details summary:hover {
           color: var(--text);
+        }
+        .transcript-details summary svg {
+          width: 13px;
+          height: 13px;
+          flex-shrink: 0;
+          color: var(--text-sec);
         }
         .transcript-content {
           padding: 10px 12px;
@@ -436,7 +385,20 @@ export default function CasePage({ data, publicApiUrl }: Props) {
           font-size: 13px;
           line-height: 1.6;
           color: var(--text);
-          border-top: 1px solid var(--border);
+          border-top: 1px solid #e2e2e2;
+        }
+        .transcript-label {
+          font-size: 11px;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+          color: var(--text-sec);
+          margin-bottom: 3px;
+        }
+        .transcript-content .tr-block + .tr-block {
+          margin-top: 10px;
+          padding-top: 10px;
+          border-top: 1px solid #e2e2e2;
         }
 
         .empty-chat {
@@ -482,6 +444,7 @@ export default function CasePage({ data, publicApiUrl }: Props) {
           .message { padding: 14px 16px; }
           .message-text { margin-left: 0; margin-top: 8px; }
           .message-images { margin-left: 0; }
+          .transcript-details { margin-left: 0; }
         }
       `}</style>
 
@@ -555,51 +518,6 @@ export default function CasePage({ data, publicApiUrl }: Props) {
               <p className="section-content">{data.solution_summary}</p>
             </div>
           </main>
-
-          {(() => {
-            const videoBlocks: { description?: string; transcript?: string }[] = [];
-            data.evidence?.forEach((msg) => {
-              const text = msg.content_text || '';
-              const descMatch = text.match(/\[Відео:\s*[^\]]*?—\s*(.+?)\]/);
-              const transMatch = text.match(/\[Транскрипт відео:\s*([\s\S]+?)\]/);
-              if (descMatch || transMatch) {
-                videoBlocks.push({
-                  description: descMatch ? descMatch[1].trim() : undefined,
-                  transcript: transMatch ? transMatch[1].trim() : undefined,
-                });
-              }
-            });
-            if (videoBlocks.length === 0) return null;
-            return (
-              <details className="video-transcript-section" style={{ margin: '0 0 0 0', borderTop: 'none', borderRadius: '0 0 var(--radius) var(--radius)', borderTopWidth: 0 }}>
-                <summary>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <polygon points="23 7 16 12 23 17 23 7" />
-                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
-                  </svg>
-                  Відеоматеріали ({videoBlocks.length})
-                </summary>
-                <div className="video-transcript-body">
-                  {videoBlocks.map((vb, i) => (
-                    <div key={i} className="vt-block">
-                      {vb.description && (
-                        <>
-                          <div className="vt-label">Опис</div>
-                          <div>{vb.description}</div>
-                        </>
-                      )}
-                      {vb.transcript && (
-                        <>
-                          <div className="vt-label" style={vb.description ? { marginTop: 8 } : {}}>Транскрипт</div>
-                          <div>{vb.transcript}</div>
-                        </>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </details>
-            );
-          })()}
         </div>
 
         <div className="card">
@@ -633,20 +551,42 @@ export default function CasePage({ data, publicApiUrl }: Props) {
                     </div>
                     {(() => {
                       let text = msg.content_text || '';
-                      // Extract transcript only (no video description shown in UI)
+                      // Extract video description and transcript
+                      const descMatch = text.match(/\[Відео:\s*[^\]]*?—\s*(.+?)\]/);
+                      const videoDesc = descMatch ? descMatch[1].trim() : null;
                       const transcriptMatch = text.match(/\[Транскрипт відео:\s*([\s\S]+?)\]/);
                       const transcript = transcriptMatch ? transcriptMatch[1].trim() : null;
                       // Strip all media markers from display text
                       text = text.replace(/\n*\[Зображення[^\]]*\]|\n*\[image\]\s*\{[\s\S]*?\}|\n*\[image\]|\n*\[attachment:[^\]]*\]|\n*\[Відео:[^\]]*\]|\n*\[Транскрипт відео:[^\]]*\]/g, '').trim();
                       // Clean up raw JSON OCR blocks
                       text = text.replace(/\{"extracted_text"\s*:[\s\S]*?\}/g, '').trim();
+                      const hasVideoInfo = videoDesc || transcript;
                       return (
                         <>
                           {text && <p className="message-text">{text}</p>}
-                          {transcript && (
+                          {hasVideoInfo && (
                             <details className="transcript-details">
-                              <summary>Транскрипт відео</summary>
-                              <div className="transcript-content">{transcript}</div>
+                              <summary>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                  <polygon points="23 7 16 12 23 17 23 7" />
+                                  <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+                                </svg>
+                                Відеоматеріали
+                              </summary>
+                              <div className="transcript-content">
+                                {videoDesc && (
+                                  <div className="tr-block">
+                                    <div className="transcript-label">Опис</div>
+                                    <div>{videoDesc}</div>
+                                  </div>
+                                )}
+                                {transcript && (
+                                  <div className="tr-block">
+                                    <div className="transcript-label">Транскрипт</div>
+                                    <div>{transcript}</div>
+                                  </div>
+                                )}
+                              </div>
                             </details>
                           )}
                         </>

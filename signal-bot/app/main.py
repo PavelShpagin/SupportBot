@@ -989,6 +989,7 @@ def _format_content_html(content_text: str) -> str:
     lines = text.split("\n")
     result_parts = []
     skip_image_marker = False
+    _pending_video_desc = None
 
     for line in lines:
         stripped = line.strip()
@@ -997,19 +998,29 @@ def _format_content_html(content_text: str) -> str:
             skip_image_marker = True
             continue
 
-        # Video marker: [Відео: filename — desc] or [Відео: filename] — strip silently
-        video_match = re.match(r'^\[Відео:\s*(.+?)\]$', stripped)
+        # Video marker: [Відео: filename — desc] or [Відео: filename]
+        video_match = re.match(r'^\[Відео:\s*[^\]]*?—\s*(.+?)\]$', stripped)
+        video_match_plain = re.match(r'^\[Відео:\s*(.+?)\]$', stripped)
         if video_match:
+            _pending_video_desc = _html.escape(video_match.group(1))
+            skip_image_marker = False
+            continue
+        if video_match_plain:
             skip_image_marker = False
             continue
 
-        # Transcript marker -> collapsible
+        # Transcript marker -> collapsible (combined with video desc if present)
         transcript_match = re.match(r'^\[Транскрипт відео:\s*(.+)\]$', stripped)
         if transcript_match:
             transcript_text = _html.escape(transcript_match.group(1))
+            inner = ""
+            if _pending_video_desc:
+                inner += f'<div style="margin-bottom:6px"><strong style="font-size:0.8em;text-transform:uppercase;color:#888">Опис</strong><br/>{_pending_video_desc}</div>'
+                _pending_video_desc = None
+            inner += f'<div><strong style="font-size:0.8em;text-transform:uppercase;color:#888">Транскрипт</strong><br/>{transcript_text}</div>'
             result_parts.append(
-                f'<details class="transcript"><summary>Транскрипт відео</summary>'
-                f'<div class="transcript-text">{transcript_text}</div></details>'
+                f'<details class="transcript"><summary>Відеоматеріали</summary>'
+                f'<div class="transcript-text">{inner}</div></details>'
             )
             skip_image_marker = False
             continue
@@ -1034,6 +1045,13 @@ def _format_content_html(content_text: str) -> str:
         if stripped:
             result_parts.append(f'<p>{_html.escape(stripped)}</p>')
             skip_image_marker = False
+
+    # Flush pending video description if no transcript followed
+    if _pending_video_desc:
+        result_parts.append(
+            f'<details class="transcript"><summary>Відеоматеріали</summary>'
+            f'<div class="transcript-text"><div><strong style="font-size:0.8em;text-transform:uppercase;color:#888">Опис</strong><br/>{_pending_video_desc}</div></div></details>'
+        )
 
     return "\n".join(result_parts)
 
@@ -1154,31 +1172,7 @@ def view_case(case_id: str):
             <p><strong>Problem:</strong> {_html.escape(case.get('problem_summary', ''))}</p>
             <p><strong>Solution:</strong> {_html.escape(case.get('solution_summary', ''))}</p>
         </div>
-    """
 
-    # Video transcript collapsible
-    if evidence:
-        import re as _re
-        video_blocks = []
-        for msg in evidence:
-            txt = msg.content_text or ""
-            desc_m = _re.search(r'\[Відео:\s*[^\]]*?—\s*(.+?)\]', txt)
-            trans_m = _re.search(r'\[Транскрипт відео:\s*([\s\S]+?)\]', txt)
-            if desc_m or trans_m:
-                video_blocks.append((
-                    _html.escape(desc_m.group(1).strip()) if desc_m else None,
-                    _html.escape(trans_m.group(1).strip()) if trans_m else None,
-                ))
-        if video_blocks:
-            html += f'<details class="transcript" style="margin-bottom:20px"><summary>Відеоматеріали ({len(video_blocks)})</summary><div class="transcript-text">'
-            for desc, trans in video_blocks:
-                if desc:
-                    html += f"<strong>Опис:</strong> {desc}<br/>"
-                if trans:
-                    html += f"<strong>Транскрипт:</strong> {trans}<br/>"
-            html += "</div></details>"
-
-    html += """
         <h2>Evidence</h2>
         <div class="evidence-list">
     """
