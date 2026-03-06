@@ -558,8 +558,8 @@ async def take_screenshot(crop_qr: bool = Query(True, description="Crop to just 
             #   JPEG recompression without destroying sharp QR module edges
             convert_result = subprocess.run(
                 ["convert", "xwd:-", "-crop", "300x300+140+247", "+repage",
-                 "-threshold", "50%", "-sample", "800x800",
-                 "-depth", "8", "-type", "Grayscale", "png:-"],
+                 "-resize", "800x800", "-threshold", "50%",
+                 "-depth", "8", "png:-"],
                 input=result.stdout,
                 capture_output=True,
                 timeout=10,
@@ -1079,8 +1079,8 @@ async def refresh_qr():
 
         convert_result = subprocess.run(
             ["convert", "xwd:-", "-crop", "300x300+140+247", "+repage",
-             "-threshold", "50%", "-sample", "800x800",
-             "-depth", "8", "-type", "Grayscale", "png:-"],
+             "-resize", "800x800", "-threshold", "50%",
+             "-depth", "8", "png:-"],
             input=result_sc.stdout, capture_output=True, timeout=10,
         )
         if convert_result.returncode != 0:
