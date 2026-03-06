@@ -559,6 +559,7 @@ async def take_screenshot(crop_qr: bool = Query(True, description="Crop to just 
             convert_result = subprocess.run(
                 ["convert", "xwd:-", "-crop", "300x300+140+247", "+repage",
                  "-resize", "800x800", "-threshold", "50%",
+                 "-morphology", "Open", "Square:1",
                  "-depth", "8", "png:-"],
                 input=result.stdout,
                 capture_output=True,
@@ -1080,6 +1081,7 @@ async def refresh_qr():
         convert_result = subprocess.run(
             ["convert", "xwd:-", "-crop", "300x300+140+247", "+repage",
              "-resize", "800x800", "-threshold", "50%",
+             "-morphology", "Open", "Square:1",
              "-depth", "8", "png:-"],
             input=result_sc.stdout, capture_output=True, timeout=10,
         )
