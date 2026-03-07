@@ -402,7 +402,7 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
     4. If admin sends new message mid-process -> abort current, restart with new group
     5. On contact removed -> session is deleted, so re-add goes to step 1
     
-    Language commands: /uk, /en
+    Language commands: /ua, /en
     """
     from app.db.queries_mysql import (
         set_admin_lang,
@@ -460,7 +460,7 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
 
     # Ignore commands other than language to prevent accidental group searches
     if text.startswith("/"):
-        msg = "Unknown command. Available: /en, /uk, /wipe"
+        msg = "Unknown command. Available: /en, /ua, /wipe"
         _send_direct_or_cleanup(admin_id, msg)
         return
     # -----------------------------
@@ -1910,7 +1910,7 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
                 case_id, case.status, len(evidence_ids), action, req.group_id[:20],
             )
 
-            # Only index solved cases with a solution into SCRAG (B1 open cases stay out of RAG)
+            # Only index solved cases with a solution into SCRAG (recommendation cases indexed later via RCRAG)
             if case.status == "solved" and case.solution_summary.strip():
                 doc_text = "\n".join([
                     f"[SOLVED] {case.problem_title.strip()}",

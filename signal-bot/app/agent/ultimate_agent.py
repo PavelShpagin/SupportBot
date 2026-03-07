@@ -163,7 +163,7 @@ class UltimateAgent:
         case_block = ""
         if case_has_results:
             if case_ans.startswith("B1_ONLY:"):
-                case_block = f"\nCASE AGENT (open/tracked cases only):\n{case_ans[len('B1_ONLY:'):]}"
+                case_block = f"\nCASE AGENT (recommendation cases — unconfirmed):\n{case_ans[len('B1_ONLY:'):]}"
             else:
                 case_block = f"\nCASE AGENT (solved cases):\n{case_ans}"
 

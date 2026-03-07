@@ -18,6 +18,7 @@ from app.llm.schemas import (
     ImgExtract,
     ResolutionResult,
     RespondResult,
+    UnifiedBufferResult,
 )
 
 log = logging.getLogger(__name__)
@@ -280,7 +281,7 @@ class LLMClient:
     def check_case_resolved(
         self, *, case_title: str, case_problem: str, buffer_text: str
     ) -> ResolutionResult:
-        """Check if a B1 open case has been resolved by messages currently in B2 buffer."""
+        """Check if a recommendation case has been confirmed/resolved by messages in the buffer."""
         user = (
             f"ПРОБЛЕМА:\nЗаголовок: {case_title}\nОпис: {case_problem}\n\n"
             f"БУФЕР (B2):\n{buffer_text}"
@@ -302,6 +303,46 @@ class LLMClient:
             schema=CaseResult,
             images=images,
             cascade=SUBAGENT_CASCADE,
+        )
+
+    def unified_buffer_analysis(
+        self,
+        *,
+        buffer_text: str,
+        existing_cases: list[dict] | None = None,
+        recommendation_cases: list[dict] | None = None,
+        images: list[tuple[bytes, str]] | None = None,
+    ) -> UnifiedBufferResult:
+        """Single LLM call: extract new cases + promote recommendations + update existing."""
+        parts = [f"БУФЕР:\n{buffer_text}"]
+        if existing_cases:
+            lines = []
+            for ec in existing_cases:
+                lines.append(f"- case_id={ec.get('case_id', '')} | {ec.get('title', '')} | {ec.get('summary', '')}")
+            parts.append(
+                "\nІСНУЮЧІ КЕЙСИ (НЕ витягувати повторно!):\n"
+                + "\n".join(lines)
+            )
+        if recommendation_cases:
+            lines = []
+            for rc in recommendation_cases:
+                lines.append(
+                    f"- case_id={rc.get('case_id', '')} | {rc.get('problem_title', '')} "
+                    f"| Порада: {rc.get('solution_summary', '')[:200]}"
+                )
+            parts.append(
+                "\nІСНУЮЧІ RECOMMENDATION КЕЙСИ (перевір чи підтверджені в буфері):\n"
+                + "\n".join(lines)
+            )
+        user = "\n".join(parts)
+        return self._json_call(
+            model=self.settings.model_case,
+            system=P.P_UNIFIED_BUFFER_SYSTEM,
+            user=user,
+            schema=UnifiedBufferResult,
+            images=images,
+            cascade=SUBAGENT_CASCADE,
+            timeout=90.0,
         )
 
     def decide_consider(

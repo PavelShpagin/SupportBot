@@ -1,14 +1,16 @@
 """CaseSearchAgent — multi-buffer context retrieval.
 
 Answer pipeline:
-1. SCRAG  — semantic search in ChromaDB (solved cases, permanent)
-2. B3     — recently solved cases still within the rolling B2 window (DB query)
-3. B1     — currently open/unresolved cases for this group (DB query)
+1. SCRAG   — semantic search in ChromaDB (solved cases, highest trust)
+2. RCRAG   — semantic search in ChromaDB (recommendation cases, unconfirmed advice)
+3. B3      — recently solved cases still within the rolling B2 window (DB query)
+4. RCRAG-DB — recommendation cases for this group not yet in RAG (DB query)
 
 Response logic:
 - SCRAG hit with solution  → synthesize direct answer + link
+- RCRAG hit                → synthesize answer with caveat ("not confirmed")
 - B3 hit                   → synthesize from recent context
-- Only B1 hit              → TAG_ADMIN with context ("case being tracked")
+- Only RCRAG-DB hit        → TAG_ADMIN with recommendation context
 - Nothing                  → TAG_ADMIN
 """
 from __future__ import annotations
@@ -38,30 +40,33 @@ class CaseSearchAgent:
     # ─── SCRAG search ────────────────────────────────────────────────────────
 
     def _search_scrag(self, query: str, group_id: str, k: int = 3) -> List[Dict[str, Any]]:
-        """Semantic search in ChromaDB (solved cases only).
+        """Semantic search in ChromaDB (solved + recommendation cases).
 
         Only returns results with cosine distance <= SCRAG_DISTANCE_THRESHOLD so
         completely unrelated cases are never injected into the synthesizer context.
+        Solved cases are returned as source=scrag, recommendation as source=rcrag.
         """
         if not self.rag or not self.llm:
             return []
         try:
             query_emb = self.llm.embed(text=query)
-            results = self.rag.retrieve_cases(group_id=group_id, embedding=query_emb, k=k)
+            # Search all statuses (solved + recommendation) in one query
+            results = self.rag.retrieve_cases(group_id=group_id, embedding=query_emb, k=k, status=None)
             formatted = []
             for r in results:
                 distance = r.get("distance") or 1.0
                 log.debug(
-                    "SCRAG case %s distance=%.3f",
+                    "RAG case %s distance=%.3f",
                     r.get("case_id", "")[:16],
                     distance,
                 )
                 if distance > SCRAG_DISTANCE_THRESHOLD:
-                    log.debug("SCRAG case %s filtered out (dist=%.3f > threshold=%.2f)",
+                    log.debug("RAG case %s filtered out (dist=%.3f > threshold=%.2f)",
                               r.get("case_id", "")[:16], distance, SCRAG_DISTANCE_THRESHOLD)
                     continue
                 doc = r.get("document", "")
-                # Parse the structured doc format: [SOLVED] title\nПроблема: ...\nРішення: ...
+                case_status = r.get("metadata", {}).get("status", "solved")
+                # Parse the structured doc format: [SOLVED]/[РЕКОМЕНДАЦІЯ] title\nПроблема: ...\nРішення: ...
                 problem, solution = "", ""
                 for line in doc.splitlines():
                     if line.startswith("Проблема:"):
@@ -75,16 +80,19 @@ class CaseSearchAgent:
                     lines = [l for l in doc.splitlines() if l.strip()]
                     solution = lines[2] if len(lines) > 2 else ""
                 if not solution:
-                    log.debug("SCRAG case %s has no solution, skipping", r.get("case_id"))
+                    log.debug("RAG case %s has no solution, skipping", r.get("case_id"))
                     continue
                 formatted.append({
-                    "source": "scrag",
+                    "source": "scrag" if case_status == "solved" else "rcrag",
+                    "status": case_status,
                     "case_id": r["case_id"],
                     "score": 1.0 - distance,
                     "problem": problem,
                     "solution": solution,
                     "doc_text": doc,
                 })
+            # Sort: solved first, then recommendation
+            formatted.sort(key=lambda x: 0 if x.get("status") == "solved" else 1)
             return formatted
         except Exception:
             log.exception("SCRAG search failed")
@@ -122,26 +130,28 @@ class CaseSearchAgent:
             log.exception("B3 context fetch failed")
             return []
 
-    # ─── B1 context ──────────────────────────────────────────────────────────
+    # ─── RCRAG-DB context (recommendation cases not yet in RAG) ─────────────
 
     def _get_b1_context(self, group_id: str, db) -> List[Dict[str, Any]]:
-        """Return currently open/unresolved cases for this group (B1)."""
+        """Return recommendation cases for this group (unconfirmed advice, not yet in ChromaDB)."""
         if db is None:
             return []
         try:
-            from app.db import get_open_cases_for_group
-            cases = get_open_cases_for_group(db, group_id=group_id)
+            from app.db import get_recommendation_cases_for_group
+            cases = get_recommendation_cases_for_group(db, group_id=group_id)
             return [
                 {
                     "source": "b1",
                     "case_id": c["case_id"],
                     "problem": c["problem_title"],
                     "problem_summary": c["problem_summary"],
+                    "solution": c.get("solution_summary", ""),
+                    "status": "recommendation",
                 }
                 for c in cases
             ]
         except Exception:
-            log.exception("B1 context fetch failed")
+            log.exception("RCRAG-DB context fetch failed")
             return []
 
     # ─── Public API ──────────────────────────────────────────────────────────
@@ -170,7 +180,7 @@ class CaseSearchAgent:
 
         Returns:
           - "No relevant cases found."  → synthesizer will TAG_ADMIN
-          - "B1_ONLY:<context>"         → synthesizer should mention tracked case + TAG_ADMIN
+          - "B1_ONLY:<context>"         → synthesizer should mention recommendation case + TAG_ADMIN
           - Formatted solved context    → synthesizer should answer directly
         """
         ctx = self.search(question, group_id=group_id, db=db)
@@ -198,19 +208,22 @@ class CaseSearchAgent:
             text = "Found similar past cases:\n"
             for r in solved:
                 score_str = f" (Score: {r['score']:.2f})" if "score" in r else ""
-                text += f"- {score_str}:\n"
+                status_prefix = ""
+                if r.get("status") == "recommendation":
+                    status_prefix = "[Рекомендація — не підтверджено] "
+                text += f"- {status_prefix}{score_str}:\n"
                 text += f"  Problem: {r['problem']}\n"
                 text += f"  Solution: {r['solution']}\n"
                 link = f"{self.public_url}/case/{r['case_id']}"
                 text += f"  Link: [{link}]\n"
             return text
 
-        # No solved cases found — check B1
+        # No solved cases found — check RCRAG-DB (recommendation cases not yet in RAG)
         if b1:
-            b1_text = "OPEN_CASES:\n"
+            b1_text = "RECOMMENDATION_CASES:\n"
             for c in b1[:3]:  # cap to avoid overly long context
                 link = f"{self.public_url}/case/{c['case_id']}"
-                b1_text += f"- [OPEN] {c['problem']}: {c.get('problem_summary', '')[:120]}\n"
+                b1_text += f"- [Рекомендація — не підтверджено] {c['problem']}: {c.get('solution', c.get('problem_summary', ''))[:120]}\n"
                 b1_text += f"  Link: {link}\n"
             return f"B1_ONLY:{b1_text}"
 

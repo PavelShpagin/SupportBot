@@ -84,7 +84,7 @@ def _run_with_timeout(fn, *args, timeout: float) -> tuple[bool, Exception | None
 # ── RAG-answered message tracking ────────────────────────────────────────────
 # message_id set: messages for which the bot sent a real RAG answer (not a pure
 # [[TAG_ADMIN]] escalation).  When BUFFER_UPDATE processes the buffer afterwards,
-# it skips these messages so no B1 open case is created for an already-answered
+# it skips these messages so no duplicate case is created for an already-answered
 # question.  Uses an ordered dict so we can do FIFO eviction.
 _rag_answered_messages: dict[str, None] = {}
 _rag_answered_lock = threading.Lock()
@@ -540,17 +540,19 @@ def _index_case_in_rag(
     tags: List[str],
     evidence_ids: List[str],
     evidence_image_paths: List[str],
+    status: str = "solved",
 ) -> None:
     """Build the document, embed it, and upsert into ChromaDB immediately."""
+    prefix = "[SOLVED]" if status == "solved" else "[РЕКОМЕНДАЦІЯ]"
     doc_text = "\n".join([
-        f"[SOLVED] {problem_title.strip()}",
+        f"{prefix} {problem_title.strip()}",
         f"Проблема: {problem_summary.strip()}",
         f"Рішення: {solution_summary.strip()}",
         "tags: " + ", ".join(tags),
     ]).strip()
     rag_emb = deps.llm.embed(text=doc_text)
 
-    rag_meta: dict = {"group_id": group_id, "status": "solved"}
+    rag_meta: dict = {"group_id": group_id, "status": status}
     if evidence_ids:
         rag_meta["evidence_ids"] = evidence_ids
     if evidence_image_paths:
@@ -563,13 +565,83 @@ def _index_case_in_rag(
         metadata=rag_meta,
     )
     mark_case_in_rag(deps.db, case_id)
-    log.info("Case %s indexed in ChromaDB (group=%s)", case_id, group_id[:20])
+    log.info("Case %s (status=%s) indexed in ChromaDB (group=%s)", case_id, status, group_id[:20])
 
 
 def _handle_sync_group_docs(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
     """Sync docs URLs from group description. Runs before message handling when queued first."""
     group_id = str(payload["group_id"])
     sync_docs_from_description(deps, group_id, force=True)
+
+
+def _index_aged_out_recommendations(
+    deps: WorkerDeps, group_id: str, buffer_message_ids: List[str],
+) -> None:
+    """Index recommendation cases whose evidence has fully left the buffer into RCRAG."""
+    from app.db.queries_mysql import get_recommendation_cases_not_in_rag
+    reco_cases = get_recommendation_cases_not_in_rag(deps.db, group_id)
+    if not reco_cases:
+        return
+    buffer_id_set = set(buffer_message_ids)
+    for case in reco_cases:
+        evidence_ids = case.get("evidence_ids") or []
+        overlap = set(evidence_ids) & buffer_id_set
+        if not overlap:
+            # All evidence aged out of buffer → index in RCRAG
+            _index_case_in_rag(
+                deps,
+                case_id=case["case_id"],
+                group_id=group_id,
+                problem_title=case["problem_title"],
+                problem_summary=case["problem_summary"],
+                solution_summary=case["solution_summary"],
+                tags=case.get("tags") or [],
+                evidence_ids=evidence_ids,
+                evidence_image_paths=case.get("evidence_image_paths") or [],
+                status="recommendation",
+            )
+            log.info(
+                "Recommendation case %s aged out of buffer, indexed in RCRAG (group=%s)",
+                case["case_id"], group_id[:20],
+            )
+
+
+def _build_multimodal_buffer(
+    deps: WorkerDeps, non_bot_blocks: List[BufferMessageBlock],
+) -> tuple[str, list[tuple[bytes, str]] | None]:
+    """Build numbered buffer text with [[IMG:N]] markers and collect all images."""
+    all_images: list[tuple[bytes, str]] = []
+    img_idx = 0
+    enriched_parts: list[str] = []
+
+    for b in non_bot_blocks:
+        block_text = b.raw_text
+        # Load images for this message block
+        if b.message_id:
+            msg_obj = get_raw_message(deps.db, message_id=b.message_id)
+            if msg_obj and msg_obj.image_paths:
+                msg_images = _load_images(
+                    settings=deps.settings,
+                    image_paths=[p for p in msg_obj.image_paths if _is_image_path(p)],
+                    max_images=2,
+                    total_budget_bytes=2 * 1024 * 1024,
+                )
+                if msg_images:
+                    markers = " ".join(f"[[IMG:{img_idx + j}]]" for j in range(len(msg_images)))
+                    block_text = block_text.rstrip("\n") + f"\n{markers}\n\n"
+                    all_images.extend(msg_images)
+                    img_idx += len(msg_images)
+                    # Cap total images to avoid excessive prompt size
+                    if len(all_images) >= 20:
+                        break
+
+        enriched_parts.append(f"### MSG idx={b.idx} lines={b.start_line}-{b.end_line}")
+        enriched_parts.append(block_text.rstrip("\n"))
+        enriched_parts.append("### END")
+        enriched_parts.append("")
+
+    buffer_text = "\n".join(enriched_parts).strip()
+    return buffer_text, all_images if all_images else None
 
 
 def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
@@ -615,63 +687,38 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         set_buffer(deps.db, group_id=group_id, buffer_text=buf2)
         return
 
-    # Load solved cases whose evidence overlaps the current buffer to prevent
-    # the LLM from re-extracting them.
-    from app.db.queries_mysql import get_overlapping_solved_cases
+    # Load existing cases that overlap buffer (to prevent re-extraction)
+    from app.db.queries_mysql import get_overlapping_solved_cases, get_recommendation_cases_for_group
     buffer_msg_ids = [b.message_id for b in blocks if b.message_id]
     existing_cases = get_overlapping_solved_cases(deps.db, group_id, buffer_msg_ids)
 
-    numbered_buffer = _format_numbered_buffer_for_extract(non_bot_blocks)
-    extract = deps.llm.extract_case_from_buffer(
+    # Load recommendation cases for promotion checking
+    reco_cases = get_recommendation_cases_for_group(deps.db, group_id)
+
+    # Build multimodal buffer with interleaved images
+    numbered_buffer, all_images = _build_multimodal_buffer(deps, non_bot_blocks)
+
+    # ── Single unified LLM call: extract + promote + update ──
+    result = deps.llm.unified_buffer_analysis(
         buffer_text=numbered_buffer,
         existing_cases=existing_cases,
+        recommendation_cases=reco_cases if reco_cases else None,
+        images=all_images,
     )
-    if not extract.cases:
-        set_buffer(deps.db, group_id=group_id, buffer_text=buf2)
-        return
 
+    # ── Process new cases ──
     n_blocks = len(non_bot_blocks)
-    if any(c.start_idx < 0 or c.end_idx >= n_blocks for c in extract.cases):
-        log.warning(
-            "Rejecting extract result with out-of-range spans (n_blocks=%s): %s",
-            n_blocks,
-            [(c.start_idx, c.end_idx) for c in extract.cases],
-        )
-        set_buffer(deps.db, group_id=group_id, buffer_text=buf2)
-        return
-
-    for span in extract.cases:
-        case_block_parts: list[str] = []
-        all_images: list[tuple[bytes, str]] = []
-        img_idx = 0
-        for i in range(span.start_idx, span.end_idx + 1):
-            block = non_bot_blocks[i]
-            msg_obj = get_raw_message(deps.db, message_id=block.message_id) if block.message_id else None
-            block_text = block.raw_text
-            if msg_obj and msg_obj.image_paths:
-                msg_images = _load_images(
-                    settings=deps.settings,
-                    image_paths=[p for p in msg_obj.image_paths if _is_image_path(p)],
-                    max_images=3,
-                    total_budget_bytes=3 * 1024 * 1024,
-                )
-                if msg_images:
-                    markers = " ".join(f"[[IMG:{img_idx + j}]]" for j in range(len(msg_images)))
-                    block_text = block_text.rstrip("\n") + f"\n{markers}\n\n"
-                    all_images.extend(msg_images)
-                    img_idx += len(msg_images)
-            case_block_parts.append(block_text)
-
-        case_block_text = "".join(case_block_parts)
-        span_images = all_images if all_images else None
-
-        case = deps.llm.make_case(case_block_text=case_block_text, images=span_images)
-        if not case.keep or case.status != "solved" or not case.solution_summary.strip():
+    for case in result.new_cases:
+        if case.start_idx < 0 or case.end_idx >= n_blocks:
+            log.warning("Rejecting new case with out-of-range span (%d..%d, n_blocks=%d)",
+                        case.start_idx, case.end_idx, n_blocks)
+            continue
+        if not case.solution_summary.strip():
             continue
 
         evidence_ids = [
             non_bot_blocks[i].message_id
-            for i in range(span.start_idx, span.end_idx + 1)
+            for i in range(case.start_idx, case.end_idx + 1)
             if non_bot_blocks[i].message_id
         ]
         evidence_image_paths = _collect_evidence_image_paths(deps, evidence_ids)
@@ -681,7 +728,7 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
             deps.db,
             case_id=case_id,
             group_id=group_id,
-            status="solved",
+            status=case.status,
             problem_title=case.problem_title,
             problem_summary=case.problem_summary,
             solution_summary=case.solution_summary,
@@ -690,21 +737,61 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
             evidence_image_paths=evidence_image_paths,
         )
 
+        if case.status == "solved":
+            _index_case_in_rag(
+                deps,
+                case_id=case_id,
+                group_id=group_id,
+                problem_title=case.problem_title,
+                problem_summary=case.problem_summary,
+                solution_summary=case.solution_summary,
+                tags=case.tags,
+                evidence_ids=evidence_ids,
+                evidence_image_paths=evidence_image_paths,
+                status="solved",
+            )
+            log.info("New solved case %s (span %d..%d, evidence=%d) indexed in SCRAG (group=%s)",
+                     case_id, case.start_idx, case.end_idx, len(evidence_ids), group_id[:20])
+        else:
+            log.info("New recommendation case %s (span %d..%d, evidence=%d) saved in MySQL (group=%s)",
+                     case_id, case.start_idx, case.end_idx, len(evidence_ids), group_id[:20])
+
+    # ── Process promotions: recommendation → solved ──
+    from app.db.queries_mysql import update_case_to_solved
+    reco_by_id = {rc["case_id"]: rc for rc in reco_cases} if reco_cases else {}
+    for promo in result.promotions:
+        rc = reco_by_id.get(promo.case_id)
+        if not rc:
+            log.warning("Promotion references unknown case_id=%s, skipping", promo.case_id)
+            continue
+        solution = promo.solution_summary or rc.get("solution_summary", "")
+        update_case_to_solved(deps.db, promo.case_id, solution)
         _index_case_in_rag(
             deps,
-            case_id=case_id,
+            case_id=promo.case_id,
             group_id=group_id,
-            problem_title=case.problem_title,
-            problem_summary=case.problem_summary,
-            solution_summary=case.solution_summary,
-            tags=case.tags,
-            evidence_ids=evidence_ids,
-            evidence_image_paths=evidence_image_paths,
+            problem_title=rc["problem_title"],
+            problem_summary=rc["problem_summary"],
+            solution_summary=solution,
+            tags=rc.get("tags") or [],
+            evidence_ids=rc.get("evidence_ids") or [],
+            evidence_image_paths=rc.get("evidence_image_paths") or [],
+            status="solved",
         )
-        log.info(
-            "New solved case %s (span %s..%s, evidence=%d) indexed immediately (group=%s)",
-            case_id, span.start_idx, span.end_idx, len(evidence_ids), group_id[:20],
-        )
+        log.info("Promoted recommendation case %s → solved (group=%s)", promo.case_id, group_id[:20])
+
+    # ── Process updates to existing cases ──
+    for upd in result.updates:
+        # Only update solution_summary; don't change status
+        from app.db.queries_mysql import get_case
+        existing = get_case(deps.db, upd.case_id)
+        if not existing or not upd.solution_summary.strip():
+            continue
+        update_case_to_solved(deps.db, upd.case_id, upd.solution_summary)
+        log.info("Updated case %s solution (group=%s)", upd.case_id, group_id[:20])
+
+    # ── Age-out indexing: recommendation cases whose evidence left the buffer ──
+    _index_aged_out_recommendations(deps, group_id, buffer_msg_ids)
 
     # Buffer is append-only: just save the trimmed version, never remove spans.
     set_buffer(deps.db, group_id=group_id, buffer_text=buf2)
@@ -872,7 +959,7 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
                     except StopIteration:
                         pass
                 _rag_answered_messages[message_id] = None
-            log.debug("Marked message %s as RAG-answered (B1 case creation suppressed)", message_id)
+            log.debug("Marked message %s as RAG-answered (case creation suppressed)", message_id)
 
         # Send text response
         quote_author = str(payload.get("sender") or "").strip()

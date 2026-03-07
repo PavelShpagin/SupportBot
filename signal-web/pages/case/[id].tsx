@@ -130,6 +130,7 @@ export default function CasePage({ data, publicApiUrl }: Props) {
           border-radius: 4px;
         }
         .status-solved { background: #dcfce7; color: var(--green); }
+        .status-recommendation { background: #fef3c7; color: #b45309; }
         .status-open { background: #fef9c3; color: var(--yellow); }
         .status-archived { background: #f3f4f6; color: #6b7280; }
 
@@ -204,6 +205,15 @@ export default function CasePage({ data, publicApiUrl }: Props) {
 
         .solution-section .section-title {
           color: var(--green);
+        }
+
+        .recommendation-solution {
+          background: #fffbeb;
+          border-top-color: #fde68a;
+        }
+
+        .recommendation-solution .section-title {
+          color: #b45309;
         }
 
         .chat-header {
@@ -427,8 +437,8 @@ export default function CasePage({ data, publicApiUrl }: Props) {
               <span className="brand">SupportBot</span>
             </a>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span className={`status-badge ${data.status === 'solved' ? 'status-solved' : data.status === 'archived' ? 'status-archived' : 'status-open'}`}>
-                {data.status === 'solved' ? 'Вирішено' : data.status === 'archived' ? 'Архів' : 'Відкрито'}
+              <span className={`status-badge ${data.status === 'solved' ? 'status-solved' : data.status === 'recommendation' ? 'status-recommendation' : data.status === 'archived' ? 'status-archived' : 'status-open'}`}>
+                {data.status === 'solved' ? 'Вирішено' : data.status === 'recommendation' ? 'Рекомендація' : data.status === 'archived' ? 'Архів' : 'Відкрито'}
               </span>
             </div>
           </header>
@@ -478,12 +488,16 @@ export default function CasePage({ data, publicApiUrl }: Props) {
               <p className="section-content">{data.problem_summary}</p>
             </div>
 
-            <div className="solution-section">
+            <div className={data.status === 'recommendation' ? 'solution-section recommendation-solution' : 'solution-section'}>
               <h2 className="section-title">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <polyline points="20 6 9 17 4 12"/>
+                  {data.status === 'recommendation' ? (
+                    <><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></>
+                  ) : (
+                    <polyline points="20 6 9 17 4 12"/>
+                  )}
                 </svg>
-                Рішення
+                {data.status === 'recommendation' ? 'Рекомендація (не підтверджено)' : 'Рішення'}
               </h2>
               <p className="section-content">{data.solution_summary}</p>
             </div>

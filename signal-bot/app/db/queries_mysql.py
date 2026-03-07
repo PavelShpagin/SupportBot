@@ -1071,7 +1071,7 @@ def get_case_evidence(db: MySQL, case_id: str) -> List[RawMessage]:
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# B1 / B3 / SCRAG Pipeline Queries
+# SCRAG / RCRAG / B3 Pipeline Queries
 # ─────────────────────────────────────────────────────────────────────────────
 
 def get_open_cases_for_group(db: MySQL, group_id: str) -> List[Dict[str, Any]]:
@@ -1140,7 +1140,7 @@ def get_recent_solved_cases(db: MySQL, group_id: str, since_ts_ms: int) -> List[
 def get_overlapping_solved_cases(
     db: MySQL, group_id: str, buffer_message_ids: List[str],
 ) -> List[Dict[str, str]]:
-    """Return solved cases whose evidence overlaps the given message IDs.
+    """Return solved and recommendation cases whose evidence overlaps the given message IDs.
 
     Used to give the LLM context about already-extracted cases so it does not
     re-extract them from the buffer.
@@ -1155,7 +1155,7 @@ def get_overlapping_solved_cases(
             SELECT DISTINCT c.case_id, c.problem_title, c.problem_summary
             FROM cases c
             JOIN case_evidence ce ON c.case_id = ce.case_id
-            WHERE c.group_id = %s AND c.status = 'solved'
+            WHERE c.group_id = %s AND c.status IN ('solved', 'recommendation')
               AND ce.message_id IN ({placeholders})
             """,
             [group_id] + list(buffer_message_ids),
@@ -1167,7 +1167,7 @@ def get_overlapping_solved_cases(
 
 
 def update_case_to_solved(db: MySQL, case_id: str, solution_summary: str) -> None:
-    """Promote a B1 open case to solved. Caller is responsible for RAG indexing."""
+    """Promote a recommendation case to solved. Caller is responsible for RAG indexing."""
     with db.connection() as conn:
         cur = conn.cursor()
         cur.execute(
@@ -1181,7 +1181,7 @@ def update_case_to_solved(db: MySQL, case_id: str, solution_summary: str) -> Non
 
 
 def mark_case_in_rag(db: MySQL, case_id: str) -> None:
-    """Mark that a case has been indexed in ChromaDB (SCRAG)."""
+    """Mark that a case has been indexed in ChromaDB (SCRAG or RCRAG)."""
     with db.connection() as conn:
         cur = conn.cursor()
         cur.execute(
@@ -1191,28 +1191,68 @@ def mark_case_in_rag(db: MySQL, case_id: str) -> None:
         conn.commit()
 
 
-def expire_old_open_cases(db: MySQL, max_age_days: int = 7) -> List[str]:
-    """Delete open B1 cases older than max_age_days. Returns list of deleted case_ids."""
+def get_recommendation_cases_not_in_rag(db: MySQL, group_id: str) -> List[Dict[str, Any]]:
+    """Recommendation cases not yet indexed in ChromaDB (for age-out indexing)."""
     with db.connection() as conn:
         cur = conn.cursor()
         cur.execute(
             """
-            SELECT case_id FROM cases
-            WHERE status = 'open'
-              AND in_rag = 0
-              AND created_at < NOW() - INTERVAL %s DAY
+            SELECT c.case_id, c.problem_title, c.problem_summary, c.solution_summary,
+                   c.tags_json, c.evidence_image_paths_json
+            FROM cases c
+            WHERE c.group_id = %s AND c.status = 'recommendation' AND c.in_rag = 0
             """,
-            (max_age_days,),
+            (group_id,),
         )
         rows = cur.fetchall()
-        if not rows:
-            return []
-        expired_ids = [r[0] for r in rows]
-        placeholders = ", ".join(["%s"] * len(expired_ids))
-        cur.execute(f"DELETE FROM case_evidence WHERE case_id IN ({placeholders})", expired_ids)
-        cur.execute(f"DELETE FROM cases WHERE case_id IN ({placeholders})", expired_ids)
-        conn.commit()
-        return expired_ids
+        results = []
+        for row in rows:
+            case_id = row[0]
+            # Get evidence_ids for this case
+            cur.execute("SELECT message_id FROM case_evidence WHERE case_id = %s", (case_id,))
+            ev_ids = [r[0] for r in cur.fetchall()]
+            results.append({
+                "case_id": case_id,
+                "problem_title": row[1] or "",
+                "problem_summary": row[2] or "",
+                "solution_summary": row[3] or "",
+                "tags": _parse_json_list(row[4]),
+                "evidence_ids": ev_ids,
+                "evidence_image_paths": _parse_json_list(row[5]),
+            })
+        return results
+
+
+def get_recommendation_cases_for_group(db: MySQL, group_id: str) -> List[Dict[str, Any]]:
+    """All recommendation cases for promotion checking."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            """
+            SELECT c.case_id, c.problem_title, c.problem_summary, c.solution_summary,
+                   c.tags_json, c.evidence_image_paths_json
+            FROM cases c
+            WHERE c.group_id = %s AND c.status = 'recommendation'
+            ORDER BY c.created_at DESC
+            """,
+            (group_id,),
+        )
+        rows = cur.fetchall()
+        results = []
+        for row in rows:
+            case_id = row[0]
+            cur.execute("SELECT message_id FROM case_evidence WHERE case_id = %s", (case_id,))
+            ev_ids = [r[0] for r in cur.fetchall()]
+            results.append({
+                "case_id": case_id,
+                "problem_title": row[1] or "",
+                "problem_summary": row[2] or "",
+                "solution_summary": row[3] or "",
+                "tags": _parse_json_list(row[4]),
+                "evidence_ids": ev_ids,
+                "evidence_image_paths": _parse_json_list(row[5]),
+            })
+        return results
 
 
 # ─────────────────────────────────────────────────────────────────────────────
