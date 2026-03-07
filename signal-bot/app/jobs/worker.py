@@ -812,6 +812,10 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
             if not gate.consider and not force:
                 log.info("MAYBE_RESPOND: gate filtered message (tag=%s)", gate_tag)
                 return
+            # ongoing_discussion = users talking to each other; don't interrupt
+            if gate_tag == "ongoing_discussion" and not force:
+                log.info("MAYBE_RESPOND: skipping ongoing_discussion (users talking to each other)")
+                return
         except Exception as _gate_err:
             log.warning("Gate failed, proceeding without filter: %s", _gate_err)
 
