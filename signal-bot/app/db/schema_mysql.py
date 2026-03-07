@@ -145,6 +145,9 @@ MIGRATIONS = [
     # Allow 'recommendation' status for RCRAG (two-RAG system)
     "ALTER TABLE cases DROP CONSTRAINT cases_status_chk",
     "ALTER TABLE cases ADD CONSTRAINT cases_status_chk CHECK (status IN ('solved', 'recommendation', 'archived'))",
+    # Union support: groups with same union_id share RAG and docs
+    "ALTER TABLE chat_groups ADD COLUMN union_id VARCHAR(64)",
+    "ALTER TABLE chat_groups ADD INDEX idx_chat_groups_union (union_id)",
 ]
 
 

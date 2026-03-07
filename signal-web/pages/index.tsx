@@ -261,10 +261,13 @@ export default function Home() {
                 <li>Бот використовує текст і зображення з документів для відповідей</li>
               </ul>
 
-              <h2>Зміна мови</h2>
+              <h2>Команди (в особистих повідомленнях боту)</h2>
               <ul>
-                <li>Напишіть <code>/ua</code> — бот відповідатиме українською</li>
-                <li>Напишіть <code>/en</code> — бот відповідатиме англійською (English)</li>
+                <li><code>/ua</code> — бот відповідатиме українською</li>
+                <li><code>/en</code> — бот відповідатиме англійською</li>
+                <li><code>/union Група 1, Група 2, ...</code> — об&apos;єднує базу знань та документацію кількох груп. Кейси та документи стають спільними для всіх груп в об&apos;єднанні</li>
+                <li><code>/split</code> — скасовує всі об&apos;єднання, кожна група повертається до незалежної бази знань</li>
+                <li><code>/wipe</code> — видаляє ВСІ дані бота (групи, кейси, історію). Реєстрація номера зберігається</li>
               </ul>
 
               <div className="note">Бот обробляє повідомлення групи для формування бази знань. Ідентифікатори відправників анонімізовані. Видалення бота з групи зупиняє обробку. <a href="/privacy?lang=uk">Політика конфіденційності та Умови використання →</a></div>
@@ -301,10 +304,13 @@ export default function Home() {
                 <li>The bot uses text and images from documents to answer questions</li>
               </ul>
 
-              <h2>Change language</h2>
+              <h2>Commands (in direct messages to the bot)</h2>
               <ul>
-                <li>Send <code>/ua</code> — bot will reply in українська</li>
-                <li>Send <code>/en</code> — bot will reply in English</li>
+                <li><code>/ua</code> — bot will reply in Ukrainian</li>
+                <li><code>/en</code> — bot will reply in English</li>
+                <li><code>/union Group 1, Group 2, ...</code> — unifies the knowledge base and docs across multiple groups. Cases and documentation become shared across all groups in the union</li>
+                <li><code>/split</code> — resets all unions, each group returns to its independent knowledge base</li>
+                <li><code>/wipe</code> — deletes ALL bot data (groups, cases, history). Phone registration is kept</li>
               </ul>
 
               <div className="note">The bot processes group messages to build a knowledge base. Sender identifiers are anonymized. Removing the bot from the group stops processing. <a href="/privacy?lang=en">Privacy Policy & Terms of Service →</a></div>

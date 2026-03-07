@@ -72,6 +72,8 @@ SUCCESS_MESSAGE_UK = """Успішно підключено до групи "{gr
 
 Тимчасовий пристрій було автоматично відключено з вашого акаунту для безпеки.
 
+https://supportbot.info
+
 Хочете підключити ще одну групу? Напишіть її назву."""
 
 SUCCESS_MESSAGE_EN = """Successfully connected to group "{group_name}"!
@@ -79,6 +81,8 @@ SUCCESS_MESSAGE_EN = """Successfully connected to group "{group_name}"!
 The bot now monitors new messages in the group and will learn from them.
 
 The temporary device has been automatically unlinked from your account for security.
+
+https://supportbot.info
 
 Want to connect another group? Send its name."""
 

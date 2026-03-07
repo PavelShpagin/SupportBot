@@ -28,6 +28,7 @@ class ChromaRag:
         self,
         *,
         group_id: str,
+        group_ids: list[str] | None = None,
         embedding: list[float],
         k: int,
         status: str | None = "solved",
@@ -35,14 +36,21 @@ class ChromaRag:
         """Semantic search in the collection.
 
         Args:
+            group_id: Primary group to search.
+            group_ids: If provided, search across multiple groups (union).
             status: Filter by case status. Pass None to return all statuses.
                     Defaults to "solved" so that only SCRAG-indexed cases are returned.
         """
         col = self._collection()
-        if status is not None:
-            where_filter: Dict[str, Any] = {"$and": [{"group_id": group_id}, {"status": status}]}
+        ids_to_search = group_ids if group_ids else [group_id]
+        if len(ids_to_search) == 1:
+            group_filter: Dict[str, Any] = {"group_id": ids_to_search[0]}
         else:
-            where_filter = {"group_id": group_id}
+            group_filter = {"group_id": {"$in": ids_to_search}}
+        if status is not None:
+            where_filter: Dict[str, Any] = {"$and": [group_filter, {"status": status}]}
+        else:
+            where_filter = group_filter
         out = col.query(
             query_embeddings=[embedding],
             n_results=k,

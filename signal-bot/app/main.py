@@ -458,9 +458,65 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
         _send_direct_or_cleanup(admin_id, msg)
         return
 
+    # /union group1, group2, ... — unify RAG and docs across groups
+    if text_lower.startswith("/union"):
+        from app.db.queries_mysql import (
+            get_admin_group_ids, set_union, get_groups_in_union,
+            get_union_group_ids,
+        )
+        import uuid as _uuid
+        args = text[len("/union"):].strip()
+        if not args:
+            _send_direct_or_cleanup(admin_id, "Usage: /union Group Name 1, Group Name 2, ...")
+            return
+        group_names = [n.strip() for n in args.split(",") if n.strip()]
+        if len(group_names) < 2:
+            _send_direct_or_cleanup(admin_id, "Need at least 2 group names separated by commas.")
+            return
+        admin_group_ids = set(get_admin_group_ids(db, admin_id))
+        resolved = []
+        for gname in group_names:
+            g = signal.find_group_by_name(gname)
+            if not g:
+                _send_direct_or_cleanup(admin_id, f"Group not found: \"{gname}\"")
+                return
+            if g.group_id not in admin_group_ids:
+                _send_direct_or_cleanup(admin_id, f"You haven't linked group \"{gname}\" yet.")
+                return
+            # Check if already in a different union
+            existing = get_union_group_ids(db, g.group_id)
+            if len(existing) > 1:
+                _send_direct_or_cleanup(
+                    admin_id,
+                    f"Group \"{gname}\" is already in a union. Use /split first.",
+                )
+                return
+            resolved.append((gname, g.group_id))
+        union_id = _uuid.uuid4().hex[:16]
+        set_union(db, [gid for _, gid in resolved], union_id)
+        names_str = ", ".join(f"\"{n}\"" for n, _ in resolved)
+        _send_direct_or_cleanup(admin_id, f"Union created: {names_str}\nThese groups now share cases and docs.")
+        return
+
+    # /split — reset all unions for the admin's groups
+    if text_lower == "/split":
+        from app.db.queries_mysql import get_admin_group_ids, clear_union, get_union_group_ids
+        admin_group_ids = get_admin_group_ids(db, admin_id)
+        all_union_gids = set()
+        for gid in admin_group_ids:
+            union_gids = get_union_group_ids(db, gid)
+            if len(union_gids) > 1:
+                all_union_gids.update(union_gids)
+        if not all_union_gids:
+            _send_direct_or_cleanup(admin_id, "No unions to split.")
+            return
+        clear_union(db, list(all_union_gids))
+        _send_direct_or_cleanup(admin_id, f"Split complete. {len(all_union_gids)} groups are now independent.")
+        return
+
     # Ignore commands other than language to prevent accidental group searches
     if text.startswith("/"):
-        msg = "Unknown command. Available: /en, /ua, /wipe"
+        msg = "Unknown command. Available: /en, /ua, /wipe, /union, /split"
         _send_direct_or_cleanup(admin_id, msg)
         return
     # -----------------------------
@@ -1543,26 +1599,23 @@ def history_link_result(req: HistoryLinkResultRequest) -> dict:
         def _send_notifications():
             try:
                 if req.success:
-                    signal.send_success_message(recipient=admin_id, group_name=group_name, lang=lang)
-                    # Send metrics summary only on success
+                    # Send import summary first (if available)
                     if req.message_count is not None or req.cases_inserted is not None or req.note:
                         if lang == "uk":
                             summary = (
                                 f"Підсумок імпорту: повідомлень={req.message_count if req.message_count is not None else '?'}"
                                 f", кейсів додано={req.cases_inserted if req.cases_inserted is not None else '?'}."
                             )
-                            if req.note:
-                                summary += f"\n{req.note}"
-                            summary += "\nhttps://supportbot.info"
                         else:
                             summary = (
                                 f"Import summary: messages={req.message_count if req.message_count is not None else '?'}"
                                 f", cases_added={req.cases_inserted if req.cases_inserted is not None else '?'}."
                             )
-                            if req.note:
-                                summary += f"\n{req.note}"
-                            summary += "\nhttps://supportbot.info"
+                        if req.note:
+                            summary += f"\n{req.note}"
                         _send_direct_or_cleanup(admin_id, summary)
+                    # Send success message last, with website link
+                    signal.send_success_message(recipient=admin_id, group_name=group_name, lang=lang)
                 else:
                     signal.send_failure_message(recipient=admin_id, group_name=group_name, lang=lang)
             except Exception:

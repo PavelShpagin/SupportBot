@@ -131,7 +131,15 @@ class DocsAgent:
 
         Returns the answer text, "INSUFFICIENT_INFO", "SKIP", or "NO_DOCS".
         """
-        urls = get_group_docs(db, group_id)
+        # Gather docs from all groups in the union
+        try:
+            from app.db import get_union_group_ids
+            union_gids = get_union_group_ids(db, group_id)
+        except Exception:
+            union_gids = [group_id]
+        urls: list[str] = []
+        for gid in union_gids:
+            urls.extend(get_group_docs(db, gid))
         if not urls:
             return "NO_DOCS"
 

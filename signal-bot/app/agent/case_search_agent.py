@@ -40,19 +40,30 @@ class CaseSearchAgent:
 
     # ─── SCRAG search ────────────────────────────────────────────────────────
 
-    def _search_scrag(self, query: str, group_id: str, k: int = 3) -> List[Dict[str, Any]]:
+    def _search_scrag(self, query: str, group_id: str, k: int = 3, db=None) -> List[Dict[str, Any]]:
         """Search SCRAG (solved) and RCRAG (recommendation) as separate collections.
 
         Queries both collections independently and merges results with solved first.
         Only returns results with cosine distance <= SCRAG_DISTANCE_THRESHOLD.
+        Resolves union group_ids so all groups in a union are searched together.
         """
         if not self.rag or not self.llm:
             return []
         try:
+            # Resolve union: search across all groups in the same union
+            union_gids = None
+            if db is not None:
+                try:
+                    from app.db import get_union_group_ids
+                    union_gids = get_union_group_ids(db, group_id)
+                    if len(union_gids) <= 1:
+                        union_gids = None  # No union, use default single-group search
+                except Exception:
+                    pass
             query_emb = self.llm.embed(text=query)
             # Query each collection independently for proper ranking
-            scrag_results = self.rag.scrag.retrieve_cases(group_id=group_id, embedding=query_emb, k=k, status=None)
-            rcrag_results = self.rag.rcrag.retrieve_cases(group_id=group_id, embedding=query_emb, k=k, status=None)
+            scrag_results = self.rag.scrag.retrieve_cases(group_id=group_id, group_ids=union_gids, embedding=query_emb, k=k, status=None)
+            rcrag_results = self.rag.rcrag.retrieve_cases(group_id=group_id, group_ids=union_gids, embedding=query_emb, k=k, status=None)
 
             formatted = []
             for source_tag, results in [("scrag", scrag_results), ("rcrag", rcrag_results)]:
@@ -166,7 +177,7 @@ class CaseSearchAgent:
             return {"scrag": [], "b3": [], "b1": []}
 
         log.info("CaseSearchAgent: searching for '%s' (group=%s)", query[:60], group_id[:20])
-        scrag = self._search_scrag(query, group_id=group_id, k=k)
+        scrag = self._search_scrag(query, group_id=group_id, k=k, db=db)
         b3 = self._get_b3_context(group_id=group_id, db=db)
         b1 = self._get_b1_context(group_id=group_id, db=db)
         log.info(

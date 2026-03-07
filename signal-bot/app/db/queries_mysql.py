@@ -1595,3 +1595,76 @@ def archive_case(db: MySQL, case_id: str) -> None:
             (case_id,),
         )
         conn.commit()
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Union (multi-chat knowledge sharing)
+# ─────────────────────────────────────────────────────────────────────────────
+
+def get_union_group_ids(db: MySQL, group_id: str) -> List[str]:
+    """Return all group_ids in the same union as group_id, or [group_id] if no union."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            "SELECT union_id FROM chat_groups WHERE group_id = %s",
+            (group_id,),
+        )
+        row = cur.fetchone()
+        if not row or not row[0]:
+            return [group_id]
+        union_id = row[0]
+        cur.execute(
+            "SELECT group_id FROM chat_groups WHERE union_id = %s",
+            (union_id,),
+        )
+        return [r[0] for r in cur.fetchall()]
+
+
+def set_union(db: MySQL, group_ids: List[str], union_id: str) -> None:
+    """Set union_id for the given groups (upserts into chat_groups)."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        for gid in group_ids:
+            cur.execute(
+                """
+                INSERT INTO chat_groups (group_id, union_id)
+                VALUES (%s, %s)
+                ON DUPLICATE KEY UPDATE union_id = %s
+                """,
+                (gid, union_id, union_id),
+            )
+        conn.commit()
+
+
+def clear_union(db: MySQL, group_ids: List[str]) -> None:
+    """Clear union_id for the given groups."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        for gid in group_ids:
+            cur.execute(
+                "UPDATE chat_groups SET union_id = NULL WHERE group_id = %s",
+                (gid,),
+            )
+        conn.commit()
+
+
+def get_groups_in_union(db: MySQL, union_id: str) -> List[str]:
+    """Return all group_ids with the given union_id."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            "SELECT group_id FROM chat_groups WHERE union_id = %s",
+            (union_id,),
+        )
+        return [r[0] for r in cur.fetchall()]
+
+
+def get_admin_group_ids(db: MySQL, admin_id: str) -> List[str]:
+    """Return all group_ids linked to an admin."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            "SELECT group_id FROM admins_groups WHERE admin_id = %s",
+            (admin_id,),
+        )
+        return [r[0] for r in cur.fetchall()]

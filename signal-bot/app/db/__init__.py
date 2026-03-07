@@ -82,6 +82,11 @@ if DB_BACKEND == "mysql":
         clear_group_runtime_data,
         get_all_active_case_ids,
         get_cases_for_group,
+        get_union_group_ids,
+        set_union,
+        clear_union,
+        get_groups_in_union,
+        get_admin_group_ids,
     )
     
     def create_db(settings):
