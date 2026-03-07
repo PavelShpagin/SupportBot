@@ -134,7 +134,7 @@ class UltimateAgent:
                 parts.append(f"solved: {case_counts['solved']}")
             if case_counts["recommendation"]:
                 parts.append(f"recommendation: {case_counts['recommendation']}")
-            footer = f"\n\n📋 [{', '.join(parts)}]"
+            footer = f"\n\n[{', '.join(parts)}]"
             resp.text += footer
 
         return resp
