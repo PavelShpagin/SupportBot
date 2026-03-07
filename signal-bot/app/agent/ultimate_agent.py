@@ -120,9 +120,24 @@ class UltimateAgent:
             docs_ans[:80] if docs_ans else "empty",
         )
 
-        return self._synthesize(
+        # Count cases by status for the footer
+        case_counts = self.case_agent.last_search_counts
+
+        resp = self._synthesize(
             question, case_ans, docs_ans, lang_instruction, context, db, images
         )
+
+        # Append case count footer if bot is actually answering (not TAG_ADMIN only)
+        if resp.text.strip() != "[[TAG_ADMIN]]" and (case_counts["solved"] or case_counts["recommendation"]):
+            parts = []
+            if case_counts["solved"]:
+                parts.append(f"solved: {case_counts['solved']}")
+            if case_counts["recommendation"]:
+                parts.append(f"recommendation: {case_counts['recommendation']}")
+            footer = f"\n\n📋 [{', '.join(parts)}]"
+            resp.text += footer
+
+        return resp
 
     def _synthesize(
         self,
