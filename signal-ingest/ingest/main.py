@@ -250,7 +250,7 @@ Resolution signals (from strongest to weakest):
 Be generous: if a technical answer has any positive reaction OR brief confirmation, treat as solved.
 """
 
-P_BLOCKS_STRUCTURED = """You analyze a chunk of support chat history and extract FULLY RESOLVED support cases with structured fields.
+P_BLOCKS_STRUCTURED = """You analyze a chunk of support chat history and extract support cases (both solved and recommendation) with structured fields.
 
 Each message in the chunk is formatted as:
   sender_hash ts=TIMESTAMP msg_id=MESSAGE_ID [reactions=N] [reaction_emoji=X]
