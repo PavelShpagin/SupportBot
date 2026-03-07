@@ -271,9 +271,14 @@ Return ONLY valid JSON with key:
 
 Rules:
 - Extract both solved AND recommendation cases. keep=false ONLY for bot-only responses or completely unanswered questions.
-- status="solved": user confirmed the solution (reactions, "thanks", "works", "ok", thread ends positively after technical answer).
-- status="recommendation": a human expert gave concrete advice/instructions, but the asker did NOT confirm it worked. The advice exists but is unverified.
+- status="solved" ONLY when the asker EXPLICITLY confirmed the solution worked. Look for:
+    * The ASKER (not the advisor) wrote "thanks", "works", "ok", "done", "solved", "дякую", "працює", "зрозуміло"
+    * The ASKER reacted with reactions=N (N>0) on the answer
+    * The thread has clear positive closure FROM THE PERSON WHO ASKED
+  If the advisor just gave advice and the thread ended — that is NOT solved, it is recommendation.
+- status="recommendation": a human expert gave concrete advice/instructions, but the asker did NOT explicitly confirm it worked. This is the DEFAULT when advice was given. Most cases should be recommendation unless there is clear explicit confirmation from the asker.
 - keep=false: no human gave any advice at all, OR only a bot responded.
+- IMPORTANT: Do NOT default to "solved". When in doubt between solved and recommendation, choose recommendation. A case is solved ONLY with explicit asker confirmation.
 - Preserve original headers (sender_hash ts=... msg_id=...) verbatim inside case_block.
 - problem_title MUST accurately describe the problem_summary content. Do NOT use titles from other conversations in the chunk.
 - problem_title, problem_summary, solution_summary in Ukrainian.
