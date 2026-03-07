@@ -603,14 +603,18 @@ def _index_aged_out_recommendations(
 
 
 def _build_multimodal_buffer(
-    deps: WorkerDeps, non_bot_blocks: List[BufferMessageBlock],
+    deps: WorkerDeps, extraction_blocks: List[BufferMessageBlock],
 ) -> tuple[str, list[tuple[bytes, str]] | None]:
-    """Build numbered buffer text with [[IMG:N]] markers and collect all images."""
+    """Build numbered buffer text with [[IMG:N]] markers and collect all images.
+
+    Bot messages ([BOT] tagged) are included for context — the LLM needs to see
+    the full conversation flow but is instructed to never create cases from bot responses.
+    """
     all_images: list[tuple[bytes, str]] = []
     img_idx = 0
     enriched_parts: list[str] = []
 
-    for b in non_bot_blocks:
+    for b in extraction_blocks:
         block_text = b.raw_text
         # Load images for this message block
         if b.message_id:
@@ -671,15 +675,16 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         set_buffer(deps.db, group_id=group_id, buffer_text=buf2)
         return
 
-    # Exclude bot messages and already-RAG-answered messages from extraction view
+    # Exclude RAG-answered messages from extraction (they already spawned cases)
+    # Bot messages are KEPT — LLM needs full context but is instructed to never
+    # create cases based on bot-only responses (see P_UNIFIED_BUFFER_SYSTEM)
     with _rag_answered_lock:
         local_rag_answered = set(_rag_answered_messages.keys())
-    non_bot_blocks = [
+    extraction_blocks = [
         b for b in blocks
-        if "[BOT]" not in b.raw_text.splitlines()[0]
-        and b.message_id not in local_rag_answered
+        if b.message_id not in local_rag_answered
     ]
-    if not non_bot_blocks:
+    if not extraction_blocks:
         set_buffer(deps.db, group_id=group_id, buffer_text=buf2)
         return
 
@@ -692,8 +697,8 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
     # Deduplicated: existing_cases already tells LLM not to re-extract these
     reco_cases = get_recommendation_cases_for_group(deps.db, group_id)
 
-    # Build multimodal buffer with interleaved images
-    numbered_buffer, all_images = _build_multimodal_buffer(deps, non_bot_blocks)
+    # Build multimodal buffer with interleaved images (includes [BOT] messages for context)
+    numbered_buffer, all_images = _build_multimodal_buffer(deps, extraction_blocks)
 
     # ── Single unified LLM call: extract + promote + update ──
     result = deps.llm.unified_buffer_analysis(
@@ -704,7 +709,7 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
     )
 
     # ── Process new cases ──
-    n_blocks = len(non_bot_blocks)
+    n_blocks = len(extraction_blocks)
     for case in result.new_cases:
         if case.start_idx < 0 or case.end_idx >= n_blocks:
             log.warning("Rejecting new case with out-of-range span (%d..%d, n_blocks=%d)",
@@ -714,9 +719,9 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
             continue
 
         evidence_ids = [
-            non_bot_blocks[i].message_id
+            extraction_blocks[i].message_id
             for i in range(case.start_idx, case.end_idx + 1)
-            if non_bot_blocks[i].message_id
+            if extraction_blocks[i].message_id
         ]
         evidence_image_paths = _collect_evidence_image_paths(deps, evidence_ids)
 
