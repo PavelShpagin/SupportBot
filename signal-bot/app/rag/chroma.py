@@ -133,12 +133,52 @@ class ChromaRag:
             return 0
 
 
-def create_chroma(settings: Settings) -> ChromaRag:
+@dataclass(frozen=True)
+class DualRag:
+    """Two-collection RAG: SCRAG (solved) + RCRAG (recommendation).
+
+    Each is an independent ChromaDB collection with separate indices.
+    """
+    scrag: ChromaRag
+    rcrag: ChromaRag
+
+    def upsert_case(self, *, case_id: str, document: str, embedding: list[float], metadata: Dict[str, Any], status: str = "solved") -> None:
+        """Upsert into the correct collection based on status."""
+        target = self.scrag if status == "solved" else self.rcrag
+        target.upsert_case(case_id=case_id, document=document, embedding=embedding, metadata=metadata)
+        # If promoting recommendation→solved, remove from RCRAG
+        if status == "solved":
+            try:
+                self.rcrag.delete_cases([case_id])
+            except Exception:
+                pass  # May not exist in RCRAG
+
+    def delete_cases(self, case_ids: List[str]) -> int:
+        """Delete from both collections."""
+        n = self.scrag.delete_cases(case_ids)
+        n += self.rcrag.delete_cases(case_ids)
+        return n
+
+    def delete_cases_by_group(self, group_id: str) -> int:
+        return self.scrag.delete_cases_by_group(group_id) + self.rcrag.delete_cases_by_group(group_id)
+
+    def list_all_case_ids(self) -> List[str]:
+        return self.scrag.list_all_case_ids() + self.rcrag.list_all_case_ids()
+
+    def wipe_all_cases(self) -> int:
+        return self.scrag.wipe_all_cases() + self.rcrag.wipe_all_cases()
+
+
+def create_chroma(settings: Settings) -> DualRag:
     u = urlparse(settings.chroma_url)
     host = u.hostname or "rag"
     port = u.port or (443 if u.scheme == "https" else 80)
 
     client = chromadb.HttpClient(host=host, port=port)
-    log.info("Chroma client configured: %s://%s:%s collection=%s", u.scheme or "http", host, port, settings.chroma_collection)
-    return ChromaRag(collection_name=settings.chroma_collection, client=client)
+    base = settings.chroma_collection
+    scrag = ChromaRag(collection_name=f"{base}_scrag", client=client)
+    rcrag = ChromaRag(collection_name=f"{base}_rcrag", client=client)
+    log.info("Chroma dual-RAG configured: %s://%s:%s scrag=%s rcrag=%s",
+             u.scheme or "http", host, port, f"{base}_scrag", f"{base}_rcrag")
+    return DualRag(scrag=scrag, rcrag=rcrag)
 

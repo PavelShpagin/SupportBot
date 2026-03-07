@@ -40,62 +40,61 @@ class CaseSearchAgent:
     # ─── SCRAG search ────────────────────────────────────────────────────────
 
     def _search_scrag(self, query: str, group_id: str, k: int = 3) -> List[Dict[str, Any]]:
-        """Semantic search in ChromaDB (solved + recommendation cases).
+        """Search SCRAG (solved) and RCRAG (recommendation) as separate collections.
 
-        Only returns results with cosine distance <= SCRAG_DISTANCE_THRESHOLD so
-        completely unrelated cases are never injected into the synthesizer context.
-        Solved cases are returned as source=scrag, recommendation as source=rcrag.
+        Queries both collections independently and merges results with solved first.
+        Only returns results with cosine distance <= SCRAG_DISTANCE_THRESHOLD.
         """
         if not self.rag or not self.llm:
             return []
         try:
             query_emb = self.llm.embed(text=query)
-            # Search all statuses (solved + recommendation) in one query
-            results = self.rag.retrieve_cases(group_id=group_id, embedding=query_emb, k=k, status=None)
+            # Query each collection independently for proper ranking
+            scrag_results = self.rag.scrag.retrieve_cases(group_id=group_id, embedding=query_emb, k=k, status=None)
+            rcrag_results = self.rag.rcrag.retrieve_cases(group_id=group_id, embedding=query_emb, k=k, status=None)
+
             formatted = []
-            for r in results:
-                distance = r.get("distance") or 1.0
-                log.debug(
-                    "RAG case %s distance=%.3f",
-                    r.get("case_id", "")[:16],
-                    distance,
-                )
-                if distance > SCRAG_DISTANCE_THRESHOLD:
-                    log.debug("RAG case %s filtered out (dist=%.3f > threshold=%.2f)",
-                              r.get("case_id", "")[:16], distance, SCRAG_DISTANCE_THRESHOLD)
-                    continue
-                doc = r.get("document", "")
-                case_status = r.get("metadata", {}).get("status", "solved")
-                # Parse the structured doc format: [SOLVED]/[РЕКОМЕНДАЦІЯ] title\nПроблема: ...\nРішення: ...
-                problem, solution = "", ""
-                for line in doc.splitlines():
-                    if line.startswith("Проблема:"):
-                        problem = line.replace("Проблема:", "").strip()
-                    elif line.startswith("Рішення:"):
-                        solution = line.replace("Рішення:", "").strip()
-                if not problem:
-                    lines = [l for l in doc.splitlines() if l.strip()]
-                    problem = lines[1] if len(lines) > 1 else doc[:100]
-                if not solution:
-                    lines = [l for l in doc.splitlines() if l.strip()]
-                    solution = lines[2] if len(lines) > 2 else ""
-                if not solution:
-                    log.debug("RAG case %s has no solution, skipping", r.get("case_id"))
-                    continue
-                formatted.append({
-                    "source": "scrag" if case_status == "solved" else "rcrag",
-                    "status": case_status,
-                    "case_id": r["case_id"],
-                    "score": 1.0 - distance,
-                    "problem": problem,
-                    "solution": solution,
-                    "doc_text": doc,
-                })
-            # Sort: solved first, then recommendation
-            formatted.sort(key=lambda x: 0 if x.get("status") == "solved" else 1)
-            return formatted
+            for source_tag, results in [("scrag", scrag_results), ("rcrag", rcrag_results)]:
+                for r in results:
+                    distance = r.get("distance") or 1.0
+                    if distance > SCRAG_DISTANCE_THRESHOLD:
+                        continue
+                    doc = r.get("document", "")
+                    problem, solution = "", ""
+                    for line in doc.splitlines():
+                        if line.startswith("Проблема:"):
+                            problem = line.replace("Проблема:", "").strip()
+                        elif line.startswith("Рішення:"):
+                            solution = line.replace("Рішення:", "").strip()
+                    if not problem:
+                        lines = [l for l in doc.splitlines() if l.strip()]
+                        problem = lines[1] if len(lines) > 1 else doc[:100]
+                    if not solution:
+                        lines = [l for l in doc.splitlines() if l.strip()]
+                        solution = lines[2] if len(lines) > 2 else ""
+                    if not solution:
+                        continue
+                    formatted.append({
+                        "source": source_tag,
+                        "status": "solved" if source_tag == "scrag" else "recommendation",
+                        "case_id": r["case_id"],
+                        "score": 1.0 - distance,
+                        "problem": problem,
+                        "solution": solution,
+                        "doc_text": doc,
+                    })
+            # Deduplicate by case_id (promotion may have left stale RCRAG entry)
+            seen = set()
+            deduped = []
+            for item in formatted:
+                if item["case_id"] not in seen:
+                    seen.add(item["case_id"])
+                    deduped.append(item)
+            # Sort: solved first (higher trust), then by score within each tier
+            deduped.sort(key=lambda x: (0 if x["status"] == "solved" else 1, -x["score"]))
+            return deduped
         except Exception:
-            log.exception("SCRAG search failed")
+            log.exception("SCRAG/RCRAG search failed")
             return []
 
     # ─── B3 context ──────────────────────────────────────────────────────────

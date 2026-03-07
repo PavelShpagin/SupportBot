@@ -559,9 +559,10 @@ def _index_case_in_rag(
         document=doc_text,
         embedding=rag_emb,
         metadata=rag_meta,
+        status=status,
     )
     mark_case_in_rag(deps.db, case_id)
-    log.info("Case %s (status=%s) indexed in ChromaDB (group=%s)", case_id, status, group_id[:20])
+    log.info("Case %s indexed in %s (group=%s)", case_id, "SCRAG" if status == "solved" else "RCRAG", group_id[:20])
 
 
 def _handle_sync_group_docs(deps: WorkerDeps, payload: Dict[str, Any]) -> None:

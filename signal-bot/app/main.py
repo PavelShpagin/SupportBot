@@ -1924,9 +1924,10 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
                     metadata["evidence_ids"] = evidence_ids
                 if evidence_image_paths:
                     metadata["evidence_image_paths"] = evidence_image_paths
-                rag.upsert_case(case_id=case_id, document=doc_text, embedding=rag_embedding, metadata=metadata)
+                rag.upsert_case(case_id=case_id, document=doc_text, embedding=rag_embedding, metadata=metadata, status=case.status)
                 mark_case_in_rag(db, case_id)
-                log.info("Indexed solved history case %s in SCRAG action=%s (group=%s)", case_id, action, req.group_id[:20])
+                log.info("Indexed history case %s in %s action=%s (group=%s)",
+                         case_id, "SCRAG" if case.status == "solved" else "RCRAG", action, req.group_id[:20])
             else:
                 log.info("Stored open/unsolved history case %s action=%s (not in SCRAG, group=%s)", case_id, action, req.group_id[:20])
 
@@ -1965,6 +1966,7 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
                 document=doc_text,
                 embedding=rag_emb,
                 metadata={"group_id": req.group_id, "status": "solved"},
+                status="solved",
             )
             mark_case_in_rag(db, cid)
             reindexed += 1
@@ -2111,8 +2113,9 @@ def retrieve(req: RetrieveRequest) -> dict:
     if not settings.http_debug_endpoints_enabled:
         raise HTTPException(status_code=404, detail="Not found")
     emb = llm.embed(text=req.query)
-    res = rag.retrieve_cases(group_id=req.group_id, embedding=emb, k=req.k)
-    return {"cases": res}
+    scrag_res = rag.scrag.retrieve_cases(group_id=req.group_id, embedding=emb, k=req.k, status=None)
+    rcrag_res = rag.rcrag.retrieve_cases(group_id=req.group_id, embedding=emb, k=req.k, status=None)
+    return {"scrag": scrag_res, "rcrag": rcrag_res}
 
 
 class DebugIngestRequest(BaseModel):
@@ -2265,6 +2268,7 @@ def debug_reindex_group(req: DebugReindexRequest) -> dict:
                 document=doc_text,
                 embedding=emb,
                 metadata={"group_id": req.group_id, "status": "solved"},
+                status="solved",
             )
             mark_case_in_rag(db, cid)
             indexed += 1

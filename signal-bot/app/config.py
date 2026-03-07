@@ -150,7 +150,7 @@ def load_settings() -> Settings:
         admin_session_stale_minutes=_env_int("ADMIN_SESSION_STALE_MINUTES", default=30, min_value=1),
         http_debug_endpoints_enabled=_env_bool("HTTP_DEBUG_ENDPOINTS_ENABLED", default=False),
         buffer_max_age_hours=_env_int("BUFFER_MAX_AGE_HOURS", default=168, min_value=1),  # 7 days
-        buffer_max_messages=_env_int("BUFFER_MAX_MESSAGES", default=500, min_value=10),
+        buffer_max_messages=_env_int("BUFFER_MAX_MESSAGES", default=300, min_value=10),
         max_images_per_gate=_env_int("MAX_IMAGES_PER_GATE", default=3, min_value=0),
         max_images_per_respond=_env_int("MAX_IMAGES_PER_RESPOND", default=5, min_value=0),
         max_kb_images_per_case=_env_int("MAX_KB_IMAGES_PER_CASE", default=2, min_value=0),
