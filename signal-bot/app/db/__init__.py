@@ -46,7 +46,6 @@ if DB_BACKEND == "mysql":
         insert_case,
         upsert_case,
         confirm_cases_by_evidence_ts,
-        close_case_by_message_ts,
         store_case_embedding,
         find_similar_case,
         merge_case,

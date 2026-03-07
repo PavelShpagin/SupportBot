@@ -993,52 +993,6 @@ def get_cases_for_group(
     ]
 
 
-def close_case_by_message_ts(
-    db: MySQL,
-    *,
-    group_id: str,
-    target_ts: int,
-    emoji: str,
-) -> Optional[str]:
-    """Close an open case associated with a message (by timestamp).
-
-    Looks up the raw_message at (group_id, ts=target_ts), finds any case linked
-    via case_evidence, marks it solved with the given emoji.  Returns case_id or None.
-    """
-    with db.connection() as conn:
-        cur = conn.cursor()
-        # Find the message_id for this timestamp in this group
-        cur.execute(
-            "SELECT message_id FROM raw_messages WHERE group_id = %s AND ts = %s LIMIT 1",
-            (group_id, target_ts),
-        )
-        row = cur.fetchone()
-        if not row:
-            return None
-        message_id = row[0]
-
-        # Find a case linked to this message
-        cur.execute(
-            """
-            SELECT c.case_id FROM cases c
-            JOIN case_evidence ce ON c.case_id = ce.case_id
-            WHERE ce.message_id = %s AND c.status = 'open'
-            LIMIT 1
-            """,
-            (message_id,),
-        )
-        row = cur.fetchone()
-        if not row:
-            return None
-        case_id = row[0]
-
-        cur.execute(
-            "UPDATE cases SET status = 'solved', closed_emoji = %s, updated_at = NOW() WHERE case_id = %s",
-            (emoji, case_id),
-        )
-        conn.commit()
-        return case_id
-
 
 def get_case_evidence(db: MySQL, case_id: str) -> List[RawMessage]:
     """Get all messages associated with a case."""
@@ -1075,30 +1029,8 @@ def get_case_evidence(db: MySQL, case_id: str) -> List[RawMessage]:
 # ─────────────────────────────────────────────────────────────────────────────
 
 def get_open_cases_for_group(db: MySQL, group_id: str) -> List[Dict[str, Any]]:
-    """Return all open (B1) cases for a group, ordered newest first."""
-    with db.connection() as conn:
-        cur = conn.cursor()
-        cur.execute(
-            """
-            SELECT case_id, problem_title, problem_summary, solution_summary, tags_json, created_at
-            FROM cases
-            WHERE group_id = %s AND status = 'open'
-            ORDER BY created_at DESC
-            """,
-            (group_id,),
-        )
-        rows = cur.fetchall()
-        return [
-            {
-                "case_id": row[0],
-                "problem_title": row[1],
-                "problem_summary": row[2],
-                "solution_summary": row[3] or "",
-                "tags": _parse_json_list(row[4]),
-                "created_at": row[5].isoformat() if row[5] else None,
-            }
-            for row in rows
-        ]
+    """Legacy stub — returns empty list. Open cases no longer exist; use get_recommendation_cases_for_group."""
+    return []
 
 
 def get_recent_solved_cases(db: MySQL, group_id: str, since_ts_ms: int) -> List[Dict[str, Any]]:
@@ -1152,7 +1084,7 @@ def get_overlapping_solved_cases(
         placeholders = ",".join(["%s"] * len(buffer_message_ids))
         cur.execute(
             f"""
-            SELECT DISTINCT c.case_id, c.problem_title, c.problem_summary
+            SELECT DISTINCT c.case_id, c.problem_title, c.problem_summary, c.status
             FROM cases c
             JOIN case_evidence ce ON c.case_id = ce.case_id
             WHERE c.group_id = %s AND c.status IN ('solved', 'recommendation')
@@ -1161,7 +1093,7 @@ def get_overlapping_solved_cases(
             [group_id] + list(buffer_message_ids),
         )
         return [
-            {"case_id": row[0], "title": row[1] or "", "summary": row[2] or ""}
+            {"case_id": row[0], "title": row[1] or "", "summary": row[2] or "", "status": row[3]}
             for row in cur.fetchall()
         ]
 
@@ -1224,7 +1156,7 @@ def get_recommendation_cases_not_in_rag(db: MySQL, group_id: str) -> List[Dict[s
 
 
 def get_recommendation_cases_for_group(db: MySQL, group_id: str) -> List[Dict[str, Any]]:
-    """All recommendation cases for promotion checking."""
+    """Recent recommendation cases for promotion checking (last 30 days, max 20)."""
     with db.connection() as conn:
         cur = conn.cursor()
         cur.execute(
@@ -1233,7 +1165,9 @@ def get_recommendation_cases_for_group(db: MySQL, group_id: str) -> List[Dict[st
                    c.tags_json, c.evidence_image_paths_json
             FROM cases c
             WHERE c.group_id = %s AND c.status = 'recommendation'
+              AND c.created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
             ORDER BY c.created_at DESC
+            LIMIT 20
             """,
             (group_id,),
         )
@@ -1476,7 +1410,7 @@ def confirm_cases_by_evidence_ts(
                 JOIN case_evidence ce ON ce.case_id = c.case_id
                 SET c.closed_emoji = %s, c.updated_at = NOW()
                 WHERE ce.message_id = %s
-                  AND c.status IN ('solved', 'open')
+                  AND c.status IN ('solved', 'recommendation')
                   AND c.closed_emoji IS NULL
                 """,
                 (emoji, message_id),

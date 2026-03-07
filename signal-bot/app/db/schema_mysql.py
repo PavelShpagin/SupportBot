@@ -42,7 +42,7 @@ DDL_STATEMENTS = [
       in_rag           TINYINT(1) NOT NULL DEFAULT 0,
       created_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
       updated_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
-      CONSTRAINT cases_status_chk CHECK (status IN ('solved', 'open')),
+      CONSTRAINT cases_status_chk CHECK (status IN ('solved', 'recommendation', 'archived')),
       INDEX idx_cases_group (group_id),
       INDEX idx_cases_status (status),
       INDEX idx_cases_in_rag (in_rag)
@@ -135,7 +135,7 @@ MIGRATIONS = [
     "ALTER TABLE cases ADD INDEX idx_cases_in_rag (in_rag)",
     # Allow 'archived' status so re-ingest preserves old cases (keeps old links valid)
     "ALTER TABLE cases DROP CONSTRAINT cases_status_chk",
-    "ALTER TABLE cases ADD CONSTRAINT cases_status_chk CHECK (status IN ('solved', 'open', 'recommendation', 'archived'))",
+    "ALTER TABLE cases ADD CONSTRAINT cases_status_chk CHECK (status IN ('solved', 'recommendation', 'archived'))",
     # Emoji reaction that closed/confirmed the case (e.g. 👍)
     "ALTER TABLE cases ADD COLUMN closed_emoji VARCHAR(16)",
     # Embedding vector for semantic dedup (JSON array of floats)
@@ -144,7 +144,7 @@ MIGRATIONS = [
     "ALTER TABLE jobs ADD COLUMN run_after TIMESTAMP NULL",
     # Allow 'recommendation' status for RCRAG (two-RAG system)
     "ALTER TABLE cases DROP CONSTRAINT cases_status_chk",
-    "ALTER TABLE cases ADD CONSTRAINT cases_status_chk CHECK (status IN ('solved', 'open', 'recommendation', 'archived'))",
+    "ALTER TABLE cases ADD CONSTRAINT cases_status_chk CHECK (status IN ('solved', 'recommendation', 'archived'))",
 ]
 
 

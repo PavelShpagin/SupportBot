@@ -488,7 +488,7 @@ def worker_loop_forever(deps: WorkerDeps) -> None:
 
         job = claim_next_job(
             deps.db,
-            allowed_types=[job_types.SYNC_GROUP_DOCS, job_types.BUFFER_UPDATE, job_types.MAYBE_RESPOND, job_types.CLOSE_CASE],
+            allowed_types=[job_types.SYNC_GROUP_DOCS, job_types.BUFFER_UPDATE, job_types.MAYBE_RESPOND],
         )
         if job is None:
             _touch_heartbeat()
@@ -503,10 +503,6 @@ def worker_loop_forever(deps: WorkerDeps) -> None:
             handler = _handle_buffer_update
         elif job.type == job_types.MAYBE_RESPOND:
             handler = _handle_maybe_respond
-        elif job.type == job_types.CLOSE_CASE:
-            # Legacy: no-op for backward compat with queued jobs
-            complete_job(deps.db, job_id=job.job_id)
-            continue
         else:
             log.warning("Unknown job type=%s job_id=%s (marking done)", job.type, job.job_id)
             complete_job(deps.db, job_id=job.job_id)
@@ -687,12 +683,13 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         set_buffer(deps.db, group_id=group_id, buffer_text=buf2)
         return
 
-    # Load existing cases that overlap buffer (to prevent re-extraction)
+    # Load existing solved+recommendation cases overlapping buffer (prevent re-extraction)
     from app.db.queries_mysql import get_overlapping_solved_cases, get_recommendation_cases_for_group
     buffer_msg_ids = [b.message_id for b in blocks if b.message_id]
     existing_cases = get_overlapping_solved_cases(deps.db, group_id, buffer_msg_ids)
 
-    # Load recommendation cases for promotion checking
+    # Load all recommendation cases for promotion checking (LLM checks if buffer confirms them)
+    # Deduplicated: existing_cases already tells LLM not to re-extract these
     reco_cases = get_recommendation_cases_for_group(deps.db, group_id)
 
     # Build multimodal buffer with interleaved images

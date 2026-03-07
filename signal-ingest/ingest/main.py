@@ -261,7 +261,7 @@ Images may be attached alongside the text. Use them to better understand the pro
 Return ONLY valid JSON with key:
 - cases: array of objects, each with:
   - keep: boolean (true for real support cases)
-  - status: "solved" or "open"
+  - status: "solved" or "recommendation"
   - problem_title: string (4-10 words, Ukrainian)
   - problem_summary: string (2-5 lines, concrete, Ukrainian)
   - solution_summary: string (1-10 lines; required if solved, Ukrainian)

@@ -1149,7 +1149,7 @@ def view_case(case_id: str):
     <body>
         <div class="case-header">
             <h1>{_html.escape(case.get('problem_title', 'Case ' + case_id))}</h1>
-            <div class="status {case.get('status', 'open')}">{case.get('status', 'open')}</div>
+            <div class="status {case.get('status', 'recommendation')}">{case.get('status', 'recommendation')}</div>
             <div class="case-date">Created: {_html.escape(case.get('created_at', '') or 'Unknown')}</div>
             <p><strong>Problem:</strong> {_html.escape(case.get('problem_summary', ''))}</p>
             <p><strong>Solution:</strong> {_html.escape(case.get('solution_summary', ''))}</p>

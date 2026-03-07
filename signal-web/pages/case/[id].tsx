@@ -131,7 +131,6 @@ export default function CasePage({ data, publicApiUrl }: Props) {
         }
         .status-solved { background: #dcfce7; color: var(--green); }
         .status-recommendation { background: #fef3c7; color: #b45309; }
-        .status-open { background: #fef9c3; color: var(--yellow); }
         .status-archived { background: #f3f4f6; color: #6b7280; }
 
         main { padding: 24px 20px; }
@@ -437,8 +436,8 @@ export default function CasePage({ data, publicApiUrl }: Props) {
               <span className="brand">SupportBot</span>
             </a>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span className={`status-badge ${data.status === 'solved' ? 'status-solved' : data.status === 'recommendation' ? 'status-recommendation' : data.status === 'archived' ? 'status-archived' : 'status-open'}`}>
-                {data.status === 'solved' ? 'Вирішено' : data.status === 'recommendation' ? 'Рекомендація' : data.status === 'archived' ? 'Архів' : 'Відкрито'}
+              <span className={`status-badge ${data.status === 'solved' ? 'status-solved' : data.status === 'recommendation' ? 'status-recommendation' : 'status-archived'}`}>
+                {data.status === 'solved' ? 'Вирішено' : data.status === 'recommendation' ? 'Рекомендація' : 'Архів'}
               </span>
             </div>
           </header>
