@@ -550,7 +550,18 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
         return
     
     log.info("Found group: %s (%s)", group.group_name, group.group_id)
-    
+
+    # Verify sender is a member of this group
+    if group.members and admin_id not in group.members:
+        log.warning("User %s is NOT a member of group '%s' — rejecting", admin_id, group.group_name)
+        reject_msg = (
+            f"Ви не є учасником групи \"{group.group_name}\". Тільки учасники групи можуть запускати імпорт історії."
+            if lang == "uk" else
+            f"You are not a member of group \"{group.group_name}\". Only group members can initiate history import."
+        )
+        _send_direct_or_cleanup(admin_id, reject_msg)
+        return
+
     # INSTANT FEEDBACK: Tell user we found it and generating QR
     signal.send_processing_message(recipient=admin_id, group_name=group.group_name, lang=lang)
     
@@ -1910,10 +1921,11 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
                 case_id, case.status, len(evidence_ids), action, req.group_id[:20],
             )
 
-            # Only index solved cases with a solution into SCRAG (recommendation cases indexed later via RCRAG)
-            if case.status == "solved" and case.solution_summary.strip():
+            # Index solved cases into SCRAG, recommendation cases into RCRAG
+            if case.status in ("solved", "recommendation") and case.solution_summary.strip():
+                prefix = "[SOLVED]" if case.status == "solved" else "[РЕКОМЕНДАЦІЯ]"
                 doc_text = "\n".join([
-                    f"[SOLVED] {case.problem_title.strip()}",
+                    f"{prefix} {case.problem_title.strip()}",
                     f"Проблема: {case.problem_summary.strip()}",
                     f"Рішення: {case.solution_summary.strip()}",
                     "tags: " + ", ".join(case.tags),
@@ -1926,10 +1938,11 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
                     metadata["evidence_image_paths"] = evidence_image_paths
                 rag.upsert_case(case_id=case_id, document=doc_text, embedding=rag_embedding, metadata=metadata, status=case.status)
                 mark_case_in_rag(db, case_id)
+                collection = "SCRAG" if case.status == "solved" else "RCRAG"
                 log.info("Indexed history case %s in %s action=%s (group=%s)",
-                         case_id, "SCRAG" if case.status == "solved" else "RCRAG", action, req.group_id[:20])
+                         case_id, collection, action, req.group_id[:20])
             else:
-                log.info("Stored open/unsolved history case %s action=%s (not in SCRAG, group=%s)", case_id, action, req.group_id[:20])
+                log.info("Stored history case %s (no solution, not indexed) action=%s (group=%s)", case_id, action, req.group_id[:20])
 
             kept += 1
             final_case_ids.append(case_id)
@@ -1951,11 +1964,13 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
                 continue
             if gc.get("status") == "archived":
                 continue
+            case_status = gc.get("status", "solved")
             sol = (gc.get("solution_summary") or "").strip()
             if not sol:
                 continue
+            prefix = "[SOLVED]" if case_status == "solved" else "[РЕКОМЕНДАЦІЯ]"
             doc_text = "\n".join([
-                f"[SOLVED] {(gc.get('problem_title') or '').strip()}",
+                f"{prefix} {(gc.get('problem_title') or '').strip()}",
                 f"Проблема: {(gc.get('problem_summary') or '').strip()}",
                 f"Рішення: {sol}",
                 "tags: " + ", ".join(gc.get("tags") or []),
@@ -1965,8 +1980,8 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
                 case_id=cid,
                 document=doc_text,
                 embedding=rag_emb,
-                metadata={"group_id": req.group_id, "status": "solved"},
-                status="solved",
+                metadata={"group_id": req.group_id, "status": case_status},
+                status=case_status,
             )
             mark_case_in_rag(db, cid)
             reindexed += 1

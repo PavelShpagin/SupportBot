@@ -270,14 +270,16 @@ Return ONLY valid JSON with key:
   - case_block: string (the EXACT messages from the chunk, preserving headers with msg_id)
 
 Rules:
-- Extract ONLY solved cases with a confirmed working solution. keep=false for bot-only or no human answer.
+- Extract both solved AND recommendation cases. keep=false ONLY for bot-only responses or completely unanswered questions.
+- status="solved": user confirmed the solution (reactions, "thanks", "works", "ok", thread ends positively after technical answer).
+- status="recommendation": a human expert gave concrete advice/instructions, but the asker did NOT confirm it worked. The advice exists but is unverified.
+- keep=false: no human gave any advice at all, OR only a bot responded.
 - Preserve original headers (sender_hash ts=... msg_id=...) verbatim inside case_block.
-- Resolution signals: reactions=N>0, "thanks"/"works"/"ok", or thread ends after technical answer.
 - problem_title MUST accurately describe the problem_summary content. Do NOT use titles from other conversations in the chunk.
 - problem_title, problem_summary, solution_summary in Ukrainian.
 - evidence_ids: extract ALL msg_id=XXX from headers.
 - Each case must be self-consistent: the title, problem, and solution must all describe the SAME issue.
-- If no solved cases, return {"cases": []}.
+- If no cases found, return {"cases": []}.
 """
 
 P_DEDUP_CASES = """You receive a list of extracted support cases. Some may be duplicates (same problem, different wording from chunk overlap).

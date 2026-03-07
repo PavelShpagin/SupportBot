@@ -180,6 +180,8 @@ class GroupInfo(BaseModel):
     group_id: str
     group_name: str
     description: str | None = None
+    members: list[str] = []   # e164 phone numbers of group members
+    admins: list[str] = []    # e164 phone numbers of group admins
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -590,7 +592,11 @@ class SignalCliAdapter:
                     gname = g.get("name") or g.get("groupName") or ""
                     gdesc = g.get("description")
                     if gid:
-                        groups.append(GroupInfo(group_id=str(gid), group_name=str(gname), description=gdesc))
+                        raw_members = g.get("members") or []
+                        raw_admins = g.get("admins") or []
+                        member_numbers = [m.get("number", "") for m in raw_members if isinstance(m, dict) and m.get("number")]
+                        admin_numbers = [m.get("number", "") for m in raw_admins if isinstance(m, dict) and m.get("number")]
+                        groups.append(GroupInfo(group_id=str(gid), group_name=str(gname), description=gdesc, members=member_numbers, admins=admin_numbers))
         except json.JSONDecodeError:
             log.warning("Failed to parse listGroups output")
         return groups
