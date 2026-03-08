@@ -568,10 +568,9 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
                         delete_admin_session(db, admin_id)
                         unlink_admin_from_all_groups(db, admin_id)
                         log.info("Cleared session for blocked/removed user %s", admin_id)
-                        return
+                    return  # Wait for next message with group name
         else:
             log.info("Admin %s stale session reset, processing '%s' as group name", admin_id, text)
-        # Continue to group lookup with this same message
         lang = detected_lang
     else:
         lang = session.lang
