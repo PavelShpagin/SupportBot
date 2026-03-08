@@ -16,6 +16,7 @@ from app.db import (
     complete_job,
     fail_job,
     get_raw_message,
+    insert_raw_message,
     get_buffer,
     set_buffer,
     new_case_id,
@@ -983,7 +984,7 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         quote_ts = int(quote_ts_raw) if quote_ts_raw is not None else int(msg.ts)
         quote_msg = str(payload.get("text") or "").strip()
         
-        deps.signal.send_group_text(
+        sent_ts = deps.signal.send_group_text(
             group_id=group_id,
             text=answer_text,
             quote_timestamp=quote_ts,
@@ -991,6 +992,25 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
             quote_message=quote_msg,
             mention_recipients=mention_recipients,
         )
+
+        # Store bot response in raw_messages so future context includes it
+        if sent_ts and deps.bot_sender_hash:
+            bot_msg = RawMessage(
+                message_id=str(sent_ts),
+                group_id=group_id,
+                ts=sent_ts,
+                sender_hash=deps.bot_sender_hash,
+                content_text=answer_text,
+                image_paths=[],
+                reply_to_id=msg.message_id,
+                sender_name="BOT",
+            )
+            insert_raw_message(deps.db, bot_msg)
+            # Also append to buffer with [BOT] tag
+            bot_line = _format_buffer_line(bot_msg, is_bot=True)
+            buf = get_buffer(deps.db, group_id=group_id)
+            set_buffer(deps.db, group_id=group_id, text=(buf or "") + bot_line)
+            log.info("Stored bot response in raw_messages ts=%s and appended to buffer", sent_ts)
 
         # Send file attachments if any
         if attachment_urls:
