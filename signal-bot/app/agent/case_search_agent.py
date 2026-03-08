@@ -36,7 +36,6 @@ class CaseSearchAgent:
         self.rag = rag
         self.llm = llm
         self.public_url = public_url
-        self.last_search_counts: Dict[str, int] = {"solved": 0, "recommendation": 0}
 
     # ─── SCRAG search ────────────────────────────────────────────────────────
 
@@ -215,11 +214,6 @@ class CaseSearchAgent:
                 seen_ids.add(cid)
                 solved.append(item)
 
-        # Track counts for the response footer
-        n_solved = sum(1 for s in solved if s.get("status") != "recommendation")
-        n_reco = sum(1 for s in solved if s.get("status") == "recommendation") + len(b1)
-        self.last_search_counts = {"solved": n_solved, "recommendation": n_reco}
-
         if solved:
             text = "Found similar past cases:\n"
             for r in solved:
@@ -236,7 +230,6 @@ class CaseSearchAgent:
 
         # No solved/recommendation from RAG — check RCRAG-DB (recommendation cases not yet in RAG)
         if b1:
-            self.last_search_counts = {"solved": 0, "recommendation": len(b1)}
             b1_text = "RECOMMENDATION_CASES:\n"
             for c in b1[:3]:  # cap to avoid overly long context
                 link = f"{self.public_url}/case/{c['case_id']}"

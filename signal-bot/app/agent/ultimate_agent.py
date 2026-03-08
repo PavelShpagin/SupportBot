@@ -120,22 +120,9 @@ class UltimateAgent:
             docs_ans[:80] if docs_ans else "empty",
         )
 
-        # Count cases by status for the footer
-        case_counts = self.case_agent.last_search_counts
-
         resp = self._synthesize(
             question, case_ans, docs_ans, lang_instruction, context, db, images
         )
-
-        # Append case count footer if bot is actually answering (not TAG_ADMIN only)
-        if resp.text.strip() != "[[TAG_ADMIN]]" and (case_counts["solved"] or case_counts["recommendation"]):
-            parts = []
-            if case_counts["solved"]:
-                parts.append(f"solved: {case_counts['solved']}")
-            if case_counts["recommendation"]:
-                parts.append(f"recommendation: {case_counts['recommendation']}")
-            footer = f"\n\n[{', '.join(parts)}]"
-            resp.text += footer
 
         return resp
 
@@ -199,20 +186,21 @@ Question: "{question_with_images}"
 {docs_block}
 {file_list_block}
 DECISION RULES — apply in order:
-1. If a sub-agent found a SOLVED case or documentation that covers the same core issue as the question:
+1. If the question contains MULTIPLE sub-questions, address EACH one separately. For any sub-question you cannot answer from the provided sources, add [[TAG_ADMIN]] so an expert can help with the remaining parts.
+2. If a sub-agent found a SOLVED case or documentation that covers the same core issue as the question:
    - "Same core issue" = the underlying problem is the same, even if phrased differently.
    - Use chat context to resolve ambiguities (e.g. "this", "that model", "the same issue").
-2. If the information covers a COMPLETELY DIFFERENT TOPIC → output ONLY "[[TAG_ADMIN]]".
-3. If the information covers the same core issue:
-   a. Self-service fix: state the solution in 1-2 sentences + case/doc link. No admin tag.
+3. If the information covers a COMPLETELY DIFFERENT TOPIC from ALL questions → output ONLY "[[TAG_ADMIN]]".
+4. If the information covers the same core issue:
+   a. Self-service fix: state the solution concisely + case/doc link. No admin tag.
    b. Needs admin action: "<instruction> [[TAG_ADMIN]] <link>".
-4. If only OPEN/tracked cases exist (no solution yet): one sentence stating the issue is tracked + case link + [[TAG_ADMIN]].
-5. If BOTH agents returned useful info, combine the best answer. Prefer documentation for how-to, prefer cases for known bugs/fixes.
-6. Include source citations: case links and/or doc URLs. If citing a specific section: URL (Section: Y) or URL (Секція: Y) in Ukrainian. If citing a whole document: URL (document title).
-7. NO greeting, NO "Вітаю", NO "Based on...", NO "According to...", NO bullet points.
-8. Respond in {lang_instruction}.
-9. NEVER invent information not provided by the agents.
-10. If a relevant evidence file (PDF, zip, config) would help, include [[ATTACH:url]]. Do NOT attach images.
+5. If only OPEN/tracked cases exist (no solution yet): one sentence stating the issue is tracked + case link + [[TAG_ADMIN]].
+6. If BOTH agents returned useful info, combine the best answer. Prefer documentation for how-to, prefer cases for known bugs/fixes.
+7. Include source citations (case links and/or doc URLs) ONLY when they are relevant and actually helped answer a question. Do NOT include citations that are unrelated to the question. If citing a specific section: URL (Секція: Y).
+8. NO greeting, NO "Вітаю", NO "Based on...", NO "According to...", NO bullet points.
+9. Respond in {lang_instruction}.
+10. NEVER invent information not provided by the agents.
+11. If a relevant evidence file (PDF, zip, config) would help, include [[ATTACH:url]]. Do NOT attach images.
 
 Answer:"""
 
