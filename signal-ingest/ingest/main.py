@@ -1227,13 +1227,15 @@ def _notify_link_result(*, settings, token: str, success: bool, message_count: i
         log.exception("Failed to notify link result")
 
 
-def _send_qr_to_user(*, settings, token: str, qr_image: bytes, is_refresh: bool = False) -> bool:
+def _send_qr_to_user(*, settings, token: str, qr_image: bytes,
+                     is_refresh: bool = False, remaining_seconds: int = 0) -> bool:
     """Send QR code image to user via signal-bot."""
     import base64
     payload = {
         "token": token,
         "qr_image_base64": base64.b64encode(qr_image).decode("utf-8"),
         "is_refresh": is_refresh,
+        "remaining_seconds": remaining_seconds,
     }
     url = settings.signal_bot_url.rstrip("/") + "/history/qr-code"
     try:
@@ -1472,11 +1474,15 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
             # Auto-refresh QR before it expires
             since_last_qr = time.time() - last_qr_time
             if since_last_qr >= qr_refresh_interval:
-                log.info("Refreshing QR (%.0fs since last)...", since_last_qr)
+                remaining_sec = max_wait_seconds - waited
+                log.info("Refreshing QR (%.0fs since last, %ds remaining)...", since_last_qr, remaining_sec)
                 new_qr = _refresh_qr_code(settings)
                 if new_qr:
-                    _send_qr_to_user(settings=settings, token=token, qr_image=new_qr, is_refresh=True)
-                    log.info("Sent refreshed QR to user")
+                    _send_qr_to_user(
+                        settings=settings, token=token, qr_image=new_qr,
+                        is_refresh=True, remaining_seconds=remaining_sec,
+                    )
+                    log.info("Sent refreshed QR to user (%ds remaining)", remaining_sec)
                     last_qr_time = time.time()
                 else:
                     log.warning("QR refresh failed")

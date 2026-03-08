@@ -1499,6 +1499,7 @@ class HistoryQrCodeRequest(BaseModel):
     token: str
     qr_image_base64: str
     is_refresh: bool = False
+    remaining_seconds: int = 0
 
 
 @app.post("/history/qr-code")
@@ -1527,12 +1528,13 @@ def history_qr_code(req: HistoryQrCodeRequest) -> dict:
             f.write(qr_bytes)
             qr_path = f.name
 
-        # First QR: full instructions. Refreshed QR: short caption.
+        # First QR: full instructions. Refreshed QR: short caption with countdown.
         if req.is_refresh:
+            remaining_min = max(1, req.remaining_seconds // 60)
             if lang == "uk":
-                caption = "Оновлений QR-код (попередній закінчився). Скануйте одразу!"
+                caption = f"Оновлений QR-код (попередній закінчився). Скануйте одразу! Залишилось {remaining_min} хв."
             else:
-                caption = "Refreshed QR code (previous one expired). Scan now!"
+                caption = f"Refreshed QR code (previous one expired). Scan now! {remaining_min} min left."
         else:
             if lang == "uk":
                 caption = (
