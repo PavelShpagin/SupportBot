@@ -650,8 +650,12 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
     message_id = str(payload["message_id"])
 
     from app.db.queries_mysql import get_group_admins
-    if not get_group_admins(deps.db, group_id):
+    admins = get_group_admins(deps.db, group_id)
+    if not admins:
         log.info("BUFFER_UPDATE: group %s has no linked admins, skipping", group_id)
+        return
+    if deps.settings.admin_whitelist and not any(a in deps.settings.admin_whitelist for a in admins):
+        log.info("BUFFER_UPDATE: group %s has no whitelisted admins, skipping", group_id)
         return
 
     msg = get_raw_message(deps.db, message_id=message_id)
@@ -817,17 +821,18 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
 
     # Use Ultimate Agent
     try:
-        # Check if group has linked admins (is active)
+        # Check if group has linked admins (is active) and at least one is whitelisted
         from app.db.queries_mysql import get_group_admins, upsert_group_docs, get_admin_session
         admins = get_group_admins(deps.db, group_id)
         active_admin_sessions = [(aid, get_admin_session(deps.db, aid)) for aid in admins]
         active_admins = [aid for aid, sess in active_admin_sessions if sess is not None]
-        
+
         # If no admins are linked to this group, we should not respond.
-        # This prevents the bot from spamming groups where it was added but not configured,
-        # and also blocks stale groups when admins removed the bot from contacts.
         if not active_admins:
             log.info("Group %s has no active linked admins. Skipping response.", group_id)
+            return
+        if deps.settings.admin_whitelist and not any(a in deps.settings.admin_whitelist for a in active_admins):
+            log.info("Group %s has no whitelisted admins. Skipping response.", group_id)
             return
 
         # Get language from first active admin (default to 'uk')
