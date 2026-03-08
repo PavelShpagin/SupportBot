@@ -1455,15 +1455,10 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
         # We auto-refresh every 80s so the user always has a valid QR in
         # chat. As long as no failure message is sent, the QR works.
         log.info("Waiting for user to scan QR code...")
-        max_wait_seconds = 570
+        max_wait_seconds = 300  # 5 minutes total
         poll_interval = 3
         waited = 0
-        # First QR was generated ~30-40s before user receives it, so only
-        # ~50s of the 90s server timeout remain. Refresh quickly the first
-        # time (45s), then every 80s for subsequent refreshes (which are fresh).
-        first_refresh_after = 45
-        normal_refresh_interval = 80
-        qr_refresh_interval = first_refresh_after
+        qr_refresh_interval = 60  # refresh every 1 minute
         last_qr_time = time.time()
 
         while waited < max_wait_seconds:
@@ -1489,7 +1484,6 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
                     )
                     log.info("Sent refreshed QR to user (%ds remaining)", remaining_sec)
                     last_qr_time = time.time()
-                    qr_refresh_interval = normal_refresh_interval  # subsequent refreshes have full 90s
                 else:
                     log.warning("QR refresh failed")
         else:
