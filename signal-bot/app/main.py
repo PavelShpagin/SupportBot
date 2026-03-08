@@ -93,6 +93,16 @@ elif settings.signal_listener_enabled:
 else:
     signal = NoopSignalAdapter()
 
+# Expand admin whitelist: resolve phone numbers → UUIDs so both formats match
+if settings.admin_whitelist and isinstance(signal, SignalCliAdapter):
+    phones = [p for p in settings.admin_whitelist if p.startswith("+")]
+    if phones:
+        phone_to_uuid = signal.resolve_phone_to_uuid(phones)
+        for phone, uuid in phone_to_uuid.items():
+            if uuid not in settings.admin_whitelist:
+                settings.admin_whitelist.append(uuid)
+                log.info("Whitelist expanded: %s → %s", phone, uuid)
+
 _bot_sender_hash = hash_sender(settings.signal_bot_e164) if settings.signal_bot_e164 else ""
 deps = WorkerDeps(
     settings=settings,

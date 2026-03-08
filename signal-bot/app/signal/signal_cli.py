@@ -218,6 +218,36 @@ class SignalCliAdapter:
         if shutil.which(self._bin()) is None:
             raise RuntimeError(f"signal-cli binary not found: {self._bin()}")
 
+    def resolve_phone_to_uuid(self, phone_numbers: list[str]) -> dict[str, str]:
+        """Resolve phone numbers to UUIDs via signal-cli getUserStatus.
+
+        Returns a dict mapping phone → uuid for numbers that were resolved.
+        """
+        if not phone_numbers:
+            return {}
+        cmd = [
+            self._bin(), "--output", "json",
+            "--config", self._config(),
+            "-u", self._user(),
+            "getUserStatus",
+        ] + phone_numbers
+        try:
+            result = self._run(cmd)
+            if result.returncode != 0:
+                log.warning("getUserStatus failed: %s", result.stderr[:200])
+                return {}
+            entries = json.loads(result.stdout)
+            mapping = {}
+            for entry in entries:
+                phone = entry.get("number")
+                uuid = entry.get("uuid")
+                if phone and uuid:
+                    mapping[phone] = uuid
+            return mapping
+        except Exception as exc:
+            log.warning("Failed to resolve phone→UUID: %s", exc)
+            return {}
+
     # ─────────────────────────────────────────────────────────────────────────
     # Send methods
     # ─────────────────────────────────────────────────────────────────────────
