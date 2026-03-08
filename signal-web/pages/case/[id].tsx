@@ -326,43 +326,20 @@ export default function CasePage({ data, publicApiUrl }: Props) {
         }
 
         .file-download {
-          display: inline-flex;
-          align-items: center;
-          gap: 10px;
-          padding: 10px 16px;
-          background: #f8f9fa;
+          display: inline-block;
+          padding: 8px 14px;
+          background: var(--page-bg);
           border: 1px solid var(--border);
-          border-radius: 10px;
+          border-radius: 8px;
           font-size: 13px;
           color: var(--text-primary);
           text-decoration: none;
           font-weight: 500;
-          transition: all 0.15s;
+          transition: background 0.15s;
         }
 
         .file-download:hover {
-          background: #eef0f3;
-          border-color: var(--signal-blue);
-        }
-
-        .file-ext-badge {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          padding: 3px 8px;
-          background: var(--signal-blue);
-          color: #fff;
-          border-radius: 5px;
-          font-size: 10px;
-          font-weight: 700;
-          letter-spacing: 0.5px;
-          flex-shrink: 0;
-        }
-
-        .file-name {
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
+          background: #ebedf0;
         }
 
         .transcript-details {
@@ -596,12 +573,9 @@ export default function CasePage({ data, publicApiUrl }: Props) {
                                 </video>
                               );
                             }
-                            const name = fileName(att.url);
-                            const ext = name.split('.').pop()?.toUpperCase() || 'FILE';
                             return (
                               <a key={idx} href={src} target="_blank" rel="noopener noreferrer" className="file-download">
-                                <span className="file-ext-badge">{ext}</span>
-                                <span className="file-name">{name}</span>
+                                {fileName(att.url)}
                               </a>
                             );
                           })}
