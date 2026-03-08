@@ -1448,11 +1448,6 @@ def _format_progress_message(key: str, lang: str, **kwargs) -> str:
         # QR code was sent separately with instructions, no additional message needed
         return ""
 
-    elif key == "qr_refreshed":
-        if lang == "uk":
-            return "QR-код оновлено (попередній міг закінчитись). Відскануйте новий QR вище."
-        return "QR code refreshed (previous one may have expired). Please scan the new QR above."
-
     elif key == "qr_reminder":
         if lang == "uk":
             return "Ще 3 хвилини для сканування QR-коду. Не забудьте відсканувати!"
@@ -1540,7 +1535,7 @@ def history_qr_code(req: HistoryQrCodeRequest) -> dict:
                 "3. Відскануйте QR-код\n"
                 "4. Натисніть «Перенести історію повідомлень» (Transfer message history)\n\n"
                 "Примітка: макс. 5 пов'язаних пристроїв. Видаліть один при ліміті.\n\n"
-                "Очікую сканування (10 хв)..."
+                "QR-код дійсний 2 хвилини. Скануйте одразу!"
             )
         else:
             caption = (
@@ -1550,7 +1545,7 @@ def history_qr_code(req: HistoryQrCodeRequest) -> dict:
                 "3. Scan the QR code\n"
                 "4. Click \"Transfer message history\"\n\n"
                 "Note: max 5 linked devices. Remove one if limit reached.\n\n"
-                "Waiting for scan (10 min)..."
+                "QR code valid for 2 minutes. Scan immediately!"
             )
         
         if not isinstance(signal, NoopSignalAdapter):

@@ -1448,15 +1448,12 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
         _notify_progress(settings=settings, token=token, progress_key="qr_sent")
 
         # Step 2: Wait for user to scan QR code.
-        # Signal Desktop QR codes expire after ~2 minutes. We auto-refresh
-        # by clicking the "Refresh code" button and sending a new QR to the
-        # user, extending the effective scan window to the full wait period.
+        # Signal QR codes expire after 90 seconds (server-side timeout).
+        # We wait a bit longer to account for network delay in delivery.
         log.info("Waiting for user to scan QR code...")
-        max_wait_seconds = 570
+        max_wait_seconds = 120  # 90s QR lifetime + 30s buffer
         poll_interval = 3
         waited = 0
-        qr_refresh_interval = 90  # seconds between QR refreshes
-        last_qr_time = time.time()
 
         while waited < max_wait_seconds:
             check_cancelled()
@@ -1467,21 +1464,8 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
             if status.get("has_user_conversations"):
                 log.info("User linked! Found %d conversations", status.get("conversations_count", 0))
                 break
-
-            # Auto-refresh QR before it expires
-            since_last_qr = time.time() - last_qr_time
-            if since_last_qr >= qr_refresh_interval:
-                log.info("QR likely expired (%.0fs since last), refreshing...", since_last_qr)
-                new_qr = _refresh_qr_code(settings)
-                if new_qr:
-                    if _send_qr_to_user(settings=settings, token=token, qr_image=new_qr):
-                        log.info("Sent refreshed QR to user (refresh #%d)", int(waited / qr_refresh_interval))
-                        _notify_progress(settings=settings, token=token, progress_key="qr_refreshed")
-                    last_qr_time = time.time()
-                else:
-                    log.warning("QR refresh failed, user will need to restart import if current QR expired")
         else:
-            log.warning("Scan timeout after %ds without a successful scan", max_wait_seconds)
+            log.warning("QR code expired after %ds without a successful scan", max_wait_seconds)
             _notify_link_result(
                 settings=settings,
                 token=token,
