@@ -131,15 +131,20 @@ ENDSSH
 cmd_push() {
     log_info "Pushing code to OCI VM..."
     check_prerequisites
-    
+
     # Create remote directory
     ssh_cmd "mkdir -p $REMOTE_DIR"
-    
+
     # Sync project files
     log_info "Syncing project files..."
     sync_cmd "$PROJECT_ROOT/" "$VM_USER@$VM_IP:$REMOTE_DIR/"
-    
+
     log_success "Code pushed to $VM_IP:$REMOTE_DIR"
+
+    # Rebuild and restart containers (code is baked into images)
+    log_info "Rebuilding containers..."
+    ssh_cmd "cd $REMOTE_DIR && docker compose -f docker-compose.yml up -d --build signal-bot signal-ingest signal-web"
+    log_success "Containers rebuilt and restarted"
 }
 
 cmd_deploy_remote() {
