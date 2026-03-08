@@ -100,6 +100,9 @@ class Settings:
     # Web
     public_url: str
 
+    # Admin whitelist (phone numbers allowed to DM the bot)
+    admin_whitelist: List[str]
+
 
 def load_settings() -> Settings:
     mentions = [
@@ -157,5 +160,10 @@ def load_settings() -> Settings:
         max_image_size_bytes=_env_int("MAX_IMAGE_SIZE_BYTES", default=5_000_000, min_value=1),
         max_total_image_bytes=_env_int("MAX_TOTAL_IMAGE_BYTES", default=20_000_000, min_value=1),
         public_url=_env("PUBLIC_URL", default="https://supportbot.info"),
+        admin_whitelist=[
+            s.strip()
+            for s in _env("ADMIN_WHITELIST", default="").split(",")
+            if s.strip()
+        ],
     )
 

@@ -234,6 +234,9 @@ export default function Home() {
               <h1>Як працює SupportBot</h1>
               <p className="lead">Бот для Signal-груп технічної підтримки. Автоматично збирає вирішені проблеми в базу знань і відповідає на нові запитання на основі досвіду групи.</p>
 
+              <h2>Як отримати доступ</h2>
+              <p className="lead" style={{marginBottom: '16px'}}>Для підключення бота до вашої групи напишіть на <strong>support@theacademia.tech</strong>, вказавши ваш номер телефону в Signal, назву групи та опис використання. Після підтвердження ваш номер буде додано до списку доступу.</p>
+
               <h2>Як додати до групи</h2>
               <ol>
                 <li>Отримайте номер бота від адміністратора</li>
@@ -276,6 +279,9 @@ export default function Home() {
             <main>
               <h1>How SupportBot Works</h1>
               <p className="lead">A Signal bot for technical support groups. Automatically collects solved issues into a knowledge base and answers new questions using the group&apos;s past experience.</p>
+
+              <h2>Getting access</h2>
+              <p className="lead" style={{marginBottom: '16px'}}>To connect the bot to your group, email <strong>support@theacademia.tech</strong> with your Signal phone number, group name, and use case. Once approved, your number will be added to the access list.</p>
 
               <h2>Adding to a group</h2>
               <ol>

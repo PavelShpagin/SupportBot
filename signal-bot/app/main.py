@@ -415,9 +415,14 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
     
     admin_id = m.sender
     text = m.text.strip()
-    
+
     log.info("Direct message from %s: %s", admin_id, text[:100])
-    
+
+    # Whitelist check: only allowed phone numbers can interact
+    if settings.admin_whitelist and admin_id not in settings.admin_whitelist:
+        log.warning("Rejected DM from non-whitelisted user: %s", admin_id)
+        return
+
     # Get admin session - None means brand new user
     session = get_admin_session(db, admin_id)
 
