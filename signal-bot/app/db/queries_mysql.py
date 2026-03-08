@@ -142,12 +142,13 @@ def get_recent_raw_messages(db: MySQL, group_id: str, limit: int = 30) -> List[R
     ]
 
 
-def get_last_messages_text(db: MySQL, group_id: str, n: int) -> List[str]:
+def get_last_messages_text(db: MySQL, group_id: str, n: int, bot_sender_hash: str = "") -> List[str]:
     """Return last n messages as plain text strings (oldest-first).
 
     Includes sender label and reply-to threading so the gate model can
     distinguish user-to-user conversations from support requests to the bot.
-    Format: "[UserXXXX]: text" or "[UserXXXX → UserYYYY]: text" (reply)
+    Format: "[UserXXXX]: text", "[UserXXXX → UserYYYY]: text" (reply),
+            or "[BOT]: text" for bot's own messages.
     """
     with db.connection() as conn:
         cur = conn.cursor()
@@ -167,9 +168,13 @@ def get_last_messages_text(db: MySQL, group_id: str, n: int) -> List[str]:
         # rows are newest-first; reverse for natural reading order
         result = []
         for sender_hash, content_text, reply_to_id, reply_sender_hash in reversed(rows):
-            sender = f"User{(sender_hash or 'unknown')[:6]}"
-            if reply_to_id and reply_sender_hash:
-                reply_to = f"User{reply_sender_hash[:6]}"
+            is_bot = bool(bot_sender_hash and sender_hash == bot_sender_hash)
+            sender = "[BOT]" if is_bot else f"User{(sender_hash or 'unknown')[:6]}"
+            if is_bot:
+                label = "[BOT]"
+            elif reply_to_id and reply_sender_hash:
+                is_reply_to_bot = bool(bot_sender_hash and reply_sender_hash == bot_sender_hash)
+                reply_to = "[BOT]" if is_reply_to_bot else f"User{reply_sender_hash[:6]}"
                 label = f"[{sender} → {reply_to}]"
             else:
                 label = f"[{sender}]"
@@ -920,7 +925,8 @@ def get_case(db: MySQL, case_id: str) -> Optional[Dict[str, Any]]:
         cur = conn.cursor()
         cur.execute(
             """
-            SELECT case_id, group_id, status, problem_title, problem_summary, solution_summary, tags_json, evidence_image_paths_json, created_at, closed_emoji
+            SELECT case_id, group_id, status, problem_title, problem_summary, solution_summary,
+                   tags_json, evidence_image_paths_json, created_at, closed_emoji, in_rag
             FROM cases
             WHERE case_id = %s
             """,
@@ -940,7 +946,16 @@ def get_case(db: MySQL, case_id: str) -> Optional[Dict[str, Any]]:
             "evidence_image_paths": _parse_json_list(row[7]),
             "created_at": row[8].isoformat() if row[8] else None,
             "closed_emoji": row[9],
+            "in_rag": bool(row[10]),
         }
+
+
+def get_case_evidence_ids(db: MySQL, case_id: str) -> List[str]:
+    """Return all evidence message_ids for a case."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute("SELECT message_id FROM case_evidence WHERE case_id = %s", (case_id,))
+        return [r[0] for r in cur.fetchall()]
 
 
 def get_cases_for_group(
@@ -1084,7 +1099,8 @@ def get_overlapping_solved_cases(
         placeholders = ",".join(["%s"] * len(buffer_message_ids))
         cur.execute(
             f"""
-            SELECT DISTINCT c.case_id, c.problem_title, c.problem_summary, c.status
+            SELECT DISTINCT c.case_id, c.problem_title, c.problem_summary,
+                   c.solution_summary, c.status
             FROM cases c
             JOIN case_evidence ce ON c.case_id = ce.case_id
             WHERE c.group_id = %s AND c.status IN ('solved', 'recommendation')
@@ -1092,10 +1108,20 @@ def get_overlapping_solved_cases(
             """,
             [group_id] + list(buffer_message_ids),
         )
-        return [
-            {"case_id": row[0], "title": row[1] or "", "summary": row[2] or "", "status": row[3]}
-            for row in cur.fetchall()
-        ]
+        results = []
+        for row in cur.fetchall():
+            case_id = row[0]
+            cur.execute("SELECT message_id FROM case_evidence WHERE case_id = %s", (case_id,))
+            ev_ids = [r[0] for r in cur.fetchall()]
+            results.append({
+                "case_id": case_id,
+                "title": row[1] or "",
+                "summary": row[2] or "",
+                "solution_summary": row[3] or "",
+                "status": row[4],
+                "evidence_ids": ev_ids,
+            })
+        return results
 
 
 def update_case_to_solved(db: MySQL, case_id: str, solution_summary: str) -> None:
@@ -1109,6 +1135,29 @@ def update_case_to_solved(db: MySQL, case_id: str, solution_summary: str) -> Non
             """,
             (solution_summary, case_id),
         )
+        conn.commit()
+
+
+def update_case_solution(
+    db: MySQL, case_id: str, solution_summary: str, new_evidence_ids: List[str] | None = None,
+) -> None:
+    """Update solution_summary without changing case status. Optionally append new evidence_ids."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            "UPDATE cases SET solution_summary = %s, updated_at = NOW() WHERE case_id = %s",
+            (solution_summary, case_id),
+        )
+        if new_evidence_ids:
+            # Get existing evidence_ids to avoid duplicates
+            cur.execute("SELECT message_id FROM case_evidence WHERE case_id = %s", (case_id,))
+            existing = {r[0] for r in cur.fetchall()}
+            for mid in new_evidence_ids:
+                if mid not in existing:
+                    cur.execute(
+                        "INSERT INTO case_evidence(case_id, message_id) VALUES(%s, %s)",
+                        (case_id, mid),
+                    )
         conn.commit()
 
 
