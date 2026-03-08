@@ -126,7 +126,8 @@ class DocsAgent:
         prompt = f"{DOCS_SYSTEM_PROMPT}\n\nDOCUMENTATION:\n{docs_block}\n{variable_section}"
         return prompt, images
 
-    def answer(self, question: str, group_id: str, db: Any, context: str = "") -> str:
+    def answer(self, question: str, group_id: str, db: Any, context: str = "",
+               images: list[tuple[bytes, str]] | None = None) -> str:
         """Answer a question using the group's documentation.
 
         Returns the answer text, "INSUFFICIENT_INFO", "SKIP", or "NO_DOCS".
@@ -149,14 +150,22 @@ class DocsAgent:
 
         content_parts = self._get_or_refresh_docs(group_id, urls)
 
-        prompt, images = self._build_prompt_with_images(content_parts, context, question)
+        prompt, doc_images = self._build_prompt_with_images(content_parts, context, question)
+
+        # Merge user images (from the question) after doc images
+        all_images = list(doc_images) if doc_images else []
+        if images:
+            offset = len(all_images)
+            markers = " ".join(f"[[IMG:{offset + j}]]" for j in range(len(images)))
+            prompt = f"{prompt}\n\nUser attached images:\n{markers}"
+            all_images.extend(images)
 
         try:
             return self.llm.chat(
                 prompt=prompt,
                 cascade=SUBAGENT_CASCADE,
                 timeout=60.0,
-                images=images if images else None,
+                images=all_images if all_images else None,
             )
         except Exception as exc:
             log.error("DocsAgent LLM call failed: %s", exc)

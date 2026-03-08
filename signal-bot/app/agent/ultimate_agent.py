@@ -83,7 +83,8 @@ class UltimateAgent:
                 self.case_agent.answer, question, group_id=group_id, db=db
             )
             docs_future = pool.submit(
-                self.docs_agent.answer, question, group_id=group_id, db=db, context=context
+                self.docs_agent.answer, question, group_id=group_id, db=db, context=context,
+                images=images,
             )
 
             try:
