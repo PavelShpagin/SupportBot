@@ -196,7 +196,7 @@ RULES:
 8. NO greeting, NO "Вітаю", NO "Based on...", NO "According to...", NO preamble.
 9. Respond in {lang_instruction}.
 10. NEVER invent information not provided by the agents.
-11. If a relevant evidence file (PDF, zip, config) would help, include [[ATTACH:url]]. Do NOT attach images.
+11. ALWAYS share relevant evidence files (PDF, zip, config, datasheet) with the user — include [[ATTACH:url]] for each. Do NOT attach images.
 
 Answer:"""
 
