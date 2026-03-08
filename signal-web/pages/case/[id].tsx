@@ -61,7 +61,7 @@ export default function CasePage({ data, publicApiUrl }: Props) {
       <Head>
         <title>{data.problem_title} | SupportBot</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="icon" type="image/png" href="/supportbot-logo.png" />
+        <link rel="icon" type="image/png" href="/favicon.png" />
         <meta property="og:title" content={data.problem_title} />
         <meta property="og:description" content={data.solution_summary} />
         <meta property="og:type" content="article" />
@@ -328,26 +328,41 @@ export default function CasePage({ data, publicApiUrl }: Props) {
         .file-download {
           display: inline-flex;
           align-items: center;
-          gap: 8px;
-          padding: 8px 14px;
-          background: var(--page-bg);
+          gap: 10px;
+          padding: 10px 16px;
+          background: #f8f9fa;
           border: 1px solid var(--border);
-          border-radius: 8px;
+          border-radius: 10px;
           font-size: 13px;
-          color: var(--signal-blue);
+          color: var(--text-primary);
           text-decoration: none;
           font-weight: 500;
-          transition: background 0.15s;
+          transition: all 0.15s;
         }
 
         .file-download:hover {
-          background: #ebedf0;
+          background: #eef0f3;
+          border-color: var(--signal-blue);
         }
 
-        .file-download svg {
-          width: 16px;
-          height: 16px;
+        .file-ext-badge {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 3px 8px;
+          background: var(--signal-blue);
+          color: #fff;
+          border-radius: 5px;
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: 0.5px;
           flex-shrink: 0;
+        }
+
+        .file-name {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
 
         .transcript-details {
@@ -432,7 +447,7 @@ export default function CasePage({ data, publicApiUrl }: Props) {
           <header>
             <a href="/" className="header-left" style={{ textDecoration: 'none', color: 'inherit' }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/supportbot-logo.png" alt="SupportBot" className="logo" />
+              <img src="/supportbot-logo-128.png" alt="SupportBot" className="logo" />
               <span className="brand">SupportBot</span>
             </a>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -581,14 +596,12 @@ export default function CasePage({ data, publicApiUrl }: Props) {
                                 </video>
                               );
                             }
+                            const name = fileName(att.url);
+                            const ext = name.split('.').pop()?.toUpperCase() || 'FILE';
                             return (
                               <a key={idx} href={src} target="_blank" rel="noopener noreferrer" className="file-download">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                                  <polyline points="7 10 12 15 17 10"/>
-                                  <line x1="12" y1="15" x2="12" y2="3"/>
-                                </svg>
-                                {fileName(att.url)}
+                                <span className="file-ext-badge">{ext}</span>
+                                <span className="file-name">{name}</span>
                               </a>
                             );
                           })}
@@ -610,10 +623,15 @@ export default function CasePage({ data, publicApiUrl }: Props) {
                   </div>
                 );
               })}
-              {data.closed_emoji && data.status === 'solved' && (
+              {data.status === 'solved' && data.closed_emoji && (
                 <div className="emoji-confirmation">
                   <span className="emoji-bubble">{data.closed_emoji}</span>
                   Учасник підтвердив вирішення реакцією
+                </div>
+              )}
+              {data.status === 'solved' && !data.closed_emoji && (
+                <div className="emoji-confirmation">
+                  Учасник підтвердив вирішення
                 </div>
               )}
             </div>
