@@ -137,9 +137,13 @@ class DocsAgent:
             union_gids = get_union_group_ids(db, group_id)
         except Exception:
             union_gids = [group_id]
+        seen: set[str] = set()
         urls: list[str] = []
         for gid in union_gids:
-            urls.extend(get_group_docs(db, gid))
+            for u in get_group_docs(db, gid):
+                if u not in seen:
+                    seen.add(u)
+                    urls.append(u)
         if not urls:
             return "NO_DOCS"
 
