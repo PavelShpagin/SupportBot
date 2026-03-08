@@ -937,14 +937,6 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         answer_text = raw_answer.text
         attachment_urls = raw_answer.attachment_urls
 
-        if (
-            not force
-            and gate_tag == "ongoing_discussion"
-            and answer_text.strip() == "[[TAG_ADMIN]]"
-        ):
-            log.info("MAYBE_RESPOND: skipping TAG_ADMIN for ongoing_discussion (humans already handling)")
-            return
-
         if answer_text == "SKIP":
             if force:
                 answer_text = "Вибачте, я не зрозумів запитання або це не стосується моєї компетенції." if group_lang == "uk" else "Sorry, I didn't understand the question or it's outside my expertise."
