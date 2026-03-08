@@ -848,7 +848,7 @@ def _startup() -> None:
                 _prune_disconnected_admins()
             except Exception:
                 log.exception("Admin reconcile loop failed")
-            time.sleep(15)  # Prune every 15s so re-add gets fresh state quickly
+            time.sleep(600)  # Prune every 10 min — signal-cli locks config file, starving receive loop if frequent. DMs trigger prune on-demand anyway.
 
     threading.Thread(target=_admin_reconcile_loop, daemon=True).start()
 
@@ -1440,13 +1440,18 @@ def _format_progress_message(key: str, lang: str, **kwargs) -> str:
     
     elif key == "saving_cases":
         if lang == "uk":
-            return f"Знайдено {count} вирішених кейсів. Зберігаю в базу знань..."
+            return "Зберігаю кейси в базу знань..."
         else:
-            return f"Found {count} solved cases. Saving to knowledge base..."
+            return "Saving cases to knowledge base..."
     
     elif key == "qr_sent":
         # QR code was sent separately with instructions, no additional message needed
         return ""
+
+    elif key == "qr_refreshed":
+        if lang == "uk":
+            return "QR-код оновлено (попередній міг закінчитись). Відскануйте новий QR вище."
+        return "QR code refreshed (previous one may have expired). Please scan the new QR above."
 
     elif key == "qr_reminder":
         if lang == "uk":

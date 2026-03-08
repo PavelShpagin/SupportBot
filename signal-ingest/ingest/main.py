@@ -367,6 +367,42 @@ def _get_desktop_screenshot(settings) -> bytes:
         raise RuntimeError(f"Failed to get screenshot: {e}")
 
 
+def _refresh_qr_code(settings) -> bytes:
+    """Click 'Refresh code' in Signal Desktop and return a fresh QR PNG.
+
+    Signal Desktop QR codes expire after ~2 minutes. When expired, Signal
+    shows a 'Refresh code' button. This calls POST /refresh-qr (clicks the
+    button), then GET /qr-png to get the new QR as a clean PNG.
+
+    Returns PNG bytes, or empty bytes on failure.
+    """
+    base = settings.signal_desktop_url.rstrip("/")
+    try:
+        # Click refresh button
+        with httpx.Client(timeout=30) as client:
+            r = client.post(f"{base}/refresh-qr")
+            r.raise_for_status()
+            log.info("Refresh-QR response: %s", r.json() if r.headers.get("content-type", "").startswith("application/json") else r.status_code)
+    except Exception as e:
+        log.warning("POST /refresh-qr failed: %s", e)
+        return b""
+
+    # Wait for new QR to render
+    time.sleep(3)
+
+    # Get fresh QR via /qr-png (clean regenerated PNG)
+    qr = _get_clean_qr(settings)
+    if qr:
+        return qr
+
+    # Fall back to screenshot
+    try:
+        return _get_desktop_screenshot(settings)
+    except Exception as e:
+        log.warning("Screenshot fallback after refresh also failed: %s", e)
+        return b""
+
+
 
 def _fetch_attachment(
     settings,
@@ -1056,38 +1092,102 @@ def _extract_structured_cases(
     return out
 
 
-def _dedup_cases_llm(
-    *,
-    openai_client: OpenAI,
-    model: str,
-    fallback_models: list,
-    cases: List[dict],
-    timeout: float = 120.0,
-) -> List[dict]:
-    """Merge duplicate cases via LLM. Returns deduplicated list."""
-    if len(cases) <= 1:
-        return cases
-    cases_json = json.dumps([{k: c.get(k) for k in ("keep", "status", "problem_title", "problem_summary", "solution_summary", "tags", "evidence_ids", "case_block")} for c in cases], ensure_ascii=False)
-    resp = _llm_call_with_fallback(
-        openai_client=openai_client,
-        model=model,
-        fallback_models=fallback_models,
-        timeout=timeout,
-        messages=[
-            {"role": "system", "content": P_DEDUP_CASES},
-            {"role": "user", "content": f"CASES:\n{cases_json}"},
-        ],
-        response_format={"type": "json_object"},
-        temperature=0,
-    )
-    raw = resp.choices[0].message.content or "{}"
-    data = _safe_json_loads(raw)
-    if not data:
-        return cases
-    merged = data.get("cases", []) if isinstance(data, dict) else (data if isinstance(data, list) else [])
-    if isinstance(merged, list) and merged:
-        return [c for c in merged if isinstance(c, dict) and c.get("case_block")]
-    return cases
+def _text_to_words(text: str) -> List[str]:
+    """Tokenize text into lowercase words for bag-of-words similarity."""
+    import re as _re
+    return _re.findall(r'\w{2,}', text.lower())
+
+
+def _bow_cosine(words_a: List[str], words_b: List[str]) -> float:
+    """Bag-of-words cosine similarity between two word lists."""
+    if not words_a or not words_b:
+        return 0.0
+    from collections import Counter
+    ca, cb = Counter(words_a), Counter(words_b)
+    keys = set(ca) | set(cb)
+    dot = sum(ca.get(k, 0) * cb.get(k, 0) for k in keys)
+    mag_a = sum(v * v for v in ca.values()) ** 0.5
+    mag_b = sum(v * v for v in cb.values()) ** 0.5
+    if mag_a == 0 or mag_b == 0:
+        return 0.0
+    return dot / (mag_a * mag_b)
+
+
+def _dedup_adjacent_chunks(cases_by_chunk: dict[int, List[dict]], threshold: float = 0.75) -> List[dict]:
+    """Deduplicate cases from adjacent chunks using bag-of-words cosine similarity.
+
+    Only compares cases between chunk N and chunk N+1 (since overlap=1, duplicates
+    can only appear in adjacent chunks). When a duplicate is found, the version with
+    the richer solution_summary is kept and evidence_ids are merged.
+    No LLM calls — pure text similarity.
+    """
+    if not cases_by_chunk:
+        return []
+
+    chunk_indices = sorted(cases_by_chunk.keys())
+
+    # Start with all cases from chunk 0
+    kept: List[dict] = list(cases_by_chunk.get(chunk_indices[0], []))
+
+    for ci in range(1, len(chunk_indices)):
+        chunk_idx = chunk_indices[ci]
+        prev_chunk_idx = chunk_indices[ci - 1]
+        prev_cases = cases_by_chunk.get(prev_chunk_idx, [])
+        cur_cases = cases_by_chunk.get(chunk_idx, [])
+
+        # Pre-compute words for previous chunk's cases
+        prev_words = [
+            _text_to_words(f"{c.get('problem_title', '')} {c.get('problem_summary', '')}")
+            for c in prev_cases
+        ]
+
+        for cur_case in cur_cases:
+            cur_words = _text_to_words(
+                f"{cur_case.get('problem_title', '')} {cur_case.get('problem_summary', '')}"
+            )
+
+            # Check similarity only against previous chunk's cases
+            best_sim = 0.0
+            best_prev_idx = -1
+            for j, pw in enumerate(prev_words):
+                sim = _bow_cosine(cur_words, pw)
+                if sim > best_sim:
+                    best_sim = sim
+                    best_prev_idx = j
+
+            if best_sim >= threshold and best_prev_idx >= 0:
+                # Duplicate found — merge into the kept version
+                prev_case = prev_cases[best_prev_idx]
+                # Find it in kept list to merge
+                for k_case in kept:
+                    if k_case is prev_case:
+                        # Merge evidence_ids
+                        existing_eids = set(k_case.get("evidence_ids") or [])
+                        for eid in (cur_case.get("evidence_ids") or []):
+                            if eid not in existing_eids:
+                                k_case.setdefault("evidence_ids", []).append(eid)
+                                existing_eids.add(eid)
+                        # Keep richer solution
+                        cur_sol = cur_case.get("solution_summary", "")
+                        if len(cur_sol) > len(k_case.get("solution_summary", "")):
+                            k_case["solution_summary"] = cur_sol
+                        # Merge tags
+                        existing_tags = set(k_case.get("tags") or [])
+                        for t in (cur_case.get("tags") or []):
+                            if t not in existing_tags:
+                                k_case.setdefault("tags", []).append(t)
+                                existing_tags.add(t)
+                        log.info(
+                            "Adjacent dedup: merged '%s' (sim=%.2f) from chunks %d+%d",
+                            cur_case.get("problem_title", "")[:50], best_sim,
+                            prev_chunk_idx, chunk_idx,
+                        )
+                        break
+            else:
+                # Not a duplicate — keep it
+                kept.append(cur_case)
+
+    return kept
 
 
 # ?????????????????????????????????????????????????????????????????????????????
@@ -1347,11 +1447,16 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
 
         _notify_progress(settings=settings, token=token, progress_key="qr_sent")
 
-        # Step 2: Wait for user to scan QR code (QR expires after ~10 minutes)
+        # Step 2: Wait for user to scan QR code.
+        # Signal Desktop QR codes expire after ~2 minutes. We auto-refresh
+        # by clicking the "Refresh code" button and sending a new QR to the
+        # user, extending the effective scan window to the full wait period.
         log.info("Waiting for user to scan QR code...")
         max_wait_seconds = 570
         poll_interval = 3
         waited = 0
+        qr_refresh_interval = 90  # seconds between QR refreshes
+        last_qr_time = time.time()
 
         while waited < max_wait_seconds:
             check_cancelled()
@@ -1362,8 +1467,21 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
             if status.get("has_user_conversations"):
                 log.info("User linked! Found %d conversations", status.get("conversations_count", 0))
                 break
+
+            # Auto-refresh QR before it expires
+            since_last_qr = time.time() - last_qr_time
+            if since_last_qr >= qr_refresh_interval:
+                log.info("QR likely expired (%.0fs since last), refreshing...", since_last_qr)
+                new_qr = _refresh_qr_code(settings)
+                if new_qr:
+                    if _send_qr_to_user(settings=settings, token=token, qr_image=new_qr):
+                        log.info("Sent refreshed QR to user (refresh #%d)", int(waited / qr_refresh_interval))
+                        _notify_progress(settings=settings, token=token, progress_key="qr_refreshed")
+                    last_qr_time = time.time()
+                else:
+                    log.warning("QR refresh failed, user will need to restart import if current QR expired")
         else:
-            log.warning("QR code expired without a successful scan")
+            log.warning("Scan timeout after %ds without a successful scan", max_wait_seconds)
             _notify_link_result(
                 settings=settings,
                 token=token,
@@ -1777,7 +1895,7 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
         )
         log.info("Split into %d chunks for processing", len(chunks))
 
-        all_structured: List[dict] = []
+        cases_by_chunk: dict[int, List[dict]] = {}
         n_chunks = len(chunks)
         max_workers = min(n_chunks, 10)
 
@@ -1794,7 +1912,7 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
                     images=ch_images or None,
                 )
                 log.info("Chunk %d/%d extracted %d cases in %.1fs", i+1, n_chunks, len(result), time.time()-t0)
-                all_structured.extend(result)
+                cases_by_chunk[i] = result
         else:
             completed = 0
             futures = {}
@@ -1822,20 +1940,16 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
                     try:
                         result = fut.result()
                         log.info("Chunk %d/%d extracted %d cases in %.1fs", chunk_idx+1, n_chunks, len(result), elapsed_chunk)
-                        all_structured.extend(result)
+                        cases_by_chunk[chunk_idx] = result
                     except Exception:
                         log.exception("Chunk %d failed after %.1fs, skipping", chunk_idx, elapsed_chunk)
                         continue
-        log.info("All %d chunks processed in %.1fs — %d raw cases", n_chunks, time.time()-step5_start, len(all_structured))
+        total_raw = sum(len(v) for v in cases_by_chunk.values())
+        log.info("All %d chunks processed in %.1fs — %d raw cases", n_chunks, time.time()-step5_start, total_raw)
 
         dedup_start = time.time()
-        deduped = _dedup_cases_llm(
-            openai_client=openai_client_early,
-            model=settings.model_blocks,
-            fallback_models=settings.model_blocks_fallback,
-            cases=all_structured,
-        )
-        log.info("Dedup completed in %.1fs: %d → %d cases", time.time()-dedup_start, len(all_structured), len(deduped))
+        deduped = _dedup_adjacent_chunks(cases_by_chunk)
+        log.info("Adjacent dedup completed in %.1fs: %d → %d cases", time.time()-dedup_start, total_raw, len(deduped))
 
         # ─────────────────────────────────────────────────────────────
         # Step 6: Post structured cases to signal-bot (batch embed on bot side)
