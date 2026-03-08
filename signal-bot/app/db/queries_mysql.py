@@ -142,6 +142,31 @@ def get_recent_raw_messages(db: MySQL, group_id: str, limit: int = 30) -> List[R
     ]
 
 
+def get_messages_in_ts_range(db: MySQL, group_id: str, ts_min: int, ts_max: int) -> List[RawMessage]:
+    """Return all messages in a group between ts_min and ts_max (inclusive)."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            """
+            SELECT message_id, group_id, ts, sender_hash, sender_name, content_text, image_paths_json, reply_to_id
+            FROM raw_messages
+            WHERE group_id = %s AND ts >= %s AND ts <= %s
+            ORDER BY ts
+            """,
+            (group_id, ts_min, ts_max),
+        )
+        return [
+            RawMessage(
+                message_id=r[0], group_id=r[1], ts=int(r[2]),
+                sender_hash=r[3], sender_name=r[4],
+                content_text=r[5] or "",
+                image_paths=_parse_json_list(r[6]),
+                reply_to_id=r[7],
+            )
+            for r in cur.fetchall()
+        ]
+
+
 def get_last_messages_text(db: MySQL, group_id: str, n: int, bot_sender_hash: str = "") -> List[str]:
     """Return last n messages as plain text strings (oldest-first).
 

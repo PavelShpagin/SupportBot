@@ -332,7 +332,33 @@ def _load_images(
     return images
 
 
+def _expand_evidence_with_gap_attachments(deps: WorkerDeps, group_id: str, evidence_ids: List[str]) -> List[str]:
+    """Add messages with attachments that fall in the ts range but weren't in the LLM span."""
+    if len(evidence_ids) < 2:
+        return evidence_ids
+
+    ts_values = []
+    for mid in evidence_ids:
+        msg = get_raw_message(deps.db, message_id=mid)
+        if msg:
+            ts_values.append(msg.ts)
+    if len(ts_values) < 2:
+        return evidence_ids
+
+    from app.db.queries_mysql import get_messages_in_ts_range
+    ts_min, ts_max = min(ts_values), max(ts_values)
+    gap_msgs = get_messages_in_ts_range(deps.db, group_id, ts_min, ts_max)
+    existing = set(evidence_ids)
+    expanded = list(evidence_ids)
+    for gm in gap_msgs:
+        if gm.message_id not in existing and gm.image_paths:
+            expanded.append(gm.message_id)
+            log.debug("Added gap message %s with attachments to evidence", gm.message_id)
+    return expanded
+
+
 def _collect_evidence_image_paths(deps: WorkerDeps, evidence_ids: List[str]) -> List[str]:
+    """Collect attachment paths from evidence messages."""
     paths: List[str] = []
     for mid in evidence_ids:
         msg = get_raw_message(deps.db, message_id=mid)
@@ -729,6 +755,8 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
             for i in range(case.start_idx, case.end_idx + 1)
             if extraction_blocks[i].message_id
         ]
+        # Also include attachment-bearing messages in the ts gap (LLM often skips them)
+        evidence_ids = _expand_evidence_with_gap_attachments(deps, group_id, evidence_ids)
         evidence_image_paths = _collect_evidence_image_paths(deps, evidence_ids)
 
         case_id = new_case_id(deps.db)
