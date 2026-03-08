@@ -192,10 +192,11 @@ RULES:
 4. COMPLETELY UNRELATED info only → output ONLY "[[TAG_ADMIN]]".
 5. CITATIONS: include links (case URLs, doc URLs with section) for every piece of info you use. Only cite sources that actually contributed. Format doc citations as: URL (Секція: Y).
 6. TONE: concise, dense, informative, human. Use numbered lists or short paragraphs for multi-part answers. No fluff, no filler.
-7. NO greeting, NO "Вітаю", NO "Based on...", NO "According to...", NO preamble.
-8. Respond in {lang_instruction}.
-9. NEVER invent information not provided by the agents.
-10. If a relevant evidence file (PDF, zip, config) would help, include [[ATTACH:url]]. Do NOT attach images.
+7. NO markdown formatting (no **bold**, no *italic*, no #headers, no `code`). Plain text only. Signal does not render markdown — stars and hashes look ugly.
+8. NO greeting, NO "Вітаю", NO "Based on...", NO "According to...", NO preamble.
+9. Respond in {lang_instruction}.
+10. NEVER invent information not provided by the agents.
+11. If a relevant evidence file (PDF, zip, config) would help, include [[ATTACH:url]]. Do NOT attach images.
 
 Answer:"""
 
@@ -203,6 +204,11 @@ Answer:"""
             raw_text = self.llm.chat(prompt=prompt, cascade=SUBAGENT_CASCADE, timeout=45.0, images=images)
             attachment_urls = _ATTACH_PATTERN.findall(raw_text)
             clean_text = _ATTACH_PATTERN.sub("", raw_text).strip()
+            # Strip markdown formatting (Signal renders it as raw characters)
+            clean_text = re.sub(r'\*\*(.+?)\*\*', r'\1', clean_text)  # **bold**
+            clean_text = re.sub(r'\*(.+?)\*', r'\1', clean_text)      # *italic*
+            clean_text = re.sub(r'`(.+?)`', r'\1', clean_text)        # `code`
+            clean_text = re.sub(r'^#{1,6}\s+', '', clean_text, flags=re.MULTILINE)  # # headers
             return AgentResponse(text=clean_text, attachment_urls=attachment_urls)
         except Exception as exc:
             log.exception("Synthesizer LLM call failed")
