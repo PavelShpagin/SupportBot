@@ -526,54 +526,22 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
         return
     # -----------------------------
 
-    # Self-heal stale onboarding sessions: if a user comes back much later,
-    # silently reset and treat the incoming text as a group name (skip welcome).
-    session_was_stale = False
-    if (
-        session is not None
-        and session.state == "awaiting_group_name"
-        and session.updated_at is not None
-    ):
-        session_age_seconds = (datetime.utcnow() - session.updated_at).total_seconds()
-        stale_after_seconds = settings.admin_session_stale_minutes * 60
-        if session_age_seconds >= stale_after_seconds:
-            log.info(
-                "Admin %s session is stale (age=%ss >= %ss). Silently resetting.",
-                admin_id,
-                int(session_age_seconds),
-                stale_after_seconds,
-            )
-            try:
-                delete_admin_session(db, admin_id)
-            except Exception:
-                log.exception("Failed to delete stale session for %s", admin_id)
-            session = None
-            session_was_stale = True
-
+    # No session → create one and send welcome
     if session is None:
         detected_lang = _detect_language(text)
         set_admin_awaiting_group_name(db, admin_id)
         set_admin_lang(db, admin_id, detected_lang)
-        if not session_was_stale:
-            from app.db.queries_mysql import admin_has_linked_groups
-            was_pruned = admin_has_linked_groups(db, admin_id)
-            if was_pruned:
-                log.info("Admin %s session was pruned but has linked groups — restoring without welcome", admin_id)
-            else:
-                log.info("New admin %s, detected language: %s, sending welcome", admin_id, detected_lang)
-                if not isinstance(signal, NoopSignalAdapter):
-                    sent = signal.send_onboarding_prompt(recipient=admin_id, lang=detected_lang)
-                    if not sent:
-                        from app.db.queries_mysql import unlink_admin_from_all_groups
-                        delete_admin_session(db, admin_id)
-                        unlink_admin_from_all_groups(db, admin_id)
-                        log.info("Cleared session for blocked/removed user %s", admin_id)
-                    return  # Wait for next message with group name
-        else:
-            log.info("Admin %s stale session reset, processing '%s' as group name", admin_id, text)
-        lang = detected_lang
-    else:
-        lang = session.lang
+        log.info("New admin %s, detected language: %s, sending welcome", admin_id, detected_lang)
+        if not isinstance(signal, NoopSignalAdapter):
+            sent = signal.send_onboarding_prompt(recipient=admin_id, lang=detected_lang)
+            if not sent:
+                from app.db.queries_mysql import unlink_admin_from_all_groups
+                delete_admin_session(db, admin_id)
+                unlink_admin_from_all_groups(db, admin_id)
+                log.info("Cleared session for blocked/removed user %s", admin_id)
+        return  # Wait for next message with group name
+
+    lang = session.lang
 
     if not text:
         # Attachment-only or sticker messages have no text — ignore silently
