@@ -1037,7 +1037,7 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
             # Also append to buffer with [BOT] tag
             bot_line = _format_buffer_line(bot_msg, is_bot=True)
             buf = get_buffer(deps.db, group_id=group_id)
-            set_buffer(deps.db, group_id=group_id, text=(buf or "") + bot_line)
+            set_buffer(deps.db, group_id=group_id, buffer_text=(buf or "") + bot_line)
             log.info("Stored bot response in raw_messages ts=%s and appended to buffer", sent_ts)
 
         # Send file attachments if any
