@@ -1227,12 +1227,13 @@ def _notify_link_result(*, settings, token: str, success: bool, message_count: i
         log.exception("Failed to notify link result")
 
 
-def _send_qr_to_user(*, settings, token: str, qr_image: bytes) -> bool:
+def _send_qr_to_user(*, settings, token: str, qr_image: bytes, is_refresh: bool = False) -> bool:
     """Send QR code image to user via signal-bot."""
     import base64
     payload = {
         "token": token,
         "qr_image_base64": base64.b64encode(qr_image).decode("utf-8"),
+        "is_refresh": is_refresh,
     }
     url = settings.signal_bot_url.rstrip("/") + "/history/qr-code"
     try:
@@ -1449,11 +1450,14 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
 
         # Step 2: Wait for user to scan QR code.
         # Signal QR codes expire after 90 seconds (server-side timeout).
-        # We wait a bit longer to account for network delay in delivery.
+        # We auto-refresh every 80s so the user always has a valid QR in
+        # chat. As long as no failure message is sent, the QR works.
         log.info("Waiting for user to scan QR code...")
-        max_wait_seconds = 120  # 90s QR lifetime + 30s buffer
+        max_wait_seconds = 570
         poll_interval = 3
         waited = 0
+        qr_refresh_interval = 80  # refresh before 90s server expiry
+        last_qr_time = time.time()
 
         while waited < max_wait_seconds:
             check_cancelled()
@@ -1464,8 +1468,20 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
             if status.get("has_user_conversations"):
                 log.info("User linked! Found %d conversations", status.get("conversations_count", 0))
                 break
+
+            # Auto-refresh QR before it expires
+            since_last_qr = time.time() - last_qr_time
+            if since_last_qr >= qr_refresh_interval:
+                log.info("Refreshing QR (%.0fs since last)...", since_last_qr)
+                new_qr = _refresh_qr_code(settings)
+                if new_qr:
+                    _send_qr_to_user(settings=settings, token=token, qr_image=new_qr, is_refresh=True)
+                    log.info("Sent refreshed QR to user")
+                    last_qr_time = time.time()
+                else:
+                    log.warning("QR refresh failed")
         else:
-            log.warning("QR code expired after %ds without a successful scan", max_wait_seconds)
+            log.warning("Scan timeout after %ds without a successful scan", max_wait_seconds)
             _notify_link_result(
                 settings=settings,
                 token=token,

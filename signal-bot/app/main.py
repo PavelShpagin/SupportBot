@@ -1498,6 +1498,7 @@ class HistoryQrCodeRequest(BaseModel):
     """Called by signal-ingest to send QR code image to user."""
     token: str
     qr_image_base64: str
+    is_refresh: bool = False
 
 
 @app.post("/history/qr-code")
@@ -1508,55 +1509,61 @@ def history_qr_code(req: HistoryQrCodeRequest) -> dict:
     import base64
     import tempfile
     import os
-    
+
     session = get_admin_by_token(db, req.token)
     if session is None:
         log.warning("No admin session found for token %s (qr-code)", req.token)
         return {"ok": False, "error": "session_not_found"}
-    
+
     admin_id = session.admin_id
     lang = session.lang
-    
+
     # Decode and save QR image temporarily
     try:
         qr_bytes = base64.b64decode(req.qr_image_base64)
-        
+
         # Save to temp file
         with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as f:
             f.write(qr_bytes)
             qr_path = f.name
-        
-        # Send QR code to user with instructions
-        if lang == "uk":
-            caption = (
-                "Відскануйте цей QR-код у Signal:\n\n"
-                "1. Відкрийте Signal на телефоні\n"
-                "2. Іконка профілю → Пов'язані пристрої → Додати пристрій\n"
-                "3. Відскануйте QR-код\n"
-                "4. Натисніть «Перенести історію повідомлень» (Transfer message history)\n\n"
-                "Примітка: макс. 5 пов'язаних пристроїв. Видаліть один при ліміті.\n\n"
-                "QR-код дійсний 2 хвилини. Скануйте одразу!"
-            )
+
+        # First QR: full instructions. Refreshed QR: short caption.
+        if req.is_refresh:
+            if lang == "uk":
+                caption = "Оновлений QR-код (попередній закінчився). Скануйте одразу!"
+            else:
+                caption = "Refreshed QR code (previous one expired). Scan now!"
         else:
-            caption = (
-                "Scan this QR code in Signal:\n\n"
-                "1. Open Signal on your phone\n"
-                "2. Profile Icon → Linked Devices → Link New Device\n"
-                "3. Scan the QR code\n"
-                "4. Click \"Transfer message history\"\n\n"
-                "Note: max 5 linked devices. Remove one if limit reached.\n\n"
-                "QR code valid for 2 minutes. Scan immediately!"
-            )
-        
+            if lang == "uk":
+                caption = (
+                    "Відскануйте цей QR-код у Signal:\n\n"
+                    "1. Відкрийте Signal на телефоні\n"
+                    "2. Іконка профілю → Пов'язані пристрої → Додати пристрій\n"
+                    "3. Відскануйте QR-код\n"
+                    "4. Натисніть «Перенести історію повідомлень» (Transfer message history)\n\n"
+                    "Примітка: макс. 5 пов'язаних пристроїв. Видаліть один при ліміті.\n\n"
+                    "QR-код дійсний ~2 хвилини. Якщо не встигнете — надішлю новий автоматично."
+                )
+            else:
+                caption = (
+                    "Scan this QR code in Signal:\n\n"
+                    "1. Open Signal on your phone\n"
+                    "2. Profile Icon → Linked Devices → Link New Device\n"
+                    "3. Scan the QR code\n"
+                    "4. Click \"Transfer message history\"\n\n"
+                    "Note: max 5 linked devices. Remove one if limit reached.\n\n"
+                    "QR code valid for ~2 minutes. If it expires, a new one will be sent automatically."
+                )
+
         if not isinstance(signal, NoopSignalAdapter):
             signal.send_direct_image(recipient=admin_id, image_path=qr_path, caption=caption,
                                      retries=4, retry_delay=8.0)
-        
+
         # Clean up temp file
         os.unlink(qr_path)
-        log.info("QR code sent to %s successfully", admin_id)
+        log.info("QR code sent to %s (refresh=%s)", admin_id, req.is_refresh)
         return {"ok": True}
-        
+
     except Exception as e:
         log.exception("Failed to send QR code to user after retries")
         # Try to clean up temp file even on failure
