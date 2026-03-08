@@ -788,14 +788,34 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         log.info("Promoted recommendation case %s → solved (group=%s)", promo.case_id, group_id[:20])
 
     # ── Process updates to existing cases ──
+    from app.db.queries_mysql import get_case, update_case_solution, get_case_evidence_ids
     for upd in result.updates:
-        # Only update solution_summary; don't change status
-        from app.db.queries_mysql import get_case
         existing = get_case(deps.db, upd.case_id)
         if not existing or not upd.solution_summary.strip():
             continue
-        update_case_to_solved(deps.db, upd.case_id, upd.solution_summary)
-        log.info("Updated case %s solution (group=%s)", upd.case_id, group_id[:20])
+        new_evidence_images = _collect_evidence_image_paths(deps, upd.additional_evidence_ids) if upd.additional_evidence_ids else []
+        all_evidence_images = list(existing.get("evidence_image_paths") or [])
+        for p in new_evidence_images:
+            if p not in all_evidence_images:
+                all_evidence_images.append(p)
+        update_case_solution(deps.db, upd.case_id, upd.solution_summary, new_evidence_ids=upd.additional_evidence_ids or None)
+        all_evidence_ids = get_case_evidence_ids(deps.db, upd.case_id)
+        # Re-index in RAG with updated solution
+        if existing.get("status") == "solved" or (existing.get("status") == "recommendation" and existing.get("in_rag")):
+            _index_case_in_rag(
+                deps,
+                case_id=upd.case_id,
+                group_id=group_id,
+                problem_title=existing["problem_title"],
+                problem_summary=existing["problem_summary"],
+                solution_summary=upd.solution_summary,
+                tags=existing.get("tags") or [],
+                evidence_ids=all_evidence_ids,
+                evidence_image_paths=all_evidence_images,
+                status=existing["status"],
+            )
+        log.info("Updated case %s solution + %d new evidence msgs (group=%s)",
+                 upd.case_id, len(upd.additional_evidence_ids), group_id[:20])
 
     # ── Age-out indexing: recommendation cases whose evidence left the buffer ──
     _index_aged_out_recommendations(deps, group_id, buffer_msg_ids)
@@ -906,10 +926,6 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
             )
             if not gate.consider and not force:
                 log.info("MAYBE_RESPOND: gate filtered message (tag=%s)", gate_tag)
-                return
-            # ongoing_discussion = users talking to each other; don't interrupt
-            if gate_tag == "ongoing_discussion" and not force:
-                log.info("MAYBE_RESPOND: skipping ongoing_discussion (users talking to each other)")
                 return
         except Exception as _gate_err:
             log.warning("Gate failed, proceeding without filter: %s", _gate_err)
