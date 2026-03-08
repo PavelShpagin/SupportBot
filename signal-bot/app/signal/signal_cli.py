@@ -598,9 +598,24 @@ class SignalCliAdapter:
                     if gid:
                         raw_members = g.get("members") or []
                         raw_admins = g.get("admins") or []
-                        member_numbers = [m.get("number", "") for m in raw_members if isinstance(m, dict) and m.get("number")]
-                        admin_numbers = [m.get("number", "") for m in raw_admins if isinstance(m, dict) and m.get("number")]
-                        groups.append(GroupInfo(group_id=str(gid), group_name=str(gname), description=gdesc, members=member_numbers, admins=admin_numbers))
+                        # Collect both phone numbers and UUIDs so member checks work with either identifier
+                        member_ids = []
+                        for m in raw_members:
+                            if not isinstance(m, dict):
+                                continue
+                            if m.get("number"):
+                                member_ids.append(m["number"])
+                            if m.get("uuid"):
+                                member_ids.append(m["uuid"])
+                        admin_ids = []
+                        for m in raw_admins:
+                            if not isinstance(m, dict):
+                                continue
+                            if m.get("number"):
+                                admin_ids.append(m["number"])
+                            if m.get("uuid"):
+                                admin_ids.append(m["uuid"])
+                        groups.append(GroupInfo(group_id=str(gid), group_name=str(gname), description=gdesc, members=member_ids, admins=admin_ids))
         except json.JSONDecodeError:
             log.warning("Failed to parse listGroups output")
         return groups
