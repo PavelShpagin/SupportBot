@@ -927,15 +927,12 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         gate_images: list[tuple[bytes, str]] | None = None
         gate_message_text = msg.content_text
         if msg.image_paths:
-            loaded = []
-            for img_path in msg.image_paths[:2]:
-                try:
-                    mime, _ = mimetypes.guess_type(img_path)
-                    mime = mime or "image/jpeg"
-                    with open(img_path, "rb") as fh:
-                        loaded.append((fh.read(), mime))
-                except Exception as _img_err:
-                    log.debug("Gate: could not load image %s: %s", img_path, _img_err)
+            loaded = _load_images(
+                settings=deps.settings,
+                image_paths=[p for p in msg.image_paths if _is_image_path(p)],
+                max_images=2,
+                total_budget_bytes=deps.settings.max_total_image_bytes,
+            )
             if loaded:
                 gate_images = loaded
                 markers = " ".join(f"[[IMG:{j}]]" for j in range(len(loaded)))
