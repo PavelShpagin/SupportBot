@@ -602,7 +602,12 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
 
     # INSTANT FEEDBACK: Tell user we found it and generating QR
     signal.send_processing_message(recipient=admin_id, group_name=group.group_name, lang=lang)
-    
+
+    # Link admin to group IMMEDIATELY so bot can respond in the group
+    # even if the QR/history import fails or is skipped.
+    link_admin_to_group(db, admin_id=admin_id, group_id=group.group_id)
+    log.info("Admin %s linked to group %s (pre-QR)", admin_id, group.group_id)
+
     # Cancel any existing history jobs for this admin before creating a new one
     # This ensures only ONE job runs at a time per admin (signal-cli can only link one device)
     cancelled = cancel_all_history_jobs_for_admin(db, admin_id)
