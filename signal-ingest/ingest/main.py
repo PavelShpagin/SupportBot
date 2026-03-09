@@ -1506,7 +1506,7 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
         # server (typically 10-30s). We poll until the group appears or timeout.
         convs_url = settings.signal_desktop_url.rstrip("/") + "/conversations"
         group_name_lower = group_name.lower().strip() if group_name else ""
-        sync_timeout = 600  # seconds — groups can take 5-10 min to sync for accounts with 100+ groups
+        sync_timeout = 3600  # seconds — groups can take very long to sync; 1 hour max
         sync_poll = 5
         sync_waited = 0
         admin_in_group = False
