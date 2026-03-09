@@ -30,7 +30,7 @@ export default function Privacy() {
       <Head>
         <title>SupportBot — {lang === 'uk' ? 'Конфіденційність та Умови' : 'Privacy & Terms'}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="icon" type="image/png" href="/supportbot-logo.png" />
+        <link rel="icon" type="image/png" href="/favicon.png" />
       </Head>
 
       <style jsx global>{`
@@ -167,7 +167,7 @@ export default function Privacy() {
         <div className="card">
           <header>
             <div className="header-left">
-              <img src="/supportbot-logo.png" alt="SupportBot" className="logo" />
+              <img src="/supportbot-logo-128.png" alt="SupportBot" className="logo" />
               <span className="brand">SupportBot</span>
             </div>
             <div className="lang-switch">
@@ -254,7 +254,7 @@ export default function Privacy() {
               <h2>9. Контакти</h2>
               <p>З питань конфіденційності або для запиту на видалення даних зверніться до адміністратора вашої групи або напишіть нам: <a href="mailto:support@theacademia.tech">support@theacademia.tech</a></p>
 
-              <Link href="/" className="back-link">← На головну</Link>
+              <Link href="/?lang=uk" className="back-link">← На головну</Link>
             </main>
           ) : (
             <main>
