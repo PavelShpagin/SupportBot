@@ -227,9 +227,10 @@ def ingest_message(
             stored_path = str(img_path)
             if _r2.is_enabled():
                 r2_key = f"attachments/{group_id}/{img_path.name}"
-                r2_url = _r2.upload(r2_key, file_bytes, ct)
-                if r2_url:
-                    stored_path = r2_url
+                try:
+                    stored_path = _r2.upload(r2_key, file_bytes, ct)
+                except Exception:
+                    log.error("R2 upload failed for %s — storing local path as fallback", img_path.name)
             stored_image_paths.append(stored_path)
 
         if _is_image(ct):
@@ -258,7 +259,10 @@ def ingest_message(
                 thumb_stored = None
                 if _r2.is_enabled():
                     thumb_key = f"attachments/{group_id}/{thumb_name}"
-                    thumb_stored = _r2.upload(thumb_key, thumb_bytes, "image/jpeg")
+                    try:
+                        thumb_stored = _r2.upload(thumb_key, thumb_bytes, "image/jpeg")
+                    except Exception:
+                        log.error("R2 upload failed for video thumbnail %s", thumb_name)
                 if thumb_stored:
                     stored_image_paths.append(thumb_stored)
                 try:

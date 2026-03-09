@@ -1713,8 +1713,11 @@ def _save_history_images(
 
         def _upload_one(idx, raw_bytes, content_type, filename):
             key = f"history/{group_id}/{filename}"
-            url = _r2.upload(key, raw_bytes, content_type)
-            return idx, url, key
+            try:
+                url = _r2.upload(key, raw_bytes, content_type)
+                return idx, url, key
+            except Exception:
+                return idx, None, key
 
         with ThreadPoolExecutor(max_workers=min(len(items), 8)) as pool:
             futs = [pool.submit(_upload_one, j, rb, ct, fn) for j, (rb, ct, fn, _) in enumerate(items)]
@@ -1723,7 +1726,7 @@ def _save_history_images(
                 if url:
                     results[idx] = url
                 else:
-                    log.warning("R2 upload failed for %s, falling back to disk", key)
+                    log.error("R2 upload failed for %s, falling back to disk", key)
                     rb, ct, fn, _ = items[idx]
                     dest_dir = Path(storage_root) / "history" / group_id
                     try:

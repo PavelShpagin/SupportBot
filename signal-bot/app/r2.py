@@ -78,20 +78,24 @@ def is_enabled() -> bool:
     return _r2_enabled
 
 
+class R2UploadError(Exception):
+    """Raised when an R2 upload fails after all retries."""
+
+
 def upload(
     key: str,
     data: bytes,
     content_type: str = "application/octet-stream",
     *,
-    retries: int = 3,
-    retry_delay: float = 2.0,
-) -> str | None:
+    retries: int = 5,
+    retry_delay: float = 1.0,
+) -> str:
     """Upload bytes to R2 under `key`. Retries on transient failures.
 
-    Returns the public URL or None if all attempts fail.
+    Returns the public URL. Raises R2UploadError if all attempts fail.
     """
     if not _r2_enabled or _r2_client is None:
-        return None
+        raise R2UploadError("R2 is not configured/enabled")
     import time as _time
 
     last_exc: Exception | None = None
@@ -104,7 +108,10 @@ def upload(
                 ContentType=content_type,
             )
             url = f"{_r2_public_url}/{key}"
-            log.info("Uploaded to R2: %s → %s", key, url)
+            if attempt > 1:
+                log.info("Uploaded to R2 on attempt %d: %s → %s", attempt, key, url)
+            else:
+                log.info("Uploaded to R2: %s → %s", key, url)
             return url
         except Exception as e:
             last_exc = e
@@ -116,8 +123,8 @@ def upload(
                 _time.sleep(retry_delay)
                 retry_delay *= 2
             else:
-                log.error("R2 upload failed after %d attempts for key=%s: %s", retries, key, e)
-    return None
+                log.error("R2 upload FAILED after %d attempts for key=%s: %s", retries, key, last_exc)
+    raise R2UploadError(f"R2 upload failed after {retries} attempts for key={key}: {last_exc}")
 
 
 def download(key: str) -> tuple[bytes, str] | None:
