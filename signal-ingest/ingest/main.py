@@ -2023,11 +2023,26 @@ def main() -> None:
     db = create_db(settings)
 
     log.info("signal-ingest started (poll=%.2fs)", settings.worker_poll_seconds)
-    
+
     if settings.use_signal_desktop:
         log.info("Mode: Signal Desktop (using already-linked instance at %s)", settings.signal_desktop_url)
     else:
         log.warning("Signal Desktop not enabled - history sync will not work")
+
+    # Recover stale in_progress jobs from crashed workers (e.g. deploy restarts)
+    try:
+        with db.connection() as conn:
+            cur = conn.cursor()
+            cur.execute(
+                "UPDATE jobs SET status = 'pending', attempts = attempts + 1 "
+                "WHERE status = 'in_progress' AND type IN ('HISTORY_LINK', 'HISTORY_SYNC')"
+            )
+            recovered = cur.rowcount
+            conn.commit()
+            if recovered:
+                log.info("Recovered %d stale in_progress jobs → pending", recovered)
+    except Exception as e:
+        log.warning("Failed to recover stale jobs: %s", e)
 
     while True:
         job = claim_next_job(db, allowed_types=[HISTORY_LINK, HISTORY_SYNC])
