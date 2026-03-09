@@ -1599,17 +1599,6 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
                 ),
             )
             return
-        except JobCancelled:
-            raise
-        except Exception as e:
-            log.error("Could not verify admin group membership ? blocking: %s", e)
-            _notify_link_result(
-                settings=settings,
-                token=token,
-                success=False,
-                note="Could not verify group membership. Please try again.",
-            )
-            return
 
         # ────────────────────────────────────────────────────────────────────────
         # Step 3: Wait for Signal Desktop to download group attachments
