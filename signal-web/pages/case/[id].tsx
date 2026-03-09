@@ -526,8 +526,14 @@ export default function CasePage({ data, publicApiUrl }: Props) {
                     </div>
                     {(() => {
                       let text = msg.content_text || '';
-                      // Strip all media markers from display text
-                      text = text.replace(/\n*\[Зображення[^\]]*\]|\n*\[image\]\s*\{[\s\S]*?\}|\n*\[image\]|\n*\[attachment:[^\]]*\]|\n*\[Відео:[^\]]*\]|\n*\[Транскрипт відео:[^\]]*\]/g, '').trim();
+                      // Strip all media/OCR markers from display text (AI-only metadata)
+                      text = text.replace(/\n*\[Зображення:[\s\S]*?\]/g, '').trim();
+                      text = text.replace(/\n*\[Зображення\]/g, '').trim();
+                      text = text.replace(/\n*\[image\]\s*\{[\s\S]*?\}/g, '').trim();
+                      text = text.replace(/\n*\[image\]/g, '').trim();
+                      text = text.replace(/\n*\[attachment:[^\]]*\]/g, '').trim();
+                      text = text.replace(/\n*\[Відео:[\s\S]*?\]/g, '').trim();
+                      text = text.replace(/\n*\[Транскрипт відео:[\s\S]*?\]/g, '').trim();
                       // Clean up raw JSON OCR blocks
                       text = text.replace(/\{"extracted_text"\s*:[\s\S]*?\}/g, '').trim();
                       return text ? <p className="message-text">{text}</p> : null;
