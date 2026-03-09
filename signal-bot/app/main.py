@@ -98,10 +98,10 @@ if settings.admin_whitelist and isinstance(signal, SignalCliAdapter):
     phones = [p for p in settings.admin_whitelist if p.startswith("+")]
     if phones:
         phone_to_uuid = signal.resolve_phone_to_uuid(phones)
-        for phone, uuid in phone_to_uuid.items():
-            if uuid not in settings.admin_whitelist:
-                settings.admin_whitelist.append(uuid)
-                log.info("Whitelist expanded: %s → %s", phone, uuid)
+        for phone, resolved_uuid in phone_to_uuid.items():
+            if resolved_uuid not in settings.admin_whitelist:
+                settings.admin_whitelist.append(resolved_uuid)
+                log.info("Whitelist expanded: %s → %s", phone, resolved_uuid)
 
 _bot_sender_hash = hash_sender(settings.signal_bot_e164) if settings.signal_bot_e164 else ""
 deps = WorkerDeps(
