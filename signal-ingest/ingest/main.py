@@ -1239,7 +1239,7 @@ def _send_qr_to_user(*, settings, token: str, qr_image: bytes,
     }
     url = settings.signal_bot_url.rstrip("/") + "/history/qr-code"
     try:
-        with httpx.Client(timeout=30) as client:
+        with httpx.Client(timeout=90) as client:
             r = client.post(url, json=payload)
             r.raise_for_status()
             log.info("Sent QR code to user")
