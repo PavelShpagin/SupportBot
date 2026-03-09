@@ -552,8 +552,8 @@ def _fetch_attachments_direct(
     settings,
     group_id: str,
     group_name: str,
-    timeout: int = 180,
-    retries: int = 3,
+    timeout: int = 30,
+    retries: int = 1,
 ) -> dict:
     """Download all pending group attachments from Signal's CDN or decrypt
     v2 locally-encrypted files.  Retries on failure.
@@ -597,7 +597,7 @@ def _get_desktop_messages(settings, group_id: str, group_name: str, limit: int =
     params = {"group_id": group_id, "limit": limit, "group_name": group_name}
     
     try:
-        with httpx.Client(timeout=120) as client:
+        with httpx.Client(timeout=180) as client:
             r = client.get(url, params=params)
             r.raise_for_status()
             data = r.json()
@@ -1800,9 +1800,6 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
                     prev_dl = group_dl_count
         else:
             log.info("No attachments found for group %s — skipping wait", group_name or group_id)
-
-        # Second CDN fetch after wait — catches attachments that appeared during the wait period.
-        _fetch_attachments_direct(settings, group_id=group_id, group_name=group_name)
 
         check_cancelled()
 
