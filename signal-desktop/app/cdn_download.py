@@ -128,7 +128,7 @@ def download_from_cdn(
     for attempt in range(1, retries + 1):
         try:
             log.debug("Downloading attachment from CDN %d (attempt %d): %s", cdn_number, attempt, url)
-            with httpx.Client(timeout=timeout) as client:
+            with httpx.Client(timeout=timeout, verify=False) as client:
                 r = client.get(url, headers={"Authorization": auth})
                 r.raise_for_status()
                 return r.content
