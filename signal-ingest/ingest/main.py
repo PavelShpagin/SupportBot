@@ -1390,25 +1390,25 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
         log.info("Resetting Signal Desktop for new user link...")
         _reset_desktop(settings)
 
-        # Give Signal Desktop extra time for cold boot before polling
-        time.sleep(10)
+        # Give Signal Desktop a moment after reset before polling
+        time.sleep(3)
 
         # Poll /status until Signal Desktop is unlinked AND DevTools is connected
         log.info("Waiting for Signal Desktop to show QR code (polling status)...")
         qr_image = b""
-        for attempt in range(50):  # up to 150 seconds
-            time.sleep(3)
+        for attempt in range(60):  # up to ~120 seconds
+            time.sleep(2)
             try:
                 status = _check_desktop_status(settings)
                 is_unlinked = not status.get("linked", True)
                 devtools_ready = status.get("devtools_connected", False)
                 log.info(
-                    "Desktop status: linked=%s devtools=%s (%d/50)",
+                    "Desktop status: linked=%s devtools=%s (%d/60)",
                     status.get("linked"), devtools_ready, attempt + 1,
                 )
                 if is_unlinked and devtools_ready:
                     log.info("Signal Desktop is unlinked and DevTools ready — fetching QR")
-                    time.sleep(5)  # let QR fully render
+                    time.sleep(2)  # let QR fully render
                     # Try clean QR generation first (extracts URL from DOM, regenerates QR)
                     qr_image = _get_clean_qr(settings)
                     if qr_image:
