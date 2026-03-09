@@ -1375,6 +1375,7 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
     token = str(payload["token"])
     group_id = str(payload["group_id"])
     group_name = str(payload.get("group_name", ""))
+    lang = str(payload.get("lang", "uk"))
 
     def check_cancelled():
         if is_job_cancelled(db, job_id=job_id):
@@ -1997,7 +1998,10 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
         total_with_att = sum(1 for m in msgs if m.get("attachments"))
         note = ""
         if total_with_att:
-            note = f"Images: {total_payloads} fetched from {total_with_att} messages with attachments."
+            if lang == "uk":
+                note = f"Зображення: {total_payloads} завантажено з {total_with_att} повідомлень з вкладеннями."
+            else:
+                note = f"Images: {total_payloads} fetched from {total_with_att} messages with attachments."
 
         _notify_link_result(
             settings=settings,

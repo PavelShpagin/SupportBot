@@ -1437,8 +1437,8 @@ def _format_progress_message(key: str, lang: str, **kwargs) -> str:
 
     elif key == "syncing":
         if lang == "uk":
-            return "Синхронізація Signal... зачекайте до хвилини."
-        return "Syncing Signal... please wait up to a minute."
+            return "Синхронізація Signal... зачекайте, це може зайняти кілька хвилин."
+        return "Syncing Signal... please wait, this may take a few minutes."
 
     elif key == "already_linked":
         if lang == "uk":
