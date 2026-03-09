@@ -198,6 +198,7 @@ RULES:
 9. Respond in {lang_instruction}.
 10. NEVER invent information not provided by the agents.
 11. If evidence files are available, share them with the user via [[ATTACH:url]]. Do NOT attach images.
+12. IMAGES: if the user attached an image with visible text (model numbers, labels, error messages, screenshots), treat OCR-extracted text as HARD FACT. Identify the product/component/error confidently — do not hedge or say "hard to determine from a photo" when the text is clearly readable.
 
 Answer:"""
 
