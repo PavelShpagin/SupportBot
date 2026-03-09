@@ -142,8 +142,11 @@ cmd_push() {
     log_success "Code pushed to $VM_IP:$REMOTE_DIR"
 
     # Rebuild and restart containers (code is baked into images)
+    # NOTE: signal-desktop is excluded — it holds Signal link state and synced
+    # media. Recreating it would force a re-link and lose all cached attachments.
+    # Use 'deploy-oci.sh full' to rebuild everything including desktop.
     log_info "Rebuilding containers..."
-    ssh_cmd "cd $REMOTE_DIR && docker compose -f docker-compose.yml up -d --build signal-bot signal-ingest signal-web"
+    ssh_cmd "cd $REMOTE_DIR && docker compose -f docker-compose.yml up -d --build --no-deps signal-bot signal-ingest signal-web"
     log_success "Containers rebuilt and restarted"
 }
 
