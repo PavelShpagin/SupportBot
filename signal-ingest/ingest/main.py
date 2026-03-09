@@ -1506,11 +1506,10 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
         # server (typically 10-30s). We poll until the group appears or timeout.
         convs_url = settings.signal_desktop_url.rstrip("/") + "/conversations"
         group_name_lower = group_name.lower().strip() if group_name else ""
-        sync_timeout = 3600  # seconds — groups can take very long to sync; 1 hour max
         sync_poll = 5
-        sync_waited = 0
         admin_in_group = False
-        last_conv_count = 0
+        max_retries = 3  # auto-retry if sync fails (Signal server issue)
+        sync_timeout_per_attempt = 120  # 2 min per attempt
 
         def _check_group_in_convs(convs_data: list) -> bool:
             for conv in convs_data:
@@ -1522,55 +1521,122 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
                     return True
             return False
 
-        try:
-            while sync_waited <= sync_timeout:
-                check_cancelled()
-                with httpx.Client(timeout=30) as client:
-                    resp = client.get(convs_url)
-                    resp.raise_for_status()
-                    convs_data = resp.json().get("conversations", [])
+        def _has_any_groups(convs_data: list) -> bool:
+            return any(c.get("type") == "group" for c in convs_data)
 
-                if _check_group_in_convs(convs_data):
-                    admin_in_group = True
-                    log.info(
-                        "Admin verified in group '%s' after %ds sync (%d conversations)",
-                        group_name, sync_waited, len(convs_data)
-                    )
+        for retry in range(max_retries):
+            sync_waited = 0
+            last_conv_count = 0
+            stale_since = 0  # seconds with no new conversations
+
+            try:
+                while sync_waited <= sync_timeout_per_attempt:
+                    check_cancelled()
+                    with httpx.Client(timeout=30) as client:
+                        resp = client.get(convs_url)
+                        resp.raise_for_status()
+                        convs_data = resp.json().get("conversations", [])
+
+                    if _check_group_in_convs(convs_data):
+                        admin_in_group = True
+                        log.info(
+                            "Admin verified in group '%s' after %ds sync, attempt %d (%d conversations)",
+                            group_name, sync_waited, retry + 1, len(convs_data)
+                        )
+                        break
+
+                    cur_count = len(convs_data)
+                    if sync_waited == 0:
+                        log.info(
+                            "Group '%s' not yet in admin's %d conversations — waiting for sync (attempt %d/%d)...",
+                            group_name, cur_count, retry + 1, max_retries
+                        )
+                        _notify_progress(settings=settings, token=token, progress_key="syncing")
+                    elif cur_count != last_conv_count:
+                        log.info(
+                            "Sync in progress: %d conversations now (was %d), %ds elapsed — still waiting for '%s'",
+                            cur_count, last_conv_count, sync_waited, group_name
+                        )
+                        stale_since = 0
+                    else:
+                        stale_since += sync_poll
+
+                    # Early exit: if conversation count hasn't changed for 60s
+                    # and we still have no groups, sync likely failed on Signal's side
+                    if stale_since >= 60 and not _has_any_groups(convs_data):
+                        log.warning(
+                            "Sync stalled: %d conversations (0 groups) unchanged for %ds — Signal sync likely failed",
+                            cur_count, stale_since
+                        )
+                        break
+
+                    last_conv_count = cur_count
+                    sync_waited += sync_poll
+                    if sync_waited <= sync_timeout_per_attempt:
+                        time.sleep(sync_poll)
+
+            except JobCancelled:
+                raise
+            except Exception as e:
+                log.error("Sync poll error on attempt %d: %s", retry + 1, e)
+
+            if admin_in_group:
+                break
+
+            # Retry: reset Signal Desktop and re-link with a new QR
+            if retry < max_retries - 1:
+                log.info(
+                    "Sync failed (attempt %d/%d), resetting Signal Desktop for retry...",
+                    retry + 1, max_retries
+                )
+                _reset_desktop(settings)
+                time.sleep(3)
+                # Wait for desktop to be ready again
+                for attempt in range(60):
+                    time.sleep(2)
+                    try:
+                        status = _check_desktop_status(settings)
+                        if not status.get("linked", True) and status.get("devtools_connected", False):
+                            time.sleep(2)
+                            new_qr = _get_clean_qr(settings)
+                            if new_qr:
+                                _send_qr_to_user(settings=settings, token=token, qr_image=new_qr, is_refresh=True)
+                                log.info("Sent retry QR to user (attempt %d/%d)", retry + 2, max_retries)
+                            break
+                    except Exception:
+                        pass
+
+                # Wait for user to scan the new QR
+                scan_waited = 0
+                while scan_waited < 300:
+                    check_cancelled()
+                    time.sleep(3)
+                    scan_waited += 3
+                    status = _check_desktop_status(settings)
+                    if status.get("has_user_conversations"):
+                        log.info("User re-linked on attempt %d!", retry + 2)
+                        break
+                else:
+                    log.warning("User did not scan retry QR within 5 min")
                     break
 
-                cur_count = len(convs_data)
-                if sync_waited == 0:
-                    log.info(
-                        "Group '%s' not yet in admin's %d conversations — waiting for sync...",
-                        group_name, cur_count
-                    )
-                    _notify_progress(settings=settings, token=token, progress_key="syncing")
-                elif cur_count != last_conv_count:
-                    log.info(
-                        "Sync in progress: %d conversations now (was %d), %ds elapsed — still waiting for '%s'",
-                        cur_count, last_conv_count, sync_waited, group_name
-                    )
-                last_conv_count = cur_count
-                sync_waited += sync_poll
-                if sync_waited <= sync_timeout:
-                    time.sleep(sync_poll)
-
-            if not admin_in_group:
-                log.warning(
-                    "SECURITY BLOCK: Admin is NOT in group '%s' (id=%s...) after %ds sync. "
-                    "Admin has %d conversations.",
-                    group_name, group_id[:20], sync_timeout, len(convs_data)
-                )
-                _notify_link_result(
-                    settings=settings,
-                    token=token,
-                    success=False,
-                    note=(
-                        f"Your Signal account is not in group '{group_name}'. "
-                        "Both you and the bot must be members to import history."
-                    ),
-                )
-                return
+        if not admin_in_group:
+            log.warning(
+                "SYNC FAILED: Group '%s' not found after %d attempts. "
+                "Admin has %d conversations.",
+                group_name, max_retries, len(convs_data)
+            )
+            _notify_link_result(
+                settings=settings,
+                token=token,
+                success=False,
+                note=(
+                    "Signal не зміг синхронізувати групи. Це проблема на стороні Signal, спробуйте ще раз."
+                    if (group_name and any(ord(c) > 127 for c in group_name))
+                    else "Signal failed to sync groups. This is a Signal-side issue, please try again."
+                ),
+            )
+            return
         except JobCancelled:
             raise
         except Exception as e:
