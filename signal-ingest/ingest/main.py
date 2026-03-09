@@ -1518,15 +1518,15 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
         convs_url = settings.signal_desktop_url.rstrip("/") + "/conversations"
         group_name_lower = group_name.lower().strip() if group_name else ""
         # Large accounts (10K+ conversations) can take 10-20 minutes to sync.
-        # We poll patiently, logging progress. Only give up if sync is truly stalled
-        # (no new conversations for 5 minutes).
+        # Signal Desktop Backup Import does a bulk saveConversations at the very end,
+        # so conversations/groups appear all at once after the import finishes.
+        # No stall detection — just wait up to 1 hour for the target group to appear.
         sync_timeout = 3600  # 1 hour absolute max
-        sync_poll = 10  # poll every 10s (less DB pressure on Signal Desktop)
+        sync_poll = 10  # poll every 10s
         sync_waited = 0
         admin_in_group = False
-        last_conv_count = 0
-        stale_since = 0  # seconds with no new conversations
         last_log_count = 0
+        convs_data = []
 
         def _check_group_in_convs(convs_data: list) -> bool:
             for conv in convs_data:
@@ -1539,12 +1539,19 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
             return False
 
         try:
+            _notify_progress(settings=settings, token=token, progress_key="syncing")
             while sync_waited <= sync_timeout:
                 check_cancelled()
-                with httpx.Client(timeout=30) as client:
-                    resp = client.get(convs_url)
-                    resp.raise_for_status()
-                    convs_data = resp.json().get("conversations", [])
+                try:
+                    with httpx.Client(timeout=30) as client:
+                        resp = client.get(convs_url)
+                        resp.raise_for_status()
+                        convs_data = resp.json().get("conversations", [])
+                except Exception as poll_err:
+                    log.warning("Sync poll error (will retry): %s", poll_err)
+                    time.sleep(sync_poll)
+                    sync_waited += sync_poll
+                    continue
 
                 if _check_group_in_convs(convs_data):
                     admin_in_group = True
@@ -1558,37 +1565,19 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
                 cur_count = len(convs_data)
                 n_groups = sum(1 for c in convs_data if c.get("type") == "group")
 
-                if cur_count != last_conv_count:
-                    stale_since = 0
-                    # Log progress every time count changes significantly or every 60s
-                    if cur_count - last_log_count >= 100 or sync_waited == 0:
-                        log.info(
-                            "Sync in progress: %d conversations (%d groups), %ds elapsed — waiting for '%s'",
-                            cur_count, n_groups, sync_waited, group_name
-                        )
-                        last_log_count = cur_count
-                    if sync_waited == 0:
-                        _notify_progress(settings=settings, token=token, progress_key="syncing")
-                else:
-                    stale_since += sync_poll
-
-                # Only give up if sync is truly dead: no new conversations for 5 minutes
-                if stale_since >= 300:
-                    log.warning(
-                        "Sync stalled: %d conversations (%d groups) unchanged for %ds",
-                        cur_count, n_groups, stale_since
+                # Log progress every 100 new conversations or every 60s
+                if cur_count - last_log_count >= 100 or (sync_waited % 60 == 0 and sync_waited > 0):
+                    log.info(
+                        "Sync in progress: %d conversations (%d groups), %ds elapsed — waiting for '%s'",
+                        cur_count, n_groups, sync_waited, group_name
                     )
-                    break
+                    last_log_count = cur_count
 
-                last_conv_count = cur_count
                 sync_waited += sync_poll
-                if sync_waited <= sync_timeout:
-                    time.sleep(sync_poll)
+                time.sleep(sync_poll)
 
         except JobCancelled:
             raise
-        except Exception as e:
-            log.error("Sync poll error: %s", e)
 
         if not admin_in_group:
             n_groups = sum(1 for c in convs_data if c.get("type") == "group") if convs_data else 0
