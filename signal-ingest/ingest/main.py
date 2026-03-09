@@ -591,7 +591,7 @@ def _fetch_attachments_direct(
                 return {"downloaded": 0, "failed": 0, "skipped": 0, "error": str(e)}
 
 
-def _get_desktop_messages(settings, group_id: str, group_name: str, limit: int = 800) -> List[dict]:
+def _get_desktop_messages(settings, group_id: str, group_name: str, limit: int = 100_000) -> List[dict]:
     """Get messages from Signal Desktop for a specific group."""
     url = settings.signal_desktop_url.rstrip("/") + "/group/messages"
     params = {"group_id": group_id, "limit": limit, "group_name": group_name}

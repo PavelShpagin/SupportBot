@@ -337,7 +337,7 @@ def get_messages(
     signal_data_dir: str,
     conversation_id: Optional[str] = None,
     since_timestamp: Optional[int] = None,
-    limit: int = 100,
+    limit: int = 100_000,
 ) -> list[SignalMessage]:
     """Get messages from Signal Desktop DB.
     
@@ -622,7 +622,7 @@ def get_group_messages(
     signal_data_dir: str,
     group_id: Optional[str] = None,
     group_name: Optional[str] = None,
-    limit: int = 800,
+    limit: int = 100_000,
 ) -> list[SignalMessage]:
     """Get messages for a specific group by ID or name."""
     conn = _open_db(signal_data_dir)

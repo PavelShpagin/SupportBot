@@ -958,7 +958,7 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
 
         raw_answer = deps.ultimate_agent.answer(
             gate_message_text, group_id=group_id, db=deps.db, lang=group_lang,
-            context=context_text, images=gate_images,
+            context=context_text, images=gate_images, gate_tag=gate_tag,
         )
         answer_text = raw_answer.text
         attachment_urls = raw_answer.attachment_urls

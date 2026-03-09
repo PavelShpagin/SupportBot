@@ -301,7 +301,7 @@ async def poll_messages(
 async def get_group_history(
     group_id: str = Query(..., description="Group ID"),
     group_name: Optional[str] = Query(None, description="Group name (fallback if ID not found)"),
-    limit: int = Query(800, description="Maximum messages to return"),
+    limit: int = Query(100_000, description="Maximum messages to return (effectively unlimited)"),
 ):
     """
     Get all messages for a specific group.

@@ -61,7 +61,7 @@ class UltimateAgent:
         self.case_agent = CaseSearchAgent(rag=self.rag, llm=self.llm, public_url=self.public_url)
         self.last_load_time = time.time()
 
-    def answer(self, question, group_id=None, db=None, lang="uk", context: str = "", images: list[tuple[bytes, str]] | None = None) -> AgentResponse:
+    def answer(self, question, group_id=None, db=None, lang="uk", context: str = "", images: list[tuple[bytes, str]] | None = None, gate_tag: str = "") -> AgentResponse:
         if time.time() - self.last_load_time > 600:
             try:
                 self.load_agents()
@@ -122,7 +122,8 @@ class UltimateAgent:
         )
 
         resp = self._synthesize(
-            question, case_ans, docs_ans, lang_instruction, context, db, images
+            question, case_ans, docs_ans, lang_instruction, context, db, images,
+            gate_tag=gate_tag,
         )
 
         return resp
@@ -136,6 +137,7 @@ class UltimateAgent:
         context: str,
         db,
         images: list[tuple[bytes, str]] | None = None,
+        gate_tag: str = "",
     ) -> AgentResponse:
         """Synthesize a final answer from both agents' outputs."""
         case_has_results = (
@@ -148,8 +150,13 @@ class UltimateAgent:
             and not docs_ans.startswith("INSUFFICIENT_INFO")
         )
 
-        # Neither agent has useful output → escalate
+        # Neither agent has useful output
         if not case_has_results and not docs_has_results:
+            # Don't escalate to admin for ongoing discussions — users are
+            # helping each other and don't need admin pings.
+            if gate_tag in ("ongoing_discussion", "statement"):
+                log.info("No results for ongoing_discussion/statement — skipping (no admin escalation)")
+                return AgentResponse(text="SKIP")
             return AgentResponse(text="[[TAG_ADMIN]]")
 
         context_block = f"\nRecent chat context (for reference):\n{context}\n" if context.strip() else ""
