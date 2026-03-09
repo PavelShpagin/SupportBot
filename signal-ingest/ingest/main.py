@@ -1396,6 +1396,7 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
         # Poll /status until Signal Desktop is unlinked AND DevTools is connected
         log.info("Waiting for Signal Desktop to show QR code (polling status)...")
         qr_image = b""
+        reset_retried = False
         for attempt in range(60):  # up to ~120 seconds
             time.sleep(2)
             try:
@@ -1406,6 +1407,16 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
                     "Desktop status: linked=%s devtools=%s (%d/60)",
                     status.get("linked"), devtools_ready, attempt + 1,
                 )
+
+                # If desktop is still linked, the initial reset likely failed
+                # (e.g. desktop wasn't reachable yet). Retry reset once.
+                if not is_unlinked and not reset_retried:
+                    reset_retried = True
+                    log.info("Desktop still linked — retrying reset (initial reset may have failed)")
+                    _reset_desktop(settings)
+                    time.sleep(10)  # give desktop time to wipe data + restart
+                    continue
+
                 if is_unlinked and devtools_ready:
                     log.info("Signal Desktop is unlinked and DevTools ready — fetching QR")
                     time.sleep(2)  # let QR fully render
