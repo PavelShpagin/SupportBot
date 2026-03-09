@@ -1506,10 +1506,11 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
         # server (typically 10-30s). We poll until the group appears or timeout.
         convs_url = settings.signal_desktop_url.rstrip("/") + "/conversations"
         group_name_lower = group_name.lower().strip() if group_name else ""
-        sync_timeout = 180  # seconds to wait for group to appear after linking
+        sync_timeout = 600  # seconds — groups can take 5-10 min to sync for accounts with 100+ groups
         sync_poll = 5
         sync_waited = 0
         admin_in_group = False
+        last_conv_count = 0
 
         def _check_group_in_convs(convs_data: list) -> bool:
             for conv in convs_data:
@@ -1537,12 +1538,19 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
                     )
                     break
 
+                cur_count = len(convs_data)
                 if sync_waited == 0:
                     log.info(
-                        "Group '%s' not yet in admin's %d conversations ? waiting for sync...",
-                        group_name, len(convs_data)
+                        "Group '%s' not yet in admin's %d conversations — waiting for sync...",
+                        group_name, cur_count
                     )
                     _notify_progress(settings=settings, token=token, progress_key="syncing")
+                elif cur_count != last_conv_count:
+                    log.info(
+                        "Sync in progress: %d conversations now (was %d), %ds elapsed — still waiting for '%s'",
+                        cur_count, last_conv_count, sync_waited, group_name
+                    )
+                last_conv_count = cur_count
                 sync_waited += sync_poll
                 if sync_waited <= sync_timeout:
                     time.sleep(sync_poll)
