@@ -548,25 +548,28 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
     if text_lower.startswith("/tag"):
         import re as _re
         from app.db.queries_mysql import set_tag_targets, get_admin_group_ids
+        _tag_lang = getattr(session, "lang", "uk") or "uk"
+        _tag_usage = ("Використання: /tag Назва Групи, +380..., +380..." if _tag_lang == "uk"
+                      else "Usage: /tag Group Name, +380..., +380...")
         args = text[len("/tag"):].strip()
         if not args:
-            _send_direct_or_cleanup(admin_id, "Usage: /tag Group Name, +380..., +380...")
+            _send_direct_or_cleanup(admin_id, _tag_usage)
             return
         # Comma-separated: first item = group name, rest = phone numbers
         parts = [p.strip() for p in args.split(",") if p.strip()]
         if len(parts) < 2:
-            _send_direct_or_cleanup(admin_id, "Usage: /tag Group Name, +380..., +380...")
+            _send_direct_or_cleanup(admin_id, _tag_usage)
             return
         group_name = parts[0]
         phone_re = _re.compile(r"^\+\d{7,15}$")
         phones = []
         for p in parts[1:]:
             if not phone_re.match(p):
-                _send_direct_or_cleanup(admin_id, f"Invalid phone number: {p}\nFormat: +380XXXXXXXXX")
+                _send_direct_or_cleanup(admin_id, f"{'Невірний номер' if _tag_lang == 'uk' else 'Invalid phone number'}: {p}\n{'Формат' if _tag_lang == 'uk' else 'Format'}: +380XXXXXXXXX")
                 return
             phones.append(p)
         if not phones:
-            _send_direct_or_cleanup(admin_id, "Usage: /tag Group Name, +380..., +380...")
+            _send_direct_or_cleanup(admin_id, _tag_usage)
         # Exact match only (case-insensitive)
         groups = signal.list_groups()
         g = None
@@ -583,16 +586,25 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
                     break
         if not g:
             linked_names = [grp.group_name for grp in groups if grp.group_id in set(get_admin_group_ids(db, admin_id))]
-            names_str = ", ".join(linked_names) if linked_names else "(none)"
-            _send_direct_or_cleanup(admin_id, f"Group not found: \"{group_name}\"\nYour linked groups: {names_str}")
+            names_str = ", ".join(linked_names) if linked_names else ("(немає)" if _tag_lang == "uk" else "(none)")
+            if _tag_lang == "uk":
+                _send_direct_or_cleanup(admin_id, f"Групу не знайдено: \"{group_name}\"\nВаші прив'язані групи: {names_str}")
+            else:
+                _send_direct_or_cleanup(admin_id, f"Group not found: \"{group_name}\"\nYour linked groups: {names_str}")
             return
         admin_group_ids = set(get_admin_group_ids(db, admin_id))
         if g.group_id not in admin_group_ids:
-            _send_direct_or_cleanup(admin_id, f"You haven't linked group \"{group_name}\" yet.")
+            if _tag_lang == "uk":
+                _send_direct_or_cleanup(admin_id, f"Ви ще не прив'язали групу \"{group_name}\".")
+            else:
+                _send_direct_or_cleanup(admin_id, f"You haven't linked group \"{group_name}\" yet.")
             return
         set_tag_targets(db, g.group_id, phones)
         phones_str = ", ".join(phones)
-        _send_direct_or_cleanup(admin_id, f"Tag targets for \"{group_name}\" set to: {phones_str}")
+        if _tag_lang == "uk":
+            _send_direct_or_cleanup(admin_id, f"Цілі тегування для \"{group_name}\" встановлено: {phones_str}")
+        else:
+            _send_direct_or_cleanup(admin_id, f"Tag targets for \"{group_name}\" set to: {phones_str}")
         return
 
     # Ignore commands other than language to prevent accidental group searches
