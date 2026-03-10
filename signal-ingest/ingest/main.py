@@ -395,7 +395,14 @@ def _refresh_qr_code(settings) -> bytes:
     if qr:
         return qr
 
-    # Fall back to screenshot
+    # /qr-png failed — likely the user already scanned and Desktop is linking.
+    # Check status before falling back to a screenshot (which would be garbled).
+    status = _check_desktop_status(settings)
+    if status.get("has_user_conversations") or status.get("linked"):
+        log.info("QR refresh skipped — user already linked (conversations=%d)", status.get("conversations_count", 0))
+        return b""
+
+    # Fall back to screenshot only if still unlinked
     try:
         return _get_desktop_screenshot(settings)
     except Exception as e:
@@ -552,8 +559,8 @@ def _fetch_attachments_direct(
     settings,
     group_id: str,
     group_name: str,
-    timeout: int = 30,
-    retries: int = 1,
+    timeout: int = 3600,
+    retries: int = 3,
 ) -> dict:
     """Download all pending group attachments from Signal's CDN or decrypt
     v2 locally-encrypted files.  Retries on failure.
@@ -914,6 +921,14 @@ def _build_interleaved_chunk(
 
 
 
+# Models that hit hard rate limits (429 quota exhausted) are skipped for the
+# rest of the process lifetime — no point waiting 120s to timeout on them again.
+_blacklisted_models: set[str] = set()
+# Models with consecutive timeouts — skip after 2 in a row.
+_timeout_strikes: dict[str, int] = {}
+_TIMEOUT_STRIKE_LIMIT = 2
+
+
 def _llm_call_with_fallback(
     *,
     openai_client: OpenAI,
@@ -926,24 +941,37 @@ def _llm_call_with_fallback(
 
     Tries `model` first, then each entry in `fallback_models` in order.
     Falls back on transient errors (404, 429, 499, 503, timeout).
-    Max ~10s spent per model (1 retry with 2s backoff) before cascading.
-    Raises the last exception if all models are exhausted.
+    Remembers rate-limited and consistently-timing-out models so subsequent
+    calls skip them instantly instead of wasting minutes.
     """
     import openai as _openai
 
     models_to_try = [model] + list(fallback_models)
+    # Filter out blacklisted and strike-limited models, but always keep at least one
+    available = [m for m in models_to_try
+                 if m not in _blacklisted_models and _timeout_strikes.get(m, 0) < _TIMEOUT_STRIKE_LIMIT]
+    if not available:
+        # All models degraded — reset strikes and try all (blacklisted stays)
+        _timeout_strikes.clear()
+        available = [m for m in models_to_try if m not in _blacklisted_models]
+    if not available:
+        # Even blacklisted — last resort, try everything
+        available = list(models_to_try)
+
     last_exc: Exception | None = None
-    for i, m in enumerate(models_to_try):
-        is_last = (i == len(models_to_try) - 1)
-        # Last model gets more patience
-        model_timeout = timeout * 1.5 if is_last and len(models_to_try) > 1 else timeout
-        max_attempts = 2 if is_last else 1  # only retry on last model
+    for i, m in enumerate(available):
+        is_last = (i == len(available) - 1)
+        model_timeout = timeout * 1.5 if is_last and len(available) > 1 else timeout
+        max_attempts = 2 if is_last else 1
 
         for attempt in range(max_attempts):
             t0 = time.time()
             try:
                 result = openai_client.chat.completions.create(model=m, timeout=model_timeout, **kwargs)
-                log.info("LLM call model=%s completed in %.1fs", m, time.time() - t0)
+                elapsed = time.time() - t0
+                log.info("LLM call model=%s completed in %.1fs", m, elapsed)
+                # Success — reset timeout strikes for this model
+                _timeout_strikes.pop(m, None)
                 return result
             except (_openai.APITimeoutError, _openai.APIStatusError) as e:
                 elapsed = time.time() - t0
@@ -952,19 +980,30 @@ def _llm_call_with_fallback(
                 if not is_retryable:
                     raise
                 last_exc = e
-                # Last model, can retry once with short backoff
+
+                # 429 quota exhausted → blacklist for session
+                if status_code == 429:
+                    _blacklisted_models.add(m)
+                    log.warning("Model %s rate-limited (429) — blacklisted for this session", m)
+                    break
+
+                # Timeout → increment strike counter
+                if isinstance(e, _openai.APITimeoutError):
+                    _timeout_strikes[m] = _timeout_strikes.get(m, 0) + 1
+                    strikes = _timeout_strikes[m]
+                    if strikes >= _TIMEOUT_STRIKE_LIMIT:
+                        log.warning("Model %s timed out %d times — skipping until others fail", m, strikes)
+
                 if is_last and attempt < max_attempts - 1:
                     log.warning("Model %s failed after %.1fs (status=%s), retrying in 2s...", m, elapsed, status_code)
                     time.sleep(2)
                     continue
-                # Cascade immediately to next model
                 log.warning(
                     "Model %s failed after %.1fs (%s status=%s), cascading...",
                     m, elapsed, type(e).__name__, status_code,
                 )
-                last_exc = e
                 time.sleep(1)
-                break  # move to next model
+                break
     raise last_exc
 
 
@@ -1070,7 +1109,11 @@ def _extract_structured_cases(
     raw = resp.choices[0].message.content or "{}"
     data = _safe_json_loads(raw)
     out: List[dict] = []
-    cases = data.get("cases", [])
+    # LLM may return a list directly instead of {"cases": [...]}
+    if isinstance(data, list):
+        cases = data
+    else:
+        cases = data.get("cases", [])
     if isinstance(cases, list):
         for c in cases:
             if (
@@ -1347,7 +1390,7 @@ def _post_structured_cases_to_bot(
         "messages": formatted_messages,
     }
     url = settings.signal_bot_url.rstrip("/") + "/history/cases"
-    with httpx.Client(timeout=120) as client:
+    with httpx.Client(timeout=3600) as client:
         r = client.post(url, json=payload)
         r.raise_for_status()
         data = r.json()
@@ -1960,6 +2003,7 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
                     )
                     futures[fut] = i
 
+                retry_chunks: list[int] = []
                 for fut in as_completed(futures):
                     check_cancelled()
                     completed += 1
@@ -1971,8 +2015,28 @@ def _handle_history_link_desktop(*, settings, db, job_id: int, payload: Dict[str
                         log.info("Chunk %d/%d extracted %d cases in %.1fs", chunk_idx+1, n_chunks, len(result), elapsed_chunk)
                         cases_by_chunk[chunk_idx] = result
                     except Exception:
-                        log.exception("Chunk %d failed after %.1fs, skipping", chunk_idx, elapsed_chunk)
-                        continue
+                        log.warning("Chunk %d failed after %.1fs, will retry", chunk_idx, elapsed_chunk)
+                        retry_chunks.append(chunk_idx)
+
+            # Retry failed chunks sequentially with a delay
+            for chunk_idx in retry_chunks:
+                check_cancelled()
+                ch, ch_images = chunks[chunk_idx]
+                log.info("Retrying chunk %d/%d...", chunk_idx + 1, n_chunks)
+                time.sleep(5)
+                t0 = time.time()
+                try:
+                    result = _extract_structured_cases(
+                        openai_client=openai_client_early,
+                        model=settings.model_blocks,
+                        fallback_models=settings.model_blocks_fallback,
+                        chunk_text=ch,
+                        images=ch_images or None,
+                    )
+                    log.info("Chunk %d/%d retry succeeded: %d cases in %.1fs", chunk_idx+1, n_chunks, len(result), time.time()-t0)
+                    cases_by_chunk[chunk_idx] = result
+                except Exception:
+                    log.exception("Chunk %d failed on retry, skipping", chunk_idx)
         total_raw = sum(len(v) for v in cases_by_chunk.values())
         log.info("All %d chunks processed in %.1fs — %d raw cases", n_chunks, time.time()-step5_start, total_raw)
 

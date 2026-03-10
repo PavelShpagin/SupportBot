@@ -527,15 +527,19 @@ export default function CasePage({ data, publicApiUrl }: Props) {
                     {(() => {
                       let text = msg.content_text || '';
                       // Strip all media/OCR markers from display text (AI-only metadata)
-                      text = text.replace(/\n*\[Зображення:[\s\S]*?\]/g, '').trim();
+                      // Use greedy match within brackets to handle nested ] in OCR text
+                      text = text.replace(/\n*\[Зображення:[^\]]*\]/g, '').trim();
                       text = text.replace(/\n*\[Зображення\]/g, '').trim();
-                      text = text.replace(/\n*\[image\]\s*\{[\s\S]*?\}/g, '').trim();
+                      text = text.replace(/\n*\[image\]\s*\{[^}]*\}/g, '').trim();
                       text = text.replace(/\n*\[image\]/g, '').trim();
                       text = text.replace(/\n*\[attachment:[^\]]*\]/g, '').trim();
-                      text = text.replace(/\n*\[Відео:[\s\S]*?\]/g, '').trim();
-                      text = text.replace(/\n*\[Транскрипт відео:[\s\S]*?\]/g, '').trim();
+                      text = text.replace(/\n*\[Відео:[^\]]*\]/g, '').trim();
+                      text = text.replace(/\n*\[Транскрипт відео:[^\]]*\]/g, '').trim();
                       // Clean up raw JSON OCR blocks
-                      text = text.replace(/\{"extracted_text"\s*:[\s\S]*?\}/g, '').trim();
+                      text = text.replace(/\{"extracted_text"\s*:[^}]*\}/g, '').trim();
+                      // Catch remaining OCR/media markers from ingestion pipeline
+                      text = text.replace(/\n*Текст на зображенні:.*$/gm, '').trim();
+                      text = text.replace(/\n*Елементи на зображенні:.*$/gm, '').trim();
                       return text ? <p className="message-text">{text}</p> : null;
                     })()}
                     {(() => {

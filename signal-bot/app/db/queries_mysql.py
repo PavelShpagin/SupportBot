@@ -615,6 +615,30 @@ def cancel_all_history_jobs_for_admin(db: MySQL, admin_id: str) -> int:
         return cancelled
 
 
+def get_active_history_job_for_group(db: MySQL, group_id: str) -> Optional[str]:
+    """Return admin_id if there's an active HISTORY_LINK job for this group, else None."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            """
+            SELECT payload_json FROM jobs
+            WHERE type = 'HISTORY_LINK'
+              AND status IN ('pending', 'in_progress')
+              AND payload_json LIKE %s
+            LIMIT 1
+            """,
+            (f'%"group_id":"{group_id}"%',),
+        )
+        row = cur.fetchone()
+        if not row:
+            return None
+        try:
+            payload = json.loads(row[0])
+            return payload.get("admin_id")
+        except Exception:
+            return "unknown"
+
+
 def link_admin_to_group(db: MySQL, *, admin_id: str, group_id: str) -> None:
     """Record that an admin has connected a group."""
     with db.connection() as conn:
@@ -697,21 +721,32 @@ def unlink_all_admins_from_group(db: MySQL, group_id: str) -> int:
         return removed
 
 
-def archive_cases_for_group(db: MySQL, group_id: str) -> int:
+def archive_cases_for_group(db: MySQL, group_id: str, exclude_case_ids: Optional[set] = None) -> int:
     """
     Mark all active cases for a group as 'archived' instead of deleting them.
     Called during re-ingest so that old case links (already sent in Signal) remain
     accessible. Archived cases are excluded from RAG queries but still served by
     the web frontend with a soft 'archived' banner.
+
+    Args:
+        exclude_case_ids: if provided, skip these case_ids (newly inserted cases).
     Returns the number of cases archived.
     """
     with db.connection() as conn:
         cur = conn.cursor()
-        cur.execute(
-            "UPDATE cases SET status = 'archived', in_rag = 0 "
-            "WHERE group_id = %s AND status != 'archived'",
-            (group_id,),
-        )
+        if exclude_case_ids:
+            placeholders = ", ".join(["%s"] * len(exclude_case_ids))
+            cur.execute(
+                f"UPDATE cases SET status = 'archived', in_rag = 0 "
+                f"WHERE group_id = %s AND status != 'archived' AND case_id NOT IN ({placeholders})",
+                (group_id, *exclude_case_ids),
+            )
+        else:
+            cur.execute(
+                "UPDATE cases SET status = 'archived', in_rag = 0 "
+                "WHERE group_id = %s AND status != 'archived'",
+                (group_id,),
+            )
         count = cur.rowcount
         conn.commit()
     return count
@@ -1523,7 +1558,7 @@ def find_similar_case(
     *,
     group_id: str,
     embedding: List[float],
-    threshold: float = 0.70,
+    threshold: float = 0.95,
     exclude_case_id: Optional[str] = None,
     statuses: Optional[List[str]] = None,
 ) -> Optional[str]:
@@ -1742,3 +1777,60 @@ def get_admin_group_ids(db: MySQL, admin_id: str) -> List[str]:
             (admin_id,),
         )
         return [r[0] for r in cur.fetchall()]
+
+
+# ---------------------------------------------------------------------------
+# Per-group tag/mention targets for escalation
+# ---------------------------------------------------------------------------
+
+def set_tag_targets(db: MySQL, group_id: str, targets: List[str]) -> None:
+    """Set tag mention targets for a group (replaces previous list)."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            """
+            INSERT INTO chat_groups (group_id, tag_targets_json)
+            VALUES (%s, %s)
+            ON DUPLICATE KEY UPDATE
+                tag_targets_json = VALUES(tag_targets_json)
+            """,
+            (group_id, json.dumps(targets, ensure_ascii=False)),
+        )
+        conn.commit()
+
+
+def get_tag_targets(db: MySQL, group_id: str) -> Optional[List[str]]:
+    """Get tag targets. Returns None if not configured (use default admins)."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            "SELECT tag_targets_json FROM chat_groups WHERE group_id = %s",
+            (group_id,),
+        )
+        row = cur.fetchone()
+        if not row or not row[0]:
+            return None
+        return _parse_json_list(row[0])
+
+
+def set_group_ingesting(db: MySQL, group_id: str, ingesting: bool) -> None:
+    """Set/clear the ingesting lock flag for a group."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            "UPDATE chat_groups SET ingesting = %s WHERE group_id = %s",
+            (1 if ingesting else 0, group_id),
+        )
+        conn.commit()
+
+
+def is_group_ingesting(db: MySQL, group_id: str) -> bool:
+    """Check if a group is currently being ingested."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            "SELECT ingesting FROM chat_groups WHERE group_id = %s",
+            (group_id,),
+        )
+        row = cur.fetchone()
+        return bool(row and row[0])

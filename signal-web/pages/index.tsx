@@ -33,7 +33,7 @@ export default function Home() {
       <Head>
         <title>SupportBot</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="icon" type="image/png" href="/supportbot-logo.png" />
+        <link rel="icon" type="image/png" href="/favicon.png" />
       </Head>
 
       <style jsx global>{`
@@ -112,6 +112,8 @@ export default function Home() {
 
         h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.025em; margin-bottom: 16px; }
         .lead { color: var(--text-sec); font-size: 15px; line-height: 1.6; margin-bottom: 28px; }
+        .lead a { color: var(--signal-blue); text-decoration: none; font-weight: 500; }
+        .lead a:hover { text-decoration: underline; }
 
         h2 {
           font-size: 11px;
@@ -210,7 +212,7 @@ export default function Home() {
         <div className="card">
           <header>
             <div className="header-left">
-              <img src="/supportbot-logo.png" alt="SupportBot" className="logo" />
+              <img src="/supportbot-logo-128.png" alt="SupportBot" className="logo" />
               <span className="brand">SupportBot</span>
             </div>
             <div className="lang-switch">
@@ -235,7 +237,7 @@ export default function Home() {
               <p className="lead">Бот для Signal-груп технічної підтримки. Автоматично збирає вирішені проблеми в базу знань і відповідає на нові запитання на основі досвіду групи.</p>
 
               <h2>Як отримати доступ</h2>
-              <p className="lead" style={{marginBottom: '16px'}}>Для підключення бота до вашої групи напишіть на <strong>support@theacademia.tech</strong>, вказавши ваш номер телефону в Signal, назву групи та опис використання. Після підтвердження ваш номер буде додано до списку доступу.</p>
+              <p className="lead" style={{marginBottom: '16px'}}>Для підключення бота до вашої групи напишіть на <a href="mailto:support@theacademia.tech">support@theacademia.tech</a>, вказавши ваш номер телефону в Signal, назву групи та опис використання. Після підтвердження ваш номер буде додано до списку доступу.</p>
 
               <h2>Як додати до групи</h2>
               <ol>
@@ -271,6 +273,7 @@ export default function Home() {
                 <li><code>/union Група 1, Група 2, ...</code> — об&apos;єднує базу знань та документацію кількох груп. Кейси та документи стають спільними для всіх груп в об&apos;єднанні</li>
                 <li><code>/split</code> — скасовує всі об&apos;єднання, кожна група повертається до незалежної бази знань</li>
                 <li><code>/wipe</code> — видаляє ВСІ дані бота (групи, кейси, історію). Реєстрація номера зберігається</li>
+                <li><code>/tag Назва Групи, +380..., +380...</code> — встановлює кого тегувати (@mention) при ескалації</li>
               </ul>
 
               <div className="note">Бот обробляє повідомлення групи для формування бази знань. Ідентифікатори відправників анонімізовані. Видалення бота з групи зупиняє обробку. <a href="/privacy?lang=uk">Політика конфіденційності та Умови використання →</a></div>
@@ -281,7 +284,7 @@ export default function Home() {
               <p className="lead">A Signal bot for technical support groups. Automatically collects solved issues into a knowledge base and answers new questions using the group&apos;s past experience.</p>
 
               <h2>Getting access</h2>
-              <p className="lead" style={{marginBottom: '16px'}}>To connect the bot to your group, email <strong>support@theacademia.tech</strong> with your Signal phone number, group name, and use case. Once approved, your number will be added to the access list.</p>
+              <p className="lead" style={{marginBottom: '16px'}}>To connect the bot to your group, email <a href="mailto:support@theacademia.tech">support@theacademia.tech</a> with your Signal phone number, group name, and use case. Once approved, your number will be added to the access list.</p>
 
               <h2>Adding to a group</h2>
               <ol>
@@ -317,6 +320,7 @@ export default function Home() {
                 <li><code>/union Group 1, Group 2, ...</code> — unifies the knowledge base and docs across multiple groups. Cases and documentation become shared across all groups in the union</li>
                 <li><code>/split</code> — resets all unions, each group returns to its independent knowledge base</li>
                 <li><code>/wipe</code> — deletes ALL bot data (groups, cases, history). Phone registration is kept</li>
+                <li><code>/tag Group Name, +380..., +380...</code> — sets who gets @mentioned on escalation</li>
               </ul>
 
               <div className="note">The bot processes group messages to build a knowledge base. Sender identifiers are anonymized. Removing the bot from the group stops processing. <a href="/privacy?lang=en">Privacy Policy & Terms of Service →</a></div>

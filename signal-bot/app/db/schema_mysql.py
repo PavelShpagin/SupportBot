@@ -148,6 +148,10 @@ MIGRATIONS = [
     # Union support: groups with same union_id share RAG and docs
     "ALTER TABLE chat_groups ADD COLUMN union_id VARCHAR(64)",
     "ALTER TABLE chat_groups ADD INDEX idx_chat_groups_union (union_id)",
+    # Per-group tag/mention targets for escalation (JSON array of phone numbers)
+    "ALTER TABLE chat_groups ADD COLUMN tag_targets_json LONGTEXT",
+    # Lock flag: set during history ingestion to defer worker jobs for this group
+    "ALTER TABLE chat_groups ADD COLUMN ingesting TINYINT(1) NOT NULL DEFAULT 0",
 ]
 
 

@@ -103,6 +103,20 @@ if settings.admin_whitelist and isinstance(signal, SignalCliAdapter):
                 settings.admin_whitelist.append(resolved_uuid)
                 log.info("Whitelist expanded: %s → %s", phone, resolved_uuid)
 
+# Expand superadmin list similarly
+if settings.superadmin_list and isinstance(signal, SignalCliAdapter):
+    phones = [p for p in settings.superadmin_list if p.startswith("+")]
+    if phones:
+        phone_to_uuid = signal.resolve_phone_to_uuid(phones)
+        for phone, resolved_uuid in phone_to_uuid.items():
+            if resolved_uuid not in settings.superadmin_list:
+                settings.superadmin_list.append(resolved_uuid)
+                log.info("Superadmin expanded: %s → %s", phone, resolved_uuid)
+    # Superadmins must also be in the admin whitelist to DM the bot
+    for sa in list(settings.superadmin_list):
+        if sa not in settings.admin_whitelist:
+            settings.admin_whitelist.append(sa)
+
 _bot_sender_hash = hash_sender(settings.signal_bot_e164) if settings.signal_bot_e164 else ""
 deps = WorkerDeps(
     settings=settings,
@@ -424,7 +438,8 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
     _prune_disconnected_admins()
     
     admin_id = m.sender
-    text = m.text.strip()
+    # Strip Unicode directional markers (Signal wraps group names in U+2068/U+2069)
+    text = m.text.strip().replace('\u2068', '').replace('\u2069', '').replace('\u200e', '').replace('\u200f', '').replace('\u202a', '').replace('\u202c', '')
 
     log.info("Direct message from %s: %s", admin_id, text[:100])
 
@@ -529,9 +544,60 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
         _send_direct_or_cleanup(admin_id, f"Split complete. {len(all_union_gids)} groups are now independent.")
         return
 
+    # /tag GroupName, +380..., +380... — set per-group mention targets for escalation
+    if text_lower.startswith("/tag"):
+        import re as _re
+        from app.db.queries_mysql import set_tag_targets, get_admin_group_ids
+        args = text[len("/tag"):].strip()
+        if not args:
+            _send_direct_or_cleanup(admin_id, "Usage: /tag Group Name, +380..., +380...")
+            return
+        # Comma-separated: first item = group name, rest = phone numbers
+        parts = [p.strip() for p in args.split(",") if p.strip()]
+        if len(parts) < 2:
+            _send_direct_or_cleanup(admin_id, "Usage: /tag Group Name, +380..., +380...")
+            return
+        group_name = parts[0]
+        phone_re = _re.compile(r"^\+\d{7,15}$")
+        phones = []
+        for p in parts[1:]:
+            if not phone_re.match(p):
+                _send_direct_or_cleanup(admin_id, f"Invalid phone number: {p}\nFormat: +380XXXXXXXXX")
+                return
+            phones.append(p)
+        if not phones:
+            _send_direct_or_cleanup(admin_id, "Usage: /tag Group Name, +380..., +380...")
+        # Exact match only (case-insensitive)
+        groups = signal.list_groups()
+        g = None
+        gn_lower = group_name.lower()
+        # Try exact match first, then substring
+        for grp in groups:
+            if grp.group_name.lower() == gn_lower:
+                g = grp
+                break
+        if not g:
+            for grp in groups:
+                if gn_lower in grp.group_name.lower():
+                    g = grp
+                    break
+        if not g:
+            linked_names = [grp.group_name for grp in groups if grp.group_id in set(get_admin_group_ids(db, admin_id))]
+            names_str = ", ".join(linked_names) if linked_names else "(none)"
+            _send_direct_or_cleanup(admin_id, f"Group not found: \"{group_name}\"\nYour linked groups: {names_str}")
+            return
+        admin_group_ids = set(get_admin_group_ids(db, admin_id))
+        if g.group_id not in admin_group_ids:
+            _send_direct_or_cleanup(admin_id, f"You haven't linked group \"{group_name}\" yet.")
+            return
+        set_tag_targets(db, g.group_id, phones)
+        phones_str = ", ".join(phones)
+        _send_direct_or_cleanup(admin_id, f"Tag targets for \"{group_name}\" set to: {phones_str}")
+        return
+
     # Ignore commands other than language to prevent accidental group searches
     if text.startswith("/"):
-        msg = "Unknown command. Available: /en, /ua, /wipe, /union, /split"
+        msg = "Unknown command. Available: /en, /ua, /wipe, /union, /split, /tag"
         _send_direct_or_cleanup(admin_id, msg)
         return
     # -----------------------------
@@ -563,7 +629,6 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
         return
     
     # Any message while a job is running cancels it and restarts.
-    # This covers both "same group name sent again" and "different group name".
     if session is not None and session.state == "awaiting_qr_scan" and session.pending_token:
         log.info(
             "Admin %s sent message while job is running — cancelling job %s and restarting",
@@ -571,7 +636,13 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
         )
         cancel_all_history_jobs_for_admin(db, admin_id)
         set_admin_awaiting_group_name(db, admin_id)
-    
+        lang = getattr(session, "lang", "uk") or "uk"
+        if lang == "en":
+            _send_direct_or_cleanup(admin_id, "Ingestion cancelled. Send a group name to start again.")
+        else:
+            _send_direct_or_cleanup(admin_id, "Імпорт скасовано. Надішліть назву групи, щоб почати знову.")
+        return
+
     # Try to find group by name
     if isinstance(signal, NoopSignalAdapter):
         log.warning("Signal adapter not available for group lookup")
@@ -589,8 +660,9 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
     
     log.info("Found group: %s (%s)", group.group_name, group.group_id)
 
-    # Verify sender is a member of this group
-    if group.members and admin_id not in group.members:
+    # Verify sender is a member of this group (superadmins bypass this check)
+    is_superadmin = admin_id in settings.superadmin_list
+    if group.members and admin_id not in group.members and not is_superadmin:
         log.warning("User %s is NOT a member of group '%s' — rejecting", admin_id, group.group_name)
         reject_msg = (
             f"Ви не є учасником групи \"{group.group_name}\". Тільки учасники групи можуть запускати імпорт історії."
@@ -599,6 +671,8 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
         )
         _send_direct_or_cleanup(admin_id, reject_msg)
         return
+    if is_superadmin:
+        log.info("Superadmin %s bypassing membership check for group '%s'", admin_id, group.group_name)
 
     # INSTANT FEEDBACK: Tell user we found it and generating QR
     signal.send_processing_message(recipient=admin_id, group_name=group.group_name, lang=lang)
@@ -607,6 +681,24 @@ def _handle_direct_message(m: InboundDirectMessage) -> None:
     # even if the QR/history import fails or is skipped.
     link_admin_to_group(db, admin_id=admin_id, group_id=group.group_id)
     log.info("Admin %s linked to group %s (pre-QR)", admin_id, group.group_id)
+
+    # Auto-populate tag targets with all whitelisted phone numbers
+    if settings.admin_whitelist:
+        from app.db.queries_mysql import set_tag_targets
+        default_targets = [p for p in settings.admin_whitelist if p.startswith("+")]
+        if default_targets:
+            set_tag_targets(db, group.group_id, default_targets)
+
+    # Check if another admin is already ingesting this group
+    from app.db.queries_mysql import get_active_history_job_for_group
+    active_job = get_active_history_job_for_group(db, group.group_id)
+    if active_job and active_job != admin_id:
+        log.info("Group %s already being ingested by %s — rejecting %s", group.group_id[:20], active_job[:20], admin_id)
+        if lang == "en":
+            _send_direct_or_cleanup(admin_id, f"Group \"{group.group_name}\" is already being ingested by another admin. Please wait for it to finish.")
+        else:
+            _send_direct_or_cleanup(admin_id, f"Група \"{group.group_name}\" вже імпортується іншим адміністратором. Зачекайте, поки процес завершиться.")
+        return
 
     # Cancel any existing history jobs for this admin before creating a new one
     # This ensures only ONE job runs at a time per admin (signal-cli can only link one device)
@@ -817,6 +909,35 @@ def _handle_contact_removed(phone_number: str) -> None:
         log.exception("Failed to unlink groups for %s", phone_number)
 
 
+def _notify_interrupted_ingestions() -> None:
+    """On startup, find admins stuck in awaiting_qr_scan and notify them.
+
+    If we restarted mid-ingestion (deploy), the ingest process is dead but
+    the admin session still shows awaiting_qr_scan. Reset them and send a message.
+    """
+    time.sleep(10)  # Wait for signal listener to start
+    try:
+        with db.connection() as conn:
+            cur = conn.cursor()
+            cur.execute(
+                "SELECT admin_id, pending_group_name, lang FROM admin_sessions WHERE state = 'awaiting_qr_scan'"
+            )
+            rows = cur.fetchall()
+        if not rows:
+            return
+        log.info("Found %d interrupted ingestion sessions on startup", len(rows))
+        for admin_id, group_name, lang in rows:
+            set_admin_awaiting_group_name(db, admin_id)
+            if lang == "en":
+                msg = f"Ingestion of \"{group_name or 'group'}\" was interrupted by a server restart. Please send the group name again to retry."
+            else:
+                msg = f"Імпорт \"{group_name or 'групи'}\" було перервано перезапуском сервера. Надішліть назву групи ще раз, щоб повторити."
+            _send_direct_or_cleanup(admin_id, msg)
+            log.info("Notified admin %s about interrupted ingestion for '%s'", admin_id[:20], group_name)
+    except Exception:
+        log.exception("Failed to notify interrupted ingestions on startup")
+
+
 @app.on_event("startup")
 def _startup() -> None:
     _r2.init_r2()
@@ -836,6 +957,10 @@ def _startup() -> None:
 
     # Start listener only if the account is already linked/registered.
     _maybe_start_signal_listener()
+
+    # Notify admins whose ingestion was interrupted by a deploy/restart.
+    # They have state='awaiting_qr_scan' but the ingest process is dead.
+    threading.Thread(target=_notify_interrupted_ingestions, daemon=True).start()
 
     log.info("Startup complete")
 
@@ -885,6 +1010,27 @@ def signal_link_device_cancel() -> dict:
     return {"ok": ok}
 
 
+import re as _re_mod
+
+_OCR_PATTERNS = [
+    _re_mod.compile(r'\n*\[Зображення:[^\]]*\]'),
+    _re_mod.compile(r'\n*\[Зображення\]'),
+    _re_mod.compile(r'\n*\[Відео:[^\]]*\]'),
+    _re_mod.compile(r'\n*\[Транскрипт відео:[^\]]*\]'),
+    _re_mod.compile(r'\n*\[attachment:[^\]]*\]'),
+    _re_mod.compile(r'\n*\[image\]\s*\{[^}]*\}'),
+    _re_mod.compile(r'\n*\[image\]'),
+    _re_mod.compile(r'\{"extracted_text"\s*:[^}]*\}'),
+]
+
+
+def _strip_ocr_markers(text: str) -> str:
+    """Remove OCR/media markers from message text (AI-only metadata)."""
+    for pat in _OCR_PATTERNS:
+        text = pat.sub('', text)
+    return text.strip()
+
+
 @app.get("/api/cases/{case_id}")
 def get_case_endpoint(case_id: str):
     case_id = case_id.strip()
@@ -911,12 +1057,15 @@ def get_case_endpoint(case_id: str):
         # backward-compat: keep flat "images" list of URLs
         flat_urls = [a["url"] for a in attachments]
 
+        # Strip OCR/media markers from content_text (AI-only metadata)
+        clean_text = _strip_ocr_markers(msg.content_text or "")
+
         evidence_data.append({
             "message_id": msg.message_id,
             "ts": msg.ts,
             "sender_hash": msg.sender_hash,
             "sender_name": msg.sender_name,
-            "content_text": msg.content_text,
+            "content_text": clean_text,
             "images": flat_urls,
             "attachments": attachments,
             "reply_to_id": msg.reply_to_id,
@@ -1753,11 +1902,11 @@ def _save_history_images(
     return results
 
 
-def _init_buffer_from_history(group_id: str, max_messages: int = 30) -> None:
+def _init_buffer_from_history(group_id: str, max_messages: int = 300) -> None:
     """Seed the message buffer with the most recent messages from history import.
 
-    This ensures ongoing/unsolved discussions are visible for live case extraction
-    even before any new live messages arrive.
+    Uses the full buffer window (300 messages) so the bot has complete context
+    for live case extraction immediately after ingestion.
     """
     from app.db import set_buffer, get_positive_reactions_for_message
     from app.db.queries_mysql import get_recent_raw_messages
@@ -1779,30 +1928,34 @@ def _init_buffer_from_history(group_id: str, max_messages: int = 30) -> None:
 
 
 def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
-    """Process history cases synchronously. Returns number of cases inserted."""
+    """Process history cases synchronously. Returns number of cases inserted.
+
+    Transactional: existing cases are only archived AFTER new cases are
+    successfully inserted.  If ingestion fails midway, old cases and RAG
+    entries remain intact so the group is never left empty.
+    """
     import re
     from app.db import RawMessage, mark_case_in_rag
-    from app.db.queries_mysql import archive_cases_for_group, clear_group_runtime_data
+    from app.db.queries_mysql import archive_cases_for_group, clear_group_runtime_data, set_group_ingesting
 
-    # Archive existing cases (keeps old links alive with an 'archived' banner)
-    # and purge them from ChromaDB so they can't be cited in new answers.
+    # Collect existing case IDs BEFORE inserting new ones — we'll archive
+    # them only after the new cases are successfully stored.
+    existing_case_ids: list[str] = []
     try:
-        archived = archive_cases_for_group(db, req.group_id)
-        log.info("Archived %d cases for group %s (re-ingest)", archived, req.group_id[:20])
+        with db.connection() as conn:
+            cur = conn.cursor()
+            cur.execute(
+                "SELECT case_id FROM cases WHERE group_id = %s AND status != 'archived'",
+                (req.group_id,),
+            )
+            existing_case_ids = [r[0] for r in cur.fetchall()]
+        log.info("Existing cases to archive after success: %d (group=%s)", len(existing_case_ids), req.group_id[:20])
     except Exception:
-        log.exception("Failed to archive cases for group %s", req.group_id[:20])
-    try:
-        deleted_from_rag = rag.delete_cases_by_group(req.group_id)
-        log.info("Wiped %d RAG docs for group %s (group-level delete)", deleted_from_rag, req.group_id[:20])
-    except Exception:
-        log.exception("Failed to wipe RAG cases for group %s", req.group_id[:20])
+        log.exception("Failed to list existing cases for group %s", req.group_id[:20])
 
-    # Clear transient data so re-ingest starts from a clean slate.
-    try:
-        clear_group_runtime_data(db, req.group_id)
-        log.info("Cleared messages/buffer/reactions for group %s before re-ingest", req.group_id[:20])
-    except Exception:
-        log.exception("Failed to clear runtime data for group %s", req.group_id[:20])
+    # NOTE: We do NOT clear buffer/reactions/messages upfront.
+    # Everything is cleaned up only after successful ingestion (transactional).
+    # insert_raw_message handles duplicates gracefully (INSERT + dup check).
 
     # Store raw messages for evidence linking — parallelise R2 uploads
     import time as _time
@@ -1939,7 +2092,8 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
                     evidence_ids=evidence_ids,
                     evidence_image_paths=evidence_image_paths,
                 )
-                store_case_embedding(db, similar_id, dedup_embedding)
+                # Keep the original case's embedding — don't overwrite with
+                # the merged case's embedding to prevent attractor drift.
                 case_id = similar_id
                 action = "semantic-merged"
             else:
@@ -2002,11 +2156,8 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
             log.exception("Failed to process history case block")
             continue
 
-    # Index only the cases extracted in THIS ingest run that are solved.
-    # We do NOT re-index archived cases from previous ingests: they were just wiped from
-    # SCRAG by delete_cases_by_group above and should stay out — their status means a human
-    # decided they're superseded.  Putting them back would resurface unapproved or stale
-    # knowledge (exactly the bug that caused the archived IMX-114 case to keep appearing).
+    # Index the newly extracted cases into RAG.  Old cases are still in RAG
+    # at this point — they'll be wiped after this succeeds (transactional safety).
     reindexed = 0
     try:
         from app.db.queries_mysql import get_case
@@ -2044,12 +2195,32 @@ def _process_history_cases_bg(req: HistoryCasesRequest) -> int:
         kept, reindexed, req.group_id[:20], _time.time()-cases_start,
     )
 
-    # Initialize buffer with the last N messages so that ongoing/unsolved
-    # discussions are visible for live case extraction.
-    try:
-        _init_buffer_from_history(req.group_id, max_messages=30)
-    except Exception:
-        log.exception("Failed to init buffer from history for group %s", req.group_id[:20])
+    # SWAP: lock group, archive old data, rebuild buffer, unlock.
+    # This is the only window where worker jobs are deferred (~milliseconds).
+    if kept > 0 and existing_case_ids:
+        set_group_ingesting(db, req.group_id, True)
+        try:
+            archived = archive_cases_for_group(db, req.group_id, exclude_case_ids=set(final_case_ids))
+            log.info("Archived %d old cases for group %s (post-ingest)", archived, req.group_id[:20])
+        except Exception:
+            log.exception("Failed to archive old cases for group %s", req.group_id[:20])
+        try:
+            deleted_from_rag = rag.delete_cases(existing_case_ids)
+            log.info("Wiped %d old RAG docs for group %s", deleted_from_rag, req.group_id[:20])
+        except Exception:
+            log.exception("Failed to wipe old RAG cases for group %s", req.group_id[:20])
+        try:
+            clear_group_runtime_data(db, req.group_id)
+            log.info("Cleared old messages/buffer/reactions for group %s (post-ingest)", req.group_id[:20])
+        except Exception:
+            log.exception("Failed to clear runtime data for group %s", req.group_id[:20])
+        try:
+            _init_buffer_from_history(req.group_id)
+        except Exception:
+            log.exception("Failed to init buffer from history for group %s", req.group_id[:20])
+        set_group_ingesting(db, req.group_id, False)
+    elif kept == 0:
+        log.warning("No new cases inserted — keeping ALL existing data intact for group %s", req.group_id[:20])
 
     return kept, final_case_ids
 
@@ -2095,7 +2266,13 @@ def history_cases(req: HistoryCasesRequest) -> dict:
     import time as _hc_time
     hc_start = _hc_time.time()
     log.info("History ingest started: %d cases, %d messages (group=%s)", n_cases, n_messages, req.group_id[:20])
-    inserted, case_ids = _process_history_cases_bg(req)
+    try:
+        inserted, case_ids = _process_history_cases_bg(req)
+    except Exception:
+        # Ensure ingesting flag is cleared even on unexpected errors
+        from app.db.queries_mysql import set_group_ingesting
+        set_group_ingesting(db, req.group_id, False)
+        raise
     unique_cases = len(set(case_ids))
     log.info("History ingest done: %d/%d cases (%d unique) in %.1fs (group=%s)", inserted, n_cases, unique_cases, _hc_time.time()-hc_start, req.group_id[:20])
     return {"ok": True, "cases_inserted": unique_cases, "case_ids": list(set(case_ids))}

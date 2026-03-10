@@ -88,6 +88,11 @@ def _run_with_timeout(fn, *args, timeout: float) -> tuple[bool, Exception | None
 # it skips these messages so no duplicate case is created for an already-answered
 # question.  Uses an ordered dict so we can do FIFO eviction.
 _rag_answered_messages: dict[str, None] = {}
+
+# Track messages we've already sent a response to, so timed-out job retries
+# don't produce duplicate messages.  FIFO eviction, same as _rag_answered_messages.
+_responded_messages: dict[str, None] = {}
+_responded_lock = threading.Lock()
 _rag_answered_lock = threading.Lock()
 _RAG_ANSWERED_MAX = 2000
 
@@ -503,6 +508,18 @@ def _run_sync_rag(deps: WorkerDeps) -> None:
 
 def worker_loop_forever(deps: WorkerDeps) -> None:
     log.info("Worker loop started")
+
+    # Clear any stale ingesting flags left by a previous crash/OOM kill.
+    try:
+        with deps.db.connection() as conn:
+            cur = conn.cursor()
+            cur.execute("UPDATE chat_groups SET ingesting = 0 WHERE ingesting = 1")
+            if cur.rowcount:
+                log.warning("Cleared %d stale ingesting flags on worker startup", cur.rowcount)
+            conn.commit()
+    except Exception:
+        log.exception("Failed to clear stale ingesting flags on startup")
+
     last_sync_rag = 0.0
 
     while True:
@@ -523,6 +540,31 @@ def worker_loop_forever(deps: WorkerDeps) -> None:
             continue
 
         _touch_heartbeat()
+
+        # Defer buffer/respond jobs while a group is being ingested (the swap).
+        # Put job back to pending and poll until the flag clears.
+        job_group_id = (job.payload or {}).get("group_id", "")
+        if job_group_id and job.type in (job_types.BUFFER_UPDATE, job_types.MAYBE_RESPOND):
+            from app.db.queries_mysql import is_group_ingesting
+            if is_group_ingesting(deps.db, job_group_id):
+                log.info("Waiting for ingestion swap to complete — group %s, job %s", job_group_id[:20], job.job_id)
+                # Put job back, then wait for flag to clear
+                with deps.db.connection() as conn:
+                    cur = conn.cursor()
+                    cur.execute("UPDATE jobs SET status = 'pending' WHERE job_id = %s", (job.job_id,))
+                    conn.commit()
+                # Poll with a 5-minute safety timeout (swap should take <1s;
+                # if flag is stuck from a crash, force-clear and move on).
+                poll_start = time.time()
+                while is_group_ingesting(deps.db, job_group_id):
+                    if time.time() - poll_start > 300:
+                        log.error("Ingesting flag stuck for >5min — force-clearing for group %s", job_group_id[:20])
+                        from app.db.queries_mysql import set_group_ingesting
+                        set_group_ingesting(deps.db, job_group_id, False)
+                        break
+                    time.sleep(0.5)
+                log.info("Ingestion swap done — resuming jobs for group %s", job_group_id[:20])
+                continue
 
         if job.type == job_types.SYNC_GROUP_DOCS:
             handler = _handle_sync_group_docs
@@ -857,6 +899,12 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
     group_id = str(payload["group_id"])
     message_id = str(payload["message_id"])
 
+    # Dedup: skip if we already responded to this message (e.g. timed-out job retry)
+    with _responded_lock:
+        if message_id in _responded_messages:
+            log.info("MAYBE_RESPOND: already responded to %s — skipping duplicate", message_id)
+            return
+
     msg = get_raw_message(deps.db, message_id=message_id)
     if msg is None:
         log.warning("MAYBE_RESPOND: message not found: %s", message_id)
@@ -976,19 +1024,27 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
 
         mention_recipients = []
 
+        # Check per-group tag targets (set via /tag command)
+        from app.db.queries_mysql import get_tag_targets
+        tag_targets = get_tag_targets(deps.db, group_id)
+
         if answer_text == "[[TAG_ADMIN]]" or answer_text.strip() == "[[TAG_ADMIN]]":
             from app.agent.ultimate_agent import detect_lang
             msg_lang = detect_lang(msg.content_text)
             tag_msg = "Потребує уваги адміністратора." if msg_lang == "uk" else "Needs admin attention."
             answer_text = f"[[MENTION_PLACEHOLDER]] {tag_msg}"
-            if active_admins:
+            if tag_targets:
+                mention_recipients.extend(tag_targets)
+            elif active_admins:
                 mention_recipients.extend(active_admins)
             else:
                 answer_text = f"@admin {tag_msg}"
 
         elif "[[TAG_ADMIN]]" in answer_text or "@admin" in answer_text:
             answer_text = answer_text.replace("[[TAG_ADMIN]]", "[[MENTION_PLACEHOLDER]]").replace("@admin", "[[MENTION_PLACEHOLDER]]").strip()
-            if active_admins:
+            if tag_targets:
+                mention_recipients.extend(tag_targets)
+            elif active_admins:
                 mention_recipients.extend(active_admins)
             else:
                 answer_text = answer_text.replace("[[MENTION_PLACEHOLDER]]", "@admin")
@@ -1003,12 +1059,24 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
                 _rag_answered_messages[message_id] = None
             log.debug("Marked message %s as RAG-answered (case creation suppressed)", message_id)
 
+        # Clean answer_text for storage: replace placeholders with readable text
+        stored_text = answer_text.replace("[[MENTION_PLACEHOLDER]]", "@admin")
+
         # Send text response
         quote_author = str(payload.get("sender") or "").strip()
         quote_ts_raw = payload.get("ts")
         quote_ts = int(quote_ts_raw) if quote_ts_raw is not None else int(msg.ts)
         quote_msg = str(payload.get("text") or "").strip()
-        
+
+        # Mark as responded BEFORE sending — prevents duplicate if timeout retry
+        with _responded_lock:
+            if len(_responded_messages) >= _RAG_ANSWERED_MAX:
+                try:
+                    del _responded_messages[next(iter(_responded_messages))]
+                except StopIteration:
+                    pass
+            _responded_messages[message_id] = None
+
         sent_ts = deps.signal.send_group_text(
             group_id=group_id,
             text=answer_text,
@@ -1025,7 +1093,7 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
                 group_id=group_id,
                 ts=sent_ts,
                 sender_hash=deps.bot_sender_hash,
-                content_text=answer_text,
+                content_text=stored_text,
                 image_paths=[],
                 reply_to_id=msg.message_id,
                 sender_name="BOT",

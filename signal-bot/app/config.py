@@ -103,6 +103,9 @@ class Settings:
     # Admin whitelist (phone numbers allowed to DM the bot)
     admin_whitelist: List[str]
 
+    # Superadmin list (can reingest any group, even if not linked as admin)
+    superadmin_list: List[str]
+
 
 def load_settings() -> Settings:
     mentions = [
@@ -149,7 +152,7 @@ def load_settings() -> Settings:
         context_last_n=_env_int("CONTEXT_LAST_N", default=40, min_value=1),
         retrieve_top_k=_env_int("RETRIEVE_TOP_K", default=5, min_value=1),
         worker_poll_seconds=float(os.getenv("WORKER_POLL_SECONDS", "1")),
-        history_token_ttl_minutes=_env_int("HISTORY_TOKEN_TTL_MINUTES", default=60, min_value=1),
+        history_token_ttl_minutes=_env_int("HISTORY_TOKEN_TTL_MINUTES", default=240, min_value=1),
         admin_session_stale_minutes=_env_int("ADMIN_SESSION_STALE_MINUTES", default=30, min_value=1),
         http_debug_endpoints_enabled=_env_bool("HTTP_DEBUG_ENDPOINTS_ENABLED", default=False),
         buffer_max_age_hours=_env_int("BUFFER_MAX_AGE_HOURS", default=168, min_value=1),  # 7 days
@@ -163,6 +166,11 @@ def load_settings() -> Settings:
         admin_whitelist=[
             s.strip()
             for s in _env("ADMIN_WHITELIST", default="").split(",")
+            if s.strip()
+        ],
+        superadmin_list=[
+            s.strip()
+            for s in _env("SUPERADMIN_LIST", default="").split(",")
             if s.strip()
         ],
     )

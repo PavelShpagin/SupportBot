@@ -87,6 +87,10 @@ if DB_BACKEND == "mysql":
         clear_union,
         get_groups_in_union,
         get_admin_group_ids,
+        set_tag_targets,
+        get_tag_targets,
+        set_group_ingesting,
+        is_group_ingesting,
     )
     
     def create_db(settings):

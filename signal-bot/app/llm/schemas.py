@@ -99,6 +99,7 @@ class UnifiedUpdate(BaseModel):
     """An existing case whose solution should be updated with new info."""
     case_id: str
     solution_summary: str = ""
+    additional_evidence_ids: List[str] = Field(default_factory=list)
 
 
 class UnifiedBufferResult(BaseModel):

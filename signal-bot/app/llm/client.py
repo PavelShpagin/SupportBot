@@ -233,13 +233,17 @@ class LLMClient:
         resp = self.client.embeddings.create(model=self.settings.embedding_model, input=[text])
         return resp.data[0].embedding
 
-    def embed_batch(self, *, texts: list[str]) -> list[list[float]]:
-        """Embed multiple texts in one API call. Returns list of vectors in same order as input."""
+    def embed_batch(self, *, texts: list[str], batch_size: int = 100) -> list[list[float]]:
+        """Embed multiple texts in batched API calls. Returns list of vectors in same order as input."""
         if not texts:
             return []
-        resp = self.client.embeddings.create(model=self.settings.embedding_model, input=texts)
-        ordered = sorted(resp.data, key=lambda d: d.index if d.index is not None else 999999)
-        return [d.embedding for d in ordered]
+        all_embeddings: list[list[float]] = []
+        for i in range(0, len(texts), batch_size):
+            chunk = texts[i:i + batch_size]
+            resp = self.client.embeddings.create(model=self.settings.embedding_model, input=chunk)
+            ordered = sorted(resp.data, key=lambda d: d.index if d.index is not None else 999999)
+            all_embeddings.extend([d.embedding for d in ordered])
+        return all_embeddings
 
     def image_to_text_json(self, *, image_bytes: bytes, context_text: str) -> ImgExtract:
         if not self.settings.model_img:
@@ -318,9 +322,15 @@ class LLMClient:
         if existing_cases:
             lines = []
             for ec in existing_cases:
-                lines.append(f"- case_id={ec.get('case_id', '')} | {ec.get('title', '')} | {ec.get('summary', '')}")
+                ev_ids = ec.get('evidence_ids') or []
+                ev_str = f" | evidence_ids={','.join(str(e) for e in ev_ids)}" if ev_ids else ""
+                sol = ec.get('solution_summary') or ec.get('summary', '')
+                lines.append(
+                    f"- case_id={ec.get('case_id', '')} | {ec.get('title', '')} "
+                    f"| Рішення: {sol[:300]}{ev_str}"
+                )
             parts.append(
-                "\nІСНУЮЧІ КЕЙСИ (НЕ витягувати повторно!):\n"
+                "\nІСНУЮЧІ КЕЙСИ (НЕ витягувати повторно, але можна оновити через updates!):\n"
                 + "\n".join(lines)
             )
         if recommendation_cases:
