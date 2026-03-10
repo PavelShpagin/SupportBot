@@ -206,6 +206,7 @@ RULES:
 10. NEVER invent information not provided by the agents.
 11. If evidence files are available, share them with the user via [[ATTACH:url]]. Do NOT attach images.
 12. IMAGES: if the user attached an image with visible text (model numbers, labels, error messages, screenshots), treat OCR-extracted text as HARD FACT. Identify the product/component/error confidently — do not hedge or say "hard to determine from a photo" when the text is clearly readable.
+13. NO REPETITION: if the chat context already contains YOUR previous response with case links, do NOT repeat the same cases. Instead, reference your earlier answer (e.g. "як зазначено вище") or provide only NEW information. If you have nothing new to add beyond what you already said, output "SKIP".
 
 Answer:"""
 
