@@ -1044,10 +1044,13 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
             answer_text = answer_text.replace("[[TAG_ADMIN]]", "[[MENTION_PLACEHOLDER]]").replace("@admin", "[[MENTION_PLACEHOLDER]]").strip()
             if tag_targets:
                 mention_recipients.extend(tag_targets)
+                log.info("MENTION: using tag_targets=%s", tag_targets)
             elif active_admins:
                 mention_recipients.extend(active_admins)
+                log.info("MENTION: using active_admins=%s", active_admins)
             else:
                 answer_text = answer_text.replace("[[MENTION_PLACEHOLDER]]", "@admin")
+                log.info("MENTION: no recipients, falling back to @admin text")
 
         if rag_answered:
             with _rag_answered_lock:
@@ -1077,6 +1080,7 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
                     pass
             _responded_messages[message_id] = None
 
+        log.info("SEND: mention_recipients=%s, has_placeholder=%s", mention_recipients, "[[MENTION_PLACEHOLDER]]" in answer_text)
         sent_ts = deps.signal.send_group_text(
             group_id=group_id,
             text=answer_text,
