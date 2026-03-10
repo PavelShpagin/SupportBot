@@ -1,6 +1,8 @@
-# Signal registration & persistence (prevent re-linking)
+# Signal Registration & Persistence (prevent re-linking)
 
-This project uses **`signal-cli` inside Docker**. The "Signal registration/linking" state is just files on disk under `SIGNAL_BOT_STORAGE` (default: `/var/lib/signal/bot`).
+**Last Updated**: 2026-03-10
+
+This project uses **Signal Desktop (headless)** inside Docker as the primary Signal adapter. The Signal registration/linking state is stored on disk under bind-mounted directories.
 
 If those files are lost/emptied, Signal will show the device as unregistered and you'll have to link again.
 
@@ -13,7 +15,7 @@ The system is "ready" when all of these are true:
 - Docker services are up:
 
 ```bash
-docker compose -f docker-compose.prod.yml ps
+docker compose ps
 ```
 
 - API health is OK:
@@ -22,16 +24,16 @@ docker compose -f docker-compose.prod.yml ps
 curl http://localhost:8000/healthz
 ```
 
-- Signal account is linked (and the receive loop is running):
+- Signal Desktop is linked and running:
 
 ```bash
-curl http://localhost:8000/signal/link-device/status
+curl http://localhost:8001/status
 ```
 
 - History ingestion worker is running:
 
 ```bash
-docker compose -f docker-compose.prod.yml logs --tail=50 signal-ingest
+docker compose logs --tail=50 signal-ingest
 ```
 
 To confirm **chat responding**, send a test message in a connected group that mentions the bot (see `BOT_MENTION_STRINGS`, e.g. `@supportbot`) and verify a response arrives.
@@ -44,11 +46,12 @@ To confirm **chat responding**, send a test message in a connected group that me
 
 Use **bind mounts** for Signal state so it can't disappear due to Docker volume renames.
 
-This repo's `docker-compose.yml` and `docker-compose.prod.yml` mount:
+The `docker-compose.yml` mounts:
 
-- `/var/lib/signal/bot` → main bot account state
-- `/var/lib/signal/ingest` → ingestion/link-device state used for history bootstrap
-- `/var/lib/history` → QR images + history artifacts
+- `/var/lib/signal/bot` -- main bot account state
+- `/var/lib/signal/desktop` -- Signal Desktop data directory
+- `/var/lib/signal/ingest` -- ingestion/link-device state used for history bootstrap
+- `/var/lib/history` -- QR images + history artifacts
 
 **Do not delete these directories.**
 
@@ -61,7 +64,7 @@ Avoid commands that wipe persistent storage:
 
 ### 3) Don't unlink the device from your phone
 
-If you remove the linked device in Signal (**Settings → Linked devices**), you will have to link again. That's expected Signal behavior.
+If you remove the linked device in Signal (**Settings -> Linked devices**), you will have to link again. That's expected Signal behavior.
 
 ### 4) Back up the Signal state
 
@@ -78,89 +81,20 @@ Restore example:
 ```bash
 sudo tar -C /var/lib -xzf /var/backups/supportbot/signal_YYYYMMDD_HHMMSS.tgz
 sudo tar -C /var/lib -xzf /var/backups/supportbot/history_YYYYMMDD_HHMMSS.tgz
-docker compose -f docker-compose.prod.yml up -d
+docker compose up -d
 ```
 
 ---
 
-## How to link the bot (QR) safely
+## How to link the bot -- Signal Desktop (recommended)
 
-This repo includes a built-in QR endpoint (debug-only) that:
-- generates a QR PNG
-- keeps `signal-cli link` running until the scan completes
+Signal Desktop is the primary adapter. It runs headlessly with Xvfb (virtual display) and receives the full 45-day history transfer when you link.
 
-### 1) Temporarily enable debug endpoints
-
-Set in `.env`:
-
-```bash
-HTTP_DEBUG_ENDPOINTS_ENABLED=true
-```
-
-Restart the bot:
-
-```bash
-docker compose -f docker-compose.prod.yml up -d --build signal-bot
-```
-
-### 2) Scan the QR from a desktop screen
-
-Open on **your desktop** (so your phone can scan it):
-
-- QR: `http://<server>:8000/signal/link-device/qr`
-- Status: `http://<server>:8000/signal/link-device/status`
-
-Scan path on phone:
-- Signal → Settings → Linked devices → Link new device
-
-When status becomes `linked`, the bot will start the receive loop automatically.
-
-### 3) Disable debug endpoints again (recommended)
-
-Set:
-
-```bash
-HTTP_DEBUG_ENDPOINTS_ENABLED=false
-```
-
-Restart:
-
-```bash
-docker compose -f docker-compose.prod.yml up -d signal-bot
-```
-
----
-
-## History ingestion with Signal Desktop (recommended)
-
-This repo now supports running **Signal Desktop headlessly** on the VM. This enables real 45-day history transfer - unlike signal-cli, Signal Desktop actually receives historical messages when you link.
-
-### Enable Signal Desktop mode
-
-Set in `.env`:
-
-```bash
-USE_SIGNAL_DESKTOP=true
-```
-
-Restart services:
-
-```bash
-docker compose -f docker-compose.prod.yml up -d --build
-```
-
-### How it works
-
-1. `signal-desktop` container runs Signal Desktop with Xvfb (virtual display)
-2. When you link, Signal Desktop receives the 45-day history transfer
-3. `signal-ingest` queries the Signal Desktop SQLite DB for messages
-4. Messages are processed into cases and added to the knowledge base
-
-### Initial linking with Signal Desktop
+### Initial linking
 
 1. Make sure `signal-desktop` container is running:
    ```bash
-   docker compose -f docker-compose.prod.yml logs -f signal-desktop
+   docker compose logs -f signal-desktop
    ```
 
 2. Get a screenshot of the QR code (during first-time setup):
@@ -170,7 +104,7 @@ docker compose -f docker-compose.prod.yml up -d --build
    Or open `http://<server>:8001/screenshot` in a browser.
 
 3. Scan the QR code from your phone:
-   - Signal → Settings → Linked devices → Link new device
+   - Signal -> Settings -> Linked devices -> Link new device
    - Choose "Transfer message history" when prompted
 
 4. Wait for sync to complete (check status):
@@ -190,13 +124,21 @@ Signal Desktop requires more resources than signal-cli:
 
 ## Fallback: signal-cli mode
 
-If you can't run Signal Desktop (e.g., ARM architecture, limited resources), you can use the legacy signal-cli mode:
+If you can't run Signal Desktop (e.g., limited resources), you can use the legacy signal-cli mode:
 
 ```bash
 USE_SIGNAL_DESKTOP=false
 ```
 
 **Limitation**: signal-cli does NOT receive the 45-day history transfer. It only captures new messages that arrive while `signal-cli receive` is running.
+
+With signal-cli, you can link via the debug QR endpoint:
+
+1. Set `HTTP_DEBUG_ENDPOINTS_ENABLED=true` in `.env`
+2. Restart: `docker compose up -d --build signal-bot`
+3. Open `http://<server>:8000/signal/link-device/qr` in a browser
+4. Scan with Signal -> Settings -> Linked devices -> Link new device
+5. Set `HTTP_DEBUG_ENDPOINTS_ENABLED=false` and restart
 
 ---
 
@@ -206,24 +148,24 @@ For one-time imports, you can extract history from Signal Desktop on your local 
 
 1. **Extract the key** (on Windows with Signal Desktop):
    ```bash
-   python test/decrypt_key_win.py
+   python tests/decrypt_key_win.py
    ```
    This saves `signal_key.txt` to your Desktop.
 
 2. **Copy the key and extract the backup**:
    ```bash
-   # Copy signal_key.txt to test/secrets/signal_key.txt
-   # Extract your Signal Desktop backup to test/data/extracted/Signal1/
+   # Copy signal_key.txt to tests/secrets/signal_key.txt
+   # Extract your Signal Desktop backup to tests/data/extracted/Signal1/
    ```
 
 3. **Export messages**:
    ```bash
-   python test/read_signal_db.py
+   python tests/read_signal_db.py
    ```
 
 4. **Mine cases**:
    ```bash
-   python test/mine_real_cases.py
+   python tests/mine_real_cases.py
    ```
 
-This produces structured cases in `test/data/signal_cases_structured.json` that can be imported into the bot's knowledge base.
+This produces structured cases that can be imported into the bot's knowledge base.

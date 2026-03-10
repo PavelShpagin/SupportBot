@@ -1,6 +1,6 @@
-# SupportBot — Algorithm & Architecture (Full Technical Reference)
+# SupportBot -- Algorithm & Architecture (Full Technical Reference)
 
-**Last Updated**: 2026-02-23  
+**Last Updated**: 2026-03-10
 **Status**: Current & Accurate (reflects production code)
 
 ---
@@ -15,7 +15,7 @@
 6. [Answer Pipeline (MAYBE_RESPOND)](#6-answer-pipeline-maybe_respond)
 7. [Emoji Reaction & Case Confirmation](#7-emoji-reaction--case-confirmation)
 8. [History Ingestion (signal-ingest)](#8-history-ingestion-signal-ingest)
-9. [Answer Engine Context Layers (SCRAG / B3 / B1)](#9-answer-engine-context-layers-scrag--b3--b1)
+9. [Answer Engine Context Layers (SCRAG / RCRAG / B3)](#9-answer-engine-context-layers-scrag--rcrag--b3)
 10. [LLM Calls Reference](#10-llm-calls-reference)
 11. [Worker Maintenance Tasks](#11-worker-maintenance-tasks)
 12. [Case Lifecycle Summary](#12-case-lifecycle-summary)
@@ -27,58 +27,64 @@
 ## 1. System Overview
 
 ```
-┌───────────────────────────────────────────────────────────────────────────┐
-│                         SIGNAL GROUP CHAT                                  │
-│  Users send messages, images, emoji reactions to a Signal support group    │
-└──────────────────────────────┬────────────────────────────────────────────┘
-                               │ Messages / Reactions
-                               ▼
-┌──────────────────────────────────────────────────────────────────────────┐
-│                      signal-desktop (headless)                            │
-│  - Runs Signal Desktop in headless mode with SQLite DB (SQLCipher)        │
-│  - Exposes HTTP API: /group/messages, /group/send, /reactions, etc.       │
-│  - Polls for new messages and reactions                                   │
-└──────────────────────────────┬───────────────────────────────────────────┘
-                               │ HTTP
-                               ▼
-┌──────────────────────────────────────────────────────────────────────────┐
-│                        signal-bot (FastAPI)                               │
-│  ┌─────────────────┐  ┌────────────────────┐  ┌──────────────────────┐  │
-│  │ Ingest Layer    │  │  Worker (2 queues)  │  │  HTTP API (web)      │  │
-│  │                 │  │                    │  │                      │  │
-│  │ ingest_message  │  │  BUFFER_UPDATE      │  │  /case/{id}          │  │
-│  │ _handle_react.  │  │  MAYBE_RESPOND      │  │  /history/cases      │  │
-│  └────────┬────────┘  └─────────┬──────────┘  └──────────────────────┘  │
-│           │                     │                                         │
-│           ▼                     ▼                                         │
-│  ┌────────────────────────────────────────────────────────────────────┐  │
-│  │  MySQL Database                                                     │  │
-│  │  raw_messages · buffers · cases · reactions · jobs · admin_sessions │  │
-│  └────────────────────────────────────────────────────────────────────┘  │
-│           │                     │                                         │
-│           ▼                     ▼                                         │
-│  ┌──────────────────┐  ┌────────────────────────┐                        │
-│  │  ChromaDB (SCRAG)│  │  Gemini API (LLM)       │                        │
-│  │  Vector store of │  │  - gemini-2.0-flash      │                        │
-│  │  solved cases    │  │  - gemini-embedding-001   │                        │
-│  └──────────────────┘  └────────────────────────┘                        │
-└──────────────────────────────────────────────────────────────────────────┘
-         ▲
-         │  HTTP POST /history/cases
-┌────────┴─────────────────────────────────────────────────────────────────┐
-│                       signal-ingest                                       │
-│  History ingestion service:                                               │
-│  - Triggers QR-code linking of admin's Signal account                    │
-│  - Reads 45-day chat history from signal-desktop                         │
-│  - Extracts solved cases with LLM                                         │
-│  - Posts cases to signal-bot                                              │
-└──────────────────────────────────────────────────────────────────────────┘
-         ▲
-         │  Browser / signal-web
-┌────────┴─────────────────────────────────────────────────────────────────┐
-│                      signal-web (Next.js)                                 │
-│  Public web UI for viewing case details, chat history, emoji confirmations│
-└──────────────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------------+
+|                         SIGNAL GROUP CHAT                              |
+|  Users send messages, images, emoji reactions to a Signal group       |
++-------------------------------+---------------------------------------+
+                                | Messages / Reactions
+                                v
++-----------------------------------------------------------------------+
+|                      signal-desktop (headless)                         |
+|  - Runs Signal Desktop in headless mode with SQLite DB (SQLCipher)    |
+|  - Exposes HTTP API: /group/messages, /group/send, /reactions, etc.   |
+|  - Polls for new messages and reactions                                |
++-------------------------------+---------------------------------------+
+                                | HTTP
+                                v
++-----------------------------------------------------------------------+
+|                        signal-bot (FastAPI)                            |
+|  +------------------+  +--------------------+  +-------------------+  |
+|  | Ingest Layer     |  | Worker (job queue)  |  | HTTP API (web)    |  |
+|  |                  |  |                     |  |                   |  |
+|  | ingest_message   |  | BUFFER_UPDATE       |  | /case/{id}        |  |
+|  | _handle_react.   |  | MAYBE_RESPOND       |  | /history/cases    |  |
+|  +--------+---------+  +---------+-----------+  +-------------------+  |
+|           |                      |                                     |
+|           v                      v                                     |
+|  +--------------------------------------------------------------------+|
+|  |  MySQL Database                                                    ||
+|  |  raw_messages . buffers . cases . reactions . jobs . admin_sessions||
+|  +--------------------------------------------------------------------+|
+|           |                      |                                     |
+|           v                      v                                     |
+|  +-------------------+  +------------------------+                    |
+|  | ChromaDB DualRAG  |  | Gemini API (LLM)       |                    |
+|  | cases_scrag       |  | gemini-2.5-pro (sub)    |                    |
+|  | cases_rcrag       |  | gemini-2.5-flash (gate) |                    |
+|  | (solved + recom.) |  | text-embedding-004      |                    |
+|  +-------------------+  +------------------------+                    |
+|                                                                        |
+|  +-------------------+                                                |
+|  | Cloudflare R2     |                                                |
+|  | Image storage     |                                                |
+|  +-------------------+                                                |
++-----------------------------------------------------------------------+
+         ^
+         |  HTTP POST /history/cases
++--------+--------------------------------------------------------------+
+|                       signal-ingest                                    |
+|  History ingestion service:                                            |
+|  - Triggers QR-code linking of admin's Signal account                 |
+|  - Reads 45-day chat history from signal-desktop                      |
+|  - Extracts solved cases with LLM                                     |
+|  - Posts cases to signal-bot                                           |
++-----------------------------------------------------------------------+
+         ^
+         |  Browser / signal-web
++--------+--------------------------------------------------------------+
+|                      signal-web (Next.js)                              |
+|  Public web UI for viewing case details, chat history                  |
++-----------------------------------------------------------------------+
 ```
 
 ---
@@ -87,37 +93,40 @@
 
 | Service | Technology | Role |
 |---------|-----------|------|
-| `signal-desktop` | Python FastAPI + SQLCipher | Reads/writes Signal Desktop SQLite DB; exposes HTTP API for messages and reactions |
-| `signal-bot` | Python FastAPI | Core backend: ingest, worker queues, LLM orchestration, case DB, RAG |
+| `signal-desktop` | Python FastAPI + SQLCipher | Reads/writes Signal Desktop SQLite DB; HTTP API for messages and reactions |
+| `signal-bot` | Python FastAPI | Core backend: ingest, worker queues, LLM orchestration, case DB, dual-RAG |
 | `signal-ingest` | Python | History import: QR-link admin account, bulk-extract cases from past messages |
-| `signal-web` | Next.js (React) | Case viewer web app; displays case details, chat history, confirmation emoji |
+| `signal-web` | Next.js (React) | Case viewer web app; displays case details, chat history |
 | MySQL | MySQL 8 | Primary persistent store: messages, buffers, cases, jobs, sessions |
-| ChromaDB | Chroma | Vector store for semantic search over solved cases (SCRAG layer) |
-| Gemini API | Google | All LLM calls: gating, case extraction, embedding, answer synthesis |
+| ChromaDB | Chroma | Two-collection vector store: SCRAG (solved) + RCRAG (recommendation) |
+| Cloudflare R2 | S3-compatible | Image blob storage (with local fallback) |
+| Gemini API | Google AI Studio | All LLM calls: gating, extraction, embedding, synthesis |
 
 ### Key source files
 
 ```
 signal-bot/app/
-├── main.py                  ← FastAPI app, signal listener, reaction handler
-├── ingestion.py             ← ingest_message(): store + enqueue jobs
-├── jobs/worker.py           ← BUFFER_UPDATE and MAYBE_RESPOND job handlers
-├── agent/
-│   ├── ultimate_agent.py    ← UltimateAgent: gate → search → synthesize
-│   └── case_search_agent.py ← CaseSearchAgent: SCRAG + B3 + B1 retrieval
-├── llm/
-│   ├── client.py            ← LLMClient: all Gemini API calls
-│   ├── prompts.py           ← All system prompts (P_BLOCKS_SYSTEM, etc.)
-│   └── schemas.py           ← Pydantic output schemas
-├── db/
-│   ├── queries_mysql.py     ← All SQL queries
-│   └── schema_mysql.py      ← DB schema (create tables)
-└── rag/chroma.py            ← ChromaDB wrapper (SCRAG)
++-- main.py                  -- FastAPI app, signal listener, reaction handler
++-- ingestion.py             -- ingest_message(): store + enqueue jobs
++-- r2.py                    -- Cloudflare R2 image storage
++-- jobs/worker.py           -- BUFFER_UPDATE and MAYBE_RESPOND job handlers
++-- agent/
+|   +-- ultimate_agent.py    -- UltimateAgent: gate -> parallel agents -> synthesize
+|   +-- case_search_agent.py -- CaseSearchAgent: SCRAG + RCRAG + B3 + RCRAG-DB
+|   +-- docs_agent.py        -- DocsAgent: answers from Google Docs
++-- llm/
+|   +-- client.py            -- LLMClient: all Gemini API calls, model cascades
+|   +-- prompts.py           -- All system prompts (P_BLOCKS_SYSTEM, etc.)
+|   +-- schemas.py           -- Pydantic output schemas
++-- db/
+|   +-- queries_mysql.py     -- All SQL queries
+|   +-- schema_mysql.py      -- DB schema (create tables + migrations)
++-- rag/chroma.py            -- DualRag (SCRAG + RCRAG), ChromaRag wrapper
 
-signal-ingest/ingest/main.py ← History ingestion pipeline
+signal-ingest/ingest/main.py -- History ingestion pipeline
 signal-desktop/app/
-├── db_reader.py             ← Reads Signal Desktop SQLite (SQLCipher)
-└── main.py                  ← FastAPI HTTP API over db_reader
++-- db_reader.py             -- Reads Signal Desktop SQLite (SQLCipher)
++-- main.py                  -- FastAPI HTTP API over db_reader
 ```
 
 ---
@@ -128,23 +137,29 @@ signal-desktop/app/
 
 | Table | Purpose |
 |-------|---------|
-| `raw_messages` | Every ingested message: `message_id`, `group_id`, `ts`, `sender_hash`, `content_text` (with OCR'd image JSON), `image_paths`, `reply_to_id` |
+| `raw_messages` | Every ingested message: `message_id`, `group_id`, `ts`, `sender_hash`, `sender_name`, `content_text` (with OCR'd image JSON), `image_paths_json`, `reply_to_id` |
 | `buffers` | Per-group rolling message buffer (plain text, used for LLM case extraction) |
-| `cases` | All cases: `case_id`, `group_id`, `status` (open/solved/archived), `problem_title`, `problem_summary`, `solution_summary`, `tags`, `evidence_ids`, `embedding`, `in_rag`, `closed_emoji` |
+| `cases` | All cases: `case_id`, `group_id`, `status` (solved/recommendation/archived), `problem_title`, `problem_summary`, `solution_summary`, `tags_json`, `evidence_image_paths_json`, `in_rag`, `closed_emoji`, `embedding_json` |
+| `case_evidence` | Links cases to their evidence messages (`case_id`, `message_id`) |
 | `reactions` | Emoji reactions: `group_id`, `target_ts`, `target_author`, `sender_hash`, `emoji` |
-| `jobs` | Worker job queue: `job_id`, `type` (BUFFER_UPDATE/MAYBE_RESPOND/HISTORY_LINK), `payload`, `status`, `attempts` |
-| `admin_sessions` | Linked admin accounts: `admin_id` (phone), `group_id`, `lang` |
+| `jobs` | Worker job queue: `job_id`, `type`, `payload_json`, `status`, `attempts`, `run_after` |
+| `admin_sessions` | Admin session state: `admin_id`, `state`, `pending_group_id`, `lang` |
 | `history_tokens` | One-time tokens for history import authorization |
-| `group_docs` | Optional documentation URLs per group (for `/setdocs` command) |
+| `chat_groups` | Group metadata: `group_id`, `group_name`, `docs_urls`, `union_id`, `tag_targets_json`, `ingesting` |
+| `admins_groups` | Admin-to-group links |
 
-### ChromaDB (SCRAG)
+### ChromaDB (Dual-RAG)
 
-One collection, keyed by `case_id`. Each entry:
-- **document**: structured text — `[SOLVED] <title>\nПроблема: ...\nРішення: ...\ntags: ...`
-- **embedding**: 768-dim vector from `gemini-embedding-001`
-- **metadata**: `{group_id, status, evidence_ids?, evidence_image_paths?}`
+Two separate collections managed by `DualRag`:
 
-SCRAG is the permanent semantic knowledge base. It only contains **solved** cases with a non-empty solution summary.
+**SCRAG** (`cases_scrag`): Solved cases with confirmed solutions.
+- **document**: `[SOLVED] <title>\nProblem: ...\nSolution: ...\ntags: ...`
+- **embedding**: vector from `text-embedding-004`
+- **metadata**: `{group_id, status}`
+
+**RCRAG** (`cases_rcrag`): Recommendation cases with unconfirmed advice.
+- Same format but with `[RECOMMENDATION]` prefix
+- When a recommendation is confirmed, it is moved from RCRAG to SCRAG
 
 ---
 
@@ -154,121 +169,86 @@ Every message from Signal Desktop flows through this path:
 
 ```
 Signal Desktop polls its SQLite DB every few seconds
-        │
-        ▼
+        |
+        v
 SignalDesktopAdapter.listen_forever()
-  - Gets new group messages → _handle_group_message(m)
-  - Gets reactions          → _handle_reaction(r)
-  - Gets contact-removed    → _handle_contact_removed(phone)
-        │
-        ▼ (group message)
+  - Gets new group messages -> _handle_group_message(m)
+  - Gets reactions          -> _handle_reaction(r)
+  - Gets contact-removed    -> _handle_contact_removed(phone)
+        |
+        v (group message)
 ingest_message(settings, db, llm, message_id, group_id, sender, ts, text, image_paths)
-        │
-        ├─ Image processing (if attachments):
-        │     for each image:
-        │       llm.image_to_text_json(image_bytes, context_text)
-        │         → ImgExtract {observations: List[str], extracted_text: str}
-        │       append to content_text:
-        │         "\n\n[image]\n{json}"
-        │
-        ├─ insert_raw_message(db, RawMessage{...})
-        │     ← idempotent; skips if message_id already exists
-        │
-        └─ enqueue_job(db, BUFFER_UPDATE, payload)
+        |
+        +- Image processing (if attachments):
+        |     for each image:
+        |       llm.image_to_text_json(image_bytes, context_text)
+        |         -> ImgExtract {observations: List[str], extracted_text: str}
+        |       Upload to R2 (Cloudflare) or local fallback
+        |       Append to content_text: "\n\n[image]\n{json}"
+        |
+        +- insert_raw_message(db, RawMessage{...})
+        |     (idempotent; skips if message_id already exists)
+        |
+        +- enqueue_job(db, BUFFER_UPDATE, payload)
            enqueue_job(db, MAYBE_RESPOND, payload)
 ```
 
-### Image Processing Details
+### Double Response Prevention
 
-Images attached to Signal messages are processed immediately at ingest time:
-- Calls `llm.image_to_text_json(image_bytes, context_text=original_text)` using `P_IMG_SYSTEM` prompt
-- Returns structured JSON: `{"observations": [...], "extracted_text": "..."}`
-- This JSON is appended to `content_text` in `raw_messages` so all subsequent LLM calls see the OCR output
-- Original image bytes are stored on disk at `settings.signal_bot_storage` path
+The worker tracks responded messages via `_responded_messages` (a dedup dict keyed by message_id). If a timed-out job is retried, the worker skips sending a duplicate response.
 
 ---
 
 ## 5. Case Extraction Pipeline (BUFFER_UPDATE)
 
-Triggered for every new message. Purpose: maintain the rolling buffer (B2) and extract new cases.
+Triggered for every new message. Purpose: maintain the rolling buffer (B2) and extract/promote cases.
 
 ```
 BUFFER_UPDATE job consumed by worker_loop_forever()
-        │
-        ▼
+        |
+        v
 _handle_buffer_update(deps, payload)
-        │
-        ├─ Load message from raw_messages
-        ├─ Check positive reactions on this message (from reactions table)
-        ├─ Mark as [BOT] if sender_hash == bot_sender_hash
-        ├─ Append formatted buffer line:
-        │     "{sender_hash}[BOT?] ts={ts} msg_id={msg_id} reactions=N\n{content_text}\n\n"
-        │
-        ├─ Trim buffer:
-        │     - Remove messages older than buffer_max_age_hours
-        │     - Remove oldest messages if > buffer_max_messages
-        │
-        ├─ Parse buffer into indexed message blocks (BufferMessageBlock)
-        │
-        ├─ Filter out [BOT] blocks for extraction input
-        │     (bot messages kept in buffer for context but never become cases)
-        │
-        ├─── PHASE 1: Extract new case spans ──────────────────────────────────
-        │
-        │   llm.extract_case_from_buffer(numbered_buffer)
-        │     [P_EXTRACT_SYSTEM prompt + gemini-2.0-flash]
-        │     → ExtractResult {cases: [{start_idx, end_idx}]}
-        │
-        │   for each span (start_idx → end_idx):
-        │     case_block_text = join messages in span
-        │
-        │     llm.make_case(case_block_text)
-        │       [P_CASE_SYSTEM prompt + gemini-2.0-flash]
-        │       → CaseResult {keep, status, problem_title, problem_summary,
-        │                      solution_summary, tags}
-        │
-        │     if not case.keep → skip
-        │
-        │     Semantic dedup:
-        │       embed_text = f"{problem_title}\n{problem_summary}"
-        │       embedding = llm.embed(embed_text)
-        │       similar_id = find_similar_case(db, group_id, embedding)
-        │
-        │       if similar_id:
-        │         merge_case(db, target=similar_id, ...) → update existing
-        │       else:
-        │         insert_case(db, new case_id, status=open/solved, ...)
-        │       store_case_embedding(db, case_id, embedding)
-        │
-        │     if status == "solved" AND solution not empty:
-        │       Build doc_text:
-        │         "[SOLVED] {title}\nПроблема: {problem}\nРішення: {solution}\ntags: ..."
-        │       rag_embedding = llm.embed(doc_text)
-        │       rag.upsert_case(case_id, doc_text, rag_embedding, metadata)
-        │       mark_case_in_rag(db, case_id)
-        │       accepted_ranges.append(span) ← will be removed from buffer
-        │     else:
-        │       store as B1 open case, keep messages in buffer
-        │
-        ├─── PHASE 2: Dynamic B1 Resolution ───────────────────────────────────
-        │
-        │   open_cases = get_open_cases_for_group(db, group_id)  ← B1
-        │
-        │   for each b1_case:
-        │     resolution = llm.check_case_resolved(
-        │         case_title, case_problem, buffer_text=full_buf)
-        │       [P_RESOLUTION_SYSTEM prompt + gemini-2.0-flash]
-        │       → ResolutionResult {resolved: bool, solution_summary: str}
-        │
-        │     if resolved AND solution not empty:
-        │       Semantic dedup: check for existing solved case
-        │         if exists → merge + archive b1_case
-        │         else      → update_case_to_solved(db, case_id, solution)
-        │       upsert to SCRAG (mark_case_in_rag)
-        │
-        └─── Update buffer ─────────────────────────────────────────────────────
-
-            Remove message spans that became solved cases (accepted_ranges)
+        |
+        +- Load message from raw_messages
+        +- Check positive reactions on this message
+        +- Mark as [BOT] if sender_hash == bot_sender_hash
+        +- Append formatted buffer line:
+        |     "{sender_hash}[BOT?] ts={ts} msg_id={msg_id} reactions=N\n{content_text}\n\n"
+        |
+        +- Trim buffer:
+        |     - Remove messages older than buffer_max_age_hours (168h = 7 days)
+        |     - Remove oldest messages if > buffer_max_messages (300)
+        |
+        +- Parse buffer into indexed message blocks (BufferMessageBlock)
+        +- Filter out [BOT] blocks for extraction input
+        |
+        +--- UNIFIED BUFFER ANALYSIS (single LLM call) ---
+        |
+        |   llm.unified_buffer_analysis(buffer, existing_recommendation_cases)
+        |     -> UnifiedBufferResult {
+        |          new_cases: [{start_idx, end_idx, status, problem_title, ...}]
+        |          promotions: [{case_id, solution_summary}]
+        |          updates: [{case_id, solution_summary, additional_evidence_ids}]
+        |        }
+        |
+        |   For each new case:
+        |     Semantic dedup: embed -> find_similar_case()
+        |       if similar -> merge_case()
+        |       else       -> insert_case()
+        |
+        |     if status == "solved":
+        |       rag.upsert_case() into SCRAG, mark_case_in_rag()
+        |       accepted_ranges.append(span) -> remove from buffer
+        |     else (recommendation):
+        |       rag.upsert_case() into RCRAG
+        |       keep messages in buffer
+        |
+        |   For each promotion (recommendation -> solved):
+        |     update_case_to_solved(), upsert to SCRAG
+        |     (DualRag automatically removes from RCRAG when upserting to SCRAG)
+        |
+        +--- Update buffer ---
+            Remove message spans that became solved cases
             set_buffer(db, group_id, buffer_new)
 ```
 
@@ -281,8 +261,8 @@ _handle_buffer_update(deps, payload)
 ```
 
 - `[BOT]` tag: only for messages from the bot's own phone number
-- `reactions=N`: count of positive emoji reactions from the `reactions` table
-- `reply_to=`: quoted message ID (from Signal's quote feature)
+- `reactions=N`: count of positive emoji reactions
+- `reply_to=`: quoted message ID
 - `msg_id=`: used by LLM to output `evidence_ids` for case linking
 
 ---
@@ -293,356 +273,254 @@ Triggered for every new message. Purpose: decide if and how to respond.
 
 ```
 MAYBE_RESPOND job consumed by worker_loop_forever()
-        │
-        ▼
+        |
+        v
 _handle_maybe_respond(deps, payload)
-        │
-        ├─ Load message from raw_messages
-        ├─ Skip if content_text is empty (system notification)
-        │
-        ├─ Check group has active linked admins
-        │     get_group_admins(db, group_id) → admin phone numbers
-        │     for each admin → get_admin_session(db, admin_id)
-        │     if no active sessions → STOP (group not configured)
-        │
-        ├─ Handle /setdocs command (admin-only)
-        │     upsert_group_docs(db, group_id, urls)
-        │
-        ├─── GATE: decide_consider() ─────────────────────────────────────────
-        │
-        │   context_text = last 9 messages (excluding current)
-        │   gate_images  = first 2 attached images (if present)
-        │
-        │   gate = llm.decide_consider(
-        │       message=content_text,
-        │       context=context_text,
-        │       images=gate_images)
-        │     [P_DECISION_SYSTEM prompt + gemini-2.0-flash (fast)]
-        │     → DecisionResult {consider: bool, tag: str}
-        │
-        │   Tags: new_question | ongoing_discussion | statement | noise
-        │
-        │   if not gate.consider AND not force:
-        │     STOP (silent)
-        │
-        ├─── ULTIMATE AGENT ──────────────────────────────────────────────────
-        │
-        │   answer = UltimateAgent.answer(
-        │       question=content_text, group_id, db, lang)
-        │
-        │   ┌─ CaseSearchAgent.answer() ──────────────────────────────────┐
-        │   │  1. SCRAG: embed query → cosine search ChromaDB (top 3)     │
-        │   │  2. B3: get_recent_solved_cases(db, group_id, since_ts)     │
-        │   │         (solved cases with evidence still in B2 window)     │
-        │   │  3. B1: get_open_cases_for_group(db, group_id)              │
-        │   │                                                              │
-        │   │  Priority:                                                   │
-        │   │    SCRAG or B3 results → return formatted solved context     │
-        │   │    Only B1 results    → return "B1_ONLY:<context>"          │
-        │   │    Nothing            → return "No relevant cases found."    │
-        │   └─────────────────────────────────────────────────────────────┘
-        │
-        │   Synthesizer (gemini-2.0-flash) builds final answer:
-        │
-        │   if "No relevant cases found." → answer = "[[TAG_ADMIN]]"
-        │
-        │   if "B1_ONLY:...":
-        │     Prompt: "state the issue is tracked + include case link + [[TAG_ADMIN]]"
-        │     → 1-sentence response mentioning open case + admin tag
-        │
-        │   if solved cases found:
-        │     Prompt: "State the ACTUAL solution in 1-2 sentences. Add case link."
-        │             "If retrieved cases don't address question → [[TAG_ADMIN]]"
-        │             "If user must provide something → add [[TAG_ADMIN]] + link"
-        │     → direct answer + case link
-        │
-        ├─── SEND ────────────────────────────────────────────────────────────
-        │
-        │   [[TAG_ADMIN]] → replace with @mention of active admins
-        │
-        │   signal.send_group_text(
-        │       group_id=group_id,
-        │       text=answer,
-        │       quote_timestamp=original_ts,   ← bot replies quoting the user
-        │       quote_author=sender,
-        │       quote_message=original_text,
-        │       mention_recipients=admin_phones)
-        │
-        └──────────────────────────────────────────────────────────────────────
+        |
+        +- Load message from raw_messages
+        +- Skip if content_text is empty (system notification)
+        +- Double response check: skip if message_id in _responded_messages
+        |
+        +- Check group has active linked admins
+        |
+        +--- GATE: decide_consider() ---
+        |
+        |   context_text = last N messages (excluding current)
+        |   gate_images  = first 3 attached images (if present)
+        |
+        |   gate = llm.decide_consider(message, context, images)
+        |     [P_DECISION_SYSTEM prompt + GATE_CASCADE: gemini-2.5-flash -> gemini-2.0-flash]
+        |     -> DecisionResult {consider: bool, tag: str}
+        |
+        |   Tags: new_question | ongoing_discussion | statement | noise
+        |
+        |   if not gate.consider AND not force (bot mention):
+        |     STOP (silent)
+        |
+        +--- ULTIMATE AGENT (parallel search + synthesis) ---
+        |
+        |   answer = UltimateAgent.answer(question, group_id, db, lang, context, images)
+        |
+        |   +-- CaseSearchAgent.answer() --------- (parallel) ----------+
+        |   |  1. Embed query with text-embedding-004                    |
+        |   |  2. SCRAG: cosine search cases_scrag (top 3)              |
+        |   |  3. RCRAG: cosine search cases_rcrag (top 3)              |
+        |   |  4. B3: get_recent_solved_cases(db, group_id, since_ts)   |
+        |   |  5. RCRAG-DB: recommendation cases not yet in RAG         |
+        |   |  Distance threshold: 0.75 (cosine)                        |
+        |   |                                                            |
+        |   |  Priority:                                                 |
+        |   |    SCRAG or B3 results -> direct answer with case link     |
+        |   |    RCRAG results -> answer with "not confirmed" caveat     |
+        |   |    Nothing -> "No relevant cases found."                   |
+        |   +------------------------------------------------------------+
+        |
+        |   +-- DocsAgent.answer() --------------- (parallel) ----------+
+        |   |  1. Fetch Google Docs from chat_groups.docs_urls           |
+        |   |  2. Pass docs + question to Gemini                         |
+        |   |  3. Return answer or INSUFFICIENT_INFO                     |
+        |   +------------------------------------------------------------+
+        |
+        |   Synthesizer (SUBAGENT_CASCADE: gemini-2.5-pro -> ... -> gemini-2.5-flash):
+        |     Receives case_agent output + docs_agent output
+        |     Generates final user-facing answer
+        |     If no relevant info found -> "[[TAG_ADMIN]]"
+        |
+        +--- SEND ---
+        |
+        |   [[TAG_ADMIN]] -> replace with @mention of:
+        |     1. Per-group tag targets (chat_groups.tag_targets_json), or
+        |     2. Active admins for this group
+        |
+        |   signal.send_group_text(
+        |       group_id, text, quote_timestamp, quote_author, ...)
+        |   Track in _responded_messages to prevent duplicates
+        |
+        +---
 ```
 
-### Gate Prompt (P_DECISION_SYSTEM)
-
-The gate model decides `consider=true/false` and classifies the message:
+### Gate Tags
 
 | Tag | Meaning | consider |
 |-----|---------|----------|
-| `new_question` | New support question, no related context | **true** |
+| `new_question` | New support question | **true** |
 | `ongoing_discussion` | Continues an active thread in context | **true** |
-| `statement` | Summary / conclusion / "I solved it" without asking for help | **false** |
+| `statement` | Summary / conclusion / "I solved it" without asking | **false** |
 | `noise` | Greeting, "ok", emoji-only, off-topic | **false** |
 
 Key rules:
-- `consider=true` for technical problem descriptions (even if phrased as statements) — these are captured by BUFFER_UPDATE, not MAYBE_RESPOND
-- `consider=false` for summaries that start with "Підсумовуючи", "Резюмуючи" etc.
+- `consider=true` for technical problem descriptions (even if phrased as statements)
+- `consider=false` for summaries starting with "Pidsumoviuiuchy", "Reziuumiuiuchy" etc.
 - Bot mention (`force=true`) bypasses the gate
 
 ---
 
 ## 7. Emoji Reaction & Case Confirmation
 
-Emoji reactions are a primary signal for confirming a case was solved.
-
 ```
 Signal Desktop receives emoji reaction
-        │
-        ▼
+        |
+        v
 _handle_reaction(r: InboundReaction)
-        │
-        ├─ Hash sender: sender_h = hash_sender(r.sender)
-        │
-        ├─ if r.is_remove:
-        │     delete_reaction(db, group_id, target_ts, sender_h, emoji)
-        │
-        └─ else:
-              upsert_reaction(db, group_id, target_ts, target_author, sender_h, emoji)
-              log "Reaction added"
-              
+        |
+        +- if r.is_remove:
+        |     delete_reaction(db, ...)
+        |
+        +- else:
+              upsert_reaction(db, ...)
               if r.emoji in POSITIVE_EMOJI:
-                n = confirm_cases_by_evidence_ts(
-                    db, group_id=r.group_id, target_ts=r.target_ts, emoji=r.emoji)
-                
-                if n > 0:
-                  log "Case confirmation via emoji {emoji} on ts={ts}: {n} cases confirmed"
+                n = confirm_cases_by_evidence_ts(db, group_id, target_ts, emoji)
+                if n > 0: log case confirmation
 ```
 
-### POSITIVE_EMOJI Set
+`POSITIVE_EMOJI` includes thumbs up, heart, checkmark, and other approval emoji.
 
-Defined in `app/db/__init__.py` (MySQL module). Includes thumbs up, heart, checkmark, and other approval emoji variants across Unicode code points.
-
-### confirm_cases_by_evidence_ts()
-
-SQL logic: find all `cases` where `evidence_ids` JSON array contains any message with timestamp `target_ts` in `raw_messages`, then:
-- Update `status = 'solved'`
-- Set `closed_emoji = r.emoji` (the actual emoji used, e.g. "🫡", "+", "👍")
-
-This is also triggered from history ingestion when `reactions=N` is present in the chunk.
-
-### closed_emoji Display (signal-web)
-
-The `closed_emoji` field is stored in the `cases` table and displayed in the case page chat history:
-
-```html
-{data.closed_emoji && data.status === 'solved' && (
-  <div className="emoji-confirmation">
-    <span className="emoji-bubble">{data.closed_emoji}</span>
-    Учасник підтвердив вирішення реакцією
-  </div>
-)}
-```
-
-This appears inside the chat history section (not the page header), showing the actual emoji the participant used.
+`confirm_cases_by_evidence_ts()`: finds cases whose evidence messages contain the reacted-to timestamp, updates `status='solved'` and sets `closed_emoji`.
 
 ---
 
 ## 8. History Ingestion (signal-ingest)
 
-Used to backfill the knowledge base from past Signal chat history.
-
 ```
-Admin initiates history import (via signal-web or API)
-        │
-        ▼
-signal-bot: POST /history/link-token
-  → creates one-time token + HISTORY_LINK job
-  → sends DM to admin with QR link
-
-HISTORY_LINK job picked up by worker:
-  → POST signal-ingest/jobs   {admin_id, group_id, token, lang}
-  → signal-ingest starts job
+Admin initiates history import via DM with bot
+        |
+        v
+signal-bot: creates HISTORY_LINK job
+  -> POST signal-ingest/jobs
 
 signal-ingest job flow:
-        │
-        ├─ 1. Reset Signal Desktop (clear previous account)
-        │     POST signal-desktop/reset
-        │
-        ├─ 2. Request new QR code
-        │     POST signal-desktop/link-account
-        │     → returns QR code as base64 PNG
-        │
-        ├─ 3. Send QR image to admin via signal-bot
-        │     POST signal-bot/history/qr-ready  {token, qr_base64}
-        │     → signal-bot sends DM with QR to admin
-        │
-        ├─ 4. Wait for admin to scan QR (links their account to signal-desktop)
-        │     Poll signal-desktop/status until linked (timeout: 5 min)
-        │
-        ├─ 5. Fetch historical messages from signal-desktop
-        │     GET signal-desktop/group/{group_id}/messages
-        │     → returns list of SignalMessage {ts, sender, text, reactions, reaction_emoji, ...}
-        │
-        ├─ 6. Chunk messages and extract cases with LLM
-        │
-        │   _chunk_messages(messages, bot_e164):
-        │     - Skip bot messages (_is_bot_message: checks sender == bot_e164
-        │                          or "supportbot.info/case/" in text)
-        │     - Format each message header:
-        │         "{sender_hash} ts={ts} msg_id={msg_id}
-        │          reactions={N} reaction_emoji={emoji}"
-        │     - Split into overlapping chunks of ~150 messages
-        │
-        │   For each chunk:
-        │     LLM (P_BLOCKS_SYSTEM prompt) → {cases: [{case_block: str}]}
-        │
-        │     P_BLOCKS_SYSTEM resolution signals:
-        │       STRONG: reactions=N (N>0) on a technical answer
-        │       MEDIUM: text confirmation ("дякую", "працює", "ok", etc.)
-        │       WEAK:   conversation ends after technical answer
-        │       NOTE:   "thread ends" is intentionally kept as a weak signal;
-        │               bot replies are filtered out before LLM sees the chunk
-        │
-        ├─ 7. Post extracted cases to signal-bot
-        │     POST signal-bot/history/cases
-        │       {token, cases: [{case_block, reaction_emoji?}]}
-        │
-        │     signal-bot _process_history_cases_bg():
-        │       for each case_block:
-        │         1. Parse evidence_ids from msg_id= headers
-        │         2. llm.make_case(case_block) → CaseResult
-        │         3. Semantic dedup: find_similar_case() → merge or insert
-        │         4. If emoji_confirmed (reactions=N in block):
-        │              extract reaction_emoji from "reaction_emoji=X" in block
-        │              UPDATE cases SET closed_emoji=X WHERE case_id=...
-        │         5. If solved: upsert to SCRAG
-        │
-        └─ 8. Reset Signal Desktop again (remove admin's account)
-              POST signal-desktop/reset
-              → Privacy: admin's account is unlinked immediately after import
+        |
+        +- 1. Set ingesting=1 flag on group (concurrent ingestion guard)
+        +- 2. Reset Signal Desktop (clear previous account)
+        +- 3. Request new QR code from signal-desktop
+        +- 4. Send QR image to admin via signal-bot DM
+        +- 5. Wait for admin to scan QR (timeout: 5 min)
+        +- 6. Fetch historical messages from signal-desktop
+        +- 7. Chunk messages and extract cases with LLM (P_BLOCKS_SYSTEM)
+        +- 8. POST extracted cases to signal-bot /history/cases
+        |       signal-bot processes: make_case() -> dedup -> insert -> SCRAG/RCRAG
+        +- 9. Reset Signal Desktop (unlink admin account for privacy)
+        +- 10. Clear ingesting flag
 ```
 
-### History Case Extraction Prompt (P_BLOCKS_SYSTEM)
+### Ingestion Guard
 
-```
-Analyze chunk of support chat history → extract FULLY RESOLVED cases.
-
-Message format: sender_hash ts=TIMESTAMP msg_id=MESSAGE_ID\nmessage text
-
-Resolution signals (strongest → weakest):
-  1. reactions=N (N>0) on technical answer   ← STRONG, treat as confirmed
-  2. Text confirmation after technical answer
-     ("дякую", "працює", "ok", "working", "thanks", etc.)
-  3. Thread ends after technical answer      ← WEAK signal
-
-Rules:
-  - Extract ONLY solved cases (problem + confirmed solution)
-  - Do NOT extract open/unresolved, greetings, off-topic
-  - Preserve original message headers verbatim (needed for evidence_ids)
-  - Bot messages are pre-filtered; never appear in the chunk input
-  - Return {"cases": []} if no solved cases found
-```
+The `chat_groups.ingesting` flag prevents the live worker from processing BUFFER_UPDATE jobs for a group during history import. Stale flags are cleaned up on startup (5-minute timeout safety).
 
 ---
 
-## 9. Answer Engine Context Layers (SCRAG / B3 / B1)
-
-When answering a user question, the bot queries three context layers:
+## 9. Answer Engine Context Layers (SCRAG / RCRAG / B3)
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  SCRAG — Solved Cases RAG (ChromaDB, permanent)                 │
-│  ├─ Source: solved cases with non-empty solution summary        │
-│  ├─ Indexed: immediately when a case is marked solved           │
-│  ├─ Search: cosine similarity (gemini-embedding-001, 768-dim)   │
-│  ├─ Filter: by group_id (each group has its own knowledge base) │
-│  └─ Top-K: 3 results returned                                   │
-└─────────────────────────────────────────────────────────────────┘
++---------------------------------------------------------------+
+| SCRAG -- Solved Cases RAG (ChromaDB collection: cases_scrag)   |
+| +- Source: solved cases with confirmed solution                |
+| +- Search: cosine similarity (text-embedding-004)              |
+| +- Filter: by group_id (union-aware: searches all union groups)|
+| +- Top-K: 3 results, distance threshold: 0.75                 |
++---------------------------------------------------------------+
 
-┌─────────────────────────────────────────────────────────────────┐
-│  B3 — Recently Solved Buffer (MySQL query)                      │
-│  ├─ Source: solved cases whose evidence_ts falls in B2 window   │
-│  ├─ Query: get_recent_solved_cases(db, group_id, since_ts)      │
-│  └─ Purpose: catches cases solved in the last few days          │
-│     before embedding had time to matter / before full SCRAG sync│
-└─────────────────────────────────────────────────────────────────┘
++---------------------------------------------------------------+
+| RCRAG -- Recommendation RAG (ChromaDB collection: cases_rcrag) |
+| +- Source: recommendation cases (unconfirmed advice)           |
+| +- Same search mechanics as SCRAG                              |
+| +- Lower trust: synthesizer adds "not confirmed" caveat        |
++---------------------------------------------------------------+
 
-┌─────────────────────────────────────────────────────────────────┐
-│  B1 — Open Cases (MySQL query)                                  │
-│  ├─ Source: cases WHERE status='open' AND group_id=?            │
-│  ├─ Expiry: auto-deleted after 7 days (hourly B1 expiry job)    │
-│  └─ Use: tell user the issue is tracked, tag admin              │
-└─────────────────────────────────────────────────────────────────┘
++---------------------------------------------------------------+
+| B3 -- Recently Solved Buffer (MySQL query)                     |
+| +- Source: solved cases whose evidence_ts falls in B2 window   |
+| +- Purpose: catches freshly solved cases                       |
++---------------------------------------------------------------+
 
-┌─────────────────────────────────────────────────────────────────┐
-│  B2 — Rolling Message Buffer (MySQL buffers table)              │
-│  ├─ Content: all recent group messages as formatted text        │
-│  ├─ Age limit: buffer_max_age_hours (configurable)              │
-│  ├─ Size limit: buffer_max_messages (configurable)              │
-│  └─ Use: case extraction input (BUFFER_UPDATE) and B1 check     │
-└─────────────────────────────────────────────────────────────────┘
++---------------------------------------------------------------+
+| B2 -- Rolling Message Buffer (MySQL buffers table)             |
+| +- Content: all recent group messages as formatted text        |
+| +- Age limit: buffer_max_age_hours (168h = 7 days)            |
+| +- Size limit: buffer_max_messages (300)                       |
+| +- Use: case extraction input (BUFFER_UPDATE)                  |
++---------------------------------------------------------------+
 ```
 
 ### Response Decision Tree
 
 ```
 CaseSearchAgent.answer(question, group_id, db)
-        │
-        ├─ SCRAG search (top 3) + B3 lookup
-        │
-        ├─ Any solved results (SCRAG or B3)?
-        │     YES → format context: problem + solution + case link
-        │           → UltimateAgent synthesizer generates direct answer
-        │
-        ├─ No solved results. Any B1 (open) cases?
-        │     YES → format: "B1_ONLY:{open case context}"
-        │           → synthesizer generates 1 sentence: "being tracked" + link + [[TAG_ADMIN]]
-        │
-        └─ Nothing at all → "No relevant cases found."
-              → UltimateAgent returns "[[TAG_ADMIN]]"
-              → Worker replaces with @mention of active group admins
+        |
+        +- Embed query -> search SCRAG + RCRAG (both independently)
+        +- Also query B3 (recent solved)
+        |
+        +- SCRAG or B3 results?
+        |     YES -> format: problem + solution + case link
+        |            -> UltimateAgent synthesizer generates direct answer
+        |
+        +- RCRAG results?
+        |     YES -> format with "recommendation, not confirmed" caveat
+        |            -> synthesizer generates qualified answer
+        |
+        +- Nothing -> "No relevant cases found."
+              -> UltimateAgent returns "[[TAG_ADMIN]]"
+              -> Worker replaces with @mention
 ```
 
 ---
 
 ## 10. LLM Calls Reference
 
-All calls use Gemini API via OpenAI-compatible endpoint. Models:
+All calls use Gemini API via OpenAI-compatible endpoint.
 
-| Call | Function | Model | Purpose | Output Schema |
-|------|----------|-------|---------|---------------|
-| Image OCR | `llm.image_to_text_json()` | gemini-2.0-flash | Extract text & observations from image | `ImgExtract {observations, extracted_text}` |
-| Gate | `llm.decide_consider()` | gemini-2.0-flash | Filter noise / classify message | `DecisionResult {consider, tag}` |
-| Case extract | `llm.extract_case_from_buffer()` | gemini-2.0-flash | Find case spans in numbered buffer | `ExtractResult {cases: [{start_idx, end_idx}]}` |
-| Case structure | `llm.make_case()` | gemini-2.0-flash | Structure a case block into fields | `CaseResult {keep, status, problem_title, problem_summary, solution_summary, tags}` |
-| B1 resolution | `llm.check_case_resolved()` | gemini-2.0-flash | Check if open case resolved by new buffer | `ResolutionResult {resolved, solution_summary}` |
-| Embed | `llm.embed()` | gemini-embedding-001 | 768-dim vector for dedup + SCRAG search | `List[float]` |
-| Synthesize | `synthesizer.generate_content()` | gemini-2.0-flash | Final user-facing answer | Free text |
-| History extract | P_BLOCKS_SYSTEM prompt | gemini-2.0-flash (via OpenAI client) | Extract solved cases from history chunk | `{cases: [{case_block: str}]}` |
+### Model Cascades
+
+- **SUBAGENT_CASCADE**: `gemini-2.5-pro` -> `gemini-3.1-pro-preview` -> `gemini-2.5-flash`
+  Used for: synthesizer, subagent calls
+- **GATE_CASCADE**: `gemini-2.5-flash` -> `gemini-2.0-flash`
+  Used for: gate (decide_consider)
+
+### Per-call defaults (from config.py)
+
+| Setting | Default Model |
+|---------|--------------|
+| `model_img` | gemini-3.1-pro-preview |
+| `model_decision` | gemini-2.5-flash |
+| `model_extract` | gemini-3.1-pro-preview |
+| `model_case` | gemini-3.1-pro-preview |
+| `model_respond` | gemini-3.1-pro-preview |
+| `model_blocks` | gemini-3.1-pro-preview |
+| `embedding_model` | text-embedding-004 |
+
+### Call Summary
+
+| Call | Function | Purpose | Output Schema |
+|------|----------|---------|---------------|
+| Image OCR | `llm.image_to_text_json()` | Extract text & observations from image | `ImgExtract` |
+| Gate | `llm.decide_consider()` | Filter noise / classify message | `DecisionResult` |
+| Unified buffer | `llm.unified_buffer_analysis()` | Extract new cases + promote recommendations in one call | `UnifiedBufferResult` |
+| Case structure | `llm.make_case()` | Structure a case block into fields | `CaseResult` |
+| Embed | `llm.embed()` | Vector for dedup + RAG search | `List[float]` |
+| Synthesize | subagent cascade | Final user-facing answer | Free text |
+| History extract | P_BLOCKS_SYSTEM | Extract solved cases from history chunk | `BlocksResult` |
 
 ### Embedding & Deduplication
 
 Every case is embedded twice:
-1. **Dedup embed**: `"{problem_title}\n{problem_summary}"` — used by `find_similar_case()` to prevent duplicate cases for the same problem
-2. **SCRAG embed**: full `doc_text` (`[SOLVED] title\nПроблема: ...\nРішення: ...\ntags: ...`) — used for semantic search at answer time
-
-`find_similar_case()` uses a cosine similarity threshold (configurable) to decide if two cases are "the same problem". If a match is found, `merge_case()` updates the existing case rather than creating a new one.
+1. **Dedup embed**: `"{problem_title}\n{problem_summary}"` -- used by `find_similar_case()` to prevent duplicates
+2. **RAG embed**: full doc_text (`[SOLVED/RECOMMENDATION] title\nProblem: ...\nSolution: ...\ntags: ...`) -- used for semantic search
 
 ---
 
 ## 11. Worker Maintenance Tasks
 
-The worker loop runs two periodic maintenance tasks:
-
-### B1 Expiry (hourly)
-```python
-expire_old_open_cases(db, max_age_days=7)
-```
-Open cases older than 7 days are deleted (the problem was never resolved or is stale).
-
 ### SCRAG Sync (hourly)
 ```python
 _run_sync_rag(deps)
 ```
-Compares ChromaDB entries against MySQL active case IDs. Removes stale ChromaDB entries whose MySQL case no longer exists (e.g. was archived or deleted). This is the authoritative reconciliation — keeps SCRAG consistent without per-query MySQL lookups.
+Compares ChromaDB entries against MySQL active case IDs. Removes stale ChromaDB entries whose MySQL case no longer exists.
+
+### Ingesting Flag Cleanup (startup)
+Stale `ingesting=1` flags older than 5 minutes are cleared on worker startup, preventing stuck groups.
+
+### Job Timeout Safety
+Each job has a hard timeout of 180 seconds (`_JOB_TIMEOUT_SECONDS`). If a job exceeds this, the main loop abandons it and marks it failed.
 
 ---
 
@@ -650,64 +528,58 @@ Compares ChromaDB entries against MySQL active case IDs. Removes stale ChromaDB 
 
 ```
 MESSAGE ARRIVES
-       │
-       ▼
+       |
+       v
 raw_messages: inserted (idempotent)
-       │
-       ├── BUFFER_UPDATE: added to B2 buffer
-       │         │
-       │         ├── LLM: extract_case_from_buffer()
-       │         │         │
-       │         │         ├── make_case() → status=open  → B1 (cases table, in_rag=0)
-       │         │         │
-       │         │         └── make_case() → status=solved → SCRAG + B3 + remove from B2
-       │         │
-       │         └── For each B1 case: check_case_resolved()
-       │                   │
-       │                   └── resolved=true → promote to solved → SCRAG + B3
-       │
-       └── MAYBE_RESPOND: gate → search (SCRAG+B3+B1) → synthesize → send
+       |
+       +-- BUFFER_UPDATE: added to B2 buffer
+       |         |
+       |         +-- Unified LLM analysis:
+       |         |     |
+       |         |     +-- new_case(recommendation) -> RCRAG + keep in B2
+       |         |     +-- new_case(solved) -> SCRAG + remove from B2
+       |         |     +-- promotion(recommendation -> solved) -> move RCRAG to SCRAG
+       |         |     +-- update(existing case with new evidence)
+       |
+       +-- MAYBE_RESPOND: gate -> UltimateAgent -> send
+                            |
+                            +-- CaseSearchAgent (SCRAG + RCRAG + B3)
+                            +-- DocsAgent (Google Docs)
+                            +-- Synthesizer -> signal.send_group_text()
 
 EMOJI REACTION
-       │
-       └── upsert_reaction → confirm_cases_by_evidence_ts()
-                 → UPDATE cases SET status=solved, closed_emoji=emoji
+       |
+       +-- upsert_reaction -> confirm_cases_by_evidence_ts()
+                 -> UPDATE cases SET status=solved, closed_emoji=emoji
 
 HISTORY IMPORT
-       │
-       └── signal-ingest: LLM extracts from history chunks
-                 → POST /history/cases
-                 → make_case() → insert/merge → SCRAG (if solved)
-                 → closed_emoji set from reaction_emoji in chunk headers
-
-CASE VIEWED
-       │
-       └── GET /api/case/{id} → MySQL → signal-web renders:
-                 - problem title / summary
-                 - solution summary
-                 - full chat history (with timestamps)
-                 - closed_emoji banner (in chat history)
+       |
+       +-- signal-ingest: LLM extracts from history chunks
+                 -> POST /history/cases
+                 -> make_case() -> insert/merge -> SCRAG/RCRAG
 ```
 
 ---
 
 ## 13. Configuration Parameters
 
-Key settings from `settings` (loaded from environment / `.env`):
+Key settings from `Settings` (loaded from environment / `.env`):
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| `buffer_max_age_hours` | 72 | B2 buffer: drop messages older than N hours |
-| `buffer_max_messages` | 200 | B2 buffer: maximum message count |
+| `buffer_max_age_hours` | 168 (7 days) | B2 buffer: drop messages older than N hours |
+| `buffer_max_messages` | 300 | B2 buffer: maximum message count |
 | `worker_poll_seconds` | 1 | Job queue poll interval |
-| `signal_bot_e164` | — | Bot's own phone number (for bot message detection) |
-| `signal_bot_storage` | — | Path to Signal storage (images) |
-| `signal_desktop_url` | — | signal-desktop HTTP API base URL |
+| `signal_bot_e164` | (required) | Bot's own phone number |
+| `signal_bot_storage` | `/var/lib/signal/bot` | Path to Signal storage |
+| `signal_desktop_url` | `http://signal-desktop-arm64:8001` | signal-desktop HTTP API base URL |
 | `use_signal_desktop` | false | Use Signal Desktop adapter vs signal-cli |
-| `public_url` | — | Base URL for case links (e.g. `https://supportbot.info`) |
-| `bot_mention_strings` | — | List of strings that trigger forced response |
-| `max_image_size_bytes` | — | Skip images larger than this |
-| `openai_api_key` | — | Google API key (used with OpenAI-compat endpoint) |
+| `public_url` | `https://supportbot.info` | Base URL for case links |
+| `chroma_url` | `http://rag:8000` | ChromaDB server URL |
+| `chroma_collection` | `cases` | Base name for collections (-> `cases_scrag`, `cases_rcrag`) |
+| `context_last_n` | 40 | Number of recent messages for gate context |
+| `max_image_size_bytes` | 5,000,000 | Skip images larger than this |
+| `admin_session_stale_minutes` | 30 | Session timeout for re-welcome |
 
 ---
 
@@ -715,28 +587,33 @@ Key settings from `settings` (loaded from environment / `.env`):
 
 ### Idempotency
 - `insert_raw_message`: skips duplicate `message_id` (INSERT IGNORE)
-- `upsert_case`: on conflict, updates existing case
 - `rag.upsert_case`: Chroma upsert replaces existing entry
+- `_responded_messages`: prevents duplicate bot responses on job retries
 
 ### Worker Retries
 - Failed jobs are retried up to 3 times (`fail_job` increments `attempts`)
 - After 3 failures, job is permanently marked failed
+- Per-job hard timeout: 180 seconds
+
+### Model Cascades
+- SUBAGENT_CASCADE: if first model fails, falls back to next in chain
+- GATE_CASCADE: same pattern for gate calls
 
 ### Signal Adapter Fallbacks
-- Signal Desktop not available at boot → listener started lazily on first health check
-- `send_direct_text` returns `False` → triggers contact-removed cleanup (deletes admin session, unlinks groups)
+- Signal Desktop not available at boot -> listener started lazily
+- `send_direct_text` returns `False` -> triggers contact-removed cleanup
 
 ### LLM Failures
 - `_json_call` retries once on parse failure
-- Gate failure: logs warning, proceeds without filter (better to respond than miss a question)
+- Gate failure: logs warning, proceeds without filter
 - Synthesizer failure: falls back to `"[[TAG_ADMIN]]"`
-- History extract failure: logs, continues to next chunk
 
-### Buffer Out-of-Range Spans
-- If LLM returns `start_idx < 0` or `end_idx >= n_blocks` → reject entire extract result for safety
+### Concurrent Ingestion Guard
+- `chat_groups.ingesting` flag prevents worker from processing group during history import
+- Stale flags cleaned up on startup (5-minute timeout)
 
-### Periodic SCRAG Sync
-- Handles partial failures in Chroma upsert/delete by reconciling hourly rather than per-operation
+### R2 Upload
+- Infinite retry with exponential backoff -- uploads never silently fail
 
 ---
 
@@ -744,39 +621,33 @@ Key settings from `settings` (loaded from environment / `.env`):
 
 ```
 Signal Group Chat
-        │ message + reaction
-        ▼
+        | message + reaction
+        v
 signal-desktop (SQLCipher DB reader)
-        │ HTTP API
-        ▼
+        | HTTP API
+        v
 signal-bot ingest_message()
-        │
-        ├── raw_messages (MySQL) ◄──────────────────── history import (signal-ingest)
-        │
-        ├── BUFFER_UPDATE job
-        │         │
-        │         ├── buffers (MySQL) ← B2
-        │         │
-        │         ├── extract_case_from_buffer (LLM) → spans
-        │         │         │
-        │         │         └── make_case (LLM) → CaseResult
-        │         │                   │
-        │         │                   ├── B1: cases (MySQL, status=open, in_rag=0)
-        │         │                   │
-        │         │                   └── SCRAG: cases (MySQL, in_rag=1)
-        │         │                              + ChromaDB (vector index)
-        │         │
-        │         └── check_case_resolved (LLM) → B1→solved→SCRAG
-        │
-        └── MAYBE_RESPOND job
-                  │
-                  ├── decide_consider (LLM gate)
-                  │
-                  ├── CaseSearchAgent
-                  │         ├── SCRAG: ChromaDB cosine search
-                  │         ├── B3: recent solved (MySQL)
-                  │         └── B1: open cases (MySQL)
-                  │
-                  └── UltimateAgent synthesizer (Gemini)
-                            └── signal.send_group_text()
+        |
+        +-- raw_messages (MySQL) <--- history import (signal-ingest)
+        |
+        +-- BUFFER_UPDATE job
+        |         |
+        |         +-- buffers (MySQL) -- B2
+        |         |
+        |         +-- unified_buffer_analysis (LLM) -> new cases + promotions
+        |         |         |
+        |         |         +-- recommendation: RCRAG (ChromaDB cases_rcrag)
+        |         |         +-- solved: SCRAG (ChromaDB cases_scrag)
+        |         |         +-- promotion: RCRAG -> SCRAG
+        |
+        +-- MAYBE_RESPOND job
+                  |
+                  +-- decide_consider (LLM gate, GATE_CASCADE)
+                  |
+                  +-- UltimateAgent (parallel):
+                  |     +-- CaseSearchAgent: SCRAG + RCRAG + B3
+                  |     +-- DocsAgent: Google Docs
+                  |
+                  +-- Synthesizer (SUBAGENT_CASCADE)
+                            +-- signal.send_group_text()
 ```

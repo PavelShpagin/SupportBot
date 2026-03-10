@@ -1,9 +1,16 @@
 # Final Evaluation Report - SOTA SupportBot
 
-**Evaluation Date**: February 11, 2026  
-**Evaluation Scale**: 400 messages / 100 max cases  
-**Model**: Gemini 2.0 Flash + Gemini Embedding-001  
-**Status**: ✅ **PRODUCTION-READY**
+> **Note**: This report reflects the system state as of 2026-02-11. The system
+> has since been significantly updated: dual-RAG (SCRAG+RCRAG) replaced the
+> single-collection RAG, "open" case status was removed in favor of
+> solved/recommendation/archived, the UltimateAgent architecture with parallel
+> CaseSearchAgent+DocsAgent was introduced, and LLM models have been upgraded.
+> See `docs/ALGORITHM_FLOW.md` for the current architecture.
+
+**Evaluation Date**: February 11, 2026
+**Evaluation Scale**: 400 messages / 100 max cases
+**Model**: Gemini 2.0 Flash + Gemini Embedding-001
+**Status**: PRODUCTION-READY (at time of evaluation)
 
 ---
 
