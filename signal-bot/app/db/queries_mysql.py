@@ -272,7 +272,7 @@ def insert_case(
         )
         for mid in evidence_ids:
             cur.execute(
-                "INSERT INTO case_evidence(case_id, message_id) VALUES(%s, %s)",
+                "INSERT IGNORE INTO case_evidence(case_id, message_id) VALUES(%s, %s)",
                 (case_id, mid),
             )
         conn.commit()
@@ -1215,7 +1215,7 @@ def update_case_solution(
             for mid in new_evidence_ids:
                 if mid not in existing:
                     cur.execute(
-                        "INSERT INTO case_evidence(case_id, message_id) VALUES(%s, %s)",
+                        "INSERT IGNORE INTO case_evidence(case_id, message_id) VALUES(%s, %s)",
                         (case_id, mid),
                     )
         conn.commit()
@@ -1455,7 +1455,7 @@ def upsert_case(
             for mid in evidence_ids:
                 try:
                     cur.execute(
-                        "INSERT INTO case_evidence(case_id, message_id) VALUES(%s, %s)",
+                        "INSERT IGNORE INTO case_evidence(case_id, message_id) VALUES(%s, %s)",
                         (existing_id, mid),
                     )
                 except Exception:
@@ -1484,7 +1484,7 @@ def upsert_case(
             )
             for mid in evidence_ids:
                 cur.execute(
-                    "INSERT INTO case_evidence(case_id, message_id) VALUES(%s, %s)",
+                    "INSERT IGNORE INTO case_evidence(case_id, message_id) VALUES(%s, %s)",
                     (case_id, mid),
                 )
             conn.commit()
@@ -1687,7 +1687,7 @@ def merge_case(
         for mid in evidence_ids:
             try:
                 cur.execute(
-                    "INSERT INTO case_evidence(case_id, message_id) VALUES(%s, %s)",
+                    "INSERT IGNORE INTO case_evidence(case_id, message_id) VALUES(%s, %s)",
                     (target_case_id, mid),
                 )
             except Exception:

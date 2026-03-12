@@ -398,88 +398,6 @@ class LLMClient:
             cascade=SUBAGENT_CASCADE,
         )
 
-    def _json_call_grounded(
-        self,
-        *,
-        model: str,
-        system: str,
-        user: str,
-        schema: Type[T],
-        images: list[tuple[bytes, str]] | None = None,
-        cascade: list[str] | None = None,
-        timeout: float = 90.0,
-    ) -> T:
-        """Structured JSON call with Google Search grounding via native genai SDK.
-
-        Falls back to regular _json_call if google-genai is unavailable.
-        """
-        if self._genai_client is None:
-            return self._json_call(
-                model=model, system=system, user=user, schema=schema,
-                images=images, cascade=cascade, timeout=timeout,
-            )
-
-        from google.genai import types as _gt
-        import time as _t
-
-        models_to_try = cascade or [model]
-        last_exc: Exception | None = None
-        deadline = _t.monotonic() + timeout
-
-        for m in models_to_try:
-            remaining = deadline - _t.monotonic()
-            if remaining <= 2.0:
-                break
-            try:
-                contents: list[Any] = []
-                full_text = f"{system}\n\n{user}" if system else user
-
-                if images:
-                    segments = _IMG_MARKER_RE.split(full_text)
-                    referenced: set[int] = set()
-                    for i, seg in enumerate(segments):
-                        if i % 2 == 0:
-                            if seg:
-                                contents.append(seg)
-                        else:
-                            idx = int(seg)
-                            referenced.add(idx)
-                            if idx < len(images):
-                                img_bytes, img_mime = images[idx]
-                                contents.append(_gt.Part.from_bytes(data=img_bytes, mime_type=img_mime))
-                    for idx, (img_bytes, img_mime) in enumerate(images):
-                        if idx not in referenced:
-                            contents.append(_gt.Part.from_bytes(data=img_bytes, mime_type=img_mime))
-                else:
-                    contents = [full_text]
-
-                response = self._genai_client.models.generate_content(
-                    model=m,
-                    contents=contents,
-                    config=_gt.GenerateContentConfig(
-                        tools=[_gt.Tool(google_search=_gt.GoogleSearch())],
-                        response_mime_type="application/json",
-                        response_schema=schema.model_json_schema(),
-                        temperature=0,
-                        http_options=_gt.HttpOptions(timeout=int(remaining * 1000)),
-                    ),
-                )
-                raw = response.text or "{}"
-                data = json.loads(raw)
-                if isinstance(data, list) and data and isinstance(data[0], dict):
-                    data = data[0]
-                return schema.model_validate(data)
-            except Exception as exc:
-                log.warning("Cascade _json_call_grounded: %s failed (%s), trying next", m, exc)
-                last_exc = exc
-
-        log.warning("_json_call_grounded cascade exhausted, falling back to _json_call")
-        return self._json_call(
-            model=model, system=system, user=user, schema=schema,
-            images=images, cascade=cascade,
-            timeout=max(2.0, deadline - _t.monotonic()),
-        )
-
     def unified_buffer_analysis(
         self,
         *,
@@ -488,10 +406,7 @@ class LLMClient:
         recommendation_cases: list[dict] | None = None,
         images: list[tuple[bytes, str]] | None = None,
     ) -> UnifiedBufferResult:
-        """Single LLM call: extract new cases + promote recommendations + update existing.
-
-        Uses Google Search grounding to help identify unfamiliar products/terms.
-        """
+        """Single LLM call: extract new cases + promote recommendations + update existing."""
         parts = [f"БУФЕР:\n{buffer_text}"]
         if existing_cases:
             lines = []
@@ -519,7 +434,7 @@ class LLMClient:
                 + "\n".join(lines)
             )
         user = "\n".join(parts)
-        return self._json_call_grounded(
+        return self._json_call(
             model=self.settings.model_case,
             system=P.P_UNIFIED_BUFFER_SYSTEM,
             user=user,
