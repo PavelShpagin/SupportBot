@@ -112,5 +112,4 @@ class UnifiedBufferResult(BaseModel):
 class KeywordResult(BaseModel):
     """Keywords extracted from a user message for database search."""
     keywords: List[str] = Field(default_factory=list)
-    product_names: List[str] = Field(default_factory=list)
 

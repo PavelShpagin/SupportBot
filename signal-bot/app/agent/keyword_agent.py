@@ -5,7 +5,7 @@ Pipeline:
 2. LIKE search on raw_messages → message_ids
 3. JOIN case_evidence → find cases containing those messages
 4. LLM #2 (standard cascade) synthesizes a sub-answer from matched cases
-5. Negative evidence appended for product_names with 0 mentions
+5. Negative evidence appended for keywords with 0 mentions
 """
 from __future__ import annotations
 
@@ -41,15 +41,12 @@ class KeywordAgent:
             log.exception("KeywordAgent: keyword extraction failed")
             return "No keyword matches."
 
-        all_terms = list(dict.fromkeys(kw.keywords + kw.product_names))  # dedupe, preserve order
+        all_terms = list(dict.fromkeys(kw.keywords))  # dedupe, preserve order
         if not all_terms:
             log.info("KeywordAgent: no keywords extracted")
             return "No keyword matches."
 
-        log.info(
-            "KeywordAgent: keywords=%s product_names=%s",
-            kw.keywords[:5], kw.product_names[:3],
-        )
+        log.info("KeywordAgent: keywords=%s", all_terms[:5])
 
         # Resolve union group_ids
         try:
@@ -83,14 +80,14 @@ class KeywordAgent:
 
         log.info("KeywordAgent: %d cases found via keyword search", len(cases))
 
-        # Step 5: Negative evidence (check before synthesis so we can include it)
+        # Step 5: Negative evidence — check if any keyword has zero mentions
         negative_notes: list[str] = []
-        for pn in kw.product_names[:5]:
+        for term in all_terms[:5]:
             try:
-                count = count_term_in_messages(db, pn, union_gids)
+                count = count_term_in_messages(db, term, union_gids)
                 if count == 0:
                     negative_notes.append(
-                        f"NOTE: '{pn}' has ZERO mentions across community message history."
+                        f"NOTE: '{term}' has ZERO mentions across community message history."
                     )
             except Exception:
                 pass
