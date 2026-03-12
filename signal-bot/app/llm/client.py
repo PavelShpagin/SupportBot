@@ -26,9 +26,9 @@ log = logging.getLogger(__name__)
 
 T = TypeVar("T", bound=BaseModel)
 
-SUBAGENT_CASCADE = ["gemini-2.5-pro", "gemini-3-flash", "gemini-2.5-flash"]
-GATE_CASCADE = ["gemini-2.5-flash", "gemini-3-flash"]
-KEYWORD_CASCADE = ["gemini-3-flash", "gemini-2.5-flash"]
+SUBAGENT_CASCADE = ["gemini-2.5-pro", "gemini-3-flash-preview", "gemini-2.5-flash"]
+GATE_CASCADE = ["gemini-2.5-flash", "gemini-3-flash-preview"]
+KEYWORD_CASCADE = ["gemini-3-flash-preview", "gemini-2.5-flash"]
 
 _IMG_MARKER_RE = re.compile(r"\[\[IMG:(\d+)\]\]")
 
