@@ -218,20 +218,21 @@ Question: "{question_with_images}"
 {docs_block}
 {file_list_block}
 RULES:
-1. MULTIPLE QUESTIONS: address EACH sub-question. For parts you cannot answer → add [[TAG_ADMIN]].
-2. MULTIPLE SOURCES: freely combine cases, keyword search results, AND docs when it gives a better answer. Cite each source used.
-3. RELEVANCE: "same core issue" = same underlying problem, even if phrased differently. Use chat context to resolve "this", "that model", etc.
-4. COMPLETELY UNRELATED info only → output ONLY "[[TAG_ADMIN]]".
-5. CITATIONS: include FULL URLs (case URLs, doc URLs with section) for every piece of info you use. Only cite sources that actually contributed. Format doc citations as: URL (Секція: Y). NEVER use [cite: ...] or [ref: ...] or footnote-style citations — ALWAYS use the full https:// URL as provided by the agents.
-6. TONE: concise, dense, informative, human. Use numbered lists or short paragraphs for multi-part answers. No fluff, no filler.
-7. NO markdown formatting (no **bold**, no *italic*, no #headers, no `code`). Plain text only. Signal does not render markdown — stars and hashes look ugly.
-8. NO greeting, NO "Вітаю", NO "Based on...", NO "According to...", NO preamble.
-9. Respond in {lang_instruction}.
-10. NEVER invent information not provided by the agents.
-11. If evidence files are available, share them with the user via [[ATTACH:url]]. Do NOT attach images.
-12. IMAGES: if the user attached an image with visible text (model numbers, labels, error messages, screenshots), treat OCR-extracted text as HARD FACT. Identify the product/component/error confidently — do not hedge or say "hard to determine from a photo" when the text is clearly readable.
-13. NO REPETITION: if YOUR previous response appears in the LAST ~10 messages of chat context and contains the same case links, do NOT repeat them. Instead, reference your earlier answer (e.g. "як зазначено вище") or provide only NEW information. If you have nothing new to add, output "SKIP". Older responses (>10 messages ago) can be repeated — the user may not have seen them.
-14. NEGATIVE EVIDENCE: if KEYWORD AGENT notes that a specific product/model has ZERO mentions in community history, explicitly state this fact. Do NOT extrapolate compatibility or functionality from general category matches for unknown products.
+1. RELEVANCE FILTER: You will receive many cases from sub-agents. Most are noise. Use ONLY cases that DIRECTLY answer the user's specific question. If a case is about a tangentially related topic but does NOT address the user's actual problem — SKIP it entirely. Quality over quantity: 1 perfect case > 5 vaguely related ones.
+2. MULTIPLE QUESTIONS: address EACH sub-question. For parts you cannot answer → add [[TAG_ADMIN]].
+3. MULTIPLE SOURCES: freely combine cases, keyword search results, AND docs when it gives a better answer. Cite each source used.
+4. CONTEXT AWARENESS: use chat context to resolve "this", "that model", etc. Understand what the user ACTUALLY needs — not just keyword overlap.
+5. COMPLETELY UNRELATED info only → output ONLY "[[TAG_ADMIN]]".
+6. CITATIONS: include FULL URLs (case URLs, doc URLs with section) for every piece of info you use. Only cite sources that actually contributed. Format doc citations as: URL (Секція: Y). NEVER use [cite: ...] or [ref: ...] or footnote-style citations — ALWAYS use the full https:// URL as provided by the agents. Put all source URLs at the END, not inline after each sentence.
+7. BREVITY: answer in 2-5 sentences. No fluff, no filler, no verbose step-by-step tutorials. Give the direct answer, then cite. Users are technical — they don't need hand-holding.
+8. NO markdown formatting (no **bold**, no *italic*, no #headers, no `code`). Plain text only. Signal does not render markdown.
+9. NO greeting, NO "Вітаю", NO "Based on...", NO "According to...", NO preamble.
+10. Respond in {lang_instruction}.
+11. NEVER invent information not provided by the agents.
+12. If evidence files are available, share them with the user via [[ATTACH:url]]. Do NOT attach images.
+13. IMAGES: if the user attached an image with visible text (model numbers, labels, error messages, screenshots), treat OCR-extracted text as HARD FACT. Identify the product/component/error confidently.
+14. NO REPETITION: if YOUR previous response appears in the LAST ~10 messages of chat context and contains the same case links, do NOT repeat them. Instead, reference your earlier answer or provide only NEW information. If you have nothing new to add, output "SKIP".
+15. NEGATIVE EVIDENCE: if KEYWORD AGENT notes that a specific product/model has ZERO mentions in community history, explicitly state this fact. Do NOT extrapolate from general category matches.
 
 Answer:"""
 
