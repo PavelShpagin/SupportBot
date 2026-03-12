@@ -1,7 +1,7 @@
 """UltimateAgent — parallel CaseSearch + Docs + Keyword agents with synthesizer.
 
 Pipeline:
-1. CaseSearchAgent, DocsAgent, and KeywordSubagent run in parallel via ThreadPoolExecutor.
+1. CaseSearchAgent, DocsAgent, and KeywordAgent run in parallel via ThreadPoolExecutor.
 2. A synthesizer LLM call (with Google Search grounding) receives all outputs and decides:
    - Respond with a combined answer (citing sources)
    - Escalate to admin via [[TAG_ADMIN]]
@@ -17,7 +17,7 @@ from dataclasses import dataclass, field
 
 from .case_search_agent import CaseSearchAgent
 from .docs_agent import DocsAgent
-from .keyword_agent import KeywordSubagent
+from .keyword_agent import KeywordAgent
 from app.config import load_settings
 from app.llm.client import LLMClient, SUBAGENT_CASCADE
 from app.rag.chroma import create_chroma
@@ -50,7 +50,7 @@ class UltimateAgent:
         self.llm = LLMClient(self.settings)
         self.case_agent = CaseSearchAgent(rag=self.rag, llm=self.llm, public_url=self.public_url)
         self.docs_agent = DocsAgent(llm=self.llm)
-        self.keyword_agent = KeywordSubagent(llm=self.llm, public_url=self.public_url)
+        self.keyword_agent = KeywordAgent(llm=self.llm, public_url=self.public_url)
         self.last_load_time = time.time()
         log.info("Agents loaded.")
 
@@ -110,7 +110,7 @@ class UltimateAgent:
                         elif future is docs_future:
                             log.warning("DocsAgent failed: %s", exc)
                         else:
-                            log.warning("KeywordSubagent failed: %s", exc)
+                            log.warning("KeywordAgent failed: %s", exc)
             except TimeoutError:
                 log.error("Agent futures timed out after 120s; proceeding with partial results")
                 for f in futures:

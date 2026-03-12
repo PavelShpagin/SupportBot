@@ -1,4 +1,4 @@
-"""KeywordSubagent — keyword-based case retrieval.
+"""KeywordAgent — keyword-based case retrieval.
 
 Pipeline:
 1. LLM #1 (fast) extracts search keywords from the user's question
@@ -18,7 +18,7 @@ sys.stdout.reconfigure(encoding="utf-8")
 log = logging.getLogger(__name__)
 
 
-class KeywordSubagent:
+class KeywordAgent:
     def __init__(self, llm, public_url: str = "https://supportbot.info"):
         self.llm = llm
         self.public_url = public_url
@@ -38,16 +38,16 @@ class KeywordSubagent:
         try:
             kw = self.llm.extract_keywords(message=question)
         except Exception:
-            log.exception("KeywordSubagent: keyword extraction failed")
+            log.exception("KeywordAgent: keyword extraction failed")
             return "No keyword matches."
 
         all_terms = list(dict.fromkeys(kw.keywords + kw.product_names))  # dedupe, preserve order
         if not all_terms:
-            log.info("KeywordSubagent: no keywords extracted")
+            log.info("KeywordAgent: no keywords extracted")
             return "No keyword matches."
 
         log.info(
-            "KeywordSubagent: keywords=%s product_names=%s",
+            "KeywordAgent: keywords=%s product_names=%s",
             kw.keywords[:5], kw.product_names[:3],
         )
 
@@ -68,10 +68,10 @@ class KeywordSubagent:
         try:
             matched_msg_ids = search_messages_by_terms(db, all_terms, union_gids, limit=50)
         except Exception:
-            log.exception("KeywordSubagent: message search failed")
+            log.exception("KeywordAgent: message search failed")
             matched_msg_ids = []
 
-        log.info("KeywordSubagent: %d message hits for %d terms", len(matched_msg_ids), len(all_terms))
+        log.info("KeywordAgent: %d message hits for %d terms", len(matched_msg_ids), len(all_terms))
 
         # Step 3: Find cases via case_evidence
         cases: list[dict] = []
@@ -79,9 +79,9 @@ class KeywordSubagent:
             try:
                 cases = find_cases_by_message_ids(db, matched_msg_ids)
             except Exception:
-                log.exception("KeywordSubagent: case lookup failed")
+                log.exception("KeywordAgent: case lookup failed")
 
-        log.info("KeywordSubagent: %d cases found via keyword search", len(cases))
+        log.info("KeywordAgent: %d cases found via keyword search", len(cases))
 
         # Step 5: Negative evidence (check before synthesis so we can include it)
         negative_notes: list[str] = []
@@ -120,7 +120,7 @@ class KeywordSubagent:
                     images=images,
                 )
             except Exception:
-                log.exception("KeywordSubagent: synthesis LLM failed")
+                log.exception("KeywordAgent: synthesis LLM failed")
                 sub_answer = cases_text  # fallback: raw case list
         else:
             sub_answer = ""

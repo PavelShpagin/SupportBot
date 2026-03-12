@@ -1837,7 +1837,7 @@ def is_group_ingesting(db: MySQL, group_id: str) -> bool:
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Keyword search (KeywordSubagent)
+# Keyword search (KeywordAgent)
 # ─────────────────────────────────────────────────────────────────────────────
 
 def search_messages_by_terms(
