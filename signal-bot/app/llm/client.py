@@ -295,24 +295,34 @@ class LLMClient:
                     contents=contents,
                     config=_gt.GenerateContentConfig(
                         tools=[_gt.Tool(google_search=_gt.GoogleSearch())],
-                        temperature=0,
+                        temperature=0.4,
                         http_options=_gt.HttpOptions(timeout=int(remaining * 1000)),
                     ),
                 )
-                # Log whether Google Search was actually used
+                # Log Google Search grounding details
                 search_used = False
                 search_queries = []
+                grounding_sources = []
                 try:
                     for candidate in (response.candidates or []):
                         gc = getattr(candidate, 'grounding_metadata', None)
                         if gc:
-                            search_used = True
-                            for sq in getattr(gc, 'search_queries', []) or []:
+                            # web_search_queries (what Gemini searched for)
+                            for sq in getattr(gc, 'web_search_queries', None) or []:
                                 search_queries.append(str(sq))
-                except Exception:
-                    pass
-                log.info("chat_grounded: model=%s google_search_used=%s queries=%s",
-                         m, search_used, search_queries[:5])
+                            # grounding_chunks (actual web sources returned)
+                            for chunk in getattr(gc, 'grounding_chunks', None) or []:
+                                web = getattr(chunk, 'web', None)
+                                if web:
+                                    grounding_sources.append(f"{getattr(web, 'title', '?')}: {getattr(web, 'uri', '?')}")
+                            # grounding_supports (text segments backed by sources)
+                            supports = getattr(gc, 'grounding_supports', None) or []
+                            if search_queries or grounding_sources or supports:
+                                search_used = True
+                except Exception as _e:
+                    log.warning("chat_grounded: failed to parse grounding metadata: %s", _e)
+                log.info("chat_grounded: model=%s search=%s queries=%s sources=%s",
+                         m, search_used, search_queries[:5], grounding_sources[:5])
                 return (response.text or "").strip()
             except Exception as exc:
                 log.warning("Cascade chat_grounded: %s failed (%s), trying next model", m, exc)
