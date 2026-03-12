@@ -299,6 +299,20 @@ class LLMClient:
                         http_options=_gt.HttpOptions(timeout=int(remaining * 1000)),
                     ),
                 )
+                # Log whether Google Search was actually used
+                search_used = False
+                search_queries = []
+                try:
+                    for candidate in (response.candidates or []):
+                        gc = getattr(candidate, 'grounding_metadata', None)
+                        if gc:
+                            search_used = True
+                            for sq in getattr(gc, 'search_queries', []) or []:
+                                search_queries.append(str(sq))
+                except Exception:
+                    pass
+                log.info("chat_grounded: model=%s google_search_used=%s queries=%s",
+                         m, search_used, search_queries[:5])
                 return (response.text or "").strip()
             except Exception as exc:
                 log.warning("Cascade chat_grounded: %s failed (%s), trying next model", m, exc)
