@@ -27,6 +27,7 @@ sys.stdout.reconfigure(encoding="utf-8")
 log = logging.getLogger(__name__)
 
 _ATTACH_PATTERN = re.compile(r"\[\[ATTACH:(.*?)\]\]")
+_CITE_PATTERN = re.compile(r"\[cite:\s*([a-f0-9]{32})\]")
 
 
 def detect_lang(text: str) -> str:
@@ -221,7 +222,7 @@ RULES:
 2. MULTIPLE SOURCES: freely combine cases, keyword search results, AND docs when it gives a better answer. Cite each source used.
 3. RELEVANCE: "same core issue" = same underlying problem, even if phrased differently. Use chat context to resolve "this", "that model", etc.
 4. COMPLETELY UNRELATED info only → output ONLY "[[TAG_ADMIN]]".
-5. CITATIONS: include links (case URLs, doc URLs with section) for every piece of info you use. Only cite sources that actually contributed. Format doc citations as: URL (Секція: Y).
+5. CITATIONS: include FULL URLs (case URLs, doc URLs with section) for every piece of info you use. Only cite sources that actually contributed. Format doc citations as: URL (Секція: Y). NEVER use [cite: ...] or [ref: ...] or footnote-style citations — ALWAYS use the full https:// URL as provided by the agents.
 6. TONE: concise, dense, informative, human. Use numbered lists or short paragraphs for multi-part answers. No fluff, no filler.
 7. NO markdown formatting (no **bold**, no *italic*, no #headers, no `code`). Plain text only. Signal does not render markdown — stars and hashes look ugly.
 8. NO greeting, NO "Вітаю", NO "Based on...", NO "According to...", NO preamble.
@@ -238,6 +239,10 @@ Answer:"""
             raw_text = self.llm.chat_grounded(prompt=prompt, cascade=SUBAGENT_CASCADE, timeout=45.0, images=images)
             attachment_urls = _ATTACH_PATTERN.findall(raw_text)
             clean_text = _ATTACH_PATTERN.sub("", raw_text).strip()
+            # Fix [cite: case_id] → proper URL (LLM sometimes hallucinates academic citations)
+            clean_text = _CITE_PATTERN.sub(
+                lambda m: f"{self.public_url}/case/{m.group(1)}", clean_text
+            )
             # Strip markdown formatting (Signal renders it as raw characters)
             clean_text = re.sub(r'\*\*(.+?)\*\*', r'\1', clean_text)  # **bold**
             clean_text = re.sub(r'\*(.+?)\*', r'\1', clean_text)      # *italic*
