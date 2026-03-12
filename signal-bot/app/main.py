@@ -2432,6 +2432,8 @@ def debug_answer(req: DebugAnswerRequest) -> dict:
     ua_ctx = ultimate_agent.case_agent.search(req.question, group_id=req.group_id, db=db)
     ua_case_ans = ultimate_agent.case_agent.answer(req.question, group_id=req.group_id, db=db)
 
+    response_text = response.text if hasattr(response, 'text') else str(response)
+
     return {
         "question": req.question,
         # From the freshly created agent (uses global `rag`)
@@ -2443,9 +2445,9 @@ def debug_answer(req: DebugAnswerRequest) -> dict:
         "ua_scrag_hits": len(ua_ctx["scrag"]),
         "ua_case_context": ua_case_ans[:500] if ua_case_ans else "",
         # Final response
-        "response": response,
-        "is_admin_tag": "[[TAG_ADMIN]]" in (response or ""),
-        "has_case_link": "supportbot.info/case/" in (response or ""),
+        "response": response_text,
+        "is_admin_tag": "[[TAG_ADMIN]]" in (response_text or ""),
+        "has_case_link": "supportbot.info/case/" in (response_text or ""),
     }
 
 
