@@ -218,11 +218,10 @@ Question: "{question_with_images}"
 {docs_block}
 {file_list_block}
 RULES:
-1. RELEVANCE FILTER: You will receive many cases from sub-agents. Most are noise. Use ONLY cases that DIRECTLY answer the user's specific question. If a case is about a tangentially related topic but does NOT address the user's actual problem — SKIP it entirely. Quality over quantity: 1 perfect case > 5 vaguely related ones.
+1. RELEVANCE FILTER: You will receive many cases from sub-agents. Most are noise. Use ONLY cases that DIRECTLY answer the user's specific question. If a case is about a tangentially related topic but does NOT address the user's actual problem — SKIP it entirely. Quality over quantity: 1 perfect case > 5 vaguely related ones. If ZERO cases survive this filter — output ONLY "[[TAG_ADMIN]]". Do NOT cobble together a vague answer from tangentially related material.
 2. MULTIPLE QUESTIONS: address EACH sub-question. For parts you cannot answer → add [[TAG_ADMIN]].
 3. MULTIPLE SOURCES: freely combine cases, keyword search results, AND docs when it gives a better answer. Cite each source used.
 4. CONTEXT AWARENESS: use chat context to resolve "this", "that model", etc. Understand what the user ACTUALLY needs — not just keyword overlap.
-5. COMPLETELY UNRELATED info only → output ONLY "[[TAG_ADMIN]]".
 6. CITATIONS: include FULL URLs (case URLs, doc URLs with section) for every piece of info you use. Only cite sources that actually contributed. Format doc citations as: URL (Секція: Y). NEVER use [cite: ...] or [ref: ...] or footnote-style citations — ALWAYS use the full https:// URL as provided by the agents. Put all source URLs at the END, not inline after each sentence.
 7. BREVITY: answer in 2-5 sentences. No fluff, no filler, no verbose step-by-step tutorials. Give the direct answer, then cite. Users are technical — they don't need hand-holding.
 8. NO markdown formatting (no **bold**, no *italic*, no #headers, no `code`). Plain text only. Signal does not render markdown.
