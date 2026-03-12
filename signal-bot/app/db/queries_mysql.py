@@ -1834,3 +1834,88 @@ def is_group_ingesting(db: MySQL, group_id: str) -> bool:
         )
         row = cur.fetchone()
         return bool(row and row[0])
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Keyword search (KeywordSubagent)
+# ─────────────────────────────────────────────────────────────────────────────
+
+def search_messages_by_terms(
+    db: MySQL, terms: List[str], group_ids: List[str], limit: int = 50,
+) -> List[str]:
+    """LIKE search on raw_messages.content_text for any of the given terms.
+
+    Returns matching message_ids (deduplicated). Searches across all
+    group_ids (for union support).
+    """
+    if not terms or not group_ids:
+        return []
+    with db.connection() as conn:
+        cur = conn.cursor()
+        like_clauses = []
+        params: list = []
+        for term in terms[:10]:  # cap to prevent huge OR chains
+            t = term.strip()
+            if not t:
+                continue
+            like_clauses.append("content_text LIKE %s")
+            params.append(f"%{t}%")
+        if not like_clauses:
+            return []
+        gid_placeholders = ",".join(["%s"] * len(group_ids))
+        params.extend(group_ids)
+        sql = (
+            f"SELECT DISTINCT message_id FROM raw_messages "
+            f"WHERE ({' OR '.join(like_clauses)}) "
+            f"AND group_id IN ({gid_placeholders}) "
+            f"LIMIT {int(limit)}"
+        )
+        cur.execute(sql, params)
+        return [r[0] for r in cur.fetchall()]
+
+
+def find_cases_by_message_ids(
+    db: MySQL, message_ids: List[str],
+) -> List[dict]:
+    """Find cases linked to the given message_ids via case_evidence.
+
+    Returns unique cases (solved + recommendation) in chronological order.
+    """
+    if not message_ids:
+        return []
+    with db.connection() as conn:
+        cur = conn.cursor()
+        placeholders = ",".join(["%s"] * len(message_ids))
+        cur.execute(
+            f"""
+            SELECT DISTINCT c.case_id, c.status, c.problem_title,
+                   c.problem_summary, c.solution_summary, c.created_at
+            FROM case_evidence ce
+            JOIN cases c ON c.case_id = ce.case_id
+            WHERE ce.message_id IN ({placeholders})
+              AND c.status IN ('solved', 'recommendation')
+            ORDER BY c.created_at ASC
+            """,
+            message_ids,
+        )
+        cols = ["case_id", "status", "problem_title", "problem_summary",
+                "solution_summary", "created_at"]
+        return [dict(zip(cols, row)) for row in cur.fetchall()]
+
+
+def count_term_in_messages(
+    db: MySQL, term: str, group_ids: List[str],
+) -> int:
+    """Count raw_messages containing the term (for negative evidence)."""
+    if not term or not group_ids:
+        return 0
+    with db.connection() as conn:
+        cur = conn.cursor()
+        gid_placeholders = ",".join(["%s"] * len(group_ids))
+        cur.execute(
+            f"SELECT COUNT(*) FROM raw_messages "
+            f"WHERE content_text LIKE %s AND group_id IN ({gid_placeholders})",
+            [f"%{term}%"] + group_ids,
+        )
+        row = cur.fetchone()
+        return int(row[0]) if row else 0

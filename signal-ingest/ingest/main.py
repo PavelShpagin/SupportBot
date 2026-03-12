@@ -1049,67 +1049,10 @@ def _extract_case_blocks(
     return out
 
 
-def _extract_structured_cases(
-    *,
-    openai_client: OpenAI,
-    model: str,
-    fallback_models: list,
-    chunk_text: str,
-    images: list[tuple[bytes, str]] | None = None,
-    timeout: float = 120.0,
-) -> List[dict]:
-    """Extract solved support cases with full structured fields in one pass.
-
-    Images are interleaved via [[IMG:N]] markers already present in chunk_text.
-    """
-    if images:
-        # Build interleaved parts: split text on [[IMG:N]] markers
-        import re
-        marker_re = re.compile(r"\[\[IMG:(\d+)\]\]")
-        segments = marker_re.split(f"HISTORY_CHUNK:\n{chunk_text}")
-        user_parts: list = []
-        referenced: set[int] = set()
-        for i, seg in enumerate(segments):
-            if i % 2 == 0:
-                if seg:
-                    user_parts.append({"type": "text", "text": seg})
-            else:
-                idx = int(seg)
-                referenced.add(idx)
-                if idx < len(images):
-                    img_bytes, img_mime = images[idx]
-                    b64 = base64.b64encode(img_bytes).decode("ascii")
-                    user_parts.append({
-                        "type": "image_url",
-                        "image_url": {"url": f"data:{img_mime};base64,{b64}"},
-                    })
-        # Append unreferenced images at end
-        for idx, (img_bytes, img_mime) in enumerate(images):
-            if idx not in referenced:
-                b64 = base64.b64encode(img_bytes).decode("ascii")
-                user_parts.append({
-                    "type": "image_url",
-                    "image_url": {"url": f"data:{img_mime};base64,{b64}"},
-                })
-    else:
-        user_parts = None
-
-    resp = _llm_call_with_fallback(
-        openai_client=openai_client,
-        model=model,
-        fallback_models=fallback_models,
-        timeout=timeout,
-        messages=[
-            {"role": "system", "content": P_BLOCKS_STRUCTURED},
-            {"role": "user", "content": user_parts if user_parts else f"HISTORY_CHUNK:\n{chunk_text}"},
-        ],
-        response_format={"type": "json_object"},
-        temperature=0,
-    )
-    raw = resp.choices[0].message.content or "{}"
+def _parse_structured_cases_response(raw: str) -> List[dict]:
+    """Parse LLM JSON response into a list of structured case dicts."""
     data = _safe_json_loads(raw)
     out: List[dict] = []
-    # LLM may return a list directly instead of {"cases": [...]}
     if isinstance(data, list):
         cases = data
     else:
@@ -1133,6 +1076,138 @@ def _extract_structured_cases(
                     "case_block": c["case_block"].strip(),
                 })
     return out
+
+
+def _try_genai_grounded_extraction(
+    chunk_text: str,
+    images: list[tuple[bytes, str]] | None = None,
+    model: str = "gemini-2.5-pro",
+    timeout: float = 120.0,
+) -> List[dict] | None:
+    """Try structured case extraction via native genai SDK with Google Search.
+
+    Returns None on any failure (caller should fall back to OpenAI-compat).
+    """
+    import os
+    api_key = os.environ.get("GOOGLE_API_KEY")
+    if not api_key:
+        return None
+    try:
+        from google import genai as _genai
+        from google.genai import types as _gt
+    except ImportError:
+        return None
+
+    try:
+        client = _genai.Client(api_key=api_key)
+        full_text = f"{P_BLOCKS_STRUCTURED}\n\nHISTORY_CHUNK:\n{chunk_text}"
+        contents: list = []
+
+        if images:
+            import re
+            marker_re = re.compile(r"\[\[IMG:(\d+)\]\]")
+            segments = marker_re.split(full_text)
+            referenced: set[int] = set()
+            for i, seg in enumerate(segments):
+                if i % 2 == 0:
+                    if seg:
+                        contents.append(seg)
+                else:
+                    idx = int(seg)
+                    referenced.add(idx)
+                    if idx < len(images):
+                        img_bytes, img_mime = images[idx]
+                        contents.append(_gt.Part.from_bytes(data=img_bytes, mime_type=img_mime))
+            for idx, (img_bytes, img_mime) in enumerate(images):
+                if idx not in referenced:
+                    contents.append(_gt.Part.from_bytes(data=img_bytes, mime_type=img_mime))
+        else:
+            contents = [full_text]
+
+        response = client.models.generate_content(
+            model=model,
+            contents=contents,
+            config=_gt.GenerateContentConfig(
+                tools=[_gt.Tool(google_search=_gt.GoogleSearch())],
+                response_mime_type="application/json",
+                temperature=0,
+                http_options=_gt.HttpOptions(timeout=int(timeout * 1000)),
+            ),
+        )
+        raw = response.text or "{}"
+        return _parse_structured_cases_response(raw)
+    except Exception as exc:
+        log.warning("Grounded extraction failed (%s), falling back to OpenAI-compat", exc)
+        return None
+
+
+def _extract_structured_cases(
+    *,
+    openai_client: OpenAI,
+    model: str,
+    fallback_models: list,
+    chunk_text: str,
+    images: list[tuple[bytes, str]] | None = None,
+    timeout: float = 120.0,
+) -> List[dict]:
+    """Extract solved support cases with full structured fields in one pass.
+
+    Tries native genai SDK with Google Search grounding first for better
+    product/component identification. Falls back to OpenAI-compat on failure.
+    Images are interleaved via [[IMG:N]] markers already present in chunk_text.
+    """
+    # Try grounded extraction first (Google Search helps identify products)
+    grounded_result = _try_genai_grounded_extraction(
+        chunk_text=chunk_text, images=images, model=model, timeout=timeout,
+    )
+    if grounded_result is not None:
+        return grounded_result
+
+    # Fallback: existing OpenAI-compatible path
+    if images:
+        import re
+        marker_re = re.compile(r"\[\[IMG:(\d+)\]\]")
+        segments = marker_re.split(f"HISTORY_CHUNK:\n{chunk_text}")
+        user_parts: list = []
+        referenced: set[int] = set()
+        for i, seg in enumerate(segments):
+            if i % 2 == 0:
+                if seg:
+                    user_parts.append({"type": "text", "text": seg})
+            else:
+                idx = int(seg)
+                referenced.add(idx)
+                if idx < len(images):
+                    img_bytes, img_mime = images[idx]
+                    b64 = base64.b64encode(img_bytes).decode("ascii")
+                    user_parts.append({
+                        "type": "image_url",
+                        "image_url": {"url": f"data:{img_mime};base64,{b64}"},
+                    })
+        for idx, (img_bytes, img_mime) in enumerate(images):
+            if idx not in referenced:
+                b64 = base64.b64encode(img_bytes).decode("ascii")
+                user_parts.append({
+                    "type": "image_url",
+                    "image_url": {"url": f"data:{img_mime};base64,{b64}"},
+                })
+    else:
+        user_parts = None
+
+    resp = _llm_call_with_fallback(
+        openai_client=openai_client,
+        model=model,
+        fallback_models=fallback_models,
+        timeout=timeout,
+        messages=[
+            {"role": "system", "content": P_BLOCKS_STRUCTURED},
+            {"role": "user", "content": user_parts if user_parts else f"HISTORY_CHUNK:\n{chunk_text}"},
+        ],
+        response_format={"type": "json_object"},
+        temperature=0,
+    )
+    raw = resp.choices[0].message.content or "{}"
+    return _parse_structured_cases_response(raw)
 
 
 def _text_to_words(text: str) -> List[str]:

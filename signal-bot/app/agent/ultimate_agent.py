@@ -1,8 +1,8 @@
-"""UltimateAgent — parallel CaseSearch + Docs agents with synthesizer.
+"""UltimateAgent — parallel CaseSearch + Docs + Keyword agents with synthesizer.
 
 Pipeline:
-1. CaseSearchAgent and DocsAgent run in parallel via ThreadPoolExecutor.
-2. A synthesizer LLM call receives both outputs and decides:
+1. CaseSearchAgent, DocsAgent, and KeywordSubagent run in parallel via ThreadPoolExecutor.
+2. A synthesizer LLM call (with Google Search grounding) receives all outputs and decides:
    - Respond with a combined answer (citing sources)
    - Escalate to admin via [[TAG_ADMIN]]
 """
@@ -17,6 +17,7 @@ from dataclasses import dataclass, field
 
 from .case_search_agent import CaseSearchAgent
 from .docs_agent import DocsAgent
+from .keyword_agent import KeywordSubagent
 from app.config import load_settings
 from app.llm.client import LLMClient, SUBAGENT_CASCADE
 from app.rag.chroma import create_chroma
@@ -49,6 +50,7 @@ class UltimateAgent:
         self.llm = LLMClient(self.settings)
         self.case_agent = CaseSearchAgent(rag=self.rag, llm=self.llm, public_url=self.public_url)
         self.docs_agent = DocsAgent(llm=self.llm)
+        self.keyword_agent = KeywordSubagent(llm=self.llm, public_url=self.public_url)
         self.last_load_time = time.time()
         log.info("Agents loaded.")
 
@@ -73,11 +75,12 @@ class UltimateAgent:
 
         log.info("UltimateAgent: '%s' (group=%s, lang=%s)", question[:80], group_id, lang)
 
-        # Run both agents in parallel
+        # Run all three agents in parallel
         case_ans = "No relevant cases found."
         docs_ans = "NO_DOCS"
+        keyword_ans = "No keyword matches."
 
-        pool = ThreadPoolExecutor(max_workers=2)
+        pool = ThreadPoolExecutor(max_workers=3)
         try:
             case_future = pool.submit(
                 self.case_agent.answer, question, group_id=group_id, db=db
@@ -86,28 +89,39 @@ class UltimateAgent:
                 self.docs_agent.answer, question, group_id=group_id, db=db, context=context,
                 images=images,
             )
+            keyword_future = pool.submit(
+                self.keyword_agent.answer, question, group_id=group_id, db=db,
+                context=context, images=images,
+            )
 
+            futures = [case_future, docs_future, keyword_future]
             try:
-                for future in as_completed([case_future, docs_future], timeout=120):
+                for future in as_completed(futures, timeout=120):
                     try:
                         if future is case_future:
                             case_ans = future.result()
-                        else:
+                        elif future is docs_future:
                             docs_ans = future.result()
+                        else:
+                            keyword_ans = future.result()
                     except Exception as exc:
                         if future is case_future:
                             log.warning("CaseSearchAgent failed: %s", exc)
-                        else:
+                        elif future is docs_future:
                             log.warning("DocsAgent failed: %s", exc)
+                        else:
+                            log.warning("KeywordSubagent failed: %s", exc)
             except TimeoutError:
                 log.error("Agent futures timed out after 120s; proceeding with partial results")
-                for f in [case_future, docs_future]:
+                for f in futures:
                     if f.done():
                         try:
                             if f is case_future:
                                 case_ans = f.result(timeout=0)
-                            else:
+                            elif f is docs_future:
                                 docs_ans = f.result(timeout=0)
+                            else:
+                                keyword_ans = f.result(timeout=0)
                         except Exception:
                             pass
                     else:
@@ -116,14 +130,15 @@ class UltimateAgent:
             pool.shutdown(wait=False, cancel_futures=True)
 
         log.info(
-            "Agent results: case=%s docs=%s",
+            "Agent results: case=%s docs=%s keyword=%s",
             case_ans[:80] if case_ans else "empty",
             docs_ans[:80] if docs_ans else "empty",
+            keyword_ans[:80] if keyword_ans else "empty",
         )
 
         resp = self._synthesize(
             question, case_ans, docs_ans, lang_instruction, context, db, images,
-            gate_tag=gate_tag,
+            gate_tag=gate_tag, keyword_ans=keyword_ans,
         )
 
         return resp
@@ -138,8 +153,9 @@ class UltimateAgent:
         db,
         images: list[tuple[bytes, str]] | None = None,
         gate_tag: str = "",
+        keyword_ans: str = "",
     ) -> AgentResponse:
-        """Synthesize a final answer from both agents' outputs."""
+        """Synthesize a final answer from all agents' outputs."""
         case_has_results = (
             case_ans
             and "No relevant cases" not in case_ans
@@ -149,11 +165,13 @@ class UltimateAgent:
             and docs_ans not in ("NO_DOCS", "SKIP", "INSUFFICIENT_INFO")
             and not docs_ans.startswith("INSUFFICIENT_INFO")
         )
+        keyword_has_results = (
+            keyword_ans
+            and keyword_ans != "No keyword matches."
+        )
 
-        # Neither agent has useful output
-        if not case_has_results and not docs_has_results:
-            # Don't escalate to admin for ongoing discussions — users are
-            # helping each other and don't need admin pings.
+        # No agent has useful output
+        if not case_has_results and not docs_has_results and not keyword_has_results:
             if gate_tag in ("ongoing_discussion", "statement"):
                 log.info("No results for ongoing_discussion/statement — skipping (no admin escalation)")
                 return AgentResponse(text="SKIP")
@@ -177,6 +195,10 @@ class UltimateAgent:
             else:
                 case_block = f"\nCASE AGENT (solved cases):\n{case_ans}"
 
+        keyword_block = ""
+        if keyword_has_results:
+            keyword_block = f"\nKEYWORD AGENT (cases found by keyword search in message history):\n{keyword_ans}"
+
         docs_block = ""
         if docs_has_results:
             docs_block = f"\nDOCS AGENT (from documentation):\n{docs_ans}"
@@ -191,11 +213,12 @@ class UltimateAgent:
 {context_block}
 Question: "{question_with_images}"
 {case_block}
+{keyword_block}
 {docs_block}
 {file_list_block}
 RULES:
 1. MULTIPLE QUESTIONS: address EACH sub-question. For parts you cannot answer → add [[TAG_ADMIN]].
-2. MULTIPLE SOURCES: freely combine cases AND docs when it gives a better answer. Cite each source used.
+2. MULTIPLE SOURCES: freely combine cases, keyword search results, AND docs when it gives a better answer. Cite each source used.
 3. RELEVANCE: "same core issue" = same underlying problem, even if phrased differently. Use chat context to resolve "this", "that model", etc.
 4. COMPLETELY UNRELATED info only → output ONLY "[[TAG_ADMIN]]".
 5. CITATIONS: include links (case URLs, doc URLs with section) for every piece of info you use. Only cite sources that actually contributed. Format doc citations as: URL (Секція: Y).
@@ -207,11 +230,12 @@ RULES:
 11. If evidence files are available, share them with the user via [[ATTACH:url]]. Do NOT attach images.
 12. IMAGES: if the user attached an image with visible text (model numbers, labels, error messages, screenshots), treat OCR-extracted text as HARD FACT. Identify the product/component/error confidently — do not hedge or say "hard to determine from a photo" when the text is clearly readable.
 13. NO REPETITION: if YOUR previous response appears in the LAST ~10 messages of chat context and contains the same case links, do NOT repeat them. Instead, reference your earlier answer (e.g. "як зазначено вище") or provide only NEW information. If you have nothing new to add, output "SKIP". Older responses (>10 messages ago) can be repeated — the user may not have seen them.
+14. NEGATIVE EVIDENCE: if KEYWORD AGENT notes that a specific product/model has ZERO mentions in community history, explicitly state this fact. Do NOT extrapolate compatibility or functionality from general category matches for unknown products.
 
 Answer:"""
 
         try:
-            raw_text = self.llm.chat(prompt=prompt, cascade=SUBAGENT_CASCADE, timeout=45.0, images=images)
+            raw_text = self.llm.chat_grounded(prompt=prompt, cascade=SUBAGENT_CASCADE, timeout=45.0, images=images)
             attachment_urls = _ATTACH_PATTERN.findall(raw_text)
             clean_text = _ATTACH_PATTERN.sub("", raw_text).strip()
             # Strip markdown formatting (Signal renders it as raw characters)

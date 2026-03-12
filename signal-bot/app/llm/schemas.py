@@ -108,3 +108,9 @@ class UnifiedBufferResult(BaseModel):
     promotions: List[UnifiedPromotion] = Field(default_factory=list)
     updates: List[UnifiedUpdate] = Field(default_factory=list)
 
+
+class KeywordResult(BaseModel):
+    """Keywords extracted from a user message for database search."""
+    keywords: List[str] = Field(default_factory=list)
+    product_names: List[str] = Field(default_factory=list)
+
