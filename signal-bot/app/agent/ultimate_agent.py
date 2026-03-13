@@ -28,6 +28,7 @@ log = logging.getLogger(__name__)
 
 _ATTACH_PATTERN = re.compile(r"\[\[ATTACH:(.*?)\]\]")
 _CITE_PATTERN = re.compile(r"\[cite:\s*([a-f0-9]{32})\]")
+_CITE_BROAD_PATTERN = re.compile(r"\[cite:[^\]]*\]")
 _REPLY_TO_PATTERN = re.compile(r"\[\[REPLY_TO:(\d+)\]\]")
 
 
@@ -298,6 +299,8 @@ Answer:"""
             clean_text = _CITE_PATTERN.sub(
                 lambda m: f"{self.public_url}/case/{m.group(1)}", clean_text
             )
+            # Strip any remaining [cite: ...] patterns (e.g. multi-ID: [cite: id1, id2])
+            clean_text = _CITE_BROAD_PATTERN.sub("", clean_text)
             # Strip markdown formatting (Signal renders it as raw characters)
             clean_text = re.sub(r'\*\*(.+?)\*\*', r'\1', clean_text)  # **bold**
             clean_text = re.sub(r'\*(.+?)\*', r'\1', clean_text)      # *italic*
