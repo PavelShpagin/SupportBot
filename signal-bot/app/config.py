@@ -48,8 +48,10 @@ class Settings:
     oracle_dsn: str
     oracle_wallet_dir: str
 
-    # OpenAI
+    # OpenAI (Gemini via OpenAI-compat endpoint)
     openai_api_key: str
+    # Real OpenAI key for GPT synthesizer
+    openai_key: str
     model_img: str
     model_decision: str
     model_extract: str
@@ -131,6 +133,7 @@ def load_settings() -> Settings:
         oracle_dsn=_env("ORACLE_DSN", default=""),
         oracle_wallet_dir=_env("ORACLE_WALLET_DIR", default=_env("TNS_ADMIN", default="")),
         openai_api_key=_env("GOOGLE_API_KEY", required=True),
+        openai_key=_env("OPENAI_KEY", default=""),
         model_img=_env("MODEL_IMG", default="gemini-3.1-pro-preview"),
         model_decision=_env("MODEL_DECISION", default="gemini-2.5-flash"),
         model_extract=_env("MODEL_EXTRACT", default="gemini-3.1-pro-preview"),

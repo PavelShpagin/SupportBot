@@ -114,6 +114,15 @@ class LLMClient:
             log.warning("google-genai not installed; chat_grounded() will fall back to chat()")
             self._genai_client = None
 
+        # Real OpenAI client for GPT synthesizer (with web search)
+        self._openai_client: OpenAI | None = None
+        if settings.openai_key:
+            self._openai_client = OpenAI(
+                api_key=settings.openai_key,
+                base_url="https://us.api.openai.com/v1",
+                max_retries=0,
+            )
+
     def _json_call(
         self,
         *,
@@ -330,6 +339,46 @@ class LLMClient:
 
         log.warning("chat_grounded cascade exhausted, falling back to chat()")
         return self.chat(prompt=prompt, model=model, timeout=max(2.0, deadline - _t.monotonic()), cascade=cascade, images=images)
+
+    def chat_openai_grounded(
+        self,
+        *,
+        prompt: str,
+        model: str = "gpt-5.4",
+        timeout: float = 45.0,
+        images: list[tuple[bytes, str]] | None = None,
+    ) -> str:
+        """Chat with OpenAI GPT model + web_search tool via Responses API.
+
+        Falls back to Gemini chat_grounded if OpenAI client is not configured.
+        """
+        if self._openai_client is None:
+            log.warning("chat_openai_grounded: no OpenAI key, falling back to Gemini")
+            return self.chat_grounded(prompt=prompt, timeout=timeout, images=images)
+
+        import time as _t
+
+        try:
+            # Build input with images if present
+            input_content: list[dict[str, Any]] = []
+            if images:
+                parts = _build_interleaved_parts(prompt, images)
+                input_content.append({"role": "user", "content": parts})
+            else:
+                input_content.append({"role": "user", "content": prompt})
+
+            response = self._openai_client.responses.create(
+                model=model,
+                input=input_content,
+                tools=[{"type": "web_search"}],
+                timeout=timeout,
+            )
+            text = response.output_text or ""
+            log.info("chat_openai_grounded: model=%s len=%d", model, len(text))
+            return text.strip()
+        except Exception as exc:
+            log.warning("chat_openai_grounded failed (%s), falling back to Gemini", exc)
+            return self.chat_grounded(prompt=prompt, timeout=timeout, images=images)
 
     def extract_keywords(self, *, message: str) -> KeywordResult:
         """Extract search keywords from a user message using a fast model."""
