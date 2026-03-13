@@ -514,6 +514,12 @@ def worker_loop_forever(deps: WorkerDeps) -> None:
 
     last_sync_rag = 0.0
 
+    if not deps.settings.worker_enabled:
+        log.warning("Worker disabled (WORKER_ENABLED=0). Sleeping indefinitely.")
+        while True:
+            _touch_heartbeat()
+            time.sleep(10)
+
     while True:
         now = time.time()
 

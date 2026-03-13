@@ -80,6 +80,7 @@ class Settings:
     context_last_n: int
     retrieve_top_k: int
     worker_poll_seconds: float
+    worker_enabled: bool
     history_token_ttl_minutes: int
     admin_session_stale_minutes: int
     
@@ -152,6 +153,7 @@ def load_settings() -> Settings:
         context_last_n=_env_int("CONTEXT_LAST_N", default=40, min_value=1),
         retrieve_top_k=_env_int("RETRIEVE_TOP_K", default=5, min_value=1),
         worker_poll_seconds=float(os.getenv("WORKER_POLL_SECONDS", "1")),
+        worker_enabled=_env_bool("WORKER_ENABLED", default=True),
         history_token_ttl_minutes=_env_int("HISTORY_TOKEN_TTL_MINUTES", default=240, min_value=1),
         admin_session_stale_minutes=_env_int("ADMIN_SESSION_STALE_MINUTES", default=30, min_value=1),
         http_debug_endpoints_enabled=_env_bool("HTTP_DEBUG_ENDPOINTS_ENABLED", default=False),
