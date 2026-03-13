@@ -1102,14 +1102,23 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
             _responded_messages[message_id] = None
 
         log.info("SEND: mention_recipients=%s, has_placeholder=%s", mention_recipients, "[[MENTION_PLACEHOLDER]]" in answer_text)
-        sent_ts = deps.signal.send_group_text(
-            group_id=group_id,
-            text=answer_text,
-            quote_timestamp=quote_ts,
-            quote_author=quote_author,
-            quote_message=quote_msg,
-            mention_recipients=mention_recipients,
-        )
+        try:
+            sent_ts = deps.signal.send_group_text(
+                group_id=group_id,
+                text=answer_text,
+                quote_timestamp=quote_ts,
+                quote_author=quote_author,
+                quote_message=quote_msg,
+                mention_recipients=mention_recipients,
+            )
+        except RuntimeError:
+            # Retry without quote — quote_author may be unregistered
+            log.warning("SEND: failed with quote, retrying without quote")
+            sent_ts = deps.signal.send_group_text(
+                group_id=group_id,
+                text=answer_text,
+                mention_recipients=mention_recipients,
+            )
 
         # Store bot response in raw_messages so future context includes it
         if sent_ts and deps.bot_sender_hash:
