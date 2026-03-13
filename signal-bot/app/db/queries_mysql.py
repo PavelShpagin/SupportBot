@@ -207,6 +207,22 @@ def get_last_messages_text(db: MySQL, group_id: str, n: int, bot_sender_hash: st
         return result
 
 
+def has_newer_respond_job(db: MySQL, group_id: str, ts: int) -> bool:
+    """Check if there's a pending/in_progress MAYBE_RESPOND job for this group with a newer ts."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            """SELECT 1 FROM jobs
+               WHERE type = 'MAYBE_RESPOND'
+                 AND status IN ('pending', 'in_progress')
+                 AND payload_json LIKE %s
+                 AND CAST(JSON_EXTRACT(payload_json, '$.ts') AS UNSIGNED) > %s
+               LIMIT 1""",
+            (f'%{group_id}%', ts),
+        )
+        return cur.fetchone() is not None
+
+
 def get_last_messages_meta(db: MySQL, group_id: str, n: int, bot_sender_hash: str = "") -> List[Dict[str, Any]]:
     """Return last n messages with metadata (ts, sender_hash, content_text, is_bot). Oldest-first."""
     with db.connection() as conn:

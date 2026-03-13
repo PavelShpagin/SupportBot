@@ -886,6 +886,13 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
             log.info("MAYBE_RESPOND: already responded to %s — skipping duplicate", message_id)
             return
 
+    # Skip if newer MAYBE_RESPOND jobs exist for same group — the latest job will have full context
+    from app.db.queries_mysql import has_newer_respond_job
+    job_ts = payload.get("ts") or 0
+    if has_newer_respond_job(deps.db, group_id, int(job_ts)):
+        log.info("MAYBE_RESPOND: newer job exists for group %s, skipping ts=%s", group_id[:20], job_ts)
+        return
+
     msg = get_raw_message(deps.db, message_id=message_id)
     if msg is None:
         log.warning("MAYBE_RESPOND: message not found: %s", message_id)
