@@ -281,7 +281,7 @@ RULES:
 14. IMAGES: if the user attached an image with visible text (model numbers, labels, error messages, screenshots), treat OCR-extracted text as HARD FACT. Identify the product/component/error confidently.
 15. NO REPETITION: if YOUR previous response appears in the LAST ~10 messages of chat context and contains the same case links, do NOT repeat them. Instead, reference your earlier answer or provide only NEW information. If you have nothing new to add, output "SKIP".
 16. NEGATIVE EVIDENCE: if KEYWORD AGENT notes that a specific product/model has ZERO mentions in community history, explicitly state this fact. Do NOT extrapolate from general category matches.
-{('17. REPLY TARGET: chat context messages have [msg_ts=TIMESTAMP] prefixes. Choose the most natural message to reply to — typically the latest clarification or the most relevant user message. Output [[REPLY_TO:TIMESTAMP]] (using the exact msg_ts value) at the END of your answer.' if pick_reply_to else '')}
+{('17. REPLY TARGET: chat context messages have [msg_ts=TIMESTAMP] prefixes. Reply to the LAST message from the person who asked the question — their most recent clarification or followup. If they sent multiple messages, always pick the latest one. Output [[REPLY_TO:TIMESTAMP]] (using the exact msg_ts value) at the END of your answer.' if pick_reply_to else '')}
 
 Answer:"""
 
