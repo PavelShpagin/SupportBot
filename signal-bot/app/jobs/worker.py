@@ -1013,21 +1013,19 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
                     answer_text = raw_answer.text
                     attachment_urls = raw_answer.attachment_urls
                     # Update quote target: use LLM-chosen reply_to_ts, or fall back to latest message
+                    # NOTE: only update ts and text — keep original sender (phone/UUID) since
+                    # raw_messages only stores sender_hash which signal-cli can't use for quoting
                     if raw_answer.reply_to_ts:
-                        # Find the message matching the chosen ts
                         chosen = next((m for m in context_messages if m["ts"] == raw_answer.reply_to_ts), None)
                         if chosen:
                             payload["ts"] = chosen["ts"]
-                            payload["sender"] = chosen["sender_hash"]
                             payload["text"] = chosen["content_text"] or ""
                             log.info("MAYBE_RESPOND: LLM chose reply target ts=%s", chosen["ts"])
                         else:
                             log.warning("MAYBE_RESPOND: LLM chose ts=%s but not found in context", raw_answer.reply_to_ts)
                     elif context_messages:
-                        # Fallback: reply to latest message
                         latest = context_messages[-1]
                         payload["ts"] = latest["ts"]
-                        payload["sender"] = latest["sender_hash"]
                         payload["text"] = latest["content_text"] or ""
                         log.info("MAYBE_RESPOND: fallback reply to latest ts=%s", latest["ts"])
                     log.info("MAYBE_RESPOND: re-synthesis result: %s", answer_text[:80] if answer_text else "empty")
