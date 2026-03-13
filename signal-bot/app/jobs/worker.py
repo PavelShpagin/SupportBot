@@ -1011,6 +1011,24 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         answer_text = raw_answer.text
         attachment_urls = raw_answer.attachment_urls
 
+        # ── Pre-send context check: if a human replied while we were synthesizing, re-gate ──
+        if not force:
+            try:
+                fresh_msgs = get_last_messages_text(deps.db, group_id, n=deps.settings.context_last_n, bot_sender_hash=deps.bot_sender_hash)
+                fresh_context = "\n".join(fresh_msgs)
+                if fresh_context != context_text and fresh_context != "\n".join(context_msgs):
+                    # Context changed — new messages arrived during synthesis
+                    log.info("MAYBE_RESPOND: context changed during synthesis, re-gating message %s", message_id)
+                    re_gate = deps.llm.decide_consider(
+                        message=gate_message_text,
+                        context="\n".join(fresh_msgs[:-1]) if len(fresh_msgs) > 1 else "",
+                    )
+                    if not re_gate.consider:
+                        log.info("MAYBE_RESPOND: re-gate filtered after context update (tag=%s) — someone likely answered", re_gate.tag)
+                        return
+            except Exception as _re_gate_err:
+                log.warning("Pre-send re-gate failed, proceeding: %s", _re_gate_err)
+
         if answer_text == "SKIP":
             if force:
                 answer_text = "Вибачте, я не зрозумів запитання або це не стосується моєї компетенції." if group_lang == "uk" else "Sorry, I didn't understand the question or it's outside my expertise."
