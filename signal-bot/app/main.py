@@ -2424,9 +2424,15 @@ def debug_answer(req: DebugAnswerRequest) -> dict:
     agent = CaseSearchAgent(rag=rag, llm=llm, public_url=settings.public_url.rstrip("/"))
     ctx = agent.search(req.question, group_id=req.group_id, db=db)
 
+    # Load real context from DB (like production flow)
+    from app.db import get_last_messages_text
+    bot_hash = _bot_sender_hash
+    context_msgs = get_last_messages_text(db, req.group_id, n=settings.context_last_n, bot_sender_hash=bot_hash)
+    context_text = "\n".join(context_msgs[:-1]) if len(context_msgs) > 1 else ""
+
     # Synthesize
     case_ans = agent.answer(req.question, group_id=req.group_id, db=db)
-    response = ultimate_agent.answer(req.question, group_id=req.group_id, db=db, lang=req.lang)
+    response = ultimate_agent.answer(req.question, group_id=req.group_id, db=db, lang=req.lang, context=context_text)
 
     # Also check what ultimate_agent's OWN case_agent finds (to diagnose rag isolation issues)
     ua_ctx = ultimate_agent.case_agent.search(req.question, group_id=req.group_id, db=db)
