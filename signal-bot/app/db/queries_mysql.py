@@ -224,21 +224,22 @@ def has_newer_respond_job(db: MySQL, group_id: str, ts: int) -> bool:
 
 
 def get_last_messages_meta(db: MySQL, group_id: str, n: int, bot_sender_hash: str = "") -> List[Dict[str, Any]]:
-    """Return last n messages with metadata (ts, sender_hash, content_text, is_bot). Oldest-first."""
+    """Return last n messages with metadata (ts, sender_hash, content_text, is_bot, message_id). Oldest-first."""
     with db.connection() as conn:
         cur = conn.cursor()
         cur.execute(
-            "SELECT ts, sender_hash, content_text FROM raw_messages WHERE group_id = %s ORDER BY ts DESC LIMIT %s",
+            "SELECT ts, sender_hash, content_text, message_id FROM raw_messages WHERE group_id = %s ORDER BY ts DESC LIMIT %s",
             (group_id, n),
         )
         rows = cur.fetchall()
         result = []
-        for ts, sender_hash, content_text in reversed(rows):
+        for ts, sender_hash, content_text, message_id in reversed(rows):
             result.append({
                 "ts": ts,
                 "sender_hash": sender_hash,
                 "content_text": content_text or "",
                 "is_bot": bool(bot_sender_hash and sender_hash == bot_sender_hash),
+                "message_id": message_id,
             })
         return result
 

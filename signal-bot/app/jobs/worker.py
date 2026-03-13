@@ -1035,6 +1035,19 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
                         payload["ts"] = latest["ts"]
                         payload["text"] = latest["content_text"] or ""
                         log.info("MAYBE_RESPOND: fallback reply to latest ts=%s", latest["ts"])
+                    # Mark new messages as "responded" so their pending MAYBE_RESPOND jobs skip
+                    original_ts = int(payload.get("ts") or msg.ts)
+                    for cm in context_messages:
+                        if not cm.get("is_bot") and cm["ts"] > original_ts:
+                            new_mid = str(cm.get("message_id") or cm["ts"])
+                            with _responded_lock:
+                                if len(_responded_messages) >= _RESPONDED_MAX:
+                                    try:
+                                        del _responded_messages[next(iter(_responded_messages))]
+                                    except StopIteration:
+                                        pass
+                                _responded_messages[new_mid] = None
+                            log.info("MAYBE_RESPOND: marked re-synthesized msg %s as responded", new_mid)
                     log.info("MAYBE_RESPOND: re-synthesis result: %s", answer_text[:80] if answer_text else "empty")
             except Exception as _resynth_err:
                 log.warning("Pre-send re-synthesis failed, proceeding with original: %s", _resynth_err)
