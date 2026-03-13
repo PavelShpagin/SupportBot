@@ -40,6 +40,7 @@ def detect_lang(text: str) -> str:
 class AgentResponse:
     text: str
     attachment_urls: list[str] = field(default_factory=list)
+    sub_agent_results: dict = field(default_factory=dict)
 
 
 class UltimateAgent:
@@ -142,6 +143,35 @@ class UltimateAgent:
             gate_tag=gate_tag, keyword_ans=keyword_ans,
         )
 
+        # Attach sub-agent results for potential re-synthesis with updated context
+        resp.sub_agent_results = {
+            "case_ans": case_ans,
+            "docs_ans": docs_ans,
+            "keyword_ans": keyword_ans,
+            "lang_instruction": lang_instruction,
+            "gate_tag": gate_tag,
+        }
+
+        return resp
+
+    def re_synthesize(self, question: str, new_context: str, prev_response: AgentResponse,
+                      db=None, images: list[tuple[bytes, str]] | None = None) -> AgentResponse:
+        """Re-run only the synthesizer with updated context but same sub-agent results.
+
+        Used when new messages arrived during synthesis — avoids re-running
+        the expensive sub-agent searches.
+        """
+        sa = prev_response.sub_agent_results
+        if not sa:
+            log.warning("re_synthesize: no sub_agent_results, returning original response")
+            return prev_response
+
+        resp = self._synthesize(
+            question, sa["case_ans"], sa["docs_ans"], sa["lang_instruction"],
+            new_context, db, images,
+            gate_tag=sa.get("gate_tag", ""), keyword_ans=sa.get("keyword_ans", ""),
+        )
+        resp.sub_agent_results = sa
         return resp
 
     def _synthesize(

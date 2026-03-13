@@ -1011,23 +1011,26 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         answer_text = raw_answer.text
         attachment_urls = raw_answer.attachment_urls
 
-        # ── Pre-send context check: if a human replied while we were synthesizing, re-gate ──
+        # ── Pre-send context check: if new messages arrived during synthesis, re-synthesize ──
         if not force:
             try:
                 fresh_msgs = get_last_messages_text(deps.db, group_id, n=deps.settings.context_last_n, bot_sender_hash=deps.bot_sender_hash)
                 fresh_context = "\n".join(fresh_msgs)
-                if fresh_context != context_text and fresh_context != "\n".join(context_msgs):
-                    # Context changed — new messages arrived during synthesis
-                    log.info("MAYBE_RESPOND: context changed during synthesis, re-gating message %s", message_id)
-                    re_gate = deps.llm.decide_consider(
-                        message=gate_message_text,
-                        context="\n".join(fresh_msgs[:-1]) if len(fresh_msgs) > 1 else "",
+                original_context = "\n".join(context_msgs)
+                if fresh_context != original_context:
+                    # Context changed — new messages arrived during synthesis.
+                    # Re-run ONLY the synthesizer with updated context (sub-agent results reused).
+                    log.info("MAYBE_RESPOND: context changed during synthesis, re-synthesizing for message %s", message_id)
+                    fresh_context_text = "\n".join(fresh_msgs[:-1]) if len(fresh_msgs) > 1 else ""
+                    raw_answer = deps.ultimate_agent.re_synthesize(
+                        gate_message_text, new_context=fresh_context_text,
+                        prev_response=raw_answer, db=deps.db, images=gate_images,
                     )
-                    if not re_gate.consider:
-                        log.info("MAYBE_RESPOND: re-gate filtered after context update (tag=%s) — someone likely answered", re_gate.tag)
-                        return
-            except Exception as _re_gate_err:
-                log.warning("Pre-send re-gate failed, proceeding: %s", _re_gate_err)
+                    answer_text = raw_answer.text
+                    attachment_urls = raw_answer.attachment_urls
+                    log.info("MAYBE_RESPOND: re-synthesis result: %s", answer_text[:80] if answer_text else "empty")
+            except Exception as _resynth_err:
+                log.warning("Pre-send re-synthesis failed, proceeding with original: %s", _resynth_err)
 
         if answer_text == "SKIP":
             if force:
