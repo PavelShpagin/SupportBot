@@ -1009,6 +1009,17 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
                     )
                     answer_text = raw_answer.text
                     attachment_urls = raw_answer.attachment_urls
+                    # Update quote target to the newest message from the same user
+                    try:
+                        from app.db.queries_mysql import get_latest_message_meta
+                        latest = get_latest_message_meta(deps.db, group_id)
+                        if latest:
+                            payload["ts"] = latest["ts"]
+                            payload["sender"] = latest["sender_hash"]
+                            payload["text"] = latest["content_text"] or ""
+                            log.info("MAYBE_RESPOND: updated quote to latest message ts=%s", latest["ts"])
+                    except Exception as _quote_err:
+                        log.warning("Failed to update quote target: %s", _quote_err)
                     log.info("MAYBE_RESPOND: re-synthesis result: %s", answer_text[:80] if answer_text else "empty")
             except Exception as _resynth_err:
                 log.warning("Pre-send re-synthesis failed, proceeding with original: %s", _resynth_err)

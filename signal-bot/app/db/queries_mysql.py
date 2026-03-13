@@ -207,6 +207,20 @@ def get_last_messages_text(db: MySQL, group_id: str, n: int, bot_sender_hash: st
         return result
 
 
+def get_latest_message_meta(db: MySQL, group_id: str) -> Optional[Dict[str, Any]]:
+    """Return the latest message's ts, sender_hash, and content_text for a group."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            "SELECT ts, sender_hash, content_text FROM raw_messages WHERE group_id = %s ORDER BY ts DESC LIMIT 1",
+            (group_id,),
+        )
+        row = cur.fetchone()
+        if row:
+            return {"ts": row[0], "sender_hash": row[1], "content_text": row[2]}
+        return None
+
+
 def get_buffer(db: MySQL, group_id: str) -> str:
     with db.connection() as conn:
         cur = conn.cursor()
