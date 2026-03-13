@@ -28,6 +28,7 @@ log = logging.getLogger(__name__)
 
 _ATTACH_PATTERN = re.compile(r"\[\[ATTACH:(.*?)\]\]")
 _CITE_PATTERN = re.compile(r"\[cite:\s*([a-f0-9]{32})\]")
+_REPLY_TO_PATTERN = re.compile(r"\[\[REPLY_TO:(\d+)\]\]")
 
 
 def detect_lang(text: str) -> str:
@@ -41,6 +42,7 @@ class AgentResponse:
     text: str
     attachment_urls: list[str] = field(default_factory=list)
     sub_agent_results: dict = field(default_factory=dict)
+    reply_to_ts: int | None = None
 
 
 class UltimateAgent:
@@ -155,21 +157,35 @@ class UltimateAgent:
         return resp
 
     def re_synthesize(self, question: str, new_context: str, prev_response: AgentResponse,
-                      db=None, images: list[tuple[bytes, str]] | None = None) -> AgentResponse:
+                      db=None, images: list[tuple[bytes, str]] | None = None,
+                      context_messages: list[dict] | None = None) -> AgentResponse:
         """Re-run only the synthesizer with updated context but same sub-agent results.
 
         Used when new messages arrived during synthesis — avoids re-running
         the expensive sub-agent searches.
+
+        context_messages: list of dicts with keys {ts, sender_hash, content_text}
+            used to let the synthesizer choose which message to reply to.
         """
         sa = prev_response.sub_agent_results
         if not sa:
             log.warning("re_synthesize: no sub_agent_results, returning original response")
             return prev_response
 
+        # Build context with message IDs so synthesizer can pick reply target
+        reply_context = new_context
+        if context_messages:
+            lines = []
+            for m in context_messages:
+                label = "[BOT]" if m.get("is_bot") else f"User{(m.get('sender_hash') or 'unknown')[:6]}"
+                lines.append(f"[msg_ts={m['ts']}] {label}: {m.get('content_text') or ''}")
+            reply_context = "\n".join(lines)
+
         resp = self._synthesize(
             question, sa["case_ans"], sa["docs_ans"], sa["lang_instruction"],
-            new_context, db, images,
+            reply_context, db, images,
             gate_tag=sa.get("gate_tag", ""), keyword_ans=sa.get("keyword_ans", ""),
+            pick_reply_to=bool(context_messages),
         )
         resp.sub_agent_results = sa
         return resp
@@ -185,6 +201,7 @@ class UltimateAgent:
         images: list[tuple[bytes, str]] | None = None,
         gate_tag: str = "",
         keyword_ans: str = "",
+        pick_reply_to: bool = False,
     ) -> AgentResponse:
         """Synthesize a final answer from all agents' outputs."""
         case_has_results = (
@@ -263,6 +280,7 @@ RULES:
 14. IMAGES: if the user attached an image with visible text (model numbers, labels, error messages, screenshots), treat OCR-extracted text as HARD FACT. Identify the product/component/error confidently.
 15. NO REPETITION: if YOUR previous response appears in the LAST ~10 messages of chat context and contains the same case links, do NOT repeat them. Instead, reference your earlier answer or provide only NEW information. If you have nothing new to add, output "SKIP".
 16. NEGATIVE EVIDENCE: if KEYWORD AGENT notes that a specific product/model has ZERO mentions in community history, explicitly state this fact. Do NOT extrapolate from general category matches.
+{('17. REPLY TARGET: chat context messages have [msg_ts=TIMESTAMP] prefixes. Choose the most natural message to reply to — typically the latest clarification or the most relevant user message. Output [[REPLY_TO:TIMESTAMP]] (using the exact msg_ts value) at the END of your answer.' if pick_reply_to else '')}
 
 Answer:"""
 
@@ -270,6 +288,12 @@ Answer:"""
             raw_text = self.llm.chat_grounded(prompt=prompt, cascade=SUBAGENT_CASCADE, timeout=45.0, images=images)
             attachment_urls = _ATTACH_PATTERN.findall(raw_text)
             clean_text = _ATTACH_PATTERN.sub("", raw_text).strip()
+            # Parse reply-to target
+            reply_to_ts = None
+            reply_match = _REPLY_TO_PATTERN.search(clean_text)
+            if reply_match:
+                reply_to_ts = int(reply_match.group(1))
+            clean_text = _REPLY_TO_PATTERN.sub("", clean_text).strip()
             # Fix [cite: case_id] → proper URL (LLM sometimes hallucinates academic citations)
             clean_text = _CITE_PATTERN.sub(
                 lambda m: f"{self.public_url}/case/{m.group(1)}", clean_text
@@ -279,7 +303,7 @@ Answer:"""
             clean_text = re.sub(r'\*(.+?)\*', r'\1', clean_text)      # *italic*
             clean_text = re.sub(r'`(.+?)`', r'\1', clean_text)        # `code`
             clean_text = re.sub(r'^#{1,6}\s+', '', clean_text, flags=re.MULTILINE)  # # headers
-            return AgentResponse(text=clean_text, attachment_urls=attachment_urls)
+            return AgentResponse(text=clean_text, attachment_urls=attachment_urls, reply_to_ts=reply_to_ts)
         except Exception as exc:
             log.exception("Synthesizer LLM call failed")
             return AgentResponse(text="[[TAG_ADMIN]]")

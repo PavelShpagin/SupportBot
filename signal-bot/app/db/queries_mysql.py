@@ -207,18 +207,24 @@ def get_last_messages_text(db: MySQL, group_id: str, n: int, bot_sender_hash: st
         return result
 
 
-def get_latest_message_meta(db: MySQL, group_id: str) -> Optional[Dict[str, Any]]:
-    """Return the latest message's ts, sender_hash, and content_text for a group."""
+def get_last_messages_meta(db: MySQL, group_id: str, n: int, bot_sender_hash: str = "") -> List[Dict[str, Any]]:
+    """Return last n messages with metadata (ts, sender_hash, content_text, is_bot). Oldest-first."""
     with db.connection() as conn:
         cur = conn.cursor()
         cur.execute(
-            "SELECT ts, sender_hash, content_text FROM raw_messages WHERE group_id = %s ORDER BY ts DESC LIMIT 1",
-            (group_id,),
+            "SELECT ts, sender_hash, content_text FROM raw_messages WHERE group_id = %s ORDER BY ts DESC LIMIT %s",
+            (group_id, n),
         )
-        row = cur.fetchone()
-        if row:
-            return {"ts": row[0], "sender_hash": row[1], "content_text": row[2]}
-        return None
+        rows = cur.fetchall()
+        result = []
+        for ts, sender_hash, content_text in reversed(rows):
+            result.append({
+                "ts": ts,
+                "sender_hash": sender_hash,
+                "content_text": content_text or "",
+                "is_bot": bool(bot_sender_hash and sender_hash == bot_sender_hash),
+            })
+        return result
 
 
 def get_buffer(db: MySQL, group_id: str) -> str:
