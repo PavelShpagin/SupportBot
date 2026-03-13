@@ -82,19 +82,11 @@ def _run_with_timeout(fn, *args, timeout: float) -> tuple[bool, Exception | None
     return not t.is_alive(), result["exc"]
 
 
-# ── RAG-answered message tracking ────────────────────────────────────────────
-# message_id set: messages for which the bot sent a real RAG answer (not a pure
-# [[TAG_ADMIN]] escalation).  When BUFFER_UPDATE processes the buffer afterwards,
-# it skips these messages so no duplicate case is created for an already-answered
-# question.  Uses an ordered dict so we can do FIFO eviction.
-_rag_answered_messages: dict[str, None] = {}
-
 # Track messages we've already sent a response to, so timed-out job retries
-# don't produce duplicate messages.  FIFO eviction, same as _rag_answered_messages.
+# don't produce duplicate messages.  FIFO eviction.
 _responded_messages: dict[str, None] = {}
 _responded_lock = threading.Lock()
-_rag_answered_lock = threading.Lock()
-_RAG_ANSWERED_MAX = 2000
+_RESPONDED_MAX = 2000
 
 
 @dataclass(frozen=True)
@@ -749,18 +741,7 @@ def _handle_buffer_update(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
         set_buffer(deps.db, group_id=group_id, buffer_text=buf2)
         return
 
-    # Exclude RAG-answered messages from extraction (they already spawned cases)
-    # Bot messages are KEPT — LLM needs full context but is instructed to never
-    # create cases based on bot-only responses (see P_UNIFIED_BUFFER_SYSTEM)
-    with _rag_answered_lock:
-        local_rag_answered = set(_rag_answered_messages.keys())
-    extraction_blocks = [
-        b for b in blocks
-        if b.message_id not in local_rag_answered
-    ]
-    if not extraction_blocks:
-        set_buffer(deps.db, group_id=group_id, buffer_text=buf2)
-        return
+    extraction_blocks = blocks
 
     # Load existing solved+recommendation cases overlapping buffer (prevent re-extraction)
     from app.db.queries_mysql import get_overlapping_solved_cases, get_recommendation_cases_for_group
@@ -1074,14 +1055,7 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
                 log.info("MENTION: no recipients, falling back to @admin text")
 
         if rag_answered:
-            with _rag_answered_lock:
-                if len(_rag_answered_messages) >= _RAG_ANSWERED_MAX:
-                    try:
-                        del _rag_answered_messages[next(iter(_rag_answered_messages))]
-                    except StopIteration:
-                        pass
-                _rag_answered_messages[message_id] = None
-            log.debug("Marked message %s as RAG-answered (case creation suppressed)", message_id)
+            log.debug("Message %s was RAG-answered", message_id)
 
         # Clean answer_text for storage: replace placeholders with readable text
         stored_text = answer_text.replace("[[MENTION_PLACEHOLDER]]", "@admin")
@@ -1094,7 +1068,7 @@ def _handle_maybe_respond(deps: WorkerDeps, payload: Dict[str, Any]) -> None:
 
         # Mark as responded BEFORE sending — prevents duplicate if timeout retry
         with _responded_lock:
-            if len(_responded_messages) >= _RAG_ANSWERED_MAX:
+            if len(_responded_messages) >= _RESPONDED_MAX:
                 try:
                     del _responded_messages[next(iter(_responded_messages))]
                 except StopIteration:
