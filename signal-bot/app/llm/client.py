@@ -304,6 +304,11 @@ class LLMClient:
                     contents=contents,
                     config=_gt.GenerateContentConfig(
                         tools=[_gt.Tool(google_search=_gt.GoogleSearch())],
+                        system_instruction=(
+                            "Use Google Search to verify facts and enrich your answer with up-to-date information. "
+                            "Search for key technical terms, parameter names, and product specifics mentioned in the prompt. "
+                            "Combine search results with the context already provided to give the best answer."
+                        ),
                         temperature=0.4,
                         http_options=_gt.HttpOptions(timeout=int(remaining * 1000)),
                     ),

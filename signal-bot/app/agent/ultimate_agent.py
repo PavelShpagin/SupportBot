@@ -287,7 +287,7 @@ RULES:
 Answer:"""
 
         try:
-            raw_text = self.llm.chat_openai_grounded(prompt=prompt, timeout=45.0, images=images)
+            raw_text = self.llm.chat_grounded(prompt=prompt, timeout=90.0, images=images)
             attachment_urls = _ATTACH_PATTERN.findall(raw_text)
             clean_text = _ATTACH_PATTERN.sub("", raw_text).strip()
             # Parse reply-to target
