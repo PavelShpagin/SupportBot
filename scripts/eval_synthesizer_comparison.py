@@ -36,7 +36,9 @@ log = logging.getLogger("eval_synth")
 
 # ── Configuration ──────────────────────────────────────────────────────────
 
-GROUP_NAME_PATTERN = "Академія"  # substring match
+GROUP_NAME_PATTERN = "Академія"  # substring match (fallback)
+# Direct group_id override (set to skip name search)
+GROUP_ID = os.environ.get("EVAL_GROUP_ID", "")
 LAST_N = 40                      # messages to treat as "unprocessed"
 CONTEXT_N = 40                   # prior context messages
 OUTPUT_FILE = "results/synth_comparison.json"
@@ -70,7 +72,6 @@ class EvalResult:
 
 def find_group(db, pattern: str) -> tuple[str, str]:
     """Find group_id by name pattern in chat_groups table."""
-    from app.db.mysql import MySQL
     with db.connection() as conn:
         cur = conn.cursor()
         cur.execute(
@@ -103,38 +104,29 @@ def find_group(db, pattern: str) -> tuple[str, str]:
 
 def run_eval():
     from app.config import load_settings
-    from app.db.mysql import MySQL
     from app.db import get_last_messages_text, get_raw_message
     from app.db.queries_mysql import get_last_messages_meta
     from app.llm.client import LLMClient
     from app.agent.ultimate_agent import UltimateAgent
-    from app.rag.chroma import DualRag
     from app.ingestion import hash_sender
     from app.jobs.worker import _load_images, _is_image_path
 
     settings = load_settings()
-    db = MySQL(
-        host=settings.mysql_host,
-        port=settings.mysql_port,
-        user=settings.mysql_user,
-        password=settings.mysql_password,
-        database=settings.mysql_database,
-    )
+    from app.db.mysql import create_mysql
+    db = create_mysql(settings)
 
-    llm = LLMClient(settings)
-    rag = DualRag(settings)
+    ultimate_agent = UltimateAgent()  # self-initializes with settings, llm, rag
+    llm = ultimate_agent.llm
 
     bot_sender_hash = hash_sender(settings.signal_bot_e164)
 
-    ultimate_agent = UltimateAgent(
-        llm=llm,
-        rag=rag,
-        public_url=settings.public_url,
-        db=db,
-    )
-
     # Find group
-    group_id, group_name = find_group(db, GROUP_NAME_PATTERN)
+    if GROUP_ID:
+        group_id = GROUP_ID
+        group_name = GROUP_ID[:20] + "..."
+        log.info("Using group_id from env: %s", group_id[:20])
+    else:
+        group_id, group_name = find_group(db, GROUP_NAME_PATTERN)
 
     # Load messages
     unprocessed_msgs = get_last_messages_meta(db, group_id, n=LAST_N, bot_sender_hash=bot_sender_hash)
