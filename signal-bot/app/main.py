@@ -2531,17 +2531,16 @@ def debug_simulate(req: DebugSimulateRequest) -> dict:
         if req.send and r.response_text and r.response_text not in ("SKIP", "[[TAG_ADMIN]]"):
             try:
                 from app.db import get_raw_message, RawMessage, insert_raw_message
-                from app.db.queries_mysql import get_admin_sessions, get_tag_targets
+                from app.db.queries_mysql import get_tag_targets
 
                 answer_text = r.response_text
                 mention_recipients = None
 
                 # Handle TAG_ADMIN mentions
                 if "[[TAG_ADMIN]]" in answer_text or "@admin" in answer_text:
-                    active_admins = get_admin_sessions(db, req.group_id)
                     tag_targets = get_tag_targets(db, req.group_id)
                     answer_text = answer_text.replace("[[TAG_ADMIN]]", "[[MENTION_PLACEHOLDER]]").replace("@admin", "[[MENTION_PLACEHOLDER]]")
-                    mention_recipients = list(tag_targets or active_admins) or None
+                    mention_recipients = list(tag_targets) if tag_targets else None
 
                 # Get quote target for reply
                 quote_ts = None
