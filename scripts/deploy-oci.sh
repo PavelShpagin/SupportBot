@@ -91,6 +91,15 @@ sync_cmd() {
         --exclude='*.bak*' \
         --exclude='*.log' \
         --exclude='paper*' \
+        --exclude='datasets' \
+        --exclude='images' \
+        --exclude='local_data' \
+        --exclude='node_modules' \
+        --exclude='*.png' \
+        --exclude='*.jpg' \
+        --exclude='*.mp4' \
+        --exclude='*.mov' \
+        --exclude='*.xwd' \
         "$@"
 }
 
