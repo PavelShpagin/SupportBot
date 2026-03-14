@@ -16,6 +16,7 @@ Response logic:
 from __future__ import annotations
 
 import logging
+import re
 import sys
 import time
 from typing import Any, Dict, List, Optional
@@ -25,10 +26,115 @@ sys.stdout.reconfigure(encoding="utf-8")
 log = logging.getLogger(__name__)
 
 
+# Multi-char Ukrainian→Latin mappings for entity matching
+_UK_DIGRAPHS = [
+    ("щ", "shch"), ("ш", "sh"), ("ч", "ch"), ("ц", "ts"),
+    ("ю", "yu"), ("я", "ya"), ("є", "ye"), ("ї", "yi"),
+    ("ж", "zh"), ("х", "kh"),
+]
+
+
+def _translit_uk_to_lat(text: str) -> str:
+    """Rough Ukrainian→Latin transliteration for entity matching."""
+    result = text
+    for uk, lat in _UK_DIGRAPHS:
+        result = result.replace(uk, lat)
+    _SINGLE = {
+        "а": "a", "б": "b", "в": "v", "г": "h", "ґ": "g",
+        "д": "d", "е": "e", "з": "z", "и": "y", "і": "i",
+        "й": "y", "к": "k", "л": "l", "м": "m", "н": "n",
+        "о": "o", "п": "p", "р": "r", "с": "s", "т": "t",
+        "у": "u", "ф": "f", "ь": "",
+    }
+    out = []
+    for ch in result:
+        out.append(_SINGLE.get(ch, ch))
+    return "".join(out)
+
+
+def _translit_variants(token: str) -> list[str]:
+    """Generate transliteration variants for a Ukrainian token.
+
+    Returns multiple forms to handle ambiguous mappings (e.g. х → kh or h).
+    """
+    base = _translit_uk_to_lat(token)
+    variants = [base]
+    # х→kh is standard, but English often uses just h (Herelink, not Kherelink)
+    if base.startswith("kh"):
+        variants.append(base[1:])  # drop 'k', keep 'h...'
+    if "kh" in base:
+        variants.append(base.replace("kh", "h"))
+    return variants
+
+
+def _entity_rerank(query: str, results: list[dict], k: int) -> list[dict]:
+    """Rerank RAG results by combining cosine score with entity overlap.
+
+    Boosts cases that mention the same key entities as the query.  This catches
+    cases where embeddings confuse similar-sounding but different systems
+    (e.g. Starlink vs Herelink).
+
+    Focuses on substantive tokens (4+ chars) from the query, using both
+    exact matching and transliterated substring matching for cross-script
+    entity resolution (Ukrainian ↔ English).
+    """
+    if not results:
+        return results
+
+    # Extract substantive query tokens (4+ chars, after stop-word removal)
+    q_tokens = re.findall(r"[a-zA-Zа-яіїєґА-ЯІЇЄҐ0-9]{4,}", query.lower())
+    _STOP = {
+        "будь", "ласка", "якщо", "хтось", "використовує", "разом", "досвідом",
+        "поділіться", "підкажіть", "скажіть", "можливо", "проблема", "питання",
+        "the", "and", "with", "for", "how", "can", "does", "what", "any",
+        "при", "для", "або", "які", "яка", "який", "також", "може", "через",
+        "тому", "після", "перед", "між", "іншого", "інше", "інших", "інші",
+    }
+    q_tokens = [t for t in q_tokens if t not in _STOP]
+    if not q_tokens:
+        return results[:k]
+
+    scored = []
+    for r in results:
+        case_text = (r.get("problem", "") + " " + r.get("solution", "")).lower()
+
+        # Count how many query tokens appear in the case text
+        matches = 0
+        for qt in q_tokens:
+            # Direct substring match (same script)
+            if qt in case_text:
+                matches += 1
+                continue
+            # Transliterated match (cross-script: Ukrainian query → Latin case text)
+            found = False
+            for variant in _translit_variants(qt):
+                stem = variant[:max(5, len(variant) - 3)] if len(variant) >= 5 else variant
+                if len(stem) >= 4 and stem in case_text:
+                    found = True
+                    break
+            if found:
+                matches += 1
+
+        total = max(len(q_tokens), 1)
+        ent_ratio = min(matches / total, 1.0)
+        # Combined score: cosine similarity (primary) + entity overlap (boost)
+        combined = r.get("score", 0) + 0.15 * ent_ratio
+        scored.append((combined, ent_ratio, r))
+
+    # Sort by combined score, but give solved a small bonus (not absolute priority).
+    # A recommendation that matches all query entities should outrank a solved case
+    # about a different product.
+    SOLVED_BONUS = 0.05
+    scored.sort(key=lambda x: -(x[0] + (SOLVED_BONUS if x[2].get("status") == "solved" else 0)))
+    return [r for _, _, r in scored[:k]]
+
+
 SCRAG_TOP_K = 3
 # Cosine distance threshold: cases with distance > this are too dissimilar to use.
 # Lower = stricter. 0.75 keeps good matches while dropping unrelated queries (0.9+).
 SCRAG_DISTANCE_THRESHOLD = 0.75
+# Over-fetch factor for reranking: retrieve more candidates, then rerank and trim.
+_OVERFETCH_K = 3
 
 
 class CaseSearchAgent:
@@ -45,6 +151,7 @@ class CaseSearchAgent:
         Queries both collections independently and merges results with solved first.
         Only returns results with cosine distance <= SCRAG_DISTANCE_THRESHOLD.
         Resolves union group_ids so all groups in a union are searched together.
+        Over-fetches by _OVERFETCH_K and reranks using entity overlap.
         """
         if not self.rag or not self.llm:
             return []
@@ -60,9 +167,11 @@ class CaseSearchAgent:
                 except Exception:
                     pass
             query_emb = self.llm.embed(text=query)
+            # Over-fetch to give reranker more candidates
+            fetch_k = k + _OVERFETCH_K
             # Query each collection independently for proper ranking
-            scrag_results = self.rag.scrag.retrieve_cases(group_id=group_id, group_ids=union_gids, embedding=query_emb, k=k, status=None)
-            rcrag_results = self.rag.rcrag.retrieve_cases(group_id=group_id, group_ids=union_gids, embedding=query_emb, k=k, status=None)
+            scrag_results = self.rag.scrag.retrieve_cases(group_id=group_id, group_ids=union_gids, embedding=query_emb, k=fetch_k, status=None)
+            rcrag_results = self.rag.rcrag.retrieve_cases(group_id=group_id, group_ids=union_gids, embedding=query_emb, k=fetch_k, status=None)
 
             formatted = []
             for source_tag, results in [("scrag", scrag_results), ("rcrag", rcrag_results)]:
@@ -101,8 +210,8 @@ class CaseSearchAgent:
                 if item["case_id"] not in seen:
                     seen.add(item["case_id"])
                     deduped.append(item)
-            # Sort: solved first (higher trust), then by score within each tier
-            deduped.sort(key=lambda x: (0 if x["status"] == "solved" else 1, -x["score"]))
+            # Rerank by entity overlap to catch embedding confusion (e.g. Starlink vs Herelink)
+            deduped = _entity_rerank(query, deduped, k=k * 2 + len(deduped))
             return deduped
         except Exception:
             log.exception("SCRAG/RCRAG search failed")

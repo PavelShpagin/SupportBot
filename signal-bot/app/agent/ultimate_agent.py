@@ -266,7 +266,7 @@ Question: "{question_with_images}"
 {docs_block}
 {file_list_block}
 RULES:
-- RELEVANCE: most cases from sub-agents are noise. Use ONLY cases that DIRECTLY answer the user's specific question. Quality over quantity. Do NOT cobble together vague answers from tangentially related cases.
+- RELEVANCE: most cases from sub-agents are noise. Use ONLY cases that DIRECTLY answer the user's specific question. Quality over quantity. Do NOT cobble together vague answers from tangentially related cases. Pay close attention to EXACT product/system names — if the user asks about system X but a case mentions system Y (even if similar-sounding), that case is IRRELEVANT. Verify entity names match before using a case.
 - MULTIPLE QUESTIONS: address each sub-question. For parts you cannot answer → add [[TAG_ADMIN]].
 - SOURCES: freely combine cases, keyword results, AND docs. Cite each source used.
 - CONTEXT: use chat context to resolve "this", "that model", etc. Understand what the user ACTUALLY needs.
