@@ -309,7 +309,7 @@ class LLMClient:
                             "Search for key technical terms, parameter names, and product specifics mentioned in the prompt. "
                             "Combine search results with the context already provided to give the best answer."
                         ),
-                        temperature=0.4,
+                        temperature=0.15,
                         http_options=_gt.HttpOptions(timeout=int(remaining * 1000)),
                     ),
                 )
