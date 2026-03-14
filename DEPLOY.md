@@ -28,7 +28,7 @@ If you already have an OCI VM at `161.33.64.115`:
 ```
 +------------------+     +-------------------+     +------------------+
 |  Signal Users    | --> |   OCI VM          | --> |  Google AI API   |
-|  (Groups/DMs)    |     |   161.33.64.115   |     |  (Gemini)        |
+|  (Groups/DMs)    |     |   161.33.64.115   |     |  (Gemini + GPT)  |
 +------------------+     +-------------------+     +------------------+
                                |
                     +----------+----------+----------+
@@ -220,10 +220,11 @@ vercel --prod
 |----------|------|
 | OCI VM (Always Free A1.Flex) | Free |
 | Google AI (Gemini API) | ~$0.01-0.05/1K messages |
+| OpenAI (GPT-5.4 synthesizer) | ~$0.02-0.10/1K responses |
 | Cloudflare R2 | Free tier |
 | Signal | Free |
 
 ---
 
-**Document Version**: 2.0
-**Last Updated**: 2026-03-10
+**Document Version**: 3.0
+**Last Updated**: 2026-03-14

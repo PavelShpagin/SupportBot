@@ -1,6 +1,6 @@
 # SupportBot -- Algorithm & Architecture (Full Technical Reference)
 
-**Last Updated**: 2026-03-10
+**Last Updated**: 2026-03-14
 **Status**: Current & Accurate (reflects production code)
 
 ---
@@ -12,7 +12,7 @@
 3. [Data Stores](#3-data-stores)
 4. [Live Message Pipeline](#4-live-message-pipeline)
 5. [Case Extraction Pipeline (BUFFER_UPDATE)](#5-case-extraction-pipeline-buffer_update)
-6. [Answer Pipeline (MAYBE_RESPOND)](#6-answer-pipeline-maybe_respond)
+6. [Answer Pipeline (GroupDebouncer + Batch Responder)](#6-answer-pipeline-groupdebouncer--batch-responder)
 7. [Emoji Reaction & Case Confirmation](#7-emoji-reaction--case-confirmation)
 8. [History Ingestion (signal-ingest)](#8-history-ingestion-signal-ingest)
 9. [Answer Engine Context Layers (SCRAG / RCRAG / B3)](#9-answer-engine-context-layers-scrag--rcrag--b3)
@@ -44,10 +44,10 @@
 +-----------------------------------------------------------------------+
 |                        signal-bot (FastAPI)                            |
 |  +------------------+  +--------------------+  +-------------------+  |
-|  | Ingest Layer     |  | Worker (job queue)  |  | HTTP API (web)    |  |
+|  | Ingest Layer     |  | Worker + Debouncer  |  | HTTP API (web)    |  |
 |  |                  |  |                     |  |                   |  |
 |  | ingest_message   |  | BUFFER_UPDATE       |  | /case/{id}        |  |
-|  | _handle_react.   |  | MAYBE_RESPOND       |  | /history/cases    |  |
+|  | _handle_react.   |  | GroupDebouncer      |  | /history/cases    |  |
 |  +--------+---------+  +---------+-----------+  +-------------------+  |
 |           |                      |                                     |
 |           v                      v                                     |
@@ -107,9 +107,12 @@
 ```
 signal-bot/app/
 +-- main.py                  -- FastAPI app, signal listener, reaction handler
-+-- ingestion.py             -- ingest_message(): store + enqueue jobs
++-- ingestion.py             -- ingest_message(): store + enqueue, video processing
 +-- r2.py                    -- Cloudflare R2 image storage
-+-- jobs/worker.py           -- BUFFER_UPDATE and MAYBE_RESPOND job handlers
++-- jobs/
+|   +-- worker.py            -- BUFFER_UPDATE job handler, worker loop
+|   +-- group_debouncer.py   -- Per-group 60s silence timer, cancel-on-new-message
+|   +-- batch_responder.py   -- Batch gate + per-question synthesis pipeline
 +-- agent/
 |   +-- ultimate_agent.py    -- UltimateAgent: gate -> parallel agents -> synthesize
 |   +-- case_search_agent.py -- CaseSearchAgent: SCRAG + RCRAG + B3 + RCRAG-DB
@@ -186,16 +189,18 @@ ingest_message(settings, db, llm, message_id, group_id, sender, ts, text, image_
         |       Upload to R2 (Cloudflare) or local fallback
         |       Append to content_text: "\n\n[image]\n{json}"
         |
-        +- insert_raw_message(db, RawMessage{...})
+        +- Video processing (if video attachment):
+        |     _describe_video(path, context) -> send full video (trimmed to 120s) to Gemini 2.5 Flash
+        |     _extract_video_audio(path) -> ffmpeg extract -> _transcribe_audio() via Gemini
+        |     Fallback: thumbnail OCR if video description fails
+        |
+        +- insert_raw_message(db, RawMessage{..., sender_uuid=sender})
         |     (idempotent; skips if message_id already exists)
         |
+        +- Notify GroupDebouncer (debouncer.on_message(group_id))
+        |     Fallback: enqueue_job(db, MAYBE_RESPOND, payload)
         +- enqueue_job(db, BUFFER_UPDATE, payload)
-           enqueue_job(db, MAYBE_RESPOND, payload)
 ```
-
-### Double Response Prevention
-
-The worker tracks responded messages via `_responded_messages` (a dedup dict keyed by message_id). If a timed-out job is retried, the worker skips sending a duplicate response.
 
 ---
 
@@ -267,91 +272,104 @@ _handle_buffer_update(deps, payload)
 
 ---
 
-## 6. Answer Pipeline (MAYBE_RESPOND)
+## 6. Answer Pipeline (GroupDebouncer + Batch Responder)
 
-Triggered for every new message. Purpose: decide if and how to respond.
+Replaces the old per-message MAYBE_RESPOND pipeline. Instead of responding to each
+message individually, the bot waits for a silence period and then processes all
+unprocessed messages as a batch.
+
+### GroupDebouncer (`signal-bot/app/jobs/group_debouncer.py`)
 
 ```
-MAYBE_RESPOND job consumed by worker_loop_forever()
+New message arrives in group
         |
         v
-_handle_maybe_respond(deps, payload)
+debouncer.on_message(group_id)
         |
-        +- Load message from raw_messages
-        +- Skip if content_text is empty (system notification)
-        +- Double response check: skip if message_id in _responded_messages
+        +- Cancel any in-progress batch processing (cancel_event.set())
+        +- Cancel existing timer
+        +- Start new 60-second silence timer
         |
+        v  (60 seconds of silence)
+_on_timer_fire(group_id)
+        |
+        +- Check WORKER_ENABLED (skip if disabled)
         +- Check group has active linked admins
+        +- Check admin whitelist
+        +- Spawn _process_group thread
+```
+
+### Batch Responder (`signal-bot/app/jobs/batch_responder.py`)
+
+```
+process_batch(group_id, db, llm, ultimate_agent, settings, ...)
         |
-        +--- GATE: decide_consider() ---
+        +--- BATCH GATE (single LLM call) ---
         |
-        |   context_text = last N messages (excluding current)
-        |   gate_images  = first 3 attached images (if present)
+        |   Loads last N unprocessed messages from raw_messages
+        |   Includes ~40 messages of prior context
         |
-        |   gate = llm.decide_consider(message, context, images)
-        |     [P_DECISION_SYSTEM prompt + GATE_CASCADE: gemini-2.5-flash -> gemini-2.0-flash]
-        |     -> DecisionResult {consider: bool, tag: str}
+        |   llm.batch_gate(messages, context)
+        |     -> BatchGateResult {
+        |          questions: [{question_text, reply_to_message_id, context_summary}]
+        |        }
         |
-        |   Tags: new_question | ongoing_discussion | statement | noise
+        |   Extracts all questions from the batch in one call
+        |   Filters out noise, statements, already-answered questions
         |
-        |   if not gate.consider AND not force (bot mention):
-        |     STOP (silent)
+        +--- PER-QUESTION SYNTHESIS ---
         |
-        +--- ULTIMATE AGENT (parallel search + synthesis) ---
+        |   For each extracted question:
+        |     cancel_check() -> abort if new message arrived
         |
-        |   answer = UltimateAgent.answer(question, group_id, db, lang, context, images)
+        |     UltimateAgent.answer(question, group_id, db, lang, context, images)
+        |       +-- CaseSearchAgent (SCRAG + RCRAG + B3) -- (parallel)
+        |       +-- DocsAgent (Google Docs)                -- (parallel)
+        |       +-- Synthesizer: GPT-5.4 with web search
         |
-        |   +-- CaseSearchAgent.answer() --------- (parallel) ----------+
-        |   |  1. Embed query with text-embedding-004                    |
-        |   |  2. SCRAG: cosine search cases_scrag (top 3)              |
-        |   |  3. RCRAG: cosine search cases_rcrag (top 3)              |
-        |   |  4. B3: get_recent_solved_cases(db, group_id, since_ts)   |
-        |   |  5. RCRAG-DB: recommendation cases not yet in RAG         |
-        |   |  Distance threshold: 0.75 (cosine)                        |
-        |   |                                                            |
-        |   |  Priority:                                                 |
-        |   |    SCRAG or B3 results -> direct answer with case link     |
-        |   |    RCRAG results -> answer with "not confirmed" caveat     |
-        |   |    Nothing -> "No relevant cases found."                   |
-        |   +------------------------------------------------------------+
+        +--- SEND (with cancellation checks) ---
         |
-        |   +-- DocsAgent.answer() --------------- (parallel) ----------+
-        |   |  1. Fetch Google Docs from chat_groups.docs_urls           |
-        |   |  2. Pass docs + question to Gemini                         |
-        |   |  3. Return answer or INSUFFICIENT_INFO                     |
-        |   +------------------------------------------------------------+
+        |   For each response:
+        |     cancel_check() -> abort if new message arrived
         |
-        |   Synthesizer (SUBAGENT_CASCADE: gemini-2.5-pro -> ... -> gemini-2.5-flash):
-        |     Receives case_agent output + docs_agent output
-        |     Generates final user-facing answer
-        |     If no relevant info found -> "[[TAG_ADMIN]]"
+        |     Quote-reply using sender_uuid from raw_messages:
+        |       signal.send_group_text(
+        |           group_id, text,
+        |           quote_timestamp=original_msg_ts,
+        |           quote_author=sender_uuid,
+        |           quote_message=original_text[:200])
         |
-        +--- SEND ---
+        |     Retry without quote on failure (edge case: deleted accounts)
         |
-        |   [[TAG_ADMIN]] -> replace with @mention of:
-        |     1. Per-group tag targets (chat_groups.tag_targets_json), or
-        |     2. Active admins for this group
+        |     [[TAG_ADMIN]] -> replace with @mention of:
+        |       1. Per-group tag targets (chat_groups.tag_targets_json), or
+        |       2. Active admins for this group
         |
-        |   signal.send_group_text(
-        |       group_id, text, quote_timestamp, quote_author, ...)
-        |   Track in _responded_messages to prevent duplicates
+        |     Store bot response in raw_messages for future context
         |
         +---
 ```
 
-### Gate Tags
+### Cancellation
 
-| Tag | Meaning | consider |
-|-----|---------|----------|
-| `new_question` | New support question | **true** |
-| `ongoing_discussion` | Continues an active thread in context | **true** |
-| `statement` | Summary / conclusion / "I solved it" without asking | **false** |
-| `noise` | Greeting, "ok", emoji-only, off-topic | **false** |
+The debouncer ensures consistency by cancelling in-progress batch processing
+when a new message arrives:
 
-Key rules:
-- `consider=true` for technical problem descriptions (even if phrased as statements)
-- `consider=false` for summaries starting with "Pidsumoviuiuchy", "Reziuumiuiuchy" etc.
-- Bot mention (`force=true`) bypasses the gate
+1. `cancel_event.set()` interrupts processing between gate and synthesizer calls
+2. Timer resets to 60 seconds
+3. When silence resumes, the entire batch (including the new message) is reprocessed
+
+### Synthesizer
+
+The synthesizer uses **GPT-5.4** via the OpenAI Responses API with web search
+enabled. This replaces the earlier Gemini subagent cascade for final answer
+generation, providing grounded answers with real-time web information.
+
+### Quote-Replies
+
+Every bot response is sent as a quote-reply to the original message that asked
+the question. This requires `sender_uuid` (stored in `raw_messages` during
+ingestion) for signal-cli's `--quote-author` parameter.
 
 ---
 
@@ -471,10 +489,12 @@ All calls use Gemini API via OpenAI-compatible endpoint.
 
 ### Model Cascades
 
+- **Synthesizer**: `GPT-5.4` via OpenAI Responses API with web search
+  Used for: final user-facing answer generation
 - **SUBAGENT_CASCADE**: `gemini-2.5-pro` -> `gemini-3.1-pro-preview` -> `gemini-2.5-flash`
-  Used for: synthesizer, subagent calls
+  Used for: subagent calls (case search, docs)
 - **GATE_CASCADE**: `gemini-2.5-flash` -> `gemini-2.0-flash`
-  Used for: gate (decide_consider)
+  Used for: gate (decide_consider), batch gate
 
 ### Per-call defaults (from config.py)
 
@@ -493,11 +513,13 @@ All calls use Gemini API via OpenAI-compatible endpoint.
 | Call | Function | Purpose | Output Schema |
 |------|----------|---------|---------------|
 | Image OCR | `llm.image_to_text_json()` | Extract text & observations from image | `ImgExtract` |
-| Gate | `llm.decide_consider()` | Filter noise / classify message | `DecisionResult` |
+| Batch gate | `llm.batch_gate()` | Extract questions from batch of messages | `BatchGateResult` |
 | Unified buffer | `llm.unified_buffer_analysis()` | Extract new cases + promote recommendations in one call | `UnifiedBufferResult` |
 | Case structure | `llm.make_case()` | Structure a case block into fields | `CaseResult` |
 | Embed | `llm.embed()` | Vector for dedup + RAG search | `List[float]` |
-| Synthesize | subagent cascade | Final user-facing answer | Free text |
+| Synthesize | GPT-5.4 (OpenAI) | Final user-facing answer with web search | Free text |
+| Video describe | `_describe_video()` | Full video description via Gemini 2.5 Flash | Free text |
+| Audio transcribe | `_transcribe_audio()` | Speech-to-text via Gemini 2.5 Flash | Free text |
 | History extract | P_BLOCKS_SYSTEM | Extract solved cases from history chunk | `BlocksResult` |
 
 ### Embedding & Deduplication
@@ -541,11 +563,12 @@ raw_messages: inserted (idempotent)
        |         |     +-- promotion(recommendation -> solved) -> move RCRAG to SCRAG
        |         |     +-- update(existing case with new evidence)
        |
-       +-- MAYBE_RESPOND: gate -> UltimateAgent -> send
+       +-- GroupDebouncer: 60s silence -> batch gate -> per-question synthesis
                             |
-                            +-- CaseSearchAgent (SCRAG + RCRAG + B3)
-                            +-- DocsAgent (Google Docs)
-                            +-- Synthesizer -> signal.send_group_text()
+                            +-- Batch gate: extract questions from all unprocessed msgs
+                            +-- Per question: UltimateAgent (CaseSearch + Docs)
+                            +-- Synthesizer (GPT-5.4 + web search)
+                            +-- signal.send_group_text() with quote-reply
 
 EMOJI REACTION
        |
@@ -640,14 +663,14 @@ signal-bot ingest_message()
         |         |         +-- solved: SCRAG (ChromaDB cases_scrag)
         |         |         +-- promotion: RCRAG -> SCRAG
         |
-        +-- MAYBE_RESPOND job
+        +-- GroupDebouncer (60s silence timer)
                   |
-                  +-- decide_consider (LLM gate, GATE_CASCADE)
+                  +-- Batch gate (extract questions from all unprocessed msgs)
                   |
-                  +-- UltimateAgent (parallel):
+                  +-- Per question: UltimateAgent (parallel):
                   |     +-- CaseSearchAgent: SCRAG + RCRAG + B3
                   |     +-- DocsAgent: Google Docs
                   |
-                  +-- Synthesizer (SUBAGENT_CASCADE)
-                            +-- signal.send_group_text()
+                  +-- Synthesizer (GPT-5.4 with web search)
+                            +-- signal.send_group_text() with quote-reply
 ```

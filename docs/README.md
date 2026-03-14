@@ -1,6 +1,6 @@
 # SupportBot Documentation Index
 
-**Last Updated**: 2026-03-10
+**Last Updated**: 2026-03-14
 **Status**: Production
 
 ---
@@ -29,8 +29,8 @@ signal-desktop (headless, SQLCipher DB reader, HTTP API)
         v
 signal-bot (FastAPI)
   +-- Ingest Layer (ingest_message, reaction handler)
-  +-- Worker (BUFFER_UPDATE, MAYBE_RESPOND jobs)
-  +-- UltimateAgent (CaseSearchAgent + DocsAgent in parallel, synthesizer)
+  +-- Worker (BUFFER_UPDATE jobs) + GroupDebouncer (60s batch response)
+  +-- UltimateAgent (CaseSearchAgent + DocsAgent in parallel, GPT-5.4 synthesizer)
   +-- HTTP API (case viewer, history import)
         |
         +--- MySQL 8 (messages, buffers, cases, jobs, sessions)
@@ -134,8 +134,9 @@ All LLM calls use Gemini models via Google AI Studio OpenAI-compatible endpoint.
 
 | Purpose | Model (default) |
 |---------|----------------|
+| Synthesizer | GPT-5.4 via OpenAI Responses API (web search enabled) |
 | Subagent cascade | gemini-2.5-pro --> gemini-3.1-pro-preview --> gemini-2.5-flash |
-| Gate cascade | gemini-2.5-flash --> gemini-2.0-flash |
+| Gate / batch gate | gemini-2.5-flash --> gemini-2.0-flash |
 | Image OCR (`model_img`) | gemini-3.1-pro-preview |
 | Case extraction (`model_extract`) | gemini-3.1-pro-preview |
 | Case structuring (`model_case`) | gemini-3.1-pro-preview |
@@ -150,9 +151,12 @@ All LLM calls use Gemini models via Google AI Studio OpenAI-compatible endpoint.
 ```
 signal-bot/app/
 +-- main.py                    -- FastAPI app, signal listener, reaction handler
-+-- ingestion.py               -- ingest_message(): store + enqueue jobs
++-- ingestion.py               -- ingest_message(): store + enqueue, video processing
 +-- r2.py                      -- Cloudflare R2 image storage
-+-- jobs/worker.py             -- BUFFER_UPDATE and MAYBE_RESPOND job handlers
++-- jobs/
+|   +-- worker.py              -- BUFFER_UPDATE job handler, worker loop
+|   +-- group_debouncer.py     -- Per-group 60s silence timer, cancel-on-new-message
+|   +-- batch_responder.py     -- Batch gate + per-question synthesis pipeline
 +-- agent/
 |   +-- ultimate_agent.py      -- UltimateAgent: gate -> parallel agents -> synthesize
 |   +-- case_search_agent.py   -- CaseSearchAgent: SCRAG + RCRAG + B3 retrieval
@@ -192,19 +196,9 @@ signal-web/                    -- Next.js case viewer
 
 ## Quick Reference
 
-### Evaluation Data
-
-```
-tests/
-+-- fixtures/images/           -- Test image fixtures
-```
-
 ### Key Commands
 
 ```bash
-# Run tests
-pytest tests/ -v
-
 # Deploy (full)
 ./scripts/deploy-oci.sh full
 
@@ -217,5 +211,5 @@ pytest tests/ -v
 
 ---
 
-**Document Version**: 2.0
-**Last Updated**: 2026-03-10
+**Document Version**: 3.0
+**Last Updated**: 2026-03-14

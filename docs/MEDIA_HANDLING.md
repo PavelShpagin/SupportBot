@@ -1,6 +1,6 @@
 # Media / Attachment Handling
 
-**Last Updated**: 2026-03-10
+**Last Updated**: 2026-03-14
 
 ## Live Group Messages (signal-bot)
 
@@ -86,8 +86,40 @@ Configurable via environment (see `signal-bot/app/config.py`):
 | `MAX_IMAGE_SIZE_BYTES` | 5,000,000 | Skip images larger than 5MB |
 | `MAX_TOTAL_IMAGE_BYTES` | 20,000,000 | Total image byte budget per call |
 
+## Video Processing
+
+When a video attachment arrives in a monitored group (`signal-bot/app/ingestion.py`):
+
+1. **Thumbnail extraction**: OpenCV extracts a single frame at ~1 second for storage
+   - Thumbnail uploaded to R2 as `{stem}_thumb.jpg`
+2. **Full video description** via Gemini 2.5 Flash:
+   - Videos longer than 120 seconds are trimmed to the first 2 minutes using
+     `ffmpeg` stream copy (no re-encoding, near-instant)
+   - Full video bytes sent to Gemini with a technical support-oriented prompt
+   - Returns detailed description: visible screens, OCR text, sequence of events,
+     anomalies
+   - Falls back to thumbnail OCR if Gemini video description fails
+3. **Audio transcription**: `ffmpeg` extracts the audio track (stream copy to m4a,
+   fallback to mp3 re-encode), then Gemini 2.5 Flash transcribes speech verbatim
+4. Results appended to `content_text`:
+   - `[Відео: filename.mp4 — <description>]`
+   - `[Транскрипт відео: <transcript>]`
+
+### Configuration
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `MAX_VIDEO_DURATION_SEC` | 120 | Trim videos longer than this before sending to Gemini |
+
+### Dependencies
+
+- **OpenCV** (`cv2`): thumbnail frame extraction
+- **ffmpeg**: video trimming and audio extraction (must be in PATH)
+- **Gemini 2.5 Flash**: video description and audio transcription
+
+---
+
 ## What Is Not Handled
 
 - **PDF attachments** in history: file name is noted but content is not extracted
-- **Video attachments**: file name is noted; no transcription
 - **URLs in message text**: not fetched or expanded -- the LLM only sees the raw URL string

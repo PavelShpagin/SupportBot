@@ -24,4 +24,4 @@ These instructions apply to every AI-assisted session in this repository.
 - Backend: signal-bot (FastAPI), signal-ingest, signal-desktop (headless), MySQL, Chroma.
 - No Oracle DB (legacy only).
 - Images served from `/var/lib/signal/bot/` via `/static/` mount.
-- Tests live in `tests/` and run with `pytest`.
+- Legacy tests in `legacy/tests/` (stale, not maintained).
