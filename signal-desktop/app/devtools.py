@@ -336,18 +336,33 @@ class DevToolsClient:
         group_id: str,
         text: str,
         expire_timer: int = 0,
+        quote_timestamp: int | None = None,
+        quote_author_aci: str | None = None,
+        quote_text: str | None = None,
     ) -> bool:
         """
-        Send a message to a Signal group.
-        
+        Send a message to a Signal group, optionally as a reply/quote.
+
         Args:
             group_id: The group ID (base64 encoded)
             text: Message text to send
             expire_timer: Disappearing message timer in seconds (0 = no expiration)
-        
+            quote_timestamp: Timestamp of message to reply to
+            quote_author_aci: UUID of the quoted message author
+            quote_text: Text of the quoted message
+
         Returns:
             True if message was sent successfully.
         """
+        # Build quote JS block
+        quote_js = "undefined"
+        if quote_timestamp and quote_author_aci:
+            quote_js = json.dumps({
+                "authorAci": quote_author_aci,
+                "id": quote_timestamp,
+                "text": quote_text or "",
+            })
+
         # JavaScript to find group and send message
         js_code = f"""
         (async function() {{
@@ -355,7 +370,7 @@ class DevToolsClient:
                 // Find the group conversation
                 const conversations = window.ConversationController.getAll();
                 let conversation = null;
-                
+
                 for (const conv of conversations) {{
                     const convGroupId = conv.get('groupId');
                     const convName = conv.get('name') || '';
@@ -364,21 +379,30 @@ class DevToolsClient:
                         break;
                     }}
                 }}
-                
+
                 if (!conversation) {{
                     return {{ success: false, error: 'Group not found' }};
                 }}
-                
+
                 // Set disappearing messages if specified
                 if ({expire_timer} > 0) {{
                     await conversation.updateExpirationTimer({expire_timer});
                 }}
-                
-                // Send the message
-                await conversation.sendMessage({{
+
+                // Build message options
+                const msgOpts = {{
                     body: {json.dumps(text)},
-                }});
-                
+                }};
+
+                // Add quote if provided
+                const quoteData = {quote_js};
+                if (quoteData) {{
+                    msgOpts.quote = quoteData;
+                }}
+
+                // Send the message
+                await conversation.sendMessage(msgOpts);
+
                 return {{ success: true }};
             }} catch (err) {{
                 return {{ success: false, error: err.message || String(err) }};

@@ -363,6 +363,9 @@ class SendGroupMessageRequest(BaseModel):
     group_id: str = Field(..., description="Group ID or group name")
     text: str = Field(..., description="Message text to send")
     expire_timer: int = Field(0, description="Disappearing message timer in seconds (0 = no expiration)")
+    quote_timestamp: int | None = Field(None, description="Timestamp of message to quote/reply to")
+    quote_author_aci: str | None = Field(None, description="ACI (UUID) of the quoted message author")
+    quote_text: str | None = Field(None, description="Text of the quoted message")
 
 
 class SendImageRequest(BaseModel):
@@ -418,6 +421,9 @@ async def send_group_message(request: SendGroupMessageRequest):
             group_id=request.group_id,
             text=request.text,
             expire_timer=request.expire_timer,
+            quote_timestamp=request.quote_timestamp,
+            quote_author_aci=request.quote_author_aci,
+            quote_text=request.quote_text,
         )
         
         if success:

@@ -2489,6 +2489,7 @@ class DebugSimulateRequest(BaseModel):
     group_id: str
     last_n: int = 10
     lang: str = "uk"
+    send: bool = False  # If true, actually send responses to the group
 
 
 @app.post("/debug/simulate")
@@ -2496,7 +2497,10 @@ def debug_simulate(req: DebugSimulateRequest) -> dict:
     """Simulate the batch responder on the last N messages of a group.
 
     Treats the last N messages as "unprocessed" and runs the batch gate
-    to extract questions, then synthesizes responses. Does NOT send anything.
+    to extract questions, then synthesizes responses.
+
+    Pass send=true to actually send responses (with replies) to the group.
+    Useful for recovering missed messages after downtime.
     """
     if not settings.http_debug_endpoints_enabled:
         raise HTTPException(status_code=404, detail="Not found")
@@ -2514,20 +2518,89 @@ def debug_simulate(req: DebugSimulateRequest) -> dict:
         lang=req.lang,
     )
 
+    sent_responses = []
+    for r in result.responses:
+        resp_info = {
+            "question": r.question[:200],
+            "message_ids": r.message_ids,
+            "reply_to": r.reply_to_message_id,
+            "response": r.response_text,
+            "sent": False,
+        }
+
+        if req.send and r.response_text and r.response_text not in ("SKIP", "[[TAG_ADMIN]]"):
+            try:
+                from app.db import get_raw_message, RawMessage, insert_raw_message
+                from app.db.queries_mysql import get_admin_sessions, get_tag_targets
+
+                answer_text = r.response_text
+                mention_recipients = None
+
+                # Handle TAG_ADMIN mentions
+                if "[[TAG_ADMIN]]" in answer_text or "@admin" in answer_text:
+                    active_admins = get_admin_sessions(db, req.group_id)
+                    tag_targets = get_tag_targets(db, req.group_id)
+                    answer_text = answer_text.replace("[[TAG_ADMIN]]", "[[MENTION_PLACEHOLDER]]").replace("@admin", "[[MENTION_PLACEHOLDER]]")
+                    mention_recipients = list(tag_targets or active_admins) or None
+
+                # Get quote target for reply
+                quote_ts = None
+                quote_text = ""
+                quote_author = ""
+                if r.reply_to_message_id:
+                    reply_msg = get_raw_message(db, message_id=r.reply_to_message_id)
+                    if reply_msg:
+                        quote_ts = reply_msg.ts
+                        quote_text = reply_msg.content_text or ""
+                        quote_author = reply_msg.sender_uuid or ""
+
+                stored_text = answer_text.replace("[[MENTION_PLACEHOLDER]]", "@admin")
+
+                try:
+                    sent_ts = signal.send_group_text(
+                        group_id=req.group_id,
+                        text=answer_text,
+                        quote_timestamp=quote_ts,
+                        quote_author=quote_author or None,
+                        quote_message=(quote_text[:200] if quote_text else None),
+                        mention_recipients=mention_recipients,
+                    )
+                except RuntimeError:
+                    # Retry without quote
+                    sent_ts = signal.send_group_text(
+                        group_id=req.group_id,
+                        text=answer_text,
+                        mention_recipients=mention_recipients,
+                    )
+
+                # Store bot response in raw_messages
+                if sent_ts and _bot_sender_hash:
+                    bot_msg = RawMessage(
+                        message_id=str(sent_ts),
+                        group_id=req.group_id,
+                        ts=sent_ts,
+                        sender_hash=_bot_sender_hash,
+                        content_text=stored_text,
+                        image_paths=[],
+                        reply_to_id=r.reply_to_message_id,
+                        sender_name="BOT",
+                    )
+                    insert_raw_message(db, bot_msg)
+
+                resp_info["sent"] = True
+                resp_info["sent_ts"] = sent_ts
+            except Exception as exc:
+                log.exception("debug/simulate send failed")
+                resp_info["send_error"] = str(exc)
+
+        sent_responses.append(resp_info)
+
     return {
         "group_id": result.group_id,
         "unprocessed_count": result.unprocessed_count,
         "questions_extracted": result.questions_extracted,
         "gate_raw": result.gate_raw,
-        "responses": [
-            {
-                "question": r.question[:200],
-                "message_ids": r.message_ids,
-                "reply_to": r.reply_to_message_id,
-                "response": r.response_text,
-            }
-            for r in result.responses
-        ],
+        "responses": sent_responses,
         "skipped": result.skipped_questions,
     }
 

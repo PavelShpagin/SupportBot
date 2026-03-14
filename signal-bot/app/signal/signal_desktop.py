@@ -156,14 +156,17 @@ class SignalDesktopAdapter:
         """Send text message to a group. Returns sent message timestamp if the API provides it."""
         with self._lock:
             try:
-                # Note: Signal Desktop API doesn't support quotes/mentions yet
-                # TODO: Add quote/mention support to DevTools client
                 with self._client() as client:
-                    resp = client.post("/send/group", json={
+                    payload = {
                         "group_id": group_id,
                         "text": text,
                         "expire_timer": 0,
-                    })
+                    }
+                    if quote_timestamp and quote_author:
+                        payload["quote_timestamp"] = quote_timestamp
+                        payload["quote_author_aci"] = quote_author
+                        payload["quote_text"] = quote_message or ""
+                    resp = client.post("/send/group", json=payload)
                     resp.raise_for_status()
                     result = resp.json()
                     if not result.get("success"):
