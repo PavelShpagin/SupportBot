@@ -359,11 +359,19 @@ class LLMClient:
         import time as _t
 
         try:
-            # Build input with images if present
+            # Build input — Responses API uses input_text/input_image types
             input_content: list[dict[str, Any]] = []
             if images:
-                parts = _build_interleaved_parts(prompt, images)
-                input_content.append({"role": "user", "content": parts})
+                # Convert Chat-style parts to Responses API format
+                chat_parts = _build_interleaved_parts(prompt, images)
+                resp_parts: list[dict[str, Any]] = []
+                for p in chat_parts:
+                    if p.get("type") == "text":
+                        resp_parts.append({"type": "input_text", "text": p["text"]})
+                    elif p.get("type") == "image_url":
+                        url = p["image_url"]["url"]
+                        resp_parts.append({"type": "input_image", "image_url": url})
+                input_content.append({"role": "user", "content": resp_parts})
             else:
                 input_content.append({"role": "user", "content": prompt})
 
@@ -526,6 +534,21 @@ class LLMClient:
             system=P.P_DECISION_SYSTEM,
             user=user,
             schema=DecisionResult,
+            images=images,
+            cascade=GATE_CASCADE,
+        )
+
+    def batch_gate(
+        self, *, unprocessed: str, context: str,
+        images: list[tuple[bytes, str]] | None = None,
+    ) -> "BatchGateResult":
+        from app.llm.schemas import BatchGateResult
+        user = f"CONTEXT (оброблені повідомлення):\n{context}\n\nUNPROCESSED (нові повідомлення):\n{unprocessed}"
+        return self._json_call(
+            model=self.settings.model_decision,
+            system=P.P_BATCH_GATE_SYSTEM,
+            user=user,
+            schema=BatchGateResult,
             images=images,
             cascade=GATE_CASCADE,
         )

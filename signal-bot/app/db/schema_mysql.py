@@ -152,6 +152,8 @@ MIGRATIONS = [
     "ALTER TABLE chat_groups ADD COLUMN tag_targets_json LONGTEXT",
     # Lock flag: set during history ingestion to defer worker jobs for this group
     "ALTER TABLE chat_groups ADD COLUMN ingesting TINYINT(1) NOT NULL DEFAULT 0",
+    # Store original sender UUID for quote-replies
+    "ALTER TABLE raw_messages ADD COLUMN sender_uuid VARCHAR(128)",
 ]
 
 

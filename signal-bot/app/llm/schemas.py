@@ -113,3 +113,18 @@ class KeywordResult(BaseModel):
     """Keywords extracted from a user message for database search."""
     keywords: List[str] = Field(default_factory=list)
 
+
+# ── Batch gate (extracts questions from unprocessed messages) ──────────────
+
+class BatchQuestion(BaseModel):
+    """A question extracted from unprocessed messages that needs a bot response."""
+    question: str = ""
+    message_ids: List[str] = Field(default_factory=list)
+    reply_to_message_id: str = ""
+    has_images: bool = False
+
+
+class BatchGateResult(BaseModel):
+    """Result of batch gate: list of questions extracted from unprocessed messages."""
+    questions: List[BatchQuestion] = Field(default_factory=list)
+

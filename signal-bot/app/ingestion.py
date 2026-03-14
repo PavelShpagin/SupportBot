@@ -7,7 +7,7 @@ import os
 import subprocess
 import tempfile
 from pathlib import Path
-from typing import Iterable
+from typing import Callable, Iterable
 
 import app.r2 as _r2
 from app.config import Settings
@@ -144,6 +144,112 @@ def _transcribe_audio(audio_bytes: bytes, mime_type: str = "audio/mp4", context:
         return ""
 
 
+MAX_VIDEO_DURATION_SEC = 120  # Send at most first 2 minutes to Gemini
+
+
+def _trim_video(video_path: str | Path, max_seconds: int) -> str | None:
+    """Trim video to first max_seconds using ffmpeg stream copy (fast, no re-encode).
+
+    Returns path to trimmed temp file, or None if trimming fails.
+    If video is already shorter, returns None (caller should use original).
+    """
+    try:
+        import cv2
+        cap = cv2.VideoCapture(str(video_path))
+        if not cap.isOpened():
+            return None
+        fps = cap.get(cv2.CAP_PROP_FPS) or 25
+        total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT) or 0)
+        duration = total_frames / fps if fps > 0 else 0
+        cap.release()
+
+        if duration <= max_seconds:
+            return None  # No trim needed
+
+        log.info("Video is %.0fs, trimming to first %ds", duration, max_seconds)
+        trimmed = tempfile.NamedTemporaryFile(suffix=".mp4", delete=False).name
+        result = subprocess.run(
+            [
+                "ffmpeg", "-i", str(video_path),
+                "-t", str(max_seconds),
+                "-c", "copy",  # stream copy, no re-encoding
+                "-y", trimmed,
+            ],
+            capture_output=True,
+            timeout=30,
+        )
+        if result.returncode != 0:
+            log.warning("ffmpeg trim failed (rc=%d)", result.returncode)
+            try:
+                os.unlink(trimmed)
+            except Exception:
+                pass
+            return None
+        return trimmed
+    except Exception as exc:
+        log.warning("Video trimming failed: %s", exc)
+        return None
+
+
+def _describe_video(video_path: str | Path, context: str = "") -> str:
+    """Send video to Gemini for description. Returns description or empty string.
+
+    Trims to first MAX_VIDEO_DURATION_SEC if longer. Sends full video to Gemini.
+    """
+    trimmed_path = None
+    try:
+        import google.generativeai as genai
+
+        api_key = os.environ.get("GOOGLE_API_KEY")
+        if not api_key:
+            log.warning("GOOGLE_API_KEY not set, cannot describe video")
+            return ""
+
+        # Trim if too long
+        trimmed_path = _trim_video(video_path, MAX_VIDEO_DURATION_SEC)
+        send_path = trimmed_path or video_path
+
+        genai.configure(api_key=api_key)
+        model = genai.GenerativeModel("gemini-2.5-flash")
+
+        ct = _guess_mime(str(video_path))
+        video_bytes = Path(send_path).read_bytes()
+
+        prompt = (
+            "Describe this video in detail for a technical support context. "
+            "Focus on: 1) What is shown (screens, devices, indicators, error messages), "
+            "2) Any text visible on screen (OCR), "
+            "3) What happens over time (sequence of events), "
+            "4) Any problems or anomalies visible. "
+            "Be specific and technical. Keep it under 300 words. "
+            "If there is no useful content, return exactly: EMPTY"
+        )
+        if context:
+            prompt += f"\nUser's message context: {context}"
+
+        log.info("Sending %d bytes of video (%s, trimmed=%s) to Gemini for description",
+                 len(video_bytes), ct, trimmed_path is not None)
+        response = model.generate_content([
+            prompt,
+            {"mime_type": ct, "data": video_bytes},
+        ])
+        text = (response.text or "").strip()
+        if text == "EMPTY" or not text:
+            log.info("Gemini video description returned empty/EMPTY")
+            return ""
+        log.info("Gemini video description: %s", text[:300])
+        return text
+    except Exception as exc:
+        log.warning("Video description failed: %s", exc)
+        return ""
+    finally:
+        if trimmed_path:
+            try:
+                os.unlink(trimmed_path)
+            except Exception:
+                pass
+
+
 def _extract_video_thumbnail_from_bytes(data: bytes) -> bytes | None:
     """Extract a thumbnail from in-memory video bytes via a temp file."""
     import tempfile
@@ -194,6 +300,7 @@ def ingest_message(
     text: str,
     image_paths: Iterable[str] = (),
     reply_to_id: str | None = None,
+    on_message_stored: "Callable[[str], None] | None" = None,
 ) -> None:
     content_text = text or ""
     context_text = text or ""
@@ -265,20 +372,27 @@ def ingest_message(
                         log.error("R2 upload failed for video thumbnail %s", thumb_name)
                 if thumb_stored:
                     stored_image_paths.append(thumb_stored)
-                try:
-                    j = llm.image_to_text_json(image_bytes=thumb_bytes, context_text=f"Video thumbnail from: {img_path.name}\n{context_text}")
-                    extracted_text = j.extracted_text or ""
-                    observations = ", ".join(j.observations) if j.observations else ""
-                    summary_parts = []
-                    if extracted_text:
-                        summary_parts.append(f"Текст: {extracted_text}")
-                    if observations:
-                        summary_parts.append(f"Елементи: {observations}")
-                    desc = " | ".join(summary_parts) if summary_parts else ""
-                    content_text = content_text + f"\n\n[Відео: {img_path.name}" + (f" — {desc}" if desc else "") + "]"
-                except Exception:
-                    log.debug("Video thumbnail OCR failed for %s", img_path)
-                    content_text = content_text + f"\n\n[Відео: {img_path.name}]"
+
+                # Full video description via Gemini (falls back to keyframes for large files)
+                video_desc = _describe_video(img_path, context=context_text)
+                if video_desc:
+                    content_text = content_text + f"\n\n[Відео: {img_path.name} — {video_desc}]"
+                else:
+                    # Fallback to thumbnail OCR if video description fails
+                    try:
+                        j = llm.image_to_text_json(image_bytes=thumb_bytes, context_text=f"Video thumbnail from: {img_path.name}\n{context_text}")
+                        extracted_text = j.extracted_text or ""
+                        observations = ", ".join(j.observations) if j.observations else ""
+                        summary_parts = []
+                        if extracted_text:
+                            summary_parts.append(f"Текст: {extracted_text}")
+                        if observations:
+                            summary_parts.append(f"Елементи: {observations}")
+                        desc = " | ".join(summary_parts) if summary_parts else ""
+                        content_text = content_text + f"\n\n[Відео: {img_path.name}" + (f" — {desc}" if desc else "") + "]"
+                    except Exception:
+                        log.debug("Video thumbnail OCR failed for %s", img_path)
+                        content_text = content_text + f"\n\n[Відео: {img_path.name}]"
             else:
                 log.warning("Failed to extract thumbnail from %s", img_path)
                 content_text = content_text + f"\n\n[Відео: {img_path.name}]"
@@ -303,6 +417,7 @@ def ingest_message(
             content_text=content_text,
             image_paths=stored_image_paths,
             reply_to_id=reply_to_id,
+            sender_uuid=sender,
         ),
     )
     
@@ -317,6 +432,11 @@ def ingest_message(
         "ts": ts,
         "text": text or "",
     }
-    enqueue_job(db, MAYBE_RESPOND, job_payload)
+    # Notify debouncer that a new message arrived (replaces MAYBE_RESPOND job)
+    if on_message_stored is not None:
+        on_message_stored(group_id)
+    else:
+        # Fallback: enqueue old-style MAYBE_RESPOND job
+        enqueue_job(db, MAYBE_RESPOND, job_payload)
     enqueue_job(db, BUFFER_UPDATE, job_payload)
 

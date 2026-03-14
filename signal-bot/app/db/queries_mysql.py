@@ -20,6 +20,7 @@ class RawMessage:
     image_paths: List[str]
     reply_to_id: str | None
     sender_name: str | None = None
+    sender_uuid: str | None = None
 
 
 def _parse_json_list(raw: str | None) -> List[str]:
@@ -40,8 +41,8 @@ def insert_raw_message(db: MySQL, msg: RawMessage) -> bool:
         try:
             cur.execute(
                 """
-                INSERT INTO raw_messages(message_id, group_id, ts, sender_hash, sender_name, content_text, image_paths_json, reply_to_id)
-                VALUES(%s, %s, %s, %s, %s, %s, %s, %s)
+                INSERT INTO raw_messages(message_id, group_id, ts, sender_hash, sender_name, content_text, image_paths_json, reply_to_id, sender_uuid)
+                VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """,
                 (
                     msg.message_id,
@@ -52,6 +53,7 @@ def insert_raw_message(db: MySQL, msg: RawMessage) -> bool:
                     msg.content_text,
                     json.dumps(msg.image_paths, ensure_ascii=False),
                     msg.reply_to_id,
+                    msg.sender_uuid,
                 ),
             )
             conn.commit()
@@ -92,7 +94,7 @@ def get_raw_message(db: MySQL, message_id: str) -> Optional[RawMessage]:
         cur = conn.cursor()
         cur.execute(
             """
-            SELECT message_id, group_id, ts, sender_hash, sender_name, content_text, image_paths_json, reply_to_id
+            SELECT message_id, group_id, ts, sender_hash, sender_name, content_text, image_paths_json, reply_to_id, sender_uuid
             FROM raw_messages
             WHERE message_id = %s
             """,
@@ -110,6 +112,7 @@ def get_raw_message(db: MySQL, message_id: str) -> Optional[RawMessage]:
             content_text=row[5] or "",
             image_paths=_parse_json_list(row[6]),
             reply_to_id=row[7],
+            sender_uuid=row[8],
         )
 
 
@@ -221,6 +224,18 @@ def has_newer_respond_job(db: MySQL, group_id: str, ts: int) -> bool:
             (f'%{group_id}%', ts),
         )
         return cur.fetchone() is not None
+
+
+def delete_raw_message_by_ts(db: MySQL, group_id: str, ts: int) -> bool:
+    """Delete a raw message by group_id + timestamp (for remote delete sync). Returns True if deleted."""
+    with db.connection() as conn:
+        cur = conn.cursor()
+        cur.execute(
+            "DELETE FROM raw_messages WHERE group_id = %s AND ts = %s",
+            (group_id, ts),
+        )
+        conn.commit()
+        return cur.rowcount > 0
 
 
 def get_last_messages_meta(db: MySQL, group_id: str, n: int, bot_sender_hash: str = "") -> List[Dict[str, Any]]:

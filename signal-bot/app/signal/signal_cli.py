@@ -183,6 +183,12 @@ class InboundReaction(BaseModel):
     is_remove: bool = False  # True if reaction is being removed
 
 
+class InboundRemoteDelete(BaseModel):
+    """A message was deleted in a group chat."""
+    group_id: str
+    deleted_ts: int  # timestamp of the deleted message
+
+
 class GroupInfo(BaseModel):
     """Information about a group the bot is a member of."""
     group_id: str
@@ -682,6 +688,7 @@ class SignalCliAdapter:
         on_reaction: Callable[[InboundReaction], None] | None = None,
         on_contact_removed: Callable[[str], None] | None = None,
         on_group_update: Callable[[str], None] | None = None,
+        on_remote_delete: "Callable[[InboundRemoteDelete], None] | None" = None,
     ) -> None:
         """
         Signal receive loop. Dispatches:
@@ -689,6 +696,7 @@ class SignalCliAdapter:
         - Direct (1:1) messages -> on_direct_message
         - Contact removed/blocked -> on_contact_removed(phone_number)
         - Group metadata update (description, name, etc.) -> on_group_update(group_id)
+        - Remote delete -> on_remote_delete(InboundRemoteDelete)
         """
         log.info("Starting Signal receive loop...")
         self.assert_available()
@@ -765,6 +773,16 @@ class SignalCliAdapter:
                             log.exception("on_reaction handler failed")
                         continue
 
+                # Try parsing as remote delete
+                if on_remote_delete is not None:
+                    rd = _parse_remote_delete(obj)
+                    if rd is not None:
+                        try:
+                            on_remote_delete(rd)
+                        except Exception:
+                            log.exception("on_remote_delete handler failed")
+                        continue
+
                 # Try parsing as contact removed/blocked event
                 if on_contact_removed is not None:
                     removed_contact = _parse_contact_removed(obj)
@@ -817,6 +835,10 @@ def _parse_group_message(obj: dict) -> Optional[InboundGroupMessage]:
         return None
     group_id = group_info.get("groupId")
     if not group_id:
+        return None
+
+    # Remote delete events have dataMessage+groupInfo+remoteDelete; skip them
+    if dm.get("remoteDelete"):
         return None
 
     # Reaction events also have dataMessage+groupInfo; skip them so
@@ -1084,6 +1106,30 @@ def _parse_contact_removed(obj: dict) -> Optional[str]:
                 return str(sender)
 
     return None
+
+
+def _parse_remote_delete(obj: dict) -> Optional[InboundRemoteDelete]:
+    """Parse a remote delete event from signal-cli JSON.
+
+    Signal sends: {"envelope": {"dataMessage": {"remoteDelete": {"timestamp": 123}, "groupInfo": {"groupId": "..."}}}}
+    """
+    env = obj.get("envelope") if isinstance(obj, dict) else None
+    if not isinstance(env, dict):
+        return None
+    dm = env.get("dataMessage")
+    if not isinstance(dm, dict):
+        return None
+    rd = dm.get("remoteDelete")
+    if not isinstance(rd, dict):
+        return None
+    group_info = dm.get("groupInfo")
+    if not isinstance(group_info, dict):
+        return None
+    group_id = group_info.get("groupId")
+    deleted_ts = rd.get("timestamp")
+    if not group_id or deleted_ts is None:
+        return None
+    return InboundRemoteDelete(group_id=str(group_id), deleted_ts=int(deleted_ts))
 
 
 def _parse_group_update(obj: dict) -> Optional[str]:

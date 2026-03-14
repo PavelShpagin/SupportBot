@@ -128,6 +128,9 @@ deps = WorkerDeps(
     bot_sender_hash=_bot_sender_hash,
 )
 
+from app.jobs.group_debouncer import GroupDebouncer
+_debouncer = GroupDebouncer(deps=deps)
+
 # Global lock for pruning to prevent concurrent runs
 _prune_lock = threading.Lock()
 
@@ -204,6 +207,7 @@ def _maybe_start_signal_listener() -> None:
                     "on_reaction": _handle_reaction,
                     "on_contact_removed": _handle_contact_removed,
                     "on_group_update": _handle_group_update,
+                    "on_remote_delete": _handle_remote_delete,
                 },
                 daemon=True,
             ).start()
@@ -233,6 +237,7 @@ def _maybe_start_signal_listener() -> None:
                 "on_direct_message": _handle_direct_message,
                 "on_reaction": _handle_reaction,
                 "on_contact_removed": _handle_contact_removed,
+                "on_remote_delete": _handle_remote_delete,
             },
             daemon=True,
         ).start()
@@ -762,6 +767,7 @@ def _handle_group_message(m: InboundGroupMessage) -> None:
         text=m.text,
         image_paths=m.image_paths,
         reply_to_id=m.reply_to_id,
+        on_message_stored=_debouncer.on_message,
     )
 
 
@@ -871,6 +877,14 @@ def _handle_group_update(group_id: str) -> None:
     """
     log.info("Group update event for %s — enqueuing docs sync", group_id[:20])
     enqueue_job(db, SYNC_GROUP_DOCS, {"group_id": group_id})
+
+
+def _handle_remote_delete(event) -> None:
+    """Handle when a user deletes a message in a group — remove it from our DB."""
+    from app.db.queries_mysql import delete_raw_message_by_ts
+    deleted = delete_raw_message_by_ts(db, event.group_id, event.deleted_ts)
+    if deleted:
+        log.info("Remote delete: removed message ts=%s from group %s", event.deleted_ts, event.group_id[:20])
 
 
 def _handle_contact_removed(phone_number: str) -> None:
@@ -2469,6 +2483,53 @@ def debug_gate(req: DebugGateRequest) -> dict:
         raise HTTPException(status_code=404, detail="Not found")
     result = llm.decide_consider(message=req.message, context=req.context)
     return {"consider": result.consider, "tag": result.tag}
+
+
+class DebugSimulateRequest(BaseModel):
+    group_id: str
+    last_n: int = 10
+    lang: str = "uk"
+
+
+@app.post("/debug/simulate")
+def debug_simulate(req: DebugSimulateRequest) -> dict:
+    """Simulate the batch responder on the last N messages of a group.
+
+    Treats the last N messages as "unprocessed" and runs the batch gate
+    to extract questions, then synthesizes responses. Does NOT send anything.
+    """
+    if not settings.http_debug_endpoints_enabled:
+        raise HTTPException(status_code=404, detail="Not found")
+
+    from app.jobs.batch_responder import process_batch
+
+    result = process_batch(
+        group_id=req.group_id,
+        db=db,
+        llm=llm,
+        ultimate_agent=ultimate_agent,
+        settings=settings,
+        bot_sender_hash=_bot_sender_hash,
+        last_n=req.last_n,
+        lang=req.lang,
+    )
+
+    return {
+        "group_id": result.group_id,
+        "unprocessed_count": result.unprocessed_count,
+        "questions_extracted": result.questions_extracted,
+        "gate_raw": result.gate_raw,
+        "responses": [
+            {
+                "question": r.question[:200],
+                "message_ids": r.message_ids,
+                "reply_to": r.reply_to_message_id,
+                "response": r.response_text,
+            }
+            for r in result.responses
+        ],
+        "skipped": result.skipped_questions,
+    }
 
 
 class DebugReindexRequest(BaseModel):

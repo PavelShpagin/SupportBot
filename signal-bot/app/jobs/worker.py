@@ -530,7 +530,7 @@ def worker_loop_forever(deps: WorkerDeps) -> None:
 
         job = claim_next_job(
             deps.db,
-            allowed_types=[job_types.SYNC_GROUP_DOCS, job_types.BUFFER_UPDATE, job_types.MAYBE_RESPOND],
+            allowed_types=[job_types.SYNC_GROUP_DOCS, job_types.BUFFER_UPDATE],
         )
         if job is None:
             _touch_heartbeat()
