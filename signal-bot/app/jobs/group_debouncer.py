@@ -21,7 +21,7 @@ from typing import Any, Callable, Dict
 
 log = logging.getLogger(__name__)
 
-DEBOUNCE_SECONDS = 60  # 1 minute of silence before processing
+DEBOUNCE_SECONDS = 90  # 1.5 minutes of silence before processing
 
 
 @dataclass
